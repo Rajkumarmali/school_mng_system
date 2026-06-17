@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import "./Login.css";
+import { Link } from "react-router-dom";
+import { login } from "../state/auth/Action";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
+
+    const dispatch = useDispatch();
 
     const [loginData, setLoginData] = useState({
         usernameOrEmail: '',
@@ -18,6 +23,7 @@ const Login = () => {
 
     const handleLogin = (e) => {
         e.preventDefault();
+        dispatch(login(loginData))
         console.log(loginData)
     }
 
@@ -60,12 +66,12 @@ const Login = () => {
                             />
                             Remember me
                         </div>
-                        {/* <a
-                            href="#"
+                        <Link
+                            to="#"
                             className="text-white text-decoration-none"
                         >
                             Forgot Password?
-                        </a> */}
+                        </Link>
                     </div>
                     <button
                         type="submit"
