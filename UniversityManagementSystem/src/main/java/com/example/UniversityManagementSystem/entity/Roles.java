@@ -15,7 +15,7 @@ public class Roles {
     @ManyToOne
     private Tenant tenant;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "roles")
     private List<User> users = new ArrayList<>();
 
     private String name;
