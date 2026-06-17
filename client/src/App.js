@@ -1,11 +1,16 @@
-import './App.css';
+import Login from './auth/Login';
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import './App.css';
 import Layout from './components/Layout';
+import { useSelector } from 'react-redux';
 function App() {
+  const token = useSelector((state) => state.auth.token)
+    || localStorage.getItem("token");
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/*" element={<Layout />} />
+        {!token ? <Route path='/' element={<Login />} /> : <Route path="/*" element={<Layout />} />}
       </Routes>
     </BrowserRouter>
   );

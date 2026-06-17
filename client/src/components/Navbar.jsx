@@ -1,7 +1,19 @@
 import React from "react";
 import "./Navbar.css";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loogOut } from "../state/auth/Action";
 
 const Navbar = ({ toggleSidebar }) => {
+
+    const navigete = useNavigate();
+    const dispatch = useDispatch();
+
+    const handleLogout = () => {
+        dispatch(loogOut())
+        navigete('/')
+    }
+
     return (
         <nav className="navbar navbar-expand-lg dashboard-navbar">
             <div className="container-fluid">
@@ -45,7 +57,7 @@ const Navbar = ({ toggleSidebar }) => {
                                 <hr className="dropdown-divider" />
                             </li>
                             <li>
-                                <button className="dropdown-item text-danger">
+                                <button className="dropdown-item text-danger" onClick={handleLogout}>
                                     Logout
                                 </button>
                             </li>

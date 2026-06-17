@@ -1,0 +1,80 @@
+.login-container {
+    height: 100vh;
+    background: linear-gradient(
+        180deg,
+        #3ea0d3,
+        #3c58c9
+    );
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-card {
+    width: 420px;
+    padding: 40px;
+    border-radius: 15px;
+
+    background: rgba(255, 255, 255, 0.08);
+
+    border: 1px solid rgba(255, 255, 255, 0.3);
+
+    /* backdrop-filter: blur(10px); */
+
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.user-icon {
+    width: 90px;
+    height: 90px;
+
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.7);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin: 0 auto 20px auto;
+
+    color: white;
+    font-size: 40px;
+}
+
+.custom-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid rgba(255,255,255,0.5);
+
+    padding: 10px 5px;
+    color: white;
+    outline: none;
+}
+
+.custom-input::placeholder {
+    color: rgba(255,255,255,0.8);
+}
+
+.login-btn {
+    border: 1px solid white;
+    color: white;
+    background: transparent;
+    padding: 10px;
+}
+
+.login-btn:hover {
+    background: transparent;
+    color: #3c58c9;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: white;
+    font-size: 18px;
+}
