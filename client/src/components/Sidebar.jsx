@@ -8,16 +8,10 @@ const Sidebar = () => {
             <ul className="sidebar-menu">
                 <li>
                     <Link to="/dashboard" className="menu-item">
-                        📊 Dashboard
+                        <i className="bi bi-grid-fill me-2"></i>
+                        Dashboard
                     </Link>
                 </li>
-
-                <li>
-                    <Link to="/about" className="menu-item">
-                        ℹ️ About
-                    </Link>
-                </li>
-
             </ul>
         </div>
     );
