@@ -10,4 +10,5 @@ public interface TenantServices {
    public Tenant createTenant(TenantRequest dto);
    public TenantResponse updateTenant(TenantRequest dto, Long id);
    public List<TenantResponse> getAllTenant();
+   public TenantResponse getTenantById(Long id);
 }

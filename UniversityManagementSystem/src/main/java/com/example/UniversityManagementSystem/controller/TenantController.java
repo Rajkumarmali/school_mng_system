@@ -39,4 +39,10 @@ public class TenantController {
         return new ResponseEntity<List<TenantResponse>>(res,HttpStatus.OK);
     }
 
+    @GetMapping("/get-tenant/{id}")
+    public ResponseEntity<TenantResponse> getTenantById(@PathVariable Long id){
+        TenantResponse res = tenantServices.getTenantById(id);
+        return new ResponseEntity<TenantResponse>(res,HttpStatus.OK);
+    }
+
 }

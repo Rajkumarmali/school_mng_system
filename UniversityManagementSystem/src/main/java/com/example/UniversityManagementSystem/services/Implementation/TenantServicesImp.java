@@ -76,4 +76,11 @@ public class TenantServicesImp implements TenantServices {
         return res;
     }
 
+    @Override
+    public TenantResponse getTenantById(Long id) {
+        Tenant tenant = tenantRepository.findById(id).orElseThrow(()->new IllegalArgumentException("Tenant not found"));
+        TenantResponse res = new TenantResponse(tenant.getId(),tenant.getName());
+        return res;
+    }
+
 }
