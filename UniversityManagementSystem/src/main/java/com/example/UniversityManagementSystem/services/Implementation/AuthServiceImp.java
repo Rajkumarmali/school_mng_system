@@ -28,17 +28,17 @@ public class AuthServiceImp implements AuthService {
     @Override
     public AuthResponse login(AuthRequest dto) {
 
-        String usernameOrPassword = dto.getUsernameOrPassword();
+        String usernameOrEmail = dto.getUsernameOrEmail();
         String password = dto.getPassword();
 
-        Authentication authentication = authicate(usernameOrPassword,password);
+        Authentication authentication = authicate(usernameOrEmail,password);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtProvider.generateToken(authentication);
         return new AuthResponse("User login",token);
     }
 
-    private Authentication authicate(String usernameOrPassword,String password){
-        UserDetails userDetails = customeUserServiceImp.loadUserByUsername(usernameOrPassword);
+    private Authentication authicate(String usernameOrEmail,String password){
+        UserDetails userDetails = customeUserServiceImp.loadUserByUsername(usernameOrEmail);
         if(userDetails==null){
             throw new BadCredentialsException("Invalid Username");
         }
