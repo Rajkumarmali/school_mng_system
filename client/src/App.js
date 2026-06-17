@@ -1,13 +1,12 @@
 import './App.css';
-import Navbar from './components/Navbar';
-import Sidebar from './components/Sidebar';
-import { BrowserRouter } from 'react-router-dom'
-
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Layout from './components/Layout';
 function App() {
   return (
     <BrowserRouter>
-      <Sidebar />
-      <Navbar />
+      <Routes>
+        <Route path="/*" element={<Layout />} />
+      </Routes>
     </BrowserRouter>
   );
 }
