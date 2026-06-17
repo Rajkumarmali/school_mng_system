@@ -1,4 +1,4 @@
-import { LOGIN_FAILER, LOGIN_REQUEST, LOGIN_SUCCESS } from "./ActionType"
+import { LOG_OUT, LOGIN_FAILER, LOGIN_REQUEST, LOGIN_SUCCESS } from "./ActionType"
 
 export const login = (loginData) => async (dispatch) => {
     dispatch({ type: LOGIN_REQUEST })
@@ -20,4 +20,9 @@ export const login = (loginData) => async (dispatch) => {
     } catch (err) {
         dispatch({ type: LOGIN_FAILER, payload: err.message })
     }
+}
+
+export const loogOut = () => async (dispatch) => {
+    localStorage.clear();
+    dispatch({ type: LOG_OUT })
 }
