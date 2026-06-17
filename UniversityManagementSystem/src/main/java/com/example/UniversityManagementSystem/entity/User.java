@@ -3,6 +3,8 @@ package com.example.UniversityManagementSystem.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -15,16 +17,27 @@ public class User {
     private String username;
     private String email;
     private String password;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
 
-    public User(Long id, String username, String email, String password, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    @ManyToOne
+    private Tenant tenant;
+
+    @ManyToMany
+    @JoinTable(name = "user_roles",joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name="role_id"))
+    private List<Roles> roles = new ArrayList<>();
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    public User(Long id, String username, String email, String password, Tenant tenant,List<Roles> roles, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
-        created_at = createdAt;
-        updated_at = updatedAt;
+        this.tenant = tenant;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.roles  = roles;
     }
 
     public User() {
@@ -62,19 +75,36 @@ public class User {
         this.password = password;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
+
+    public Tenant getTenant() {
+        return tenant;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
+    public void setTenant(Tenant tenant) {
+        this.tenant = tenant;
     }
 
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
+    public List<Roles> getRoles() {
+        return roles;
     }
 
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
+    public void setRoles(List<Roles> roles) {
+        this.roles = roles;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
