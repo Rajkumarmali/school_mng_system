@@ -1,13 +1,13 @@
 package com.example.UniversityManagementSystem.dto.auth;
 
 public class AuthRequest {
-    private String usernameOrPassword;
+
     private String password;
+    private String usernameOrEmail;
 
-    public AuthRequest(String email, String username, String usernameOrPassword, String password) {
-        this.usernameOrPassword = usernameOrPassword;
-
-        this.password = password;
+    public AuthRequest(String email, String username, String password, String usernameOrEmail) {
+            this.password = password;
+        this.usernameOrEmail = usernameOrEmail;
     }
 
     public AuthRequest() {
@@ -23,12 +23,12 @@ public class AuthRequest {
         this.password = password;
     }
 
-    public String getUsernameOrPassword() {
-        return usernameOrPassword;
+    public String getUsernameOrEmail() {
+        return usernameOrEmail;
     }
 
-    public void setUsernameOrPassword(String usernameOrPassword) {
-        this.usernameOrPassword = usernameOrPassword;
+    public void setUsernameOrEmail(String usernameOrEmail) {
+        this.usernameOrEmail = usernameOrEmail;
     }
 }
 
