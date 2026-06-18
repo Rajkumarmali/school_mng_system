@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -22,14 +24,20 @@ public class UserController {
 
     @GetMapping("/user-profile")
     public ResponseEntity<UserResponse> getUserProfile(@RequestHeader("Authorization") String jwt){
-        String email = jwtProvider.getEmailFromToken(jwt);
-        UserResponse res = userServices.getUserProfile(email);
+        Long userId = jwtProvider.getUserIdFromToken(jwt);
+        UserResponse res = userServices.getUserProfile(userId);
         return new ResponseEntity<UserResponse>(res,HttpStatus.OK);
     }
     @PostMapping("/update-user")
     public ResponseEntity<UserResponse> updateUser(@RequestHeader("Authorization") String jwt, @RequestBody UpdateUserRequest dto){
-        String email = jwtProvider.getEmailFromToken(jwt);
-        UserResponse res = userServices.updateUser(email,dto);
+        Long userId = jwtProvider.getUserIdFromToken(jwt);
+        UserResponse res = userServices.updateUser(userId,dto);
         return new ResponseEntity<UserResponse>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/get-allusers")
+    public ResponseEntity<List<UserResponse>> getAllUsers(){
+        List<UserResponse> res = userServices.getAllUsers();
+        return new ResponseEntity<List<UserResponse>>(res,HttpStatus.OK);
     }
 }

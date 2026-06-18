@@ -8,6 +8,7 @@ import com.example.UniversityManagementSystem.services.UserServices;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class UserServicesImp implements UserServices {
@@ -19,8 +20,8 @@ public class UserServicesImp implements UserServices {
     }
 
     @Override
-    public UserResponse getUserProfile(String email) {
-        User user = userRepository.findByEmail(email);
+    public UserResponse getUserProfile(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(()->new IllegalArgumentException("User not found"));
         UserResponse res = new UserResponse();
         res.setId(user.getId());
         res.setUserName(user.getUsername());
@@ -29,8 +30,8 @@ public class UserServicesImp implements UserServices {
     }
 
     @Override
-    public UserResponse updateUser(String email, UpdateUserRequest dto) {
-        User user = userRepository.findByEmail(email);
+    public UserResponse updateUser(Long userId, UpdateUserRequest dto) {
+        User user = userRepository.findById(userId).orElseThrow(()-> new IllegalArgumentException("User not found"));
 
         user.setEmail(dto.getEmail());
         user.setUsername(dto.getUserName());
@@ -39,8 +40,23 @@ public class UserServicesImp implements UserServices {
         User updatedUser = userRepository.save(user);
 
         UserResponse res = new UserResponse();
+
+        res.setId(updatedUser.getId());
         res.setEmail(updatedUser.getEmail());
         res.setUserName(updatedUser.getUsername());
+        return res;
+    }
+
+    @Override
+    public List<UserResponse> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        List<UserResponse> res = users.stream().map(user->{
+            UserResponse response = new UserResponse();
+            response.setId(user.getId());
+            response.setEmail(user.getEmail());
+            response.setUserName(user.getUsername());
+            return response;
+        }).toList();
         return res;
     }
 }
