@@ -12,6 +12,12 @@ const Sidebar = () => {
                         Dashboard
                     </Link>
                 </li>
+                <li>
+                    <Link to="/tenant" className="menu-item">
+                        <i className="bi bi-building me-2"></i>
+                        Tenant
+                    </Link>
+                </li>
             </ul>
         </div>
     );
