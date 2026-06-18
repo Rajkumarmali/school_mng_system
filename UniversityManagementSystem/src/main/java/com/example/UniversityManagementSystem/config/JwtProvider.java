@@ -1,5 +1,6 @@
 package com.example.UniversityManagementSystem.config;
 
+import com.example.UniversityManagementSystem.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -13,11 +14,12 @@ import java.util.Date;
 public class JwtProvider {
     SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
 
-    public String generateToken(Authentication auth){
+    public String generateToken(Authentication auth, User user){
       String jwt = Jwts.builder()
               .setIssuedAt(new Date())
               .setExpiration(new Date(new Date().getTime()+846000000))
               .claim("email",auth.getName())
+              .claim("userId",user.getId())
               .signWith(key).compact();
 
       return jwt;
