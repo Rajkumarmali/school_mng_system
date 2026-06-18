@@ -31,4 +31,11 @@ public class JwtProvider {
         String email = String.valueOf(claims.get("email"));
         return email;
     }
+
+    public Long getUserIdFromToken(String jwt){
+        jwt = jwt.substring(7);
+        Claims claims = Jwts.parser().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
+        Long userId = claims.get("userId",Long.class);
+        return userId;
+    }
 }

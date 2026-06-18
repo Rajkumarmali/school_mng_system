@@ -1,5 +1,6 @@
 package com.example.UniversityManagementSystem;
 
+import com.example.UniversityManagementSystem.config.JwtProvider;
 import com.example.UniversityManagementSystem.entity.Tenant;
 import com.example.UniversityManagementSystem.services.AuthService;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,14 @@ public class UserTest {
     @Autowired
     private AuthService authService;
 
+   @Autowired
+   private JwtProvider jwtProvider;
+
+    @Test
+    public void getUserId(){
+        Long userId=jwtProvider.getUserIdFromToken("Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3ODE4MDc0MjQsImV4cCI6MTc4MjY1MzQyNCwiZW1haWwiOiJzdXBlckBnbWFpbC5jb20iLCJ1c2VySWQiOjJ9.t-Uns915YZC9aGw9zUzTHblbj-K0OxN2VliTNyZv4c8");
+        System.out.println("userId"+userId);
+    }
 
     @Test
     public void testCreateUser(){
