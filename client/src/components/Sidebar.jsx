@@ -33,7 +33,7 @@ const Sidebar = () => {
 
                 <li>
                     <Link to="/users" className="menu-item">
-                        <i class="bi bi-people-fill"></i>
+                        <i class="bi bi-people-fill me-2"></i>
                         Users
                     </Link>
                 </li>
