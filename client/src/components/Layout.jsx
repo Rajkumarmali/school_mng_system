@@ -4,6 +4,8 @@ import Navbar from './Navbar'
 import { Route, Routes } from "react-router-dom";
 import Dashboard from '../pages/Dashboard';
 import Tenant from '../pages/Tenant';
+import UserProfile from '../pages/UserProfile';
+import Users from '../pages/Users';
 
 const Layout = () => {
     return (
@@ -18,6 +20,8 @@ const Layout = () => {
                     <Routes>
                         <Route path="dashboard" element={<Dashboard />} />
                         <Route path="tenant" element={<Tenant />} />
+                        <Route path='user-profile' element={<UserProfile />} />
+                        <Route path='users' element={<Users />} />
                     </Routes>
                 </div>
 

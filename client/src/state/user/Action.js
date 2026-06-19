@@ -1,0 +1,91 @@
+import { GET_ALL_USERS_FAILER, GET_ALL_USERS_REQUEST, GET_ALL_USERS_SUCCESS, GET_USER_PROFILE_FAILER, GET_USER_PROFILE_REQUEST, GET_USER_PROFILE_SUCCESS, GET_USERS_BYID_FAILER, GET_USERS_BYID_REQUEST, GET_USERS_BYID_SUCCESS, RESET_PASSWORD_FAILER, RESET_PASSWORD_REQUEST, RESET_PASSWORD_SUCCESS, UPDATE_USER_PROFILE_FAILER, UPDATE_USER_PROFILE_REQUEST, UPDATE_USER_PROFILE_SUCCESS } from "./ActionType"
+
+export const userProfile = () => async (dispatch) => {
+    dispatch({ type: GET_USER_PROFILE_REQUEST })
+    try {
+        const res = await fetch("http://localhost:8080/api/user/user-profile", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+        })
+        const data = await res.json();
+        dispatch({ type: GET_USER_PROFILE_SUCCESS, payload: data })
+    } catch (err) {
+        dispatch({ type: GET_USER_PROFILE_FAILER, payload: err.message })
+    }
+}
+
+export const updateUserProfile = (updateUserProfileData) => async (dispatch) => {
+    dispatch({ type: UPDATE_USER_PROFILE_REQUEST })
+    try {
+        const res = await fetch("http://localhost:8080/api/user/update-user", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify(updateUserProfileData)
+        })
+        const data = res.json();
+        dispatch({ type: UPDATE_USER_PROFILE_SUCCESS, payload: data })
+    } catch (err) {
+        dispatch({ type: UPDATE_USER_PROFILE_FAILER, payload: err.message })
+    }
+}
+
+export const getAllUsers = () => async (dispatch) => {
+    dispatch({ type: GET_ALL_USERS_REQUEST })
+    try {
+        const res = await fetch("http://localhost:8080/api/user/get-allusers", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+        })
+        const data = await res.json();
+        dispatch({ type: GET_ALL_USERS_SUCCESS, payload: data })
+    } catch (err) {
+        dispatch({ type: GET_ALL_USERS_FAILER, payload: err.message })
+    }
+}
+
+export const getUserById = (userId) => async (dispatch) => {
+    dispatch({ type: GET_USERS_BYID_REQUEST })
+    try {
+        const res = await fetch(`http://localhost:8080/api/user/get-userbyid/${userId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+        })
+        const data = await res.json();
+        dispatch({ type: GET_USERS_BYID_SUCCESS, payload: data })
+    } catch (err) {
+        dispatch({ type: GET_USERS_BYID_FAILER, payload: err.message })
+    }
+}
+
+export const resetPassword = (userId, newPassword) => async (dispatch) => {
+    dispatch({ type: RESET_PASSWORD_REQUEST })
+    try {
+        const res = await fetch(`http://localhost:8080/api/auth/reset-password/${userId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify({ newPassword })
+        })
+        if (!res.ok) {
+            return
+        }
+        const data = await res.json();
+        dispatch({ type: RESET_PASSWORD_SUCCESS, payload: data })
+    } catch (err) {
+        dispatch({ type: RESET_PASSWORD_FAILER, payload: err.message })
+    }
+}

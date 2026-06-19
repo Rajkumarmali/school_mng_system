@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Navbar.css";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loogOut, resetPassword } from "../state/auth/Action";
 
@@ -78,9 +78,9 @@ const Navbar = ({ toggleSidebar }) => {
                             </button>
                             <ul className="dropdown-menu dropdown-menu-end custom-dropdown">
                                 <li>
-                                    <button className="dropdown-item">
+                                    <Link to="/user-profile" className="dropdown-item">
                                         Profile
-                                    </button>
+                                    </Link>
                                 </li>
                                 <li className="settings-menu">
                                     <button className="dropdown-item" >
