@@ -3,6 +3,7 @@ import "./Navbar.css";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loogOut } from "../state/auth/Action";
+import { Link } from "react-router-dom";
 
 const Navbar = ({ toggleSidebar }) => {
 
@@ -44,9 +45,9 @@ const Navbar = ({ toggleSidebar }) => {
                         </button>
                         <ul className="dropdown-menu dropdown-menu-end custom-dropdown">
                             <li>
-                                <button className="dropdown-item">
+                                <Link to="/user-profile" className="dropdown-item">
                                     Profile
-                                </button>
+                                </Link>
                             </li>
                             <li>
                                 <button className="dropdown-item">
