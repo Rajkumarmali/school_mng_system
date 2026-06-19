@@ -16,6 +16,12 @@ public class UserTest {
    @Autowired
    private JwtProvider jwtProvider;
 
+   @Test
+   public void getTenantId(){
+       Long tenantId= jwtProvider.getTenantIdFromToken("Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3ODE4NTEzOTUsImV4cCI6MTc4MjY5NzM5NSwiZW1haWwiOiJzdXBlcmFkbWluQGdtYWlsLmNvbSIsInVzZXJJZCI6Mn0.bKsokn8rwcwTxQJrxnuWsSeW8ktJ5NX--5LC37JfZG8");
+       System.out.println("TenantId "+ tenantId);
+   }
+
     @Test
     public void getUserId(){
         Long userId=jwtProvider.getUserIdFromToken("Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3ODE4MDc0MjQsImV4cCI6MTc4MjY1MzQyNCwiZW1haWwiOiJzdXBlckBnbWFpbC5jb20iLCJ1c2VySWQiOjJ9.t-Uns915YZC9aGw9zUzTHblbj-K0OxN2VliTNyZv4c8");

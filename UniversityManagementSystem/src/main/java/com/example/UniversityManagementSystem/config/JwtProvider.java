@@ -20,6 +20,7 @@ public class JwtProvider {
               .setExpiration(new Date(new Date().getTime()+846000000))
               .claim("email",auth.getName())
               .claim("userId",user.getId())
+              .claim("tenantId",user.getTenant()!=null ? user.getTenant().getId() : null)
               .signWith(key).compact();
 
       return jwt;
@@ -37,5 +38,12 @@ public class JwtProvider {
         Claims claims = Jwts.parser().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
         Long userId = claims.get("userId",Long.class);
         return userId;
+    }
+
+    public Long getTenantIdFromToken(String jwt){
+        jwt = jwt.substring(7);
+        Claims claims = Jwts.parser().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
+        Long tenantId = claims.get("tenantId",Long.class);
+        return tenantId;
     }
 }
