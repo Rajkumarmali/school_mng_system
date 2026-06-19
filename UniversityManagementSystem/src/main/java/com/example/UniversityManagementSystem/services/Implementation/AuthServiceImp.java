@@ -3,6 +3,7 @@ package com.example.UniversityManagementSystem.services.Implementation;
 import com.example.UniversityManagementSystem.config.JwtProvider;
 import com.example.UniversityManagementSystem.dto.auth.AuthRequest;
 import com.example.UniversityManagementSystem.dto.auth.AuthResponse;
+import com.example.UniversityManagementSystem.dto.auth.ResetPasswordRequest;
 import com.example.UniversityManagementSystem.entity.Roles;
 import com.example.UniversityManagementSystem.entity.Tenant;
 import com.example.UniversityManagementSystem.entity.User;
@@ -45,9 +46,11 @@ public class AuthServiceImp implements AuthService {
         String usernameOrEmail = dto.getUsernameOrEmail();
         String password = dto.getPassword();
 
+        User user = customeUserServiceImp.findUserByUsername(usernameOrEmail);
+
         Authentication authentication = authicate(usernameOrEmail,password);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtProvider.generateToken(authentication);
+        String token = jwtProvider.generateToken(authentication,user);
         return new AuthResponse("User login",token);
     }
 
@@ -70,6 +73,25 @@ public class AuthServiceImp implements AuthService {
             throw new BadCredentialsException(ex.getMessage());
         }
         return null;
+    }
+
+    @Override
+    public Void updatePassword(String email, ResetPasswordRequest dto) {
+        User user = userRepository.findByEmail(email);
+        if(!passwordEncoder.matches(dto.getOldPassword(),user.getPassword())){
+            throw new BadCredentialsException("Invalid old password");
+        }
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        userRepository.save(user);
+        return null;
+    }
+
+    @Override
+    public void resetPassword(Long id, String password) {
+       User user = userRepository.findById(id).orElseThrow(()->new IllegalArgumentException("User not found"));
+       user.setPassword(passwordEncoder.encode(password));
+       user.setUpdatedAt(LocalDateTime.now());
+       userRepository.save(user);
     }
 
     private Authentication authicate(String usernameOrEmail,String password){

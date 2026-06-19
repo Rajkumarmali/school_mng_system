@@ -31,4 +31,13 @@ public class CustomeUserServiceImp implements UserDetailsService {
         List<GrantedAuthority> authorities = new ArrayList<>();
         return new org.springframework.security.core.userdetails.User(user.getEmail(),user.getPassword(),authorities);
     }
+
+    public User findUserByUsername(String usernameOrEmail) throws UsernameNotFoundException{
+        User user = userRepository.findByEmailOrUsername(usernameOrEmail,usernameOrEmail);
+        if(user==null){
+            throw new UsernameNotFoundException("User are not found");
+        }
+        return user;
+    }
+
 }

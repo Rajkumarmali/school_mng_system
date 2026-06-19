@@ -26,7 +26,8 @@ public class AppConfig {
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize->
                         authorize.requestMatchers("/api/auth/**").permitAll()
-                                 .requestMatchers("/api/**").authenticated().anyRequest().permitAll())
+                                .requestMatchers("/api/auth/update-password/**").authenticated()
+                                .requestMatchers("/api/**").authenticated().anyRequest().permitAll())
                 .addFilterBefore(new JwtValidator(), BasicAuthenticationFilter.class)
                 .csrf(csrf->csrf.disable())
                 .cors(cors->cors.configurationSource(new CorsConfigurationSource() {
