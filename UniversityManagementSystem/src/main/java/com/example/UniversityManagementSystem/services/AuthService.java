@@ -10,4 +10,5 @@ public interface AuthService {
     public AuthResponse login(AuthRequest dto);
     public Void createUser(String email, Tenant tenant, String roles);
     public Void updatePassword(String email, ResetPasswordRequest dto);
+    public void resetPassword(Long id,String password);
 }
