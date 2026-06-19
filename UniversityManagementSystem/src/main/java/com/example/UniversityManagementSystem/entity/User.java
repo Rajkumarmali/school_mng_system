@@ -26,15 +26,23 @@ public class User {
             inverseJoinColumns = @JoinColumn(name="role_id"))
     private List<Roles> roles = new ArrayList<>();
 
+    @OneToOne(mappedBy = "user")
+    private Teacher teacher;
+
+    @OneToOne(mappedBy = "user")
+    private Student student;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public User(Long id, String username, String email, String password, Tenant tenant,List<Roles> roles, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public User(Long id, String username, String email, String password, Tenant tenant, List<Roles> roles, Teacher teacher, User user, Student student, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
         this.tenant = tenant;
+        this.teacher = teacher;
+        this.student = student;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.roles  = roles;
@@ -106,5 +114,21 @@ public class User {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 }

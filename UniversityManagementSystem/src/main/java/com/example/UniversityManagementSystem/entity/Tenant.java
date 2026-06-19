@@ -21,14 +21,23 @@ public class Tenant {
     @OneToMany(mappedBy = "tenant")
     private List<Roles> roles = new ArrayList<>();
 
+    @OneToMany(mappedBy = "tenant")
+    private List<Teacher> teachers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "tenant")
+    private List<Student> students=new ArrayList<>();
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Tenant(Long id, String name, List<User> users, List<Roles> roles, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Tenant(Long id, String name,List<Teacher> teachers, List<User> users, List<Roles> roles,
+                  List<Student> students,LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.users = users;
         this.roles = roles;
+        this.teachers=teachers;
+        this.students=students;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -82,5 +91,21 @@ public class Tenant {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public List<Teacher> getTeachers() {
+        return teachers;
+    }
+
+    public void setTeachers(List<Teacher> teachers) {
+        this.teachers = teachers;
+    }
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
 }
