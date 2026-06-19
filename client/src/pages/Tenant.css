@@ -7,7 +7,6 @@
         #3c58c9
     );
     min-height: 100vh;
-    
 }
 
 .tenant-header {
@@ -87,13 +86,13 @@
 
 
 .custom-modal {
-  background: linear-gradient(
+    background: linear-gradient(
         180deg,
         #3ea0d3,
         #3c58c9
-    );
+    ); 
     border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    border-radius: 15px !important;
+    border-radius:15px !important;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     color: white;
 }
