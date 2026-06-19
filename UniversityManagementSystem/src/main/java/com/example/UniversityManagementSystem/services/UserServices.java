@@ -9,5 +9,5 @@ import java.util.List;
 public interface UserServices {
    public UserResponse getUserProfile(Long userId);
    public UserResponse updateUser(Long userId,UpdateUserRequest dto);
-   public List<UserResponse> getAllUsers();
+   public List<UserResponse> getAllUsers(Long tenantId);
 }
