@@ -36,8 +36,14 @@ public class UserController {
     }
 
     @GetMapping("/get-allusers")
-    public ResponseEntity<List<UserResponse>> getAllUsers(){
-        List<UserResponse> res = userServices.getAllUsers();
+    public ResponseEntity<List<UserResponse>> getAllUsers(@RequestHeader("Authorization") String jwt){
+        Long tenantId= jwtProvider.getTenantIdFromToken(jwt);
+        List<UserResponse> res = userServices.getAllUsers(tenantId);
         return new ResponseEntity<List<UserResponse>>(res,HttpStatus.OK);
+    }
+    @GetMapping("/get-userbyid/{id}")
+    public ResponseEntity<UserResponse> getUserById(@PathVariable Long id){
+        UserResponse res = userServices.getUserProfile(id);
+        return new ResponseEntity<UserResponse>(res,HttpStatus.OK);
     }
 }
