@@ -86,6 +86,14 @@ public class AuthServiceImp implements AuthService {
         return null;
     }
 
+    @Override
+    public void resetPassword(Long id, String password) {
+       User user = userRepository.findById(id).orElseThrow(()->new IllegalArgumentException("User not found"));
+       user.setPassword(passwordEncoder.encode(password));
+       user.setUpdatedAt(LocalDateTime.now());
+       userRepository.save(user);
+    }
+
     private Authentication authicate(String usernameOrEmail,String password){
         UserDetails userDetails = customeUserServiceImp.loadUserByUsername(usernameOrEmail);
         if(userDetails==null){
