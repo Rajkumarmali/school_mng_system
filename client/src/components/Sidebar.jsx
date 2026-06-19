@@ -18,6 +18,25 @@ const Sidebar = () => {
                         Tenant
                     </Link>
                 </li>
+                <li>
+                    <Link to="/teacher" className="menu-item">
+                        <i className="bi bi-person-workspace me-2"></i>
+                        Teachers
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/student" className="menu-item">
+                        <i className="bi bi-mortarboard-fill me-2"></i>
+                        Students
+                    </Link>
+                </li>
+
+                <li>
+                    <Link to="/users" className="menu-item">
+                        <i class="bi bi-people-fill"></i>
+                        Users
+                    </Link>
+                </li>
             </ul>
         </div>
     );
