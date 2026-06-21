@@ -30,16 +30,16 @@ public class Teacher {
     private String panNumber;
     private String employeeId;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Address address;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private User user;
 
     @ManyToOne
     private Tenant tenant;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Parent parent;
 
     private LocalDateTime createdAt;
