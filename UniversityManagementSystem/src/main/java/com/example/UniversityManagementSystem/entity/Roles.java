@@ -12,10 +12,10 @@ public class Roles {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private Tenant tenant;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private College college;
 
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "roles",fetch = FetchType.LAZY)
     private List<User> users = new ArrayList<>();
 
     private String name;
@@ -26,9 +26,9 @@ public class Roles {
     public Roles() {
     }
 
-    public Roles(Long id, Tenant tenant, List<User> users, String name, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Roles(Long id, College college, List<User> users, String name, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
-        this.tenant = tenant;
+        this.college = college;
         this.users = users;
         this.name = name;
         this.createdAt = createdAt;
@@ -43,12 +43,12 @@ public class Roles {
         this.id = id;
     }
 
-    public Tenant getTenant() {
-        return tenant;
+    public College getTenant() {
+        return college;
     }
 
-    public void setTenant(Tenant tenant) {
-        this.tenant = tenant;
+    public void setTenant(College college) {
+        this.college = college;
     }
 
     public List<User> getUsers() {

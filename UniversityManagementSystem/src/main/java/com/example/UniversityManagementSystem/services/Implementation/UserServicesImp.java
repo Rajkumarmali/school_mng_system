@@ -49,7 +49,7 @@ public class UserServicesImp implements UserServices {
 
     @Override
     public List<UserResponse> getAllUsers(Long tenantId) {
-        List<User> users = userRepository.findByTenantId(tenantId);
+        List<User> users = userRepository.findByCollegeId(tenantId);
         List<UserResponse> res = users.stream().map(user->{
             UserResponse response = new UserResponse();
             response.setId(user.getId());

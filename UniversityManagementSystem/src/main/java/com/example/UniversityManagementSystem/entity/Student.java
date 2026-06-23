@@ -29,16 +29,16 @@ public class Student {
 
     private String aadhaarNumber;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Address address;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private User user;
 
-    @ManyToOne
-    private Tenant tenant;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private College college;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Parent parent;
 
     private LocalDateTime createdAt;
@@ -46,7 +46,7 @@ public class Student {
 
     public Student(Long id, String firstName, String lastName, String email, String registrationNumber,
                    String phoneNumber, LocalDate dob, Gender gender, Cast cast, String aadhaarNumber,
-                   Address address, User user, Tenant tenant, Parent parent, LocalDateTime createdAt,
+                   Address address, User user, College college, Parent parent, LocalDateTime createdAt,
                    LocalDateTime updatedAt) {
         this.id = id;
         this.firstName = firstName;
@@ -60,7 +60,7 @@ public class Student {
         this.aadhaarNumber = aadhaarNumber;
         this.address = address;
         this.user = user;
-        this.tenant = tenant;
+        this.college = college;
         this.parent = parent;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -165,12 +165,12 @@ public class Student {
         this.user = user;
     }
 
-    public Tenant getTenant() {
-        return tenant;
+    public College getTenant() {
+        return college;
     }
 
-    public void setTenant(Tenant tenant) {
-        this.tenant = tenant;
+    public void setTenant(College college) {
+        this.college = college;
     }
 
     public Parent getParent() {

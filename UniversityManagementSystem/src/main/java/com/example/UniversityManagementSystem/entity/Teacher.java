@@ -30,16 +30,16 @@ public class Teacher {
     private String panNumber;
     private String employeeId;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
     private Address address;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
     private User user;
 
-    @ManyToOne
-    private Tenant tenant;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private College college;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
     private Parent parent;
 
     private LocalDateTime createdAt;
@@ -47,7 +47,7 @@ public class Teacher {
 
     public Teacher(String phoneNumber, Long id, String firstName, String lastName, String email,
                    LocalDate dob, Gender gender, Cast cast, String aadharNumber, String panNumber,
-                   String employeeId, Address address, User user, Tenant tenant, Parent parent,
+                   String employeeId, Address address, User user, College college, Parent parent,
                    LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.phoneNumber = phoneNumber;
         this.id = id;
@@ -62,7 +62,7 @@ public class Teacher {
         this.employeeId = employeeId;
         this.address = address;
         this.user = user;
-        this.tenant = tenant;
+        this.college = college;
         this.parent = parent;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -175,12 +175,12 @@ public class Teacher {
         this.user = user;
     }
 
-    public Tenant getTenant() {
-        return tenant;
+    public College getTenant() {
+        return college;
     }
 
-    public void setTenant(Tenant tenant) {
-        this.tenant = tenant;
+    public void setTenant(College college) {
+        this.college = college;
     }
 
     public Parent getParent() {
