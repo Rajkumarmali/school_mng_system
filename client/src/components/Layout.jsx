@@ -6,6 +6,8 @@ import Dashboard from '../pages/Dashboard';
 import Tenant from '../pages/Tenant';
 import UserProfile from '../pages/UserProfile';
 import Users from '../pages/Users';
+import Teacher from '../pages/Teacher';
+import TeacherProfile from '../pages/TeacherProfile';
 
 const Layout = () => {
     return (
@@ -22,6 +24,8 @@ const Layout = () => {
                         <Route path="tenant" element={<Tenant />} />
                         <Route path='user-profile' element={<UserProfile />} />
                         <Route path='users' element={<Users />} />
+                        <Route path='teacher' element={<Teacher />} />
+                        <Route path='teacher/profile' element={<TeacherProfile />} />
                     </Routes>
                 </div>
 

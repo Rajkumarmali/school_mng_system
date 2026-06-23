@@ -131,4 +131,8 @@ public class User {
     public void setStudent(Student student) {
         this.student = student;
     }
+
+    public void setU(LocalDateTime now) {
+
+    }
 }
