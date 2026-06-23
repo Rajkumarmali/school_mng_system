@@ -29,16 +29,16 @@ public class Student {
 
     private String aadhaarNumber;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private User user;
 
     @ManyToOne
     private Tenant tenant;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Parent parent;
 
     private LocalDateTime createdAt;
