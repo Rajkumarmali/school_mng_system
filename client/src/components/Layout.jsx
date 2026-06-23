@@ -8,6 +8,8 @@ import UserProfile from '../pages/UserProfile';
 import Users from '../pages/Users';
 import Student from '../pages/Student';
 import StudentProfile from '../pages/StudentProfile';
+import Teacher from '../pages/Teacher';
+import TeacherProfile from '../pages/TeacherProfile';
 
 const Layout = () => {
     return (
@@ -26,6 +28,8 @@ const Layout = () => {
                         <Route path='users' element={<Users />} />
                         <Route path='/student' element={<Student />} />
                         <Route path='/student/profile' element={<StudentProfile />} />
+                        <Route path='teacher' element={<Teacher />} />
+                        <Route path='teacher/profile' element={<TeacherProfile />} />
                     </Routes>
                 </div>
 

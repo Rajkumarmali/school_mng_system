@@ -4,12 +4,14 @@ import { authReducer } from './auth/Reducer'
 import { tenantReducer } from './tenant/Reducer'
 import { userReducer } from './user/Reducer'
 import { studentReducer } from './student/Reducer'
+import { teacherReducer } from './teacher/Reducer'
 
 const rootReducer = combineReducers({
     auth: authReducer,
     tenant: tenantReducer,
     user: userReducer,
-    student: studentReducer
+    student: studentReducer,
+    teacher: teacherReducer
 })
 
 export const store = legacy_createStore(rootReducer, applyMiddleware(thunk))
