@@ -3,11 +3,13 @@ import { thunk } from 'redux-thunk'
 import { authReducer } from './auth/Reducer'
 import { tenantReducer } from './tenant/Reducer'
 import { userReducer } from './user/Reducer'
+import { studentReducer } from './student/Reducer'
 
 const rootReducer = combineReducers({
     auth: authReducer,
     tenant: tenantReducer,
-    user: userReducer
+    user: userReducer,
+    student: studentReducer
 })
 
 export const store = legacy_createStore(rootReducer, applyMiddleware(thunk))
