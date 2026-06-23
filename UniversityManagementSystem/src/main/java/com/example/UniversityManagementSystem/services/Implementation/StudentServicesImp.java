@@ -193,7 +193,7 @@ public class StudentServicesImp implements StudentServices {
 
     private User createUser(String email, College college, String rolesName){
 
-        Roles roles =  rolesRepository.findByNameAndTenant(rolesName, college);
+        Roles roles =  rolesRepository.findByNameAndCollege(rolesName, college);
         User user = new User();
 
         user.setEmail(email);
