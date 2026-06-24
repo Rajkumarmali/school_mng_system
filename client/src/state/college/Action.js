@@ -6,10 +6,10 @@ import {
 
 const BASE_API = process.env.REACT_APP_BASE_URL;
 
-export const getAllCollege = () => async (dispatch) => {
+export const getAllCollege = (pageNumber, pageSize) => async (dispatch) => {
     dispatch({ type: GET_COLLEGE_REQUEST })
     try {
-        const res = await fetch(`${BASE_API}/college/get-college`, {
+        const res = await fetch(`${BASE_API}/college/get-college?pageNumber=${pageNumber - 1}&pageSize=${pageSize}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

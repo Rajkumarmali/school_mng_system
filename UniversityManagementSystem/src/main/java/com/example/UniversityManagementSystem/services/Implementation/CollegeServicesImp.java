@@ -13,6 +13,9 @@ import com.example.UniversityManagementSystem.services.AddressService;
 import com.example.UniversityManagementSystem.services.AuthService;
 import com.example.UniversityManagementSystem.services.CollegeServices;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -105,10 +108,13 @@ public class CollegeServicesImp implements CollegeServices {
     }
 
     @Override
-    public List<CollegeResponse> getAllCollege() {
-        List<College> colleges = collegeRepository.findAll();
+    public Page<CollegeResponse> getAllCollege(int pageNumber,int pageSize) {
 
-        List<CollegeResponse> res = colleges.stream().map(college -> {
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+
+        Page<College> colleges = collegeRepository.findAll(pageable);
+
+        Page<CollegeResponse> res = colleges.map(college -> {
 
             Address address = college.getAddress();
 
@@ -128,7 +134,7 @@ public class CollegeServicesImp implements CollegeServices {
             response.setAddressResponse(addressResponse);
 
             return response;
-        }).toList();
+        });
 
         return res;
     }

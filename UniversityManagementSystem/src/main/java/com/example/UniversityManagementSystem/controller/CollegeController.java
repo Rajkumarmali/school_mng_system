@@ -6,6 +6,7 @@ import com.example.UniversityManagementSystem.dto.college.CollegeRequest;
 import com.example.UniversityManagementSystem.dto.college.CollegeResponse;
 import com.example.UniversityManagementSystem.entity.College;
 import com.example.UniversityManagementSystem.services.CollegeServices;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,9 +40,10 @@ public class CollegeController {
     }
 
     @GetMapping("/get-college")
-    public ResponseEntity<List<CollegeResponse>> getCollege(){
-        List<CollegeResponse> res = collegeServices.getAllCollege();
-        return new ResponseEntity<List<CollegeResponse>>(res,HttpStatus.OK);
+    public ResponseEntity<Page<CollegeResponse>> getCollege(@RequestParam(defaultValue = "0") int pageNumber,
+                                                            @RequestParam(defaultValue = "5") int pageSize){
+        Page<CollegeResponse> res = collegeServices.getAllCollege(pageNumber,pageSize);
+        return new ResponseEntity<Page<CollegeResponse>>(res,HttpStatus.OK);
     }
 
     @GetMapping("/get-college/{id}")
