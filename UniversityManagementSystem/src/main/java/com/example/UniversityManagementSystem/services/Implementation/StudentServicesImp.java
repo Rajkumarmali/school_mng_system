@@ -7,7 +7,7 @@ import com.example.UniversityManagementSystem.dto.student.StudentResponse;
 import com.example.UniversityManagementSystem.entity.*;
 import com.example.UniversityManagementSystem.repository.RolesRepository;
 import com.example.UniversityManagementSystem.repository.StudentRepository;
-import com.example.UniversityManagementSystem.repository.TenantRepository;
+import com.example.UniversityManagementSystem.repository.CollegeRepository;
 import com.example.UniversityManagementSystem.repository.UserRepository;
 import com.example.UniversityManagementSystem.services.AddressService;
 import com.example.UniversityManagementSystem.services.ParentServices;
@@ -22,7 +22,7 @@ import java.util.List;
 public class StudentServicesImp implements StudentServices {
 
     private StudentRepository studentRepository;
-    private TenantRepository tenantRepository;
+    private CollegeRepository tenantRepository;
     private RolesRepository rolesRepository;
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
@@ -31,7 +31,7 @@ public class StudentServicesImp implements StudentServices {
     private ParentServices parentServices;
 
 
-    public StudentServicesImp(StudentRepository studentRepository, TenantRepository tenantRepository, RolesRepository rolesRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, AddressService addressService, ParentServices parentServices) {
+    public StudentServicesImp(StudentRepository studentRepository, CollegeRepository tenantRepository, RolesRepository rolesRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, AddressService addressService, ParentServices parentServices) {
         this.studentRepository = studentRepository;
         this.tenantRepository = tenantRepository;
         this.rolesRepository = rolesRepository;
