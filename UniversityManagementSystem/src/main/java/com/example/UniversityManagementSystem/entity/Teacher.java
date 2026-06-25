@@ -19,6 +19,7 @@ public class Teacher {
     private String email;
     private String phoneNumber;
     private LocalDate dob;
+    private String image;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
@@ -46,7 +47,7 @@ public class Teacher {
     private LocalDateTime updatedAt;
 
     public Teacher(String phoneNumber, Long id, String firstName, String lastName, String email,
-                   LocalDate dob, Gender gender, Cast cast, String aadharNumber, String panNumber,
+                   LocalDate dob, String image, Gender gender, Cast cast, String aadharNumber, String panNumber,
                    String employeeId, Address address, User user, College college, Parent parent,
                    LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.phoneNumber = phoneNumber;
@@ -55,6 +56,7 @@ public class Teacher {
         this.lastName = lastName;
         this.email = email;
         this.dob = dob;
+        this.image = image;
         this.gender = gender;
         this.cast = cast;
         this.aadharNumber = aadharNumber;
@@ -205,5 +207,13 @@ public class Teacher {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }
