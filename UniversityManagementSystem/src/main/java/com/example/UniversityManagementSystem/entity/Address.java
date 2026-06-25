@@ -18,11 +18,17 @@ public class Address {
     private String country;
     private String pincode;
 
-    @OneToOne(mappedBy = "address")
+    @OneToOne(mappedBy = "address",fetch = FetchType.LAZY)
     private Teacher teacher;
 
-    @OneToOne(mappedBy = "address")
+    @OneToOne(mappedBy = "address",fetch = FetchType.LAZY)
     private Student student;
+
+    @OneToOne(mappedBy = "address",fetch = FetchType.LAZY)
+    private University university;
+
+    @OneToOne(mappedBy = "address",fetch = FetchType.LAZY)
+    private College college;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

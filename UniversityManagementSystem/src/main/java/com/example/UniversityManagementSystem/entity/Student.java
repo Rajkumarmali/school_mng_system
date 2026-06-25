@@ -20,6 +20,7 @@ public class Student {
     private String registrationNumber;
     private String phoneNumber;
     private LocalDate dob;
+    private String image;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
@@ -29,24 +30,24 @@ public class Student {
 
     private String aadhaarNumber;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Address address;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private User user;
 
-    @ManyToOne
-    private Tenant tenant;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private College college;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Parent parent;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public Student(Long id, String firstName, String lastName, String email, String registrationNumber,
-                   String phoneNumber, LocalDate dob, Gender gender, Cast cast, String aadhaarNumber,
-                   Address address, User user, Tenant tenant, Parent parent, LocalDateTime createdAt,
+                   String phoneNumber, LocalDate dob, String image, Gender gender, Cast cast, String aadhaarNumber,
+                   Address address, User user, College college, Parent parent, LocalDateTime createdAt,
                    LocalDateTime updatedAt) {
         this.id = id;
         this.firstName = firstName;
@@ -55,12 +56,13 @@ public class Student {
         this.registrationNumber = registrationNumber;
         this.phoneNumber = phoneNumber;
         this.dob = dob;
+        this.image = image;
         this.gender = gender;
         this.cast = cast;
         this.aadhaarNumber = aadhaarNumber;
         this.address = address;
         this.user = user;
-        this.tenant = tenant;
+        this.college = college;
         this.parent = parent;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -165,12 +167,12 @@ public class Student {
         this.user = user;
     }
 
-    public Tenant getTenant() {
-        return tenant;
+    public College getTenant() {
+        return college;
     }
 
-    public void setTenant(Tenant tenant) {
-        this.tenant = tenant;
+    public void setTenant(College college) {
+        this.college = college;
     }
 
     public Parent getParent() {
@@ -195,5 +197,13 @@ public class Student {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

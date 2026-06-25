@@ -25,14 +25,14 @@ public class TeacherController {
 
     @PostMapping("/create-teacher")
     public ResponseEntity<String> createTeacher(@RequestHeader("Authorization") String jwt, @RequestBody TeacherRequest dto){
-        Long tenantId = jwtProvider.getTenantIdFromToken(jwt);
+        Long tenantId = jwtProvider.getCollegeIdFromToken(jwt);
         String res = teacherServices.createTeacher(tenantId,dto);
         return new ResponseEntity<String>(res, HttpStatus.CREATED);
     }
 
     @GetMapping("/get-allteachers")
     public ResponseEntity<List<TeacherResponse>> getAllTeachere(@RequestHeader("Authorization") String jwt){
-        Long tenantId= jwtProvider.getTenantIdFromToken(jwt);
+        Long tenantId= jwtProvider.getCollegeIdFromToken(jwt);
         List<TeacherResponse> res = teacherServices.getAllTeacher(tenantId);
         return new ResponseEntity<>(res,HttpStatus.OK);
     }

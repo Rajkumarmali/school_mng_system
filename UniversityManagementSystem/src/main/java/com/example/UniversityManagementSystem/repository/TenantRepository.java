@@ -1,7 +1,7 @@
 package com.example.UniversityManagementSystem.repository;
 
-import com.example.UniversityManagementSystem.entity.Tenant;
+import com.example.UniversityManagementSystem.entity.College;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TenantRepository extends JpaRepository<Tenant, Long> {
+public interface TenantRepository extends JpaRepository<College, Long> {
 }

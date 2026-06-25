@@ -1,7 +1,7 @@
 package com.example.UniversityManagementSystem;
 
 import com.example.UniversityManagementSystem.config.JwtProvider;
-import com.example.UniversityManagementSystem.entity.Tenant;
+import com.example.UniversityManagementSystem.entity.College;
 import com.example.UniversityManagementSystem.services.AuthService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class UserTest {
 
     @Test
     public void testCreateUser(){
-        Tenant tenant = new Tenant();
+        College college = new College();
         authService.createUser("email@gmail.com",null,"ADMIN");
     }
 }

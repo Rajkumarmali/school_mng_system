@@ -24,14 +24,14 @@ public class StudentController {
 
     @PostMapping("/create-student")
     public ResponseEntity<String> createStudent(@RequestHeader("Authorization") String jwt,@RequestBody StudentRequest dto){
-        Long tenantId = jwtProvider.getTenantIdFromToken(jwt);
+        Long tenantId = jwtProvider.getCollegeIdFromToken(jwt);
         String res = studentServices.createStudent(tenantId,dto);
         return new ResponseEntity<String>(res, HttpStatus.CREATED);
     }
 
     @GetMapping("/get-allstudent")
     public ResponseEntity<List<StudentResponse>> getAllStudent(@RequestHeader("Authorization") String jwt){
-        Long tenantId = jwtProvider.getTenantIdFromToken(jwt);
+        Long tenantId = jwtProvider.getCollegeIdFromToken(jwt);
         List<StudentResponse> res = studentServices.getAllStudent(tenantId);
         return new ResponseEntity<List<StudentResponse>>(res, HttpStatus.OK);
     }
