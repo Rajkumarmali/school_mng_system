@@ -14,10 +14,15 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 @Service
@@ -46,7 +51,7 @@ public class TeacherServicesImp implements TeacherServices {
     @Caching(evict = {
             @CacheEvict(cacheNames = "teachers",allEntries = true)
     })
-    public String createTeacher(Long collegeId,Long universityId, TeacherRequest dto) {
+    public String createTeacher(Long collegeId, Long universityId, TeacherRequest dto, MultipartFile image) {
         College college =null;
         if(collegeId!=null){
             college =  collegeRepository.findById(collegeId).orElseThrow(()->
@@ -70,6 +75,24 @@ public class TeacherServicesImp implements TeacherServices {
         }
 
         Teacher teacher = new Teacher();
+
+        if(image!=null && !image.isEmpty()){
+            try{
+                String uploadDir= "upload/teacher/";
+                String fileName = UUID.randomUUID()+"_"+image.getOriginalFilename();
+                Path path = Paths.get(uploadDir,fileName);
+                Files.createDirectories(path.getParent());
+                Files.copy(
+                        image.getInputStream(),
+                        path,
+                        StandardCopyOption.REPLACE_EXISTING
+                );
+                teacher.setImage(uploadDir+fileName);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         teacher.setFirstName(dto.getFirstName());
         teacher.setLastName(dto.getLastName());
         teacher.setEmail(dto.getEmail());
@@ -218,12 +241,44 @@ public class TeacherServicesImp implements TeacherServices {
         teacherResponse.setDob(teacher.getDob());
         teacherResponse.setGender(teacher.getGender());
         teacherResponse.setCast(teacher.getCast());
+        teacherResponse.setImage(teacher.getImage());
         teacherResponse.setAadharNumber(teacher.getAadharNumber());
         teacherResponse.setPanNumber(teacher.getPanNumber());
         teacherResponse.setAddressResponse(addressResponse);
         teacherResponse.setParentResponse(parentResponse);
 
         return teacherResponse;
+    }
+
+    @Override
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "teachers",allEntries = true),
+            @CacheEvict(cacheNames = "teacher",key = "#teacherId")
+    })
+    public String updateImage(Long teacherId, MultipartFile image) {
+        Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(()->{
+            throw new IllegalArgumentException("Teacher not found");
+        });
+        try{
+            String uploadDir= "upload/teacher/";
+            String fileName = UUID.randomUUID()+"_"+image.getOriginalFilename();
+            Path path = Paths.get(uploadDir,fileName);
+            Files.createDirectories(path.getParent());
+            Files.copy(
+                    image.getInputStream(),
+                    path,
+                    StandardCopyOption.REPLACE_EXISTING
+            );
+            if(teacher.getImage()!=null){
+                Files.deleteIfExists(Paths.get(teacher.getImage()));
+            }
+            teacher.setImage(uploadDir+fileName);
+            teacher.setUpdatedAt(LocalDateTime.now());
+            teacherRepository.save(teacher);
+            return "Update image";
+        } catch (Exception ex){
+            throw new RuntimeException(ex);
+        }
     }
 
 }

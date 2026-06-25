@@ -1,4 +1,10 @@
-import { CREATE_TEACHER_FALIER, CREATE_TEACHER_REQUEST, CREATE_TEACHER_SUCCESS, DELETE_TEACHER_FALIER, DELETE_TEACHER_REQUEST, DELETE_TEACHER_SUCCESS, GET_ALL_TEACHER_FALIER, GET_ALL_TEACHER_REQUEST, GET_ALL_TEACHER_SUCCESS, GET_TEACHER_BYID_FALIER, GET_TEACHER_BYID_REQUEST, GET_TEACHER_BYID_SUCCESS, UPDATE_TEACHER_FALIER, UPDATE_TEACHER_REQUEST, UPDATE_TEACHER_SUCCESS } from "./ActionType"
+import {
+    CREATE_TEACHER_FALIER, CREATE_TEACHER_REQUEST, CREATE_TEACHER_SUCCESS, DELETE_TEACHER_FALIER,
+    DELETE_TEACHER_REQUEST, DELETE_TEACHER_SUCCESS, GET_ALL_TEACHER_FALIER, GET_ALL_TEACHER_REQUEST,
+    GET_ALL_TEACHER_SUCCESS, GET_TEACHER_BYID_FALIER, GET_TEACHER_BYID_REQUEST, GET_TEACHER_BYID_SUCCESS,
+    UPDATE_TEACHER_FALIER, UPDATE_TEACHER_IMAGE_FALIER, UPDATE_TEACHER_IMAGE_REQUEST, UPDATE_TEACHER_IMAGE_SUCCESS,
+    UPDATE_TEACHER_REQUEST, UPDATE_TEACHER_SUCCESS
+} from "./ActionType"
 
 const initialState = {
     isLoading: false,
@@ -14,6 +20,7 @@ export const teacherReducer = (state = initialState, action) => {
         case GET_TEACHER_BYID_REQUEST:
         case UPDATE_TEACHER_REQUEST:
         case DELETE_TEACHER_REQUEST:
+        case UPDATE_TEACHER_IMAGE_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -24,6 +31,7 @@ export const teacherReducer = (state = initialState, action) => {
         case GET_TEACHER_BYID_FALIER:
         case UPDATE_TEACHER_FALIER:
         case DELETE_TEACHER_FALIER:
+        case UPDATE_TEACHER_IMAGE_FALIER:
             return {
                 ...state,
                 isLoading: false,
@@ -50,6 +58,7 @@ export const teacherReducer = (state = initialState, action) => {
                 teacher: action.payload
             }
         case UPDATE_TEACHER_SUCCESS:
+        case UPDATE_TEACHER_IMAGE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,

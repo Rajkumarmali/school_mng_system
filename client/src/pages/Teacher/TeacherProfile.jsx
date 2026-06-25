@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import './TeacherProfile.css'
 import { useDispatch, useSelector } from 'react-redux';
-import { getTeacherById, updateTeacher } from '../../state/teacher/Action';
+import { getTeacherById, updateImage, updateTeacher } from '../../state/teacher/Action';
 
 const TeacherProfile = () => {
 
@@ -12,6 +12,8 @@ const TeacherProfile = () => {
     const [isEditPersonModal, setIsEditPersonModal] = useState(false);
     const [isEditAddress, setIsEditAddressModal] = useState(false);
     const [isEditParentModal, setIsEditParentModal] = useState(false);
+    const [isEditImageModal, setIsEditImageModal] = useState(false)
+    const [image, setImage] = useState(null)
 
     const dispatch = useDispatch();
     const teacher = useSelector((state) => state.teacher);
@@ -46,6 +48,7 @@ const TeacherProfile = () => {
         setIsEditPersonModal(true);
         setIsEditAddressModal(false);
         setIsEditParentModal(false);
+        setIsEditImageModal(false)
         handleSetData();
     }
 
@@ -53,6 +56,7 @@ const TeacherProfile = () => {
         setIsEditPersonModal(false);
         setIsEditAddressModal(true);
         setIsEditParentModal(false);
+        setIsEditImageModal(false)
         handleSetData();
     }
 
@@ -60,7 +64,15 @@ const TeacherProfile = () => {
         setIsEditPersonModal(false);
         setIsEditAddressModal(false);
         setIsEditParentModal(true);
+        setIsEditImageModal(false)
         handleSetData()
+    }
+
+    const handleEditImage = () => {
+        setIsEditPersonModal(false);
+        setIsEditAddressModal(false);
+        setIsEditParentModal(false);
+        setIsEditImageModal(true)
     }
 
     const handlePersonChange = (e) => {
@@ -94,7 +106,10 @@ const TeacherProfile = () => {
     }
 
     const handleUpdate = async () => {
-        if (isEditPersonModal) {
+        if (isEditImageModal) {
+            await dispatch(updateImage(teacherId, image))
+        }
+        else if (isEditPersonModal) {
             const payload = {
                 ...teacherData,
                 parentRequest: null,
@@ -147,8 +162,30 @@ const TeacherProfile = () => {
         <div className='teacher-profile'>
             <div className="teacher-card">
                 <div className="teacher-profile-header">
-                    <div className="teacher-profile-avatar">
-                        <i className="bi bi-person-fill"></i>
+                    <div>
+                        <div className="teacher-profile-avatar">
+                            {teacher?.teacher?.image ? (
+                                <img
+                                    src={`http://localhost:8080/${teacher.teacher.image}`}
+                                    alt=''
+                                    className="teacher-image"
+                                />
+                            ) : (
+                                <i className="bi bi-person-fill"></i>
+                            )}
+                        </div>
+                        <div>
+                            <button
+                                className="teacher-edit-image-btn"
+                                data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                onClick={handleEditImage}
+                            >
+                                <i className="bi bi-camera-fill me-2"></i>
+                                Edit Image
+                            </button>
+                        </div>
+                    </div>
+                    <div>
                     </div>
                     <div className="teacher-profile-info">
                         <div className="teacher-profile-contact">
@@ -218,7 +255,7 @@ const TeacherProfile = () => {
                     <div class="modal-content custom-modal">
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="exampleModalLabel">
-                                {isEditPersonModal ? "Edit Personal Details" : isEditAddress ? "Edit Address " : "Edit Parents"}
+                                {isEditPersonModal ? "Edit Personal Details" : isEditAddress ? "Edit Address " : isEditImageModal ? "Edit Image" : "Edit Parents"}
                             </h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
@@ -342,66 +379,75 @@ const TeacherProfile = () => {
                                             </div>
                                         </div>
                                         :
-                                        <div className="form-grid">
+                                        isEditAddress ?
+                                            <div className="form-grid">
+                                                <div>
+                                                    <label>Address</label>
+                                                    <input type="text"
+                                                        className="modal-input"
+                                                        name='address'
+                                                        value={teacherData.addressRequest.address}
+                                                        onChange={handleAddressChange}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label>City</label>
+                                                    <input type="text"
+                                                        className="modal-input"
+                                                        name='city'
+                                                        value={teacherData.addressRequest.city}
+                                                        onChange={handleAddressChange}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label>District</label>
+                                                    <input type="text"
+                                                        className="modal-input"
+                                                        name='district'
+                                                        value={teacherData.addressRequest.district}
+                                                        onChange={handleAddressChange} />
+                                                </div>
+                                                <div>
+                                                    <label>State</label>
+                                                    <input type="text"
+                                                        className="modal-input"
+                                                        name='state'
+                                                        value={teacherData.addressRequest.state}
+                                                        onChange={handleAddressChange}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label>Country</label>
+                                                    <input type="text"
+                                                        className="modal-input"
+                                                        name='country'
+                                                        value={teacherData.addressRequest.country}
+                                                        onChange={handleAddressChange}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label>Pincode</label>
+                                                    <input type="text"
+                                                        className="modal-input"
+                                                        name='pincode'
+                                                        value={teacherData.addressRequest.pincode}
+                                                        onChange={handleAddressChange}
+                                                    />
+                                                </div>
+                                            </div>
+                                            :
                                             <div>
-                                                <label>Address</label>
-                                                <input type="text"
-                                                    className="modal-input"
-                                                    name='address'
-                                                    value={teacherData.addressRequest.address}
-                                                    onChange={handleAddressChange}
+                                                <input
+                                                    type='file'
+                                                    accept='image/*'
+                                                    onChange={(e) => setImage(e.target.files[0])}
                                                 />
                                             </div>
-                                            <div>
-                                                <label>City</label>
-                                                <input type="text"
-                                                    className="modal-input"
-                                                    name='city'
-                                                    value={teacherData.addressRequest.city}
-                                                    onChange={handleAddressChange}
-                                                />
-                                            </div>
-                                            <div>
-                                                <label>District</label>
-                                                <input type="text"
-                                                    className="modal-input"
-                                                    name='district'
-                                                    value={teacherData.addressRequest.district}
-                                                    onChange={handleAddressChange} />
-                                            </div>
-                                            <div>
-                                                <label>State</label>
-                                                <input type="text"
-                                                    className="modal-input"
-                                                    name='state'
-                                                    value={teacherData.addressRequest.state}
-                                                    onChange={handleAddressChange}
-                                                />
-                                            </div>
-                                            <div>
-                                                <label>Country</label>
-                                                <input type="text"
-                                                    className="modal-input"
-                                                    name='country'
-                                                    value={teacherData.addressRequest.country}
-                                                    onChange={handleAddressChange}
-                                                />
-                                            </div>
-                                            <div>
-                                                <label>Pincode</label>
-                                                <input type="text"
-                                                    className="modal-input"
-                                                    name='pincode'
-                                                    value={teacherData.addressRequest.pincode}
-                                                    onChange={handleAddressChange}
-                                                />
-                                            </div>
-                                        </div>
                             }
                         </div>
                         <div class="modal-footer ">
-                            <button type="button" className="btn modal-close-btn" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn modal-save-btn"
+                            <button type="button" className="teacher-modal-btn" data-bs-dismiss="modal">Close</button>
+                            <button type="button" className="teacher-modal-btn"
                                 data-bs-dismiss="modal" onClick={handleUpdate}
                             >Update</button>
                         </div>

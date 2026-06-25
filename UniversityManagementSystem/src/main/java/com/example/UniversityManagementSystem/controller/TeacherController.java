@@ -7,9 +7,12 @@ import com.example.UniversityManagementSystem.entity.Teacher;
 import com.example.UniversityManagementSystem.services.TeacherServices;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.security.PublicKey;
 import java.util.List;
 
 @RestController
@@ -24,12 +27,13 @@ public class TeacherController {
         this.jwtProvider = jwtProvider;
     }
 
-    @PostMapping("/create-teacher")
+    @PostMapping(value = "/create-teacher",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> createTeacher(@RequestHeader("Authorization") String jwt,
-                                                @RequestBody TeacherRequest dto){
+                                                @RequestPart(value = "image",required = false) MultipartFile image,
+                                                @RequestPart("teacher") TeacherRequest dto){
         Long collegeId = jwtProvider.getCollegeIdFromToken(jwt);
         Long universityId= jwtProvider.getUniversityIdFromToken(jwt);
-        String res = teacherServices.createTeacher(collegeId,universityId,dto);
+        String res = teacherServices.createTeacher(collegeId,universityId,dto,image);
         return new ResponseEntity<String>(res, HttpStatus.CREATED);
     }
 
@@ -56,6 +60,13 @@ public class TeacherController {
     public ResponseEntity<TeacherResponse> getTeacherById(@PathVariable Long id){
         TeacherResponse res = teacherServices.getTeacherById(id);
         return  new ResponseEntity<TeacherResponse>(res,HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/update-image/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> updateImage(@PathVariable Long id,
+                                              @RequestPart(value = "image",required = false) MultipartFile image){
+        String res = teacherServices.updateImage(id,image);
+        return new ResponseEntity<>(res,HttpStatus.OK);
     }
 
 
