@@ -5,6 +5,5 @@ import com.example.UniversityManagementSystem.entity.College;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RolesRepository extends JpaRepository<Roles, Long> {
-
-    Roles findByNameAndTenant(String role, College college);
+    Roles findByNameAndCollege(String role, College college);
 }

@@ -43,7 +43,7 @@ public class TenantServicesImp implements TenantServices {
 
         rolesRepository.save(roles);
 
-        authService.createUser(dto.getEmail(),savedTenent,"ADMIN");
+//        authService.createUser(dto.getEmail(),savedTenent,"ADMIN");
 
         return savedTenent;
     }

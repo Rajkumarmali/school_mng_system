@@ -21,6 +21,7 @@ public class JwtProvider {
               .claim("email",auth.getName())
               .claim("userId",user.getId())
               .claim("collegeId",user.getCollege()!=null ? user.getCollege().getId() : null)
+              .claim("universityId",user.getUniversity()!=null ? user.getUniversity().getId():null)
               .signWith(key).compact();
 
       return jwt;
@@ -43,7 +44,14 @@ public class JwtProvider {
     public Long getCollegeIdFromToken(String jwt){
         jwt = jwt.substring(7);
         Claims claims = Jwts.parser().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
-        Long tenantId = claims.get("collegeId",Long.class);
-        return tenantId;
+        Long collegId = claims.get("collegeId",Long.class);
+        return collegId;
+    }
+
+    public Long getUniversityIdFromToken(String jwt){
+        jwt = jwt.substring(7);
+        Claims claims = Jwts.parser().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
+        Long universityId = claims.get("universityId",Long.class);
+        return universityId;
     }
 }
