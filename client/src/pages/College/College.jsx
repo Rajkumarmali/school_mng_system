@@ -41,7 +41,6 @@ const College = () => {
             }
         } else {
             pages.push(1);
-
             if (pageNumber > 3) {
                 pages.push("...");
             }

@@ -13,6 +13,10 @@ import com.example.UniversityManagementSystem.services.AddressService;
 import com.example.UniversityManagementSystem.services.AuthService;
 import com.example.UniversityManagementSystem.services.CollegeServices;
 import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -42,7 +46,11 @@ public class CollegeServicesImp implements CollegeServices {
         this.userRepository = userRepository;
     }
 
+
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "colleges",allEntries = true)}
+    )
     @Override
     public College createCollege(CollegeRequest dto,Long universityId) {
 
@@ -83,6 +91,10 @@ public class CollegeServicesImp implements CollegeServices {
 
     @Transactional
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = "college",key = "#id"),
+            @CacheEvict(value = "colleges",allEntries = true)
+    })
     public String updateCollege(CollegeRequest dto, Long id) {
         College college = collegeRepository.findById(id).orElseThrow(()->
                 new IllegalArgumentException("College not found"));
@@ -107,6 +119,7 @@ public class CollegeServicesImp implements CollegeServices {
         return "College Update successfully";
     }
 
+    @Cacheable(cacheNames = "colleges",key = "{#pageNumber,#pageSize}")
     @Override
     public Page<CollegeResponse> getAllCollege(int pageNumber,int pageSize) {
 
@@ -139,9 +152,10 @@ public class CollegeServicesImp implements CollegeServices {
         return res;
     }
 
+    @Cacheable(cacheNames = "college",key = "#id")
     @Override
     public CollegeResponse getCollegeById(Long id) {
-        College college = collegeRepository.findById(id).orElseThrow(()->new IllegalArgumentException("Tenant not found"));
+        College college = collegeRepository.findById(id).orElseThrow(()->new IllegalArgumentException("College not found"));
 
         CollegeResponse response = new CollegeResponse();
         Address address = college.getAddress();
@@ -166,6 +180,10 @@ public class CollegeServicesImp implements CollegeServices {
         return response;
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "college",key = "#id"),
+            @CacheEvict(value = "colleges",allEntries = true)
+    })
     @Override
     public String deleteCollege(Long id) {
         College college = collegeRepository.findById(id).orElseThrow(()->
