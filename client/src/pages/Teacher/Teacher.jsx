@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './Teacher.css'
 import { useDispatch, useSelector } from 'react-redux'
-import { createTeacher, deleteTeacher, getAllTeacher } from '../state/teacher/Action';
+import { createTeacher, deleteTeacher, getAllTeacher } from '../../state/teacher/Action';
 import { useNavigate } from 'react-router-dom';
 
 const Teacher = () => {
@@ -86,8 +86,8 @@ const Teacher = () => {
             email: '',
             phoneNumber: '',
             dob: '',
-            gender: '',
-            cast: '',
+            gender: 'MALE',
+            cast: 'GENERAL',
             aadharNumber: '',
             panNumber: '',
             parentRequest: {
@@ -149,9 +149,9 @@ const Teacher = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {teacher?.teachers?.length > 0 ?
+                                    {teacher?.teachers?.content?.length > 0 ?
                                         (
-                                            teacher?.teachers.map((teacher, index) =>
+                                            teacher?.teachers?.content?.map((teacher, index) =>
                                                 <tr key={teacher.id}>
                                                     <td>{index + 1}.</td>
                                                     <td>{teacher.employeeId}</td>
@@ -179,7 +179,7 @@ const Teacher = () => {
                                         :
                                         (
                                             <tr>
-                                                <td colSpan="6" className="text-center">
+                                                <td colSpan="8" className="text-center">
                                                     No Teacher Found
                                                 </td>
                                             </tr>
@@ -375,10 +375,10 @@ const Teacher = () => {
                                 </div>
                             </div>
                             <div className="text-end mt-4">
-                                <button onClick={handleCancel} type="button" className="btn modal-close-btn">
+                                <button onClick={handleCancel} type="button" className="teacher-modal-btn">
                                     Cancel
                                 </button>
-                                <button onClick={handleSubmit} className="btn modal-save-btn ">
+                                <button onClick={handleSubmit} className="teacher-modal-btn">
                                     Save Teacher
                                 </button>
                             </div>

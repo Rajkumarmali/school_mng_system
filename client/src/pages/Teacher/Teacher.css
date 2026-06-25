@@ -105,29 +105,18 @@
     height: 45px;
 }
 
-.modal-save-btn {
-    background: transparent;
+.teacher-modal-btn {
+   background: transparent;
+   margin: 5px;
+    color: black;
     border: 1px solid white;
-    color: white;
+    padding: 10px 18px;
     border-radius: 8px;
-    padding: 8px 20px;
     transition: 0.3s;
 }
 
-.modal-save-btn:hover {
-    background: white;
-    color: #3c58c9;
-}
-
-.modal-close-btn {
+.teacher-modal-btn:hover {
     background: transparent;
-    border: 1px solid rgba(255,255,255,0.5);
-    color: white;
-    border-radius: 8px;
-}
-
-.modal-close-btn:hover {
-    background: rgba(255,255,255,0.1);
     color: white;
 }
 

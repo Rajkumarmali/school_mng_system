@@ -5,6 +5,7 @@ import com.example.UniversityManagementSystem.dto.teacher.TeacherRequest;
 import com.example.UniversityManagementSystem.dto.teacher.TeacherResponse;
 import com.example.UniversityManagementSystem.entity.Teacher;
 import com.example.UniversityManagementSystem.services.TeacherServices;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +16,8 @@ import java.util.List;
 @RequestMapping("/api/teacher")
 public class TeacherController {
 
-    private TeacherServices teacherServices;
-    private JwtProvider jwtProvider;
+    private final TeacherServices teacherServices;
+    private final JwtProvider jwtProvider;
 
     public TeacherController(TeacherServices teacherServices, JwtProvider jwtProvider) {
         this.teacherServices = teacherServices;
@@ -24,16 +25,20 @@ public class TeacherController {
     }
 
     @PostMapping("/create-teacher")
-    public ResponseEntity<String> createTeacher(@RequestHeader("Authorization") String jwt, @RequestBody TeacherRequest dto){
-        Long tenantId = jwtProvider.getCollegeIdFromToken(jwt);
-        String res = teacherServices.createTeacher(tenantId,dto);
+    public ResponseEntity<String> createTeacher(@RequestHeader("Authorization") String jwt,
+                                                @RequestBody TeacherRequest dto){
+        Long collegeId = jwtProvider.getCollegeIdFromToken(jwt);
+        Long universityId= jwtProvider.getUniversityIdFromToken(jwt);
+        String res = teacherServices.createTeacher(collegeId,universityId,dto);
         return new ResponseEntity<String>(res, HttpStatus.CREATED);
     }
 
     @GetMapping("/get-allteachers")
-    public ResponseEntity<List<TeacherResponse>> getAllTeachere(@RequestHeader("Authorization") String jwt){
-        Long tenantId= jwtProvider.getCollegeIdFromToken(jwt);
-        List<TeacherResponse> res = teacherServices.getAllTeacher(tenantId);
+    public ResponseEntity<Page<TeacherResponse>> getAllTeacher(@RequestHeader("Authorization") String jwt,
+                                                               @RequestParam(defaultValue = "0") int pageNumber,
+                                                               @RequestParam(defaultValue = "10") int pageSize){
+        Long collegeId= jwtProvider.getCollegeIdFromToken(jwt);
+        Page<TeacherResponse> res = teacherServices.getAllTeacher(collegeId,pageNumber,pageSize);
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
     @PostMapping("/update-teacher/{id}")

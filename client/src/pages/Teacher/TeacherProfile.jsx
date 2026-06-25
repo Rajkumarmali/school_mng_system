@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import './TeacherProfile.css'
 import { useDispatch, useSelector } from 'react-redux';
-import { getTeacherById, updateTeacher } from '../state/teacher/Action';
+import { getTeacherById, updateTeacher } from '../../state/teacher/Action';
 
 const TeacherProfile = () => {
 
