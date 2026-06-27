@@ -2,13 +2,16 @@ package com.example.UniversityManagementSystem.services;
 
 import com.example.UniversityManagementSystem.dto.student.StudentRequest;
 import com.example.UniversityManagementSystem.dto.student.StudentResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface StudentServices {
-   public String createStudent(Long tenantId, StudentRequest dto);
-   public List<StudentResponse> getAllStudent(Long tenantId);
-   public StudentResponse getStudentById(Long studentId);
-   public String updateStudent(Long studentId,StudentRequest dto);
-   public String deleteStudent(Long studentId);
+    String createStudent(Long collegeId, Long universityId,StudentRequest dto, MultipartFile image);
+    Page<StudentResponse> getAllStudent(Long collegeId,int pageNumber,int pageSize);
+    StudentResponse getStudentById(Long studentId);
+    String updateStudent(Long studentId,StudentRequest dto);
+    String deleteStudent(Long studentId);
+    String UpdateImage(Long studentId,MultipartFile image);
 }

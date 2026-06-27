@@ -20,12 +20,13 @@ public class StudentResponse {
     private Gender gender;
     private Cast cast;
     private String aadharNumber;
+    private String image;
     private String username;
     private AddressResponse addressResponse;
     private ParentResponse parentResponse;
 
     public StudentResponse(Long id, String firstName, String lastName, String email, String registrationNumber,
-                           String phoneNumber, LocalDate dob, Gender gender, Cast cast, String aadharNumber, String username,
+                           String phoneNumber, LocalDate dob, Gender gender, Cast cast, String aadharNumber, String image, String username,
                            AddressResponse addressResponse, ParentResponse parentResponse) {
         this.id = id;
         this.firstName = firstName;
@@ -37,6 +38,7 @@ public class StudentResponse {
         this.gender = gender;
         this.cast = cast;
         this.aadharNumber = aadharNumber;
+        this.image = image;
         this.username = username;
         this.addressResponse = addressResponse;
         this.parentResponse = parentResponse;
@@ -147,6 +149,14 @@ public class StudentResponse {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }
 

@@ -75,11 +75,11 @@ public class AuthServiceImp implements AuthService {
             user.setCollege(college);
             user.setUniversity(university);
             user.setRoles(List.of(roles));
-            userRepository.save(user);
+            return userRepository.save(user);
         } catch (Exception ex){
             throw new BadCredentialsException(ex.getMessage());
         }
-        return null;
+
     }
 
     @Override
