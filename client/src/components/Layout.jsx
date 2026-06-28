@@ -4,8 +4,8 @@ import Navbar from './Navbar'
 import { Route, Routes } from "react-router-dom";
 import Dashboard from '../pages/Dashboard';
 import Tenant from '../pages/Tenant';
-import UserProfile from '../pages/UserProfile';
-import Users from '../pages/Users';
+import UserProfile from '../pages/user/UserProfile';
+import Users from '../pages/user/Users';
 import Student from '../pages/Student';
 import StudentProfile from '../pages/StudentProfile';
 import Teacher from '../pages/Teacher';

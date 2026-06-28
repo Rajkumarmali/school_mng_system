@@ -17,6 +17,7 @@ public class User {
     private String username;
     private String email;
     private String password;
+    private String userProfile;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private College college;
@@ -38,13 +39,14 @@ public class User {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public User(Long id, String username, String email, String password, College college, List<Roles> roles,
+    public User(Long id, String username, String email, String password, String userProfile, College college, List<Roles> roles,
                 Teacher teacher, Student student, University university, LocalDateTime createdAt,
                 LocalDateTime updatedAt) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.userProfile = userProfile;
         this.college = college;
         this.roles = roles;
         this.teacher = teacher;
@@ -143,5 +145,13 @@ public class User {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getUserProfile() {
+        return userProfile;
+    }
+
+    public void setUserProfile(String userProfile) {
+        this.userProfile = userProfile;
     }
 }
