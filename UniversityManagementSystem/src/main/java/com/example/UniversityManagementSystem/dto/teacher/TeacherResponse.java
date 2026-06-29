@@ -21,12 +21,13 @@ public class TeacherResponse {
     private String employeeId;
     private String aadharNumber;
     private String panNumber;
+    private String image;
 
     private ParentResponse parentResponse;
     private AddressResponse addressResponse;
 
     public TeacherResponse(Long id, Long userId, String firstName, String lastName, String email, String phoneNumber,
-                           LocalDate dob, Gender gender, Cast cast, String employeeId, String aadharNumber, String panNumber,
+                           LocalDate dob, Gender gender, Cast cast, String employeeId, String aadharNumber, String panNumber, String image,
                            ParentResponse parentResponse, AddressResponse addressResponse) {
         this.id = id;
         this.userId = userId;
@@ -40,6 +41,7 @@ public class TeacherResponse {
         this.employeeId = employeeId;
         this.aadharNumber = aadharNumber;
         this.panNumber = panNumber;
+        this.image = image;
         this.parentResponse = parentResponse;
         this.addressResponse = addressResponse;
     }
@@ -157,5 +159,13 @@ public class TeacherResponse {
 
     public void setEmployeeId(String employeeId) {
         this.employeeId = employeeId;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

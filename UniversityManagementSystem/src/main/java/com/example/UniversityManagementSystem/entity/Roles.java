@@ -43,14 +43,6 @@ public class Roles {
         this.id = id;
     }
 
-    public College getTenant() {
-        return college;
-    }
-
-    public void setTenant(College college) {
-        this.college = college;
-    }
-
     public List<User> getUsers() {
         return users;
     }
@@ -81,5 +73,13 @@ public class Roles {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public College getCollege() {
+        return college;
+    }
+
+    public void setCollege(College college) {
+        this.college = college;
     }
 }

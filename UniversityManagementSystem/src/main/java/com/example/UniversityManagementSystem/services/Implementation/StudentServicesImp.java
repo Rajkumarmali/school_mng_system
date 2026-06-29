@@ -5,30 +5,34 @@ import com.example.UniversityManagementSystem.dto.parent.ParentResponse;
 import com.example.UniversityManagementSystem.dto.student.StudentRequest;
 import com.example.UniversityManagementSystem.dto.student.StudentResponse;
 import com.example.UniversityManagementSystem.entity.*;
-import com.example.UniversityManagementSystem.repository.*;
+import com.example.UniversityManagementSystem.entity.Address;
+import com.example.UniversityManagementSystem.entity.College;
+import com.example.UniversityManagementSystem.entity.Parent;
+import com.example.UniversityManagementSystem.entity.Student;
+import com.example.UniversityManagementSystem.entity.University;
+import com.example.UniversityManagementSystem.repository.CollegeRepository;
+import com.example.UniversityManagementSystem.repository.StudentRepository;
+import com.example.UniversityManagementSystem.repository.UniversityRepository;
 import com.example.UniversityManagementSystem.services.AddressService;
 import com.example.UniversityManagementSystem.services.AuthService;
 import com.example.UniversityManagementSystem.services.ParentServices;
 import com.example.UniversityManagementSystem.services.StudentServices;
 import jakarta.transaction.Transactional;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import java.util.UUID;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
 
 @Service
 public class StudentServicesImp implements StudentServices {

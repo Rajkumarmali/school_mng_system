@@ -33,6 +33,27 @@
     font-size: 70px;
     color: #6c757d;
 }
+.teacher-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.teacher-edit-image-btn {
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    padding: 0px 24px;
+    font-weight: 500;
+    cursor: pointer;
+    background: transparent;
+    color: none !important;
+    transition: all 0.3s ease;
+}
+
+.teacher-edit-image-btn:hover {
+    transform: translateY(-2px);
+}
 
 .teacher-profile-info {
     flex: 1;

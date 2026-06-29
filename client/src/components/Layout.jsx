@@ -3,13 +3,15 @@ import Sidebar from './Sidebar'
 import Navbar from './Navbar'
 import { Route, Routes } from "react-router-dom";
 import Dashboard from '../pages/Dashboard';
-import Tenant from '../pages/Tenant';
 import UserProfile from '../pages/UserProfile';
 import Users from '../pages/Users';
 import Student from '../pages/student/Student';
 import StudentProfile from '../pages/student/StudentProfile'
-import Teacher from '../pages/Teacher';
-import TeacherProfile from '../pages/TeacherProfile';
+import Teacher from '../pages/Teacher/Teacher';
+import TeacherProfile from '../pages/Teacher/TeacherProfile';
+import College from '../pages/College/College';
+import CollegeProfile from '../pages/College/CollegeProfile';
+
 
 const Layout = () => {
     return (
@@ -23,7 +25,8 @@ const Layout = () => {
                 <div>
                     <Routes>
                         <Route path="dashboard" element={<Dashboard />} />
-                        <Route path="tenant" element={<Tenant />} />
+                        <Route path="college" element={<College />} />
+                        <Route path='college/profile' element={<CollegeProfile />} />
                         <Route path='user-profile' element={<UserProfile />} />
                         <Route path='users' element={<Users />} />
                         <Route path='/student' element={<Student />} />

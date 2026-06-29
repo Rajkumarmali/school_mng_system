@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import './Teacher.css'
 import { useDispatch, useSelector } from 'react-redux'
-import { createTeacher, deleteTeacher, getAllTeacher } from '../state/teacher/Action';
-import { useNavigate } from 'react-router-dom';
+import { createTeacher, deleteTeacher, getAllTeacher } from '../../state/teacher/Action';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const Teacher = () => {
 
@@ -11,6 +11,12 @@ const Teacher = () => {
     const navigate = useNavigate();
 
     const [isOpenModal, setIsOpenModal] = useState(false);
+    const [image, setImage] = useState(null);
+
+    const [searchParams, setSearchParams] = useSearchParams();
+    const pageNumber = Number(searchParams.get("page")) || 1;
+    const pageSize = Number(searchParams.get("size")) || 10
+
     const [teacherData, setTeacherData] = useState(
         {
             firstName: '',
@@ -36,6 +42,38 @@ const Teacher = () => {
             }
         }
     );
+
+    const totalPages = teacher?.teachers?.totalPages || 0;
+    const getPageNumbers = () => {
+        const pages = [];
+
+        if (totalPages <= 7) {
+            for (let i = 1; i <= totalPages; i++) {
+                pages.push(i);
+            }
+        } else {
+            pages.push(1);
+            if (pageNumber > 3) {
+                pages.push("...");
+            }
+
+            for (
+                let i = Math.max(2, pageNumber - 1);
+                i <= Math.min(totalPages - 1, pageNumber + 1);
+                i++
+            ) {
+                pages.push(i);
+            }
+
+            if (pageNumber < totalPages - 2) {
+                pages.push("...");
+            }
+
+            pages.push(totalPages);
+        }
+
+        return pages;
+    };
 
     const handlePersonChange = (e) => {
         const { name, value } = e.target;
@@ -73,8 +111,8 @@ const Teacher = () => {
 
     }
     const handleSubmit = async () => {
-        await dispatch(createTeacher(teacherData))
-        await dispatch(getAllTeacher())
+        await dispatch(createTeacher(teacherData, image))
+        await dispatch(getAllTeacher(pageNumber, pageSize))
         setIsOpenModal(false);
         clearTeacherData();
     }
@@ -86,8 +124,8 @@ const Teacher = () => {
             email: '',
             phoneNumber: '',
             dob: '',
-            gender: '',
-            cast: '',
+            gender: 'MALE',
+            cast: 'GENERAL',
             aadharNumber: '',
             panNumber: '',
             parentRequest: {
@@ -107,7 +145,7 @@ const Teacher = () => {
 
     const handleDelete = async (teacherId) => {
         await dispatch(deleteTeacher(teacherId))
-        await dispatch(getAllTeacher());
+        await dispatch(getAllTeacher(pageNumber, pageSize))
     }
 
     const handleViewProfile = (teacherId) => {
@@ -116,9 +154,38 @@ const Teacher = () => {
         })
     }
 
+    const handleChangePageSize = (e) => {
+        const pageSize = e.target.value
+        setSearchParams({
+            page: 1,
+            size: pageSize
+        })
+    }
+
+    const handleGetPerviousPageData = () => {
+        setSearchParams({
+            page: pageNumber - 1,
+            size: pageSize
+        })
+    }
+
+    const handleGetNextPageData = () => {
+        setSearchParams({
+            page: pageNumber + 1,
+            size: pageSize
+        })
+    }
+
+    const handleGetPageNumberData = (pageNumber) => {
+        setSearchParams({
+            page: pageNumber,
+            size: pageSize
+        })
+    }
+
     useEffect(() => {
-        dispatch(getAllTeacher())
-    }, [dispatch]);
+        dispatch(getAllTeacher(pageNumber, pageSize))
+    }, [dispatch, pageNumber, pageSize]);
 
     return (
         <div className='teachers-container'>
@@ -129,10 +196,18 @@ const Teacher = () => {
                             <div>
                                 <h2>Teachers Management</h2>
                             </div>
-                            <button className="add-teachers-btn" onClick={() => setIsOpenModal(true)}>
-                                <i className="bi bi-plus-circle me-2"></i>
-                                Add New Teacher
-                            </button>
+                            <div className="header-actions">
+                                {/* <button
+                                    className="export-excel-btn"
+                                >
+                                    <i className="bi bi-file-earmark-excel-fill me-2"></i>
+                                    Export Excel
+                                </button> */}
+                                <button className="add-teachers-btn" onClick={() => setIsOpenModal(true)}>
+                                    <i className="bi bi-plus-circle me-2"></i>
+                                    Add New Teacher
+                                </button>
+                            </div>
                         </div>
                         <div className="teachers-card">
                             <table className="table users-table">
@@ -149,11 +224,11 @@ const Teacher = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {teacher?.teachers?.length > 0 ?
+                                    {teacher?.teachers?.content?.length > 0 ?
                                         (
-                                            teacher?.teachers.map((teacher, index) =>
+                                            teacher?.teachers?.content?.map((teacher, index) =>
                                                 <tr key={teacher.id}>
-                                                    <td>{index + 1}.</td>
+                                                    <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
                                                     <td>{teacher.employeeId}</td>
                                                     <td>{teacher.firstName}</td>
                                                     <td>{teacher.lastName}</td>
@@ -179,7 +254,7 @@ const Teacher = () => {
                                         :
                                         (
                                             <tr>
-                                                <td colSpan="6" className="text-center">
+                                                <td colSpan="8" className="text-center">
                                                     No Teacher Found
                                                 </td>
                                             </tr>
@@ -187,6 +262,56 @@ const Teacher = () => {
                                     }
                                 </tbody>
                             </table>
+                            <div className="pagination-container">
+                                <div className="pagination-info">
+                                    Total : <strong>{teacher?.teachers?.totalElements || 0}</strong>
+                                </div>
+                                <div className="page-size-selector">
+                                    <label>Show :</label>
+                                    <select
+                                        value={pageSize}
+                                        onChange={handleChangePageSize}
+                                    >
+                                        <option value={10}>10</option>
+                                        <option value={50}>50</option>
+                                        <option value={100}>100</option>
+                                    </select>
+                                </div>
+                                <ul className="custom-pagination">
+                                    <li>
+                                        <button
+                                            onClick={handleGetPerviousPageData}
+                                            disabled={pageNumber === 1}
+                                        >
+                                            &laquo;
+                                        </button>
+                                    </li>
+                                    {getPageNumbers().map((page, index) =>
+                                        page === "..." ? (
+                                            <li key={index} className="dots">
+                                                ...
+                                            </li>
+                                        ) : (
+                                            <li key={index}>
+                                                <button
+                                                    className={pageNumber === page ? "active-page" : ""}
+                                                    onClick={() => handleGetPageNumberData(page)}
+                                                >
+                                                    {page}
+                                                </button>
+                                            </li>
+                                        )
+                                    )}
+                                    <li>
+                                        <button
+                                            onClick={handleGetNextPageData}
+                                            disabled={pageNumber === totalPages}
+                                        >
+                                            &raquo;
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                     :
@@ -290,6 +415,14 @@ const Teacher = () => {
                                         value={teacherData.panNumber}
                                         onChange={handlePersonChange} />
                                 </div>
+                                <div>
+                                    <label>Upload Image</label>
+                                    <input
+                                        type='file'
+                                        accept='image/*'
+                                        onChange={(e) => setImage(e.target.files[0])}
+                                    />
+                                </div>
                             </div>
 
                             <h6 className="form-section-title mt-4">
@@ -375,17 +508,17 @@ const Teacher = () => {
                                 </div>
                             </div>
                             <div className="text-end mt-4">
-                                <button onClick={handleCancel} type="button" className="btn modal-close-btn">
+                                <button onClick={handleCancel} type="button" className="teacher-modal-btn">
                                     Cancel
                                 </button>
-                                <button onClick={handleSubmit} className="btn modal-save-btn ">
+                                <button onClick={handleSubmit} className="teacher-modal-btn">
                                     Save Teacher
                                 </button>
                             </div>
                         </div>
                     </div>
             }
-        </div>
+        </div >
     )
 }
 
