@@ -19,10 +19,10 @@ public class Parent {
     private String motherNumber;
     private String motherOccupation;
 
-    @OneToOne(mappedBy = "parent")
+    @OneToOne(mappedBy = "parent",fetch = FetchType.LAZY)
     private Teacher teacher;
 
-    @OneToOne(mappedBy = "parent")
+    @OneToOne(mappedBy = "parent",fetch = FetchType.LAZY)
     private Student student;
 
     private LocalDateTime createdAt;

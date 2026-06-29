@@ -43,13 +43,13 @@ public class TeacherServicesImp implements TeacherServices {
     @Override
     @Transactional
     public String createTeacher(Long tenantId,TeacherRequest dto) {
-        Tenant tenant=null;
+        College college =null;
         if(tenantId!=null){
-            tenant =  tenantRepository.findById(tenantId).orElseThrow(()->
+            college =  tenantRepository.findById(tenantId).orElseThrow(()->
                     new IllegalArgumentException("Tenant not fount"));
         }
 
-        User savedUser = createUser(dto.getEmail(),tenant,"TEACHER");
+        User savedUser = createUser(dto.getEmail(), college,"TEACHER");
         Address savedAddress = addressService.createAddress(dto.getAddressRequest());
         Parent savedParent = parentServices.createParent(dto.getParentRequest());
 
@@ -66,7 +66,7 @@ public class TeacherServicesImp implements TeacherServices {
         teacher.setEmployeeId(savedUser.getId().toString());
         teacher.setAddress(savedAddress);
         teacher.setUser(savedUser);
-        teacher.setTenant(tenant);
+        teacher.setTenant(college);
         teacher.setParent(savedParent);
         teacher.setCreatedAt(LocalDateTime.now());
         teacherRepository.save(teacher);
@@ -192,15 +192,15 @@ public class TeacherServicesImp implements TeacherServices {
         return teacherResponse;
     }
 
-    private User createUser(String email, Tenant tenant, String rolesName){
+    private User createUser(String email, College college, String rolesName){
 
-        Roles roles =  rolesRepository.findByNameAndTenant(rolesName,tenant);
+        Roles roles =  rolesRepository.findByNameAndTenant(rolesName, college);
         User user = new User();
 
         user.setEmail(email);
         user.setUsername(email);
         user.setPassword(passwordEncoder.encode("Test@123"));
-        user.setTenant(tenant);
+        user.setCollege(college);
         user.setRoles(List.of(roles));
         user.setCreatedAt(LocalDateTime.now());
         return userRepository.save(user);

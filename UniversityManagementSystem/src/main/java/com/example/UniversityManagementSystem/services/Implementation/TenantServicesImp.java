@@ -3,7 +3,7 @@ package com.example.UniversityManagementSystem.services.Implementation;
 import com.example.UniversityManagementSystem.dto.tenant.TenantRequest;
 import com.example.UniversityManagementSystem.dto.tenant.TenantResponse;
 import com.example.UniversityManagementSystem.entity.Roles;
-import com.example.UniversityManagementSystem.entity.Tenant;
+import com.example.UniversityManagementSystem.entity.College;
 import com.example.UniversityManagementSystem.repository.RolesRepository;
 import com.example.UniversityManagementSystem.repository.TenantRepository;
 import com.example.UniversityManagementSystem.services.AuthService;
@@ -29,12 +29,12 @@ public class TenantServicesImp implements TenantServices {
 
     @Transactional
     @Override
-    public Tenant createTenant(TenantRequest dto) {
-        Tenant tenant = new Tenant();
-        tenant.setName(dto.getTenantName());
-        tenant.setCreatedAt(LocalDateTime.now());
+    public College createTenant(TenantRequest dto) {
+        College college = new College();
+        college.setName(dto.getTenantName());
+        college.setCreatedAt(LocalDateTime.now());
 
-        Tenant savedTenent =  tenantRepository.save(tenant);
+        College savedTenent =  tenantRepository.save(college);
 
         Roles roles = new Roles();
         roles.setName("ADMIN");
@@ -50,23 +50,23 @@ public class TenantServicesImp implements TenantServices {
 
     @Override
     public TenantResponse updateTenant(TenantRequest dto, Long id) {
-        Tenant tenant = tenantRepository.findById(id).orElseThrow(()->new IllegalArgumentException("Tenant not found"));
-        tenant.setName(dto.getTenantName());
-        tenant.setUpdatedAt(LocalDateTime.now());
-        Tenant updateTenant= tenantRepository.save(tenant);
+        College college = tenantRepository.findById(id).orElseThrow(()->new IllegalArgumentException("Tenant not found"));
+        college.setName(dto.getTenantName());
+        college.setUpdatedAt(LocalDateTime.now());
+        College updateCollege = tenantRepository.save(college);
 
         TenantResponse res= new TenantResponse();
-        res.setTenantName(updateTenant.getName());
-        res.setId(updateTenant.getId());
+        res.setTenantName(updateCollege.getName());
+        res.setId(updateCollege.getId());
 
         return res;
     }
 
     @Override
     public List<TenantResponse> getAllTenant() {
-        List<Tenant> tenants = tenantRepository.findAll();
+        List<College> colleges = tenantRepository.findAll();
 
-        List<TenantResponse> res = tenants.stream().map(tenant -> {
+        List<TenantResponse> res = colleges.stream().map(tenant -> {
             TenantResponse response = new TenantResponse();
             response.setId(tenant.getId());
             response.setTenantName(tenant.getName());
@@ -78,8 +78,8 @@ public class TenantServicesImp implements TenantServices {
 
     @Override
     public TenantResponse getTenantById(Long id) {
-        Tenant tenant = tenantRepository.findById(id).orElseThrow(()->new IllegalArgumentException("Tenant not found"));
-        TenantResponse res = new TenantResponse(tenant.getId(),tenant.getName());
+        College college = tenantRepository.findById(id).orElseThrow(()->new IllegalArgumentException("Tenant not found"));
+        TenantResponse res = new TenantResponse(college.getId(), college.getName());
         return res;
     }
 

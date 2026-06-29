@@ -5,7 +5,7 @@ import com.example.UniversityManagementSystem.dto.auth.AuthRequest;
 import com.example.UniversityManagementSystem.dto.auth.AuthResponse;
 import com.example.UniversityManagementSystem.dto.auth.ResetPasswordRequest;
 import com.example.UniversityManagementSystem.entity.Roles;
-import com.example.UniversityManagementSystem.entity.Tenant;
+import com.example.UniversityManagementSystem.entity.College;
 import com.example.UniversityManagementSystem.entity.User;
 import com.example.UniversityManagementSystem.repository.RolesRepository;
 import com.example.UniversityManagementSystem.repository.UserRepository;
@@ -19,7 +19,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.xml.crypto.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -56,17 +55,17 @@ public class AuthServiceImp implements AuthService {
 
     @Transactional
     @Override
-    public Void createUser(String email, Tenant tenant, String role) {
+    public Void createUser(String email, College college, String role) {
         try{
             User user = new User();
 
-            Roles roles = rolesRepository.findByNameAndTenant(role,tenant);
+            Roles roles = rolesRepository.findByNameAndTenant(role, college);
             
             user.setEmail(email);
             user.setUsername(email);
             user.setPassword(passwordEncoder.encode("Test@123"));
             user.setCreatedAt(LocalDateTime.now());
-            user.setTenant(tenant);
+            user.setCollege(college);
             user.setRoles(List.of(roles));
             userRepository.save(user);
         } catch (Exception ex){

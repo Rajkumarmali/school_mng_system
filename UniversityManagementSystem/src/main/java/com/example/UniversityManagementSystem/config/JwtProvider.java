@@ -20,7 +20,7 @@ public class JwtProvider {
               .setExpiration(new Date(new Date().getTime()+846000000))
               .claim("email",auth.getName())
               .claim("userId",user.getId())
-              .claim("tenantId",user.getTenant()!=null ? user.getTenant().getId() : null)
+              .claim("collegeId",user.getCollege()!=null ? user.getCollege().getId() : null)
               .signWith(key).compact();
 
       return jwt;
@@ -40,10 +40,10 @@ public class JwtProvider {
         return userId;
     }
 
-    public Long getTenantIdFromToken(String jwt){
+    public Long getCollegeIdFromToken(String jwt){
         jwt = jwt.substring(7);
         Claims claims = Jwts.parser().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
-        Long tenantId = claims.get("tenantId",Long.class);
+        Long tenantId = claims.get("collegeId",Long.class);
         return tenantId;
     }
 }

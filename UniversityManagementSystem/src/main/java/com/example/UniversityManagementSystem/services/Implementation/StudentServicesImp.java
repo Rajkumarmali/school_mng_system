@@ -44,14 +44,14 @@ public class StudentServicesImp implements StudentServices {
     @Override
     public String createStudent(Long tenantId, StudentRequest dto) {
 
-        Tenant tenant = null;
+        College college = null;
         if (tenantId!=null){
-           tenant = tenantRepository.findById(tenantId).orElseThrow(()->
+           college = tenantRepository.findById(tenantId).orElseThrow(()->
                    new IllegalArgumentException("Tenant not found"));
         }
 
         Address savedAddress = addressService.createAddress(dto.getAddressRequest());
-        User savedUser = createUser(dto.getEmail(),tenant,"STUDENT");
+        User savedUser = createUser(dto.getEmail(), college,"STUDENT");
         Parent savedParent = parentServices.createParent(dto.getParentRequest());
 
         Student student = new Student();
@@ -66,7 +66,7 @@ public class StudentServicesImp implements StudentServices {
         student.setRegistrationNumber(savedUser.getId().toString());
         student.setAddress(savedAddress);
         student.setUser(savedUser);
-        student.setTenant(tenant);
+        student.setTenant(college);
         student.setParent(savedParent);
         student.setCreatedAt(LocalDateTime.now());
         studentRepository.save(student);
@@ -191,15 +191,15 @@ public class StudentServicesImp implements StudentServices {
         return "Student delete successfully";
     }
 
-    private User createUser(String email, Tenant tenant, String rolesName){
+    private User createUser(String email, College college, String rolesName){
 
-        Roles roles =  rolesRepository.findByNameAndTenant(rolesName,tenant);
+        Roles roles =  rolesRepository.findByNameAndTenant(rolesName, college);
         User user = new User();
 
         user.setEmail(email);
         user.setUsername(email);
         user.setPassword(passwordEncoder.encode("Test@123"));
-        user.setTenant(tenant);
+        user.setCollege(college);
         user.setRoles(List.of(roles));
         user.setCreatedAt(LocalDateTime.now());
         return userRepository.save(user);

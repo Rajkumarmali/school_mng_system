@@ -3,7 +3,7 @@ package com.example.UniversityManagementSystem.controller;
 
 import com.example.UniversityManagementSystem.dto.tenant.TenantRequest;
 import com.example.UniversityManagementSystem.dto.tenant.TenantResponse;
-import com.example.UniversityManagementSystem.entity.Tenant;
+import com.example.UniversityManagementSystem.entity.College;
 import com.example.UniversityManagementSystem.services.TenantServices;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +22,9 @@ public class TenantController {
     }
 
     @PostMapping("/create-tenant")
-    public ResponseEntity<Tenant> createTenant(@RequestBody TenantRequest dto){
-        Tenant tenant =  tenantServices.createTenant(dto);
-        return new ResponseEntity<Tenant>(tenant, HttpStatus.CREATED);
+    public ResponseEntity<College> createTenant(@RequestBody TenantRequest dto){
+        College college =  tenantServices.createTenant(dto);
+        return new ResponseEntity<College>(college, HttpStatus.CREATED);
     }
 
     @PostMapping("/update-tenant/{id}")

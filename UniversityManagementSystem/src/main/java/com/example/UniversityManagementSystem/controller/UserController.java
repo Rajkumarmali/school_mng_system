@@ -37,7 +37,7 @@ public class UserController {
 
     @GetMapping("/get-allusers")
     public ResponseEntity<List<UserResponse>> getAllUsers(@RequestHeader("Authorization") String jwt){
-        Long tenantId= jwtProvider.getTenantIdFromToken(jwt);
+        Long tenantId= jwtProvider.getCollegeIdFromToken(jwt);
         List<UserResponse> res = userServices.getAllUsers(tenantId);
         return new ResponseEntity<List<UserResponse>>(res,HttpStatus.OK);
     }

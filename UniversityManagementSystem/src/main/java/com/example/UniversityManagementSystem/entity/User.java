@@ -18,34 +18,40 @@ public class User {
     private String email;
     private String password;
 
-    @ManyToOne
-    private Tenant tenant;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private College college;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name="role_id"))
     private List<Roles> roles = new ArrayList<>();
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user",fetch = FetchType.LAZY)
     private Teacher teacher;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user",fetch = FetchType.LAZY)
     private Student student;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private University university;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public User(Long id, String username, String email, String password, Tenant tenant, List<Roles> roles, Teacher teacher, User user, Student student, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public User(Long id, String username, String email, String password, College college, List<Roles> roles,
+                Teacher teacher, Student student, University university, LocalDateTime createdAt,
+                LocalDateTime updatedAt) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.tenant = tenant;
+        this.college = college;
+        this.roles = roles;
         this.teacher = teacher;
         this.student = student;
+        this.university = university;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.roles  = roles;
     }
 
     public User() {
@@ -83,13 +89,12 @@ public class User {
         this.password = password;
     }
 
-
-    public Tenant getTenant() {
-        return tenant;
+    public College getCollege() {
+        return college;
     }
 
-    public void setTenant(Tenant tenant) {
-        this.tenant = tenant;
+    public void setCollege(College college) {
+        this.college = college;
     }
 
     public List<Roles> getRoles() {
@@ -98,22 +103,6 @@ public class User {
 
     public void setRoles(List<Roles> roles) {
         this.roles = roles;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     public Teacher getTeacher() {
@@ -132,7 +121,27 @@ public class User {
         this.student = student;
     }
 
-    public void setU(LocalDateTime now) {
+    public University getUniversity() {
+        return university;
+    }
 
+    public void setUniversity(University university) {
+        this.university = university;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
