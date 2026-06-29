@@ -5,56 +5,101 @@ import com.example.UniversityManagementSystem.dto.parent.ParentResponse;
 import com.example.UniversityManagementSystem.dto.student.StudentRequest;
 import com.example.UniversityManagementSystem.dto.student.StudentResponse;
 import com.example.UniversityManagementSystem.entity.*;
-import com.example.UniversityManagementSystem.repository.RolesRepository;
+import com.example.UniversityManagementSystem.entity.Address;
+import com.example.UniversityManagementSystem.entity.College;
+import com.example.UniversityManagementSystem.entity.Parent;
+import com.example.UniversityManagementSystem.entity.Student;
+import com.example.UniversityManagementSystem.entity.University;
+import com.example.UniversityManagementSystem.repository.CollegeRepository;
 import com.example.UniversityManagementSystem.repository.StudentRepository;
-import com.example.UniversityManagementSystem.repository.TenantRepository;
-import com.example.UniversityManagementSystem.repository.UserRepository;
+import com.example.UniversityManagementSystem.repository.UniversityRepository;
 import com.example.UniversityManagementSystem.services.AddressService;
+import com.example.UniversityManagementSystem.services.AuthService;
 import com.example.UniversityManagementSystem.services.ParentServices;
 import com.example.UniversityManagementSystem.services.StudentServices;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
+import jakarta.transaction.Transactional;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.UUID;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 
 @Service
 public class StudentServicesImp implements StudentServices {
 
-    private StudentRepository studentRepository;
-    private TenantRepository tenantRepository;
-    private RolesRepository rolesRepository;
-    private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
-
-    private AddressService addressService;
-    private ParentServices parentServices;
+    private final StudentRepository studentRepository;
+    private final CollegeRepository collegeRepository;
+    private final AuthService authService;
+    private final AddressService addressService;
+    private final ParentServices parentServices;
+    private final UniversityRepository universityRepository;
 
 
-    public StudentServicesImp(StudentRepository studentRepository, TenantRepository tenantRepository, RolesRepository rolesRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, AddressService addressService, ParentServices parentServices) {
+    public StudentServicesImp(StudentRepository studentRepository, CollegeRepository collegeRepository, AuthService authService, AddressService addressService, ParentServices parentServices,
+                              UniversityRepository universityRepository) {
         this.studentRepository = studentRepository;
-        this.tenantRepository = tenantRepository;
-        this.rolesRepository = rolesRepository;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.collegeRepository = collegeRepository;
+        this.authService = authService;
         this.addressService = addressService;
         this.parentServices = parentServices;
+        this.universityRepository = universityRepository;
     }
 
+    @Transactional
+    @Caching(evict = {
+           @CacheEvict(cacheNames = "students",allEntries = true)
+    })
     @Override
-    public String createStudent(Long tenantId, StudentRequest dto) {
+    public String createStudent(Long collegeId,Long universityId, StudentRequest dto,MultipartFile image) {
 
         College college = null;
-        if (tenantId!=null){
-           college = tenantRepository.findById(tenantId).orElseThrow(()->
-                   new IllegalArgumentException("Tenant not found"));
+        if (collegeId!=null){
+           college = collegeRepository.findById(collegeId).orElseThrow(()->
+                   new IllegalArgumentException("College not found"));
         }
+        University university = universityRepository.findById(universityId).orElseThrow(()->{
+           throw new IllegalArgumentException("University not found");
+        });
 
         Address savedAddress = addressService.createAddress(dto.getAddressRequest());
-        User savedUser = createUser(dto.getEmail(), college,"STUDENT");
+        User savedUser = authService.createUser(dto.getEmail(), college,universityId,"STUDENT");
         Parent savedParent = parentServices.createParent(dto.getParentRequest());
 
+        String registrationNumber = "";
+        if(college!=null)
+            registrationNumber=college.getShortName().toUpperCase()+"-STU-";
+        else
+            registrationNumber = university.getShortName().toUpperCase()+"-STU-";
+
         Student student = new Student();
+
+        if(image!=null &&!image.isEmpty()){
+            try{
+               String uploadDir="upload/student/";
+               String fileName= UUID.randomUUID()+"_"+image.getOriginalFilename();
+               Path path = Paths.get(uploadDir,fileName);
+               Files.createDirectories(path.getParent());
+               Files.copy(
+                       image.getInputStream(),
+                       path,
+                       StandardCopyOption.REPLACE_EXISTING
+               );
+               student.setImage(uploadDir+fileName);
+            } catch (Exception ex){
+                throw new RuntimeException(ex);
+            }
+        }
+
         student.setFirstName(dto.getFirstName());
         student.setLastName(dto.getLastName());
         student.setEmail(dto.getEmail());
@@ -63,20 +108,27 @@ public class StudentServicesImp implements StudentServices {
         student.setGender(dto.getGender());
         student.setCast(dto.getCast());
         student.setAadhaarNumber(dto.getAadharNumber());
-        student.setRegistrationNumber(savedUser.getId().toString());
         student.setAddress(savedAddress);
         student.setUser(savedUser);
-        student.setTenant(college);
+        student.setCollege(college);
         student.setParent(savedParent);
         student.setCreatedAt(LocalDateTime.now());
-        studentRepository.save(student);
+        Student savedStudent = studentRepository.save(student);
+
+        registrationNumber += String.format("%03d",savedStudent.getId());
+        savedStudent.setRegistrationNumber(registrationNumber);
+        studentRepository.save(savedStudent);
+
         return "Student create successfully";
     }
 
     @Override
-    public List<StudentResponse> getAllStudent(Long tenantId) {
-        List<Student> studentList = studentRepository.findByTenantId(tenantId);
-        List<StudentResponse> res = studentList.stream().map(student -> {
+    @Cacheable(cacheNames = "students",key = "{#collegeId,#pageNumber,#pageSize}")
+    public Page<StudentResponse> getAllStudent(Long collegeId,int pageNumber,int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+
+        Page<Student> studentList = studentRepository.findByCollegeId(collegeId,pageable);
+        Page<StudentResponse> response = studentList.map(student -> {
 
             Address address = student.getAddress();
             Parent parent = student.getParent();
@@ -112,11 +164,12 @@ public class StudentServicesImp implements StudentServices {
             studentResponse.setAddressResponse(addressResponse);
             studentResponse.setParentResponse(parentResponse);
             return studentResponse;
-        }).toList();
-        return res;
+        });
+        return response;
     }
 
     @Override
+    @Cacheable(cacheNames = "student",key = "#studentId")
     public StudentResponse getStudentById(Long studentId) {
         Student student = studentRepository.findById(studentId).orElseThrow(()->
                 new IllegalArgumentException("Student not found"));
@@ -151,6 +204,7 @@ public class StudentServicesImp implements StudentServices {
         studentResponse.setGender(student.getGender());
         studentResponse.setRegistrationNumber(student.getRegistrationNumber());
         studentResponse.setCast(student.getCast());
+        studentResponse.setImage(student.getImage());
         studentResponse.setAadharNumber(student.getAadhaarNumber());
         studentResponse.setUsername(student.getUser().getUsername());
         studentResponse.setAddressResponse(addressResponse);
@@ -158,7 +212,12 @@ public class StudentServicesImp implements StudentServices {
         return studentResponse;
     }
 
+    @Transactional
     @Override
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "student",key = "#studentId"),
+            @CacheEvict(cacheNames = "students",allEntries = true)
+    })
     public String updateStudent(Long studentId, StudentRequest dto) {
         Student student = studentRepository.findById(studentId).orElseThrow(()->
                 new IllegalArgumentException("Student not found"));
@@ -184,6 +243,10 @@ public class StudentServicesImp implements StudentServices {
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "student",key = "#studentId"),
+            @CacheEvict(cacheNames = "students",allEntries = true)
+    })
     public String deleteStudent(Long studentId) {
         Student student = studentRepository.findById(studentId).orElseThrow(()->
                 new IllegalArgumentException("Student not fount"));
@@ -191,17 +254,35 @@ public class StudentServicesImp implements StudentServices {
         return "Student delete successfully";
     }
 
-    private User createUser(String email, College college, String rolesName){
+    @Override
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "student",key = "#studentId"),
+            @CacheEvict(cacheNames = "students",allEntries = true)
+    })
+    public String UpdateImage(Long studentId, MultipartFile image) {
+        Student student = studentRepository.findById(studentId).orElseThrow(()->{
+           throw new IllegalArgumentException("Student not found");
+        });
+        try{
+            String uploadDir="upload/student/";
+            String fileName= UUID.randomUUID()+"_"+image.getOriginalFilename();
+            Path path = Paths.get(uploadDir,fileName);
+            Files.createDirectories(path.getParent());
+            Files.copy(
+                    image.getInputStream(),
+                    path,
+                    StandardCopyOption.REPLACE_EXISTING
+            );
 
-        Roles roles =  rolesRepository.findByNameAndTenant(rolesName, college);
-        User user = new User();
-
-        user.setEmail(email);
-        user.setUsername(email);
-        user.setPassword(passwordEncoder.encode("Test@123"));
-        user.setCollege(college);
-        user.setRoles(List.of(roles));
-        user.setCreatedAt(LocalDateTime.now());
-        return userRepository.save(user);
+            if(student.getImage()!=null){
+                Files.deleteIfExists(Paths.get(student.getImage()));
+            }
+            student.setImage(uploadDir+fileName);
+            studentRepository.save(student);
+            return "Update image successfully";
+        } catch (Exception ex){
+            throw new RuntimeException(ex);
+        }
     }
+
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import './StudentProfile.css'
 import { useDispatch, useSelector } from 'react-redux'
-import { getStudentById, updateStudent } from '../state/student/Action'
+import { getStudentById, updateStudent, updateStudentImage } from '../../state/student/Action'
 
 
 const StudentProfile = () => {
@@ -16,6 +16,8 @@ const StudentProfile = () => {
     const [isEditPersonModal, setIsEditPersonModal] = useState(false);
     const [isEditAddress, setIsEditAddressModal] = useState(false);
     const [isEditParentModal, setIsEditParentModal] = useState(false);
+    const [isEditImageModal, setIsEditImageModal] = useState(false);
+    const [image, setImage] = useState(null);
 
     const [studentData, setStudentData] = useState(
         {
@@ -47,6 +49,7 @@ const StudentProfile = () => {
         setIsEditPersonModal(true);
         setIsEditAddressModal(false);
         setIsEditParentModal(false);
+        setIsEditImageModal(false);
         handleSetData();
     }
 
@@ -54,15 +57,26 @@ const StudentProfile = () => {
         setIsEditPersonModal(false);
         setIsEditAddressModal(true);
         setIsEditParentModal(false);
+        setIsEditImageModal(false);
         handleSetData();
     }
+
 
     const handleEditParent = () => {
         setIsEditPersonModal(false);
         setIsEditAddressModal(false);
         setIsEditParentModal(true);
+        setIsEditImageModal(false);
         handleSetData()
     }
+
+    const handleEditImage = () => {
+        setIsEditPersonModal(false);
+        setIsEditAddressModal(false);
+        setIsEditParentModal(false);
+        setIsEditImageModal(true);
+    }
+
 
     const handlePersonChange = (e) => {
         const { name, value } = e.target;
@@ -94,7 +108,10 @@ const StudentProfile = () => {
         })
     }
     const handleUpdate = async () => {
-        if (isEditPersonModal) {
+        if (isEditImageModal) {
+            await dispatch(updateStudentImage(studentId, image))
+        }
+        else if (isEditPersonModal) {
             const payload = {
                 ...studentData,
                 parentRequest: null,
@@ -147,15 +164,31 @@ const StudentProfile = () => {
     useEffect(() => {
         dispatch(getStudentById(studentId))
     }, [dispatch, studentId]);
-
-
     return (
         <div className='student-profile'>
             <div className="student-card">
                 <div className="student-profile-header">
-                    <div className="student-profile-avatar">
-                        <i className="bi bi-person-fill"></i>
+                    <div>
+                        <div className="student-profile-avatar">
+                            {
+                                student?.student?.image ?
+                                    <img src={`http://localhost:8080/${student?.student?.image}`} alt=""
+                                        className='student-image' />
+                                    : <i className="bi bi-person-fill"></i>
+                            }
+                        </div>
+                        <div>
+                            <button
+                                className="student-edit-image-btn"
+                                data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                onClick={handleEditImage}
+                            >
+                                <i className="bi bi-camera-fill me-2"></i>
+                                Edit Image
+                            </button>
+                        </div>
                     </div>
+
                     <div className="student-profile-info">
                         <div className="student-profile-contact">
                             <div>
@@ -213,7 +246,6 @@ const StudentProfile = () => {
                             <span><strong>Mother Occupation :</strong> {student?.student?.parentResponse?.motherOccupation}</span>
                         </div>
                     </div>
-
                     <div className="simple-section">
                         <div className="info-line">
                             <h5>Address Information : </h5>
@@ -242,7 +274,7 @@ const StudentProfile = () => {
                     <div class="modal-content custom-modal">
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="exampleModalLabel">
-                                {isEditPersonModal ? "Edit Personal Details" : isEditAddress ? "Edit Address " : "Edit Parents"}
+                                {isEditPersonModal ? "Edit Personal Details" : isEditAddress ? "Edit Address " : isEditImageModal ? "Edit Image" : "Edit Parents"}
                             </h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
@@ -394,66 +426,75 @@ const StudentProfile = () => {
                                             </div>
                                         </div>
                                         :
-                                        <div className="form-grid">
+                                        isEditAddress ?
+                                            <div className="form-grid">
+                                                <div>
+                                                    <label>Address</label>
+                                                    <input type="text"
+                                                        className="modal-input"
+                                                        name='address'
+                                                        value={studentData.addressRequest.address}
+                                                        onChange={handleAddressChange}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label>City</label>
+                                                    <input type="text"
+                                                        className="modal-input"
+                                                        name='city'
+                                                        value={studentData.addressRequest.city}
+                                                        onChange={handleAddressChange}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label>District</label>
+                                                    <input type="text"
+                                                        className="modal-input"
+                                                        name='district'
+                                                        value={studentData.addressRequest.district}
+                                                        onChange={handleAddressChange} />
+                                                </div>
+                                                <div>
+                                                    <label>State</label>
+                                                    <input type="text"
+                                                        className="modal-input"
+                                                        name='state'
+                                                        value={studentData.addressRequest.state}
+                                                        onChange={handleAddressChange}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label>Country</label>
+                                                    <input type="text"
+                                                        className="modal-input"
+                                                        name='country'
+                                                        value={studentData.addressRequest.country}
+                                                        onChange={handleAddressChange}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label>Pincode</label>
+                                                    <input type="text"
+                                                        className="modal-input"
+                                                        name='pincode'
+                                                        value={studentData.addressRequest.pincode}
+                                                        onChange={handleAddressChange}
+                                                    />
+                                                </div>
+                                            </div>
+                                            :
                                             <div>
-                                                <label>Address</label>
-                                                <input type="text"
-                                                    className="modal-input"
-                                                    name='address'
-                                                    value={studentData.addressRequest.address}
-                                                    onChange={handleAddressChange}
+                                                <input
+                                                    type='file'
+                                                    accept='image/*'
+                                                    onChange={(e) => setImage(e.target.files[0])}
                                                 />
                                             </div>
-                                            <div>
-                                                <label>City</label>
-                                                <input type="text"
-                                                    className="modal-input"
-                                                    name='city'
-                                                    value={studentData.addressRequest.city}
-                                                    onChange={handleAddressChange}
-                                                />
-                                            </div>
-                                            <div>
-                                                <label>District</label>
-                                                <input type="text"
-                                                    className="modal-input"
-                                                    name='district'
-                                                    value={studentData.addressRequest.district}
-                                                    onChange={handleAddressChange} />
-                                            </div>
-                                            <div>
-                                                <label>State</label>
-                                                <input type="text"
-                                                    className="modal-input"
-                                                    name='state'
-                                                    value={studentData.addressRequest.state}
-                                                    onChange={handleAddressChange}
-                                                />
-                                            </div>
-                                            <div>
-                                                <label>Country</label>
-                                                <input type="text"
-                                                    className="modal-input"
-                                                    name='country'
-                                                    value={studentData.addressRequest.country}
-                                                    onChange={handleAddressChange}
-                                                />
-                                            </div>
-                                            <div>
-                                                <label>Pincode</label>
-                                                <input type="text"
-                                                    className="modal-input"
-                                                    name='pincode'
-                                                    value={studentData.addressRequest.pincode}
-                                                    onChange={handleAddressChange}
-                                                />
-                                            </div>
-                                        </div>
                             }
                         </div>
                         <div class="modal-footer ">
-                            <button type="button" className="btn modal-close-btn" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn modal-save-btn" onClick={handleUpdate}
+                            <button type="button" className="student-modal-btn" data-bs-dismiss="modal">Close</button>
+                            <button type="button" className="student-modal-btn" onClick={handleUpdate}
                                 data-bs-dismiss="modal"
                             >Update</button>
                         </div>
