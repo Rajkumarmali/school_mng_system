@@ -4,8 +4,8 @@ import com.example.UniversityManagementSystem.config.JwtProvider;
 import com.example.UniversityManagementSystem.dto.auth.AuthRequest;
 import com.example.UniversityManagementSystem.dto.auth.AuthResponse;
 import com.example.UniversityManagementSystem.dto.auth.ResetPasswordRequest;
-import com.example.UniversityManagementSystem.entity.Roles;
 import com.example.UniversityManagementSystem.entity.College;
+import com.example.UniversityManagementSystem.entity.Roles;
 import com.example.UniversityManagementSystem.entity.University;
 import com.example.UniversityManagementSystem.entity.User;
 import com.example.UniversityManagementSystem.repository.RolesRepository;
@@ -13,6 +13,8 @@ import com.example.UniversityManagementSystem.repository.UniversityRepository;
 import com.example.UniversityManagementSystem.repository.UserRepository;
 import com.example.UniversityManagementSystem.services.AuthService;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,8 +23,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class AuthServiceImp implements AuthService {
@@ -75,11 +75,11 @@ public class AuthServiceImp implements AuthService {
             user.setCollege(college);
             user.setUniversity(university);
             user.setRoles(List.of(roles));
-            userRepository.save(user);
-            return user;
+            return userRepository.save(user);
         } catch (Exception ex){
             throw new BadCredentialsException(ex.getMessage());
         }
+
     }
 
     @Override

@@ -167,14 +167,6 @@ public class Student {
         this.user = user;
     }
 
-    public College getTenant() {
-        return college;
-    }
-
-    public void setTenant(College college) {
-        this.college = college;
-    }
-
     public Parent getParent() {
         return parent;
     }
@@ -205,5 +197,13 @@ public class Student {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public College getCollege() {
+        return college;
+    }
+
+    public void setCollege(College college) {
+        this.college = college;
     }
 }

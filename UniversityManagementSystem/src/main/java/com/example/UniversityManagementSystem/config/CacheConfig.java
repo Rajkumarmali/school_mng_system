@@ -14,6 +14,8 @@ public class CacheConfig {
         return new ConcurrentMapCacheManager(
                 "college",
                 "colleges",
+                "student",
+                "students",
                 "teacher",
                 "teachers"
         );

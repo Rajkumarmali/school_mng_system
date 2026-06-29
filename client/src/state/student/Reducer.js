@@ -1,6 +1,8 @@
 import {
     CREATE_STUDENT_REQUEST, CREATE_STUDENT_SUCCESS, DELETE_STUDENT_REQUEST, DELETE_STUDENT_SUCCESS,
     GET_ALLSTUDENT_REQUEST, GET_ALLSTUDENT_SUCCESS, GET_STUDENT_BYID_REQUEST, GET_STUDENT_BYID_SUCCESS,
+    UPDATE_STUDENT_IMAGE_REQUEST,
+    UPDATE_STUDENT_IMAGE_SUCCESS,
     UPDATE_STUDENT_REQUEST, UPDATE_STUDENT_SUCCESS
 } from "./ActionType"
 
@@ -18,6 +20,7 @@ export const studentReducer = (state = initialState, action) => {
         case GET_STUDENT_BYID_REQUEST:
         case UPDATE_STUDENT_REQUEST:
         case DELETE_STUDENT_REQUEST:
+        case UPDATE_STUDENT_IMAGE_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -26,6 +29,7 @@ export const studentReducer = (state = initialState, action) => {
         case CREATE_STUDENT_SUCCESS:
         case UPDATE_STUDENT_SUCCESS:
         case DELETE_STUDENT_SUCCESS:
+        case UPDATE_STUDENT_IMAGE_SUCCESS:
             return {
                 ...state,
                 isLoading: true,

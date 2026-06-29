@@ -3,11 +3,10 @@ import Sidebar from './Sidebar'
 import Navbar from './Navbar'
 import { Route, Routes } from "react-router-dom";
 import Dashboard from '../pages/Dashboard';
-
 import UserProfile from '../pages/UserProfile';
 import Users from '../pages/Users';
-import Student from '../pages/Student';
-import StudentProfile from '../pages/StudentProfile';
+import Student from '../pages/student/Student';
+import StudentProfile from '../pages/student/StudentProfile'
 import Teacher from '../pages/Teacher/Teacher';
 import TeacherProfile from '../pages/Teacher/TeacherProfile';
 import College from '../pages/College/College';
