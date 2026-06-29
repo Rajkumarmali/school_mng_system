@@ -1,8 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Sidebar.css";
+import { jwtDecode } from "jwt-decode";
 
 const Sidebar = () => {
+
+    const token = localStorage.getItem("token")
+    const decoded = jwtDecode(token)
+    const roles = decoded.roles;
+
+    const isSuperAdmin = roles.includes("SUPER_ADMIN")
+    const isAdmin = roles.includes("ADMIN")
+
+
     return (
         <div className="sidebar">
             <ul className="sidebar-menu">
@@ -12,31 +22,40 @@ const Sidebar = () => {
                         Dashboard
                     </Link>
                 </li>
-                <li>
-                    <Link to="/college" className="menu-item">
-                        <i className="bi bi-bank me-2"></i>
-                        Colleges
-                    </Link>
-                </li>
-                <li>
-                    <Link to="/teacher" className="menu-item">
-                        <i className="bi bi-person-workspace me-2"></i>
-                        Teachers
-                    </Link>
-                </li>
-                <li>
-                    <Link to="/student" className="menu-item">
-                        <i className="bi bi-mortarboard-fill me-2"></i>
-                        Students
-                    </Link>
-                </li>
+                {
+                    isSuperAdmin && <li>
+                        <Link to="/college" className="menu-item">
+                            <i className="bi bi-bank me-2"></i>
+                            Colleges
+                        </Link>
+                    </li>
+                }
+                {
+                    isAdmin &&
+                    <>
+                        <li>
+                            <Link to="/teacher" className="menu-item">
+                                <i className="bi bi-person-workspace me-2"></i>
+                                Teachers
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/student" className="menu-item">
+                                <i className="bi bi-mortarboard-fill me-2"></i>
+                                Students
+                            </Link>
+                        </li>
 
-                <li>
-                    <Link to="/users" className="menu-item">
-                        <i class="bi bi-people-fill me-2"></i>
-                        Users
-                    </Link>
-                </li>
+                        <li>
+                            <Link to="/users" className="menu-item">
+                                <i class="bi bi-people-fill me-2"></i>
+                                Users
+                            </Link>
+                        </li>
+                    </>
+
+                }
+
             </ul>
         </div>
     );
