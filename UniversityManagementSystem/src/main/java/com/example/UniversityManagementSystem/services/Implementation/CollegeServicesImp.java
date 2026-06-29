@@ -20,6 +20,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -52,6 +53,7 @@ public class CollegeServicesImp implements CollegeServices {
             @CacheEvict(cacheNames = "colleges",allEntries = true)}
     )
     @Override
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public College createCollege(CollegeRequest dto,Long universityId) {
 
         College college = new College();
@@ -95,6 +97,7 @@ public class CollegeServicesImp implements CollegeServices {
             @CacheEvict(value = "college",key = "#id"),
             @CacheEvict(value = "colleges",allEntries = true)
     })
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public String updateCollege(CollegeRequest dto, Long id) {
         College college = collegeRepository.findById(id).orElseThrow(()->
                 new IllegalArgumentException("College not found"));
@@ -121,6 +124,7 @@ public class CollegeServicesImp implements CollegeServices {
 
     @Cacheable(cacheNames = "colleges",key = "{#pageNumber,#pageSize}")
     @Override
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public Page<CollegeResponse> getAllCollege(int pageNumber,int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
@@ -154,6 +158,7 @@ public class CollegeServicesImp implements CollegeServices {
 
     @Cacheable(cacheNames = "college",key = "#id")
     @Override
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public CollegeResponse getCollegeById(Long id) {
         College college = collegeRepository.findById(id).orElseThrow(()->new IllegalArgumentException("College not found"));
 
@@ -185,6 +190,7 @@ public class CollegeServicesImp implements CollegeServices {
             @CacheEvict(value = "colleges",allEntries = true)
     })
     @Override
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public String deleteCollege(Long id) {
         College college = collegeRepository.findById(id).orElseThrow(()->
           new IllegalArgumentException("College not found")

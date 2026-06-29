@@ -9,12 +9,15 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class JwtProvider {
     SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
 
     public String generateToken(Authentication auth, User user){
+        List<String> roles = user.getRoles().stream().map(role->role.getName()).toList();
+
       String jwt = Jwts.builder()
               .setIssuedAt(new Date())
               .setExpiration(new Date(new Date().getTime()+846000000))
@@ -22,6 +25,7 @@ public class JwtProvider {
               .claim("userId",user.getId())
               .claim("collegeId",user.getCollege()!=null ? user.getCollege().getId() : null)
               .claim("universityId",user.getUniversity()!=null ? user.getUniversity().getId():null)
+              .claim("roles",roles)
               .signWith(key).compact();
 
       return jwt;

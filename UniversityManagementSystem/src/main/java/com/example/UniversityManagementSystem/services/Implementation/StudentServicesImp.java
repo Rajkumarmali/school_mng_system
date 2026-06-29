@@ -30,6 +30,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,6 +61,7 @@ public class StudentServicesImp implements StudentServices {
            @CacheEvict(cacheNames = "students",allEntries = true)
     })
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public String createStudent(Long collegeId,Long universityId, StudentRequest dto,MultipartFile image) {
 
         College college = null;
@@ -124,6 +126,7 @@ public class StudentServicesImp implements StudentServices {
 
     @Override
     @Cacheable(cacheNames = "students",key = "{#collegeId,#pageNumber,#pageSize}")
+    @PreAuthorize("hasRole('ADMIN')")
     public Page<StudentResponse> getAllStudent(Long collegeId,int pageNumber,int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
 
@@ -170,6 +173,7 @@ public class StudentServicesImp implements StudentServices {
 
     @Override
     @Cacheable(cacheNames = "student",key = "#studentId")
+    @PreAuthorize("hasRole('ADMIN')")
     public StudentResponse getStudentById(Long studentId) {
         Student student = studentRepository.findById(studentId).orElseThrow(()->
                 new IllegalArgumentException("Student not found"));
@@ -218,6 +222,7 @@ public class StudentServicesImp implements StudentServices {
             @CacheEvict(cacheNames = "student",key = "#studentId"),
             @CacheEvict(cacheNames = "students",allEntries = true)
     })
+    @PreAuthorize("hasRole('ADMIN')")
     public String updateStudent(Long studentId, StudentRequest dto) {
         Student student = studentRepository.findById(studentId).orElseThrow(()->
                 new IllegalArgumentException("Student not found"));
@@ -247,6 +252,7 @@ public class StudentServicesImp implements StudentServices {
             @CacheEvict(cacheNames = "student",key = "#studentId"),
             @CacheEvict(cacheNames = "students",allEntries = true)
     })
+    @PreAuthorize("hasRole('ADMIN')")
     public String deleteStudent(Long studentId) {
         Student student = studentRepository.findById(studentId).orElseThrow(()->
                 new IllegalArgumentException("Student not fount"));
@@ -259,6 +265,7 @@ public class StudentServicesImp implements StudentServices {
             @CacheEvict(cacheNames = "student",key = "#studentId"),
             @CacheEvict(cacheNames = "students",allEntries = true)
     })
+    @PreAuthorize("hasRole('ADMIN')")
     public String UpdateImage(Long studentId, MultipartFile image) {
         Student student = studentRepository.findById(studentId).orElseThrow(()->{
            throw new IllegalArgumentException("Student not found");

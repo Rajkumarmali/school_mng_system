@@ -12,12 +12,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class JwtValidator extends OncePerRequestFilter {
 
@@ -33,9 +35,13 @@ public class JwtValidator extends OncePerRequestFilter {
                 SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
                 Claims claims = Jwts.parser().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
                 String email = String.valueOf(claims.get("email"));
-                String authorities = String.valueOf(claims.get("authorities"));
-                List<GrantedAuthority> auth = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
-                Authentication authentication = new UsernamePasswordAuthenticationToken(email,null,auth);
+//                String authorities = String.valueOf(claims.get("authorities"));
+//                List<GrantedAuthority> auth = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
+                List<String> roles = claims.get("roles", List.class);
+                List<GrantedAuthority> authorities = roles.stream()
+                        .map(role -> (GrantedAuthority) new SimpleGrantedAuthority("ROLE_" + role))
+                        .collect(Collectors.toList());
+                Authentication authentication = new UsernamePasswordAuthenticationToken(email,null,authorities);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (Exception e){
                  throw new BadCredentialsException("Invalid token...");

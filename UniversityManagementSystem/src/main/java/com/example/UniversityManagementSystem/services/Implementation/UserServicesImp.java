@@ -15,6 +15,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -147,6 +148,7 @@ public class UserServicesImp implements UserServices {
 
     @Override
     @Cacheable(cacheNames = "users",key="{#collegeId,#pageNumber,#pageSize}")
+    @PreAuthorize("hasRole('ADMIN')")
     public Page<UserResponse> getAllUsers(Long collegeId, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
 

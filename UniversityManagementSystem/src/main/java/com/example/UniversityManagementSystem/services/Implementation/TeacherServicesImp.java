@@ -28,6 +28,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -59,6 +60,7 @@ public class TeacherServicesImp implements TeacherServices {
     @Caching(evict = {
             @CacheEvict(cacheNames = "teachers",allEntries = true)
     })
+    @PreAuthorize("hasRole('ADMIN')")
     public String createTeacher(Long collegeId, Long universityId, TeacherRequest dto, MultipartFile image) {
         College college =null;
         if(collegeId!=null){
@@ -127,6 +129,7 @@ public class TeacherServicesImp implements TeacherServices {
 
     @Override
     @Cacheable(cacheNames = "teachers", key = "{#collegeId,#pageNumber,#pageSize}")
+    @PreAuthorize("hasRole('ADMIN')")
     public Page<TeacherResponse> getAllTeacher(Long collegeId,int pageNumber,int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
@@ -177,6 +180,7 @@ public class TeacherServicesImp implements TeacherServices {
             @CacheEvict(cacheNames = "teachers",allEntries = true),
             @CacheEvict(cacheNames = "teacher",key = "#teacherId")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     public String updateTeacher(Long teacherId,TeacherRequest dto) {
         Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(()->
                 new IllegalArgumentException("Teacher not found"));
@@ -208,6 +212,7 @@ public class TeacherServicesImp implements TeacherServices {
             @CacheEvict(cacheNames = "teachers",allEntries = true),
             @CacheEvict(cacheNames = "teacher",key = "#teacherId")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     public String deleteTeacher(Long teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(()->
                 new IllegalArgumentException("Teacher not found"));
@@ -217,6 +222,7 @@ public class TeacherServicesImp implements TeacherServices {
 
     @Override
     @Cacheable(cacheNames = "teacher",key = "#teacherId")
+    @PreAuthorize("hasRole('ADMIN')")
     public TeacherResponse getTeacherById(Long teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(()->
                 new IllegalArgumentException("Teacher not found"));
@@ -263,6 +269,7 @@ public class TeacherServicesImp implements TeacherServices {
             @CacheEvict(cacheNames = "teachers",allEntries = true),
             @CacheEvict(cacheNames = "teacher",key = "#teacherId")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     public String updateImage(Long teacherId, MultipartFile image) {
         Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(()->{
             throw new IllegalArgumentException("Teacher not found");
