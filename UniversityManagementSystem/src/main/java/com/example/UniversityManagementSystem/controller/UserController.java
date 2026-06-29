@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -49,5 +50,12 @@ public class UserController {
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id){
         UserResponse res = userServices.getUserProfile(id);
         return new ResponseEntity<UserResponse>(res,HttpStatus.OK);
+    }
+    @PostMapping("/update-imgae")
+    public ResponseEntity<String> updateUserImage(@RequestHeader("Authorization") String jwt,
+                                                  @RequestPart("image") MultipartFile image){
+        Long userId = jwtProvider.getUserIdFromToken(jwt);
+        String res = userServices.updateUserImage(userId,image);
+        return new ResponseEntity<>(res,HttpStatus.OK);
     }
 }
