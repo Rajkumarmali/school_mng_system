@@ -13,9 +13,9 @@ const Sidebar = () => {
                     </Link>
                 </li>
                 <li>
-                    <Link to="/tenant" className="menu-item">
-                        <i className="bi bi-building me-2"></i>
-                        Tenant
+                    <Link to="/college" className="menu-item">
+                        <i className="bi bi-bank me-2"></i>
+                        Colleges
                     </Link>
                 </li>
                 <li>

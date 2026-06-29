@@ -1,5 +1,6 @@
 package com.example.UniversityManagementSystem.repository;
 
+import com.example.UniversityManagementSystem.entity.College;
 import com.example.UniversityManagementSystem.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,4 +12,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByEmail(String email);
 
     List<User> findByCollegeId(Long collegeId);
+
+    User findByEmailAndCollege(String email, College college);
 }

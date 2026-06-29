@@ -22,19 +22,19 @@ public class College {
     @ManyToOne(fetch = FetchType.LAZY)
     private University university;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private Address address;
 
-    @OneToMany(mappedBy = "college",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "college",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<User> users = new ArrayList<>();
 
-    @OneToMany(mappedBy = "college",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "college",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<Roles> roles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "college",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "college",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<Teacher> teachers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "college",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "college",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<Student> students=new ArrayList<>();
 
     private LocalDateTime createdAt;
