@@ -177,11 +177,11 @@ public class Teacher {
         this.user = user;
     }
 
-    public College getTenant() {
+    public College getCollege() {
         return college;
     }
 
-    public void setTenant(College college) {
+    public void setCollege(College college) {
         this.college = college;
     }
 

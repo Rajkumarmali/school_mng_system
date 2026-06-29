@@ -8,8 +8,8 @@ import UserProfile from '../pages/UserProfile';
 import Users from '../pages/Users';
 import Student from '../pages/Student';
 import StudentProfile from '../pages/StudentProfile';
-import Teacher from '../pages/Teacher';
-import TeacherProfile from '../pages/TeacherProfile';
+import Teacher from '../pages/Teacher/Teacher';
+import TeacherProfile from '../pages/Teacher/TeacherProfile';
 import College from '../pages/College/College';
 import CollegeProfile from '../pages/College/CollegeProfile';
 
