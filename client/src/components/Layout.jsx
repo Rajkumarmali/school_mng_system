@@ -3,8 +3,8 @@ import Sidebar from './Sidebar'
 import Navbar from './Navbar'
 import { Route, Routes } from "react-router-dom";
 import Dashboard from '../pages/Dashboard';
-import UserProfile from '../pages/UserProfile';
-import Users from '../pages/Users';
+import UserProfile from '../pages/user/UserProfile';
+import Users from '../pages/user/Users';
 import Student from '../pages/student/Student';
 import StudentProfile from '../pages/student/StudentProfile'
 import Teacher from '../pages/Teacher/Teacher';

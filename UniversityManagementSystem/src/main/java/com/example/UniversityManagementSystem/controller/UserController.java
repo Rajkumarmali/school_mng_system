@@ -4,9 +4,12 @@ import com.example.UniversityManagementSystem.config.JwtProvider;
 import com.example.UniversityManagementSystem.dto.user.UpdateUserRequest;
 import com.example.UniversityManagementSystem.dto.user.UserResponse;
 import com.example.UniversityManagementSystem.services.UserServices;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -36,14 +39,23 @@ public class UserController {
     }
 
     @GetMapping("/get-allusers")
-    public ResponseEntity<List<UserResponse>> getAllUsers(@RequestHeader("Authorization") String jwt){
-        Long tenantId= jwtProvider.getCollegeIdFromToken(jwt);
-        List<UserResponse> res = userServices.getAllUsers(tenantId);
-        return new ResponseEntity<List<UserResponse>>(res,HttpStatus.OK);
+    public ResponseEntity<Page<UserResponse>> getAllUsers(@RequestHeader("Authorization") String jwt,
+                                                          @RequestParam(defaultValue = "0") int pageNumber,
+                                                          @RequestParam(defaultValue = "10") int pageSize){
+        Long collegeId= jwtProvider.getCollegeIdFromToken(jwt);
+        Page<UserResponse> res = userServices.getAllUsers(collegeId,pageNumber,pageSize);
+        return new ResponseEntity<Page<UserResponse>>(res,HttpStatus.OK);
     }
     @GetMapping("/get-userbyid/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id){
         UserResponse res = userServices.getUserProfile(id);
         return new ResponseEntity<UserResponse>(res,HttpStatus.OK);
+    }
+    @PostMapping("/update-imgae")
+    public ResponseEntity<String> updateUserImage(@RequestHeader("Authorization") String jwt,
+                                                  @RequestPart("image") MultipartFile image){
+        Long userId = jwtProvider.getUserIdFromToken(jwt);
+        String res = userServices.updateUserImage(userId,image);
+        return new ResponseEntity<>(res,HttpStatus.OK);
     }
 }
