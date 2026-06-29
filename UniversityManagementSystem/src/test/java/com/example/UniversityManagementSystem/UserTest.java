@@ -18,7 +18,7 @@ public class UserTest {
 
    @Test
    public void getTenantId(){
-       Long tenantId= jwtProvider.getTenantIdFromToken("Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3ODE4NTEzOTUsImV4cCI6MTc4MjY5NzM5NSwiZW1haWwiOiJzdXBlcmFkbWluQGdtYWlsLmNvbSIsInVzZXJJZCI6Mn0.bKsokn8rwcwTxQJrxnuWsSeW8ktJ5NX--5LC37JfZG8");
+       Long tenantId= jwtProvider.getCollegeIdFromToken("Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3ODE4NTEzOTUsImV4cCI6MTc4MjY5NzM5NSwiZW1haWwiOiJzdXBlcmFkbWluQGdtYWlsLmNvbSIsInVzZXJJZCI6Mn0.bKsokn8rwcwTxQJrxnuWsSeW8ktJ5NX--5LC37JfZG8");
        System.out.println("TenantId "+ tenantId);
    }
 
@@ -28,9 +28,10 @@ public class UserTest {
         System.out.println("userId"+userId);
     }
 
+
     @Test
     public void testCreateUser(){
         College college = new College();
-        authService.createUser("email@gmail.com",null,"ADMIN");
+        authService.createUser("email@gmail.com",null,1L,"ADMIN");
     }
 }
