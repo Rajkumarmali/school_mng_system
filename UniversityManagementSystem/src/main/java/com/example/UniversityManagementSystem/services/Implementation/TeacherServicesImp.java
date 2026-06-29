@@ -5,9 +5,9 @@ import com.example.UniversityManagementSystem.dto.parent.ParentResponse;
 import com.example.UniversityManagementSystem.dto.teacher.TeacherRequest;
 import com.example.UniversityManagementSystem.dto.teacher.TeacherResponse;
 import com.example.UniversityManagementSystem.entity.*;
+import com.example.UniversityManagementSystem.repository.CollegeRepository;
 import com.example.UniversityManagementSystem.repository.RolesRepository;
 import com.example.UniversityManagementSystem.repository.TeacherRepository;
-import com.example.UniversityManagementSystem.repository.TenantRepository;
 import com.example.UniversityManagementSystem.repository.UserRepository;
 import com.example.UniversityManagementSystem.services.*;
 import jakarta.transaction.Transactional;
@@ -23,13 +23,13 @@ public class TeacherServicesImp implements TeacherServices {
     private AuthService authService;
     private AddressService addressService;
     private ParentServices parentServices;
-    private TenantRepository tenantRepository;
+    private CollegeRepository tenantRepository;
     private UserRepository userRepository;
     private RolesRepository rolesRepository;
     private PasswordEncoder passwordEncoder;
     private TeacherRepository teacherRepository;
 
-    public TeacherServicesImp(AuthService authService, AddressService addressService, ParentServices parentServices, TenantRepository tenantRepository, UserRepository userRepository, RolesRepository rolesRepository, PasswordEncoder passwordEncoder, TeacherRepository teacherRepository) {
+    public TeacherServicesImp(AuthService authService, AddressService addressService, ParentServices parentServices, CollegeRepository tenantRepository, UserRepository userRepository, RolesRepository rolesRepository, PasswordEncoder passwordEncoder, TeacherRepository teacherRepository) {
         this.authService = authService;
         this.addressService = addressService;
         this.parentServices = parentServices;
