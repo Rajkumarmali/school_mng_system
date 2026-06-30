@@ -37,12 +37,15 @@ public class College {
     @OneToMany(mappedBy = "college",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<Student> students=new ArrayList<>();
 
+    @OneToMany(mappedBy = "college")
+    private List<Department> departments = new ArrayList<>();
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public College(Long id, String name, String shortName, String collegeCode, String email, String phoneNumber,
                    University university, Address address, List<User> users, List<Roles> roles,
-                   List<Teacher> teachers, List<Student> students, LocalDateTime createdAt,
+                   List<Teacher> teachers, List<Student> students,List<Department> departments, LocalDateTime createdAt,
                    LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
@@ -56,6 +59,7 @@ public class College {
         this.roles = roles;
         this.teachers = teachers;
         this.students = students;
+        this.departments =departments;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -173,5 +177,13 @@ public class College {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public List<Department> getDepartments() {
+        return departments;
+    }
+
+    public void setDepartments(List<Department> departments) {
+        this.departments = departments;
     }
 }
