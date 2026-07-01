@@ -15,6 +15,7 @@ public class Department {
 
     private String name;
     private String description;
+    private String code;
 
     @ManyToOne
     private College college;
@@ -37,12 +38,13 @@ public class Department {
     public Department() {
     }
 
-    public Department(Long id, String name, String description, College college, Teacher hodTeacher,
+    public Department(Long id, String name, String description, String code, College college, Teacher hodTeacher,
                       List<Teacher> teacherList, List<Student> studentList, List<Class> classList,
                       LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.code = code;
         this.college = college;
         this.hodTeacher = hodTeacher;
         this.teacherList = teacherList;
@@ -130,5 +132,13 @@ public class Department {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }
