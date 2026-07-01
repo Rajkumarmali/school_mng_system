@@ -43,9 +43,6 @@ public class Teacher {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
     private Parent parent;
 
-    @OneToOne(mappedBy = "hodTeacher")
-    private Department departmentHod;
-
     @ManyToOne
     private Department department;
 
@@ -58,7 +55,7 @@ public class Teacher {
     public Teacher(Long id, String firstName, String lastName, String email, String phoneNumber,
                    LocalDate dob, String image, Gender gender, Cast cast, String aadharNumber,
                    String panNumber, String employeeId, Address address, User user, College college,
-                   Parent parent, Department departmentHod, Department department, Class classTeacher, LocalDateTime createdAt,
+                   Parent parent,  Department department, Class classTeacher, LocalDateTime createdAt,
                    LocalDateTime updatedAt) {
         this.id = id;
         this.firstName = firstName;
@@ -76,7 +73,6 @@ public class Teacher {
         this.user = user;
         this.college = college;
         this.parent = parent;
-        this.departmentHod = departmentHod;
         this.department = department;
         this.classTeacher = classTeacher;
         this.createdAt = createdAt;
@@ -246,11 +242,4 @@ public class Teacher {
         this.updatedAt = updatedAt;
     }
 
-    public Department getDepartmentHod() {
-        return departmentHod;
-    }
-
-    public void setDepartmentHod(Department departmentHod) {
-        this.departmentHod = departmentHod;
-    }
 }

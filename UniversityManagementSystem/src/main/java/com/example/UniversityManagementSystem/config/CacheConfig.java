@@ -19,7 +19,9 @@ public class CacheConfig {
                 "student",
                 "students",
                 "teacher",
-                "teachers"
+                "teachers",
+                "department",
+                "departments"
         );
     }
 }

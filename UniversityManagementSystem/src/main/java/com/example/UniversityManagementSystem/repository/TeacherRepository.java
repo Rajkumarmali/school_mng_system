@@ -10,4 +10,6 @@ import java.util.List;
 public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 
     Page<Teacher> findByCollegeId(Long collegeId, Pageable pageable);
+
+    Teacher findByEmailOrEmployeeId(String hodTeacherEmailOrEmplId, String hodTeacherEmailOrEmplId1);
 }

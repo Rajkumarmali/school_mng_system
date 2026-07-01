@@ -1,0 +1,106 @@
+.department-container {
+    margin-left: 200px;
+    padding: 70px 25px;
+    background: linear-gradient(
+        180deg,
+        #3ea0d3,
+        #3c58c9
+    );
+    min-height: 100vh; 
+}
+.department-card {
+    background: rgba(255,255,255,0.08);
+    border-radius: 15px;
+    padding: 30px;
+    border: 1px solid rgba(255,255,255,0.25);
+}
+
+.department-header {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    margin-bottom: 30px;
+    justify-content: space-between;
+}
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.edit-icon-btn {
+    border: none;
+    background: transparent;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.edit-icon-btn:hover {
+    transform: scale(1.1);
+    opacity: 0.8;
+}
+
+.department-logo {
+    width: 120px;
+    height: 120px;
+    background: #fff;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 55px;
+    color: #3c58c9;
+}
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 35px;
+}
+
+.stat-card {
+    background: rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+}
+
+.stat-card i {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.stat-card h3 {
+    margin: 0;
+    font-weight: 700;
+}
+
+.stat-card span {
+    font-size: 14px;
+}
+
+.department-profile-body {
+    padding: 25px;
+}
+
+.simple-section {
+    margin-bottom: 30px;
+}
+
+.simple-section h5 {
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.department-info-line {
+    display: grid;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.info-line span {
+    margin-right: 10px;
+    min-width: 250px;
+}
