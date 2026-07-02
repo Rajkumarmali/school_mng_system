@@ -1,10 +1,13 @@
 import {
-    GET_ALL_USERS_FAILER, GET_ALL_USERS_REQUEST, GET_ALL_USERS_SUCCESS, GET_USER_PROFILE_FAILER,
+    GET_ALL_USERS_FAILER, GET_ALL_USERS_REQUEST, GET_ALL_USERS_SUCCESS, GET_ALLROLES_FAILER, GET_ALLROLES_REQUEST, GET_ALLROLES_SUCCESS, GET_USER_PROFILE_FAILER,
     GET_USER_PROFILE_REQUEST, GET_USER_PROFILE_SUCCESS, GET_USERS_BYID_FAILER, GET_USERS_BYID_REQUEST,
     GET_USERS_BYID_SUCCESS, RESET_PASSWORD_FAILER, RESET_PASSWORD_REQUEST, RESET_PASSWORD_SUCCESS,
     UPDATE_USER_PROFILE_FAILER, UPDATE_USER_PROFILE_IMAGE_FAILER, UPDATE_USER_PROFILE_IMAGE_REQUEST,
     UPDATE_USER_PROFILE_IMAGE_SUCCESS,
-    UPDATE_USER_PROFILE_REQUEST, UPDATE_USER_PROFILE_SUCCESS
+    UPDATE_USER_PROFILE_REQUEST, UPDATE_USER_PROFILE_SUCCESS,
+    UPDATE_USER_ROLE_FAILER,
+    UPDATE_USER_ROLE_REQUEST,
+    UPDATE_USER_ROLE_SUCCESS
 } from "./ActionType"
 
 
@@ -116,5 +119,41 @@ export const updateUserImage = (image) => async (dispatch) => {
         dispatch({ type: UPDATE_USER_PROFILE_IMAGE_SUCCESS, payload: data })
     } catch (err) {
         dispatch({ type: UPDATE_USER_PROFILE_IMAGE_FAILER, payload: err.message })
+    }
+}
+
+export const getAllRoles = () => async (dispatch) => {
+    dispatch({ type: GET_ALLROLES_REQUEST })
+    try {
+        const res = await fetch(`${BASE_API}/user/get-allroles`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        })
+        const data = await res.json()
+        dispatch({ type: GET_ALLROLES_SUCCESS, payload: data })
+    } catch (err) {
+        dispatch({ type: GET_ALLROLES_FAILER, payload: err.message })
+    }
+}
+
+
+export const updateUserRole = (userId, rolesIds) => async (dispatch) => {
+    dispatch({ type: UPDATE_USER_ROLE_REQUEST })
+    try {
+        const res = await fetch(`${BASE_API}/user/update-userrole/${userId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify(rolesIds)
+        })
+        const data = await res.json();
+        dispatch({ type: UPDATE_USER_ROLE_SUCCESS, payload: data })
+    } catch (err) {
+        dispatch({ type: UPDATE_USER_ROLE_FAILER, payload: err.message })
     }
 }

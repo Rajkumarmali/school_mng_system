@@ -11,19 +11,19 @@ public class UserResponse {
     private String email;
     private String userName;
     private String userImage;
-    private List<String> userRoles;
+    private List<RoleResponse> roleResponse;
     private TeacherResponse teacherResponse;
     private StudentResponse studentResponse;
 
     public UserResponse() {
     }
 
-    public UserResponse(Long id, String email, String userName, String userImage, List<String> userRoles, TeacherResponse teacherResponse, StudentResponse studentResponse) {
+    public UserResponse(Long id, String email, String userName, String userImage, List<RoleResponse> roleResponse, TeacherResponse teacherResponse, StudentResponse studentResponse) {
         this.id = id;
         this.email = email;
         this.userName = userName;
         this.userImage = userImage;
-        this.userRoles = userRoles;
+        this.roleResponse = roleResponse;
         this.teacherResponse = teacherResponse;
         this.studentResponse = studentResponse;
     }
@@ -52,14 +52,6 @@ public class UserResponse {
         this.userName = userName;
     }
 
-    public List<String> getUserRoles() {
-        return userRoles;
-    }
-
-    public void setUserRoles(List<String> userRoles) {
-        this.userRoles = userRoles;
-    }
-
     public TeacherResponse getTeacherResponse() {
         return teacherResponse;
     }
@@ -82,5 +74,13 @@ public class UserResponse {
 
     public void setUserImage(String userImage) {
         this.userImage = userImage;
+    }
+
+    public List<RoleResponse> getRoleResponse() {
+        return roleResponse;
+    }
+
+    public void setRoleResponse(List<RoleResponse> roleResponse) {
+        this.roleResponse = roleResponse;
     }
 }
