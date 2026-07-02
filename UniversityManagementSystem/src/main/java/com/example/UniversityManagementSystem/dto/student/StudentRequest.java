@@ -17,11 +17,12 @@ public class StudentRequest {
     private Gender gender;
     private Cast cast;
     private String aadharNumber;
+    private String departmentCode;
     private AddressRequest addressRequest;
     private ParentRequest parentRequest;
 
     public StudentRequest(String firstName, String lastName, String email, String registrationNumber,
-                          String phoneNumber, LocalDate dob, Gender gender, Cast cast, String aadharNumber,
+                          String phoneNumber, LocalDate dob, Gender gender, Cast cast, String aadharNumber, String departmentCode,
                           AddressRequest addressRequest, ParentRequest parentRequest) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -31,6 +32,7 @@ public class StudentRequest {
         this.gender = gender;
         this.cast = cast;
         this.aadharNumber = aadharNumber;
+        this.departmentCode = departmentCode;
         this.addressRequest = addressRequest;
         this.parentRequest = parentRequest;
     }
@@ -116,5 +118,13 @@ public class StudentRequest {
 
     public void setParentRequest(ParentRequest parentRequest) {
         this.parentRequest = parentRequest;
+    }
+
+    public String getDepartmentCode() {
+        return departmentCode;
+    }
+
+    public void setDepartmentCode(String departmentCode) {
+        this.departmentCode = departmentCode;
     }
 }

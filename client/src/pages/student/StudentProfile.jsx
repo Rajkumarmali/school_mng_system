@@ -17,7 +17,9 @@ const StudentProfile = () => {
     const [isEditAddress, setIsEditAddressModal] = useState(false);
     const [isEditParentModal, setIsEditParentModal] = useState(false);
     const [isEditImageModal, setIsEditImageModal] = useState(false);
+    const [isEditDepartmentModal, setIsEditDepartmentModal] = useState(false);
     const [image, setImage] = useState(null);
+    const [departmentCode, setDepartmentCode] = useState(null);
 
     const [studentData, setStudentData] = useState(
         {
@@ -50,6 +52,7 @@ const StudentProfile = () => {
         setIsEditAddressModal(false);
         setIsEditParentModal(false);
         setIsEditImageModal(false);
+        setIsEditDepartmentModal(false);
         handleSetData();
     }
 
@@ -58,6 +61,7 @@ const StudentProfile = () => {
         setIsEditAddressModal(true);
         setIsEditParentModal(false);
         setIsEditImageModal(false);
+        setIsEditDepartmentModal(false);
         handleSetData();
     }
 
@@ -67,6 +71,7 @@ const StudentProfile = () => {
         setIsEditAddressModal(false);
         setIsEditParentModal(true);
         setIsEditImageModal(false);
+        setIsEditDepartmentModal(false);
         handleSetData()
     }
 
@@ -75,8 +80,16 @@ const StudentProfile = () => {
         setIsEditAddressModal(false);
         setIsEditParentModal(false);
         setIsEditImageModal(true);
+        setIsEditDepartmentModal(false);
     }
 
+    const handleEditDepartment = () => {
+        setIsEditPersonModal(false);
+        setIsEditAddressModal(false);
+        setIsEditParentModal(false);
+        setIsEditImageModal(false);
+        setIsEditDepartmentModal(true);
+    }
 
     const handlePersonChange = (e) => {
         const { name, value } = e.target;
@@ -108,7 +121,10 @@ const StudentProfile = () => {
         })
     }
     const handleUpdate = async () => {
-        if (isEditImageModal) {
+        if (isEditDepartmentModal) {
+            await dispatch(updateStudent(studentId, { departmentCode }))
+        }
+        else if (isEditImageModal) {
             await dispatch(updateStudentImage(studentId, image))
         }
         else if (isEditPersonModal) {
@@ -196,12 +212,28 @@ const StudentProfile = () => {
                                 <span>Registration Number : {student?.student?.registrationNumber}</span>
                             </div>
                             <div>
-                                <i className="bi bi-envelope"></i>
+                                <i className="bi bi-envelope-fill"></i>
                                 <span>Email : {student?.student?.email}</span>
                             </div>
                             <div>
                                 <i className="bi bi-person-fill"></i>
                                 <span>Username : {student?.student?.username}</span>
+                            </div>
+                            <div>
+                                <i className="bi bi-diagram-3-fill"></i>
+                                <span>Department : {student?.student?.departmentName}
+                                    {" "}
+                                    {student?.student?.departmentName &&
+                                        <>({student?.student?.departmentCode})</>
+                                    }
+                                </span>
+                                <button className="edit-icon-btn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal"
+                                    onClick={handleEditDepartment}
+                                >
+                                    <i className="bi bi-pencil-square"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -274,7 +306,13 @@ const StudentProfile = () => {
                     <div class="modal-content custom-modal">
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="exampleModalLabel">
-                                {isEditPersonModal ? "Edit Personal Details" : isEditAddress ? "Edit Address " : isEditImageModal ? "Edit Image" : "Edit Parents"}
+                                {
+                                    isEditPersonModal ? "Edit Personal Details" :
+                                        isEditAddress ? "Edit Address " :
+                                            isEditImageModal ? "Edit Image" :
+                                                isEditDepartmentModal ? "Edit Department" :
+                                                    "Edit Parents"
+                                }
                             </h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
@@ -483,13 +521,24 @@ const StudentProfile = () => {
                                                 </div>
                                             </div>
                                             :
-                                            <div>
-                                                <input
-                                                    type='file'
-                                                    accept='image/*'
-                                                    onChange={(e) => setImage(e.target.files[0])}
-                                                />
-                                            </div>
+                                            isEditDepartmentModal ?
+                                                <div>
+                                                    <label>Enter Department Code</label>
+                                                    <input type="text"
+                                                        className="modal-input"
+                                                        name='departmentCode'
+                                                        value={departmentCode}
+                                                        onChange={(e) => setDepartmentCode(e.target.value)}
+                                                    />
+                                                </div>
+                                                :
+                                                <div>
+                                                    <input
+                                                        type='file'
+                                                        accept='image/*'
+                                                        onChange={(e) => setImage(e.target.files[0])}
+                                                    />
+                                                </div>
                             }
                         </div>
                         <div class="modal-footer ">
