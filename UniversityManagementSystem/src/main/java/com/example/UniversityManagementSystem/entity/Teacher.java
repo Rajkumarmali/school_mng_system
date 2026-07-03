@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Teacher {
@@ -49,8 +51,8 @@ public class Teacher {
     @ManyToOne
     private Department department;
 
-    @OneToOne(mappedBy = "classTeacher")
-    private Class classTeacher;
+    @OneToMany(mappedBy = "classTeacher")
+    private List<Class> classTeacher=new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -58,7 +60,7 @@ public class Teacher {
     public Teacher(Long id, String firstName, String lastName, String email, String phoneNumber,
                    LocalDate dob, String image, Gender gender, Cast cast, String aadharNumber,
                    String panNumber, String employeeId, Address address, User user, College college,
-                   Parent parent, Department departmentHod, Department department, Class classTeacher, LocalDateTime createdAt,
+                   Parent parent, Department departmentHod,List<Class> classTeacher, Department department, LocalDateTime createdAt,
                    LocalDateTime updatedAt) {
         this.id = id;
         this.firstName = firstName;
@@ -74,11 +76,12 @@ public class Teacher {
         this.employeeId = employeeId;
         this.address = address;
         this.user = user;
+        this.classTeacher=classTeacher;
         this.college = college;
         this.parent = parent;
         this.departmentHod = departmentHod;
         this.department = department;
-        this.classTeacher = classTeacher;
+
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -222,14 +225,6 @@ public class Teacher {
         this.department = department;
     }
 
-    public Class getClassTeacher() {
-        return classTeacher;
-    }
-
-    public void setClassTeacher(Class classTeacher) {
-        this.classTeacher = classTeacher;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -252,5 +247,13 @@ public class Teacher {
 
     public void setDepartmentHod(Department departmentHod) {
         this.departmentHod = departmentHod;
+    }
+
+    public List<Class> getClassTeacher() {
+        return classTeacher;
+    }
+
+    public void setClassTeacher(List<Class> classTeacher) {
+        this.classTeacher = classTeacher;
     }
 }
