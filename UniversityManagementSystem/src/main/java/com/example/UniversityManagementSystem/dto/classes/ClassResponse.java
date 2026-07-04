@@ -1,0 +1,102 @@
+package com.example.UniversityManagementSystem.dto.classes;
+
+import com.example.UniversityManagementSystem.entity.type.ClassStatus;
+
+public class ClassResponse {
+    private Long id;
+    private String name;
+    private String academicYear;
+    private String semester;
+    private String departmentName;
+    private String departmentCode;
+    private ClassTeacherResponse classTeacherResponse;
+    private ClassStatus classStatus;
+    private Integer totalStudents;
+
+    public ClassResponse() {
+    }
+
+    public ClassResponse(Long id, String name, String academicYear, String semester, String departmentName, String departmentCode, ClassTeacherResponse classTeacherResponse, ClassStatus classStatus, Integer totalStudents) {
+        this.id = id;
+        this.name = name;
+        this.academicYear = academicYear;
+        this.semester = semester;
+        this.departmentName = departmentName;
+        this.departmentCode = departmentCode;
+        this.classTeacherResponse = classTeacherResponse;
+        this.classStatus = classStatus;
+        this.totalStudents = totalStudents;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAcademicYear() {
+        return academicYear;
+    }
+
+    public void setAcademicYear(String academicYear) {
+        this.academicYear = academicYear;
+    }
+
+    public String getSemester() {
+        return semester;
+    }
+
+    public void setSemester(String semester) {
+        this.semester = semester;
+    }
+
+    public String getDepartmentCode() {
+        return departmentCode;
+    }
+
+    public void setDepartmentCode(String departmentCode) {
+        this.departmentCode = departmentCode;
+    }
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
+
+    public ClassTeacherResponse getClassTeacherResponse() {
+        return classTeacherResponse;
+    }
+
+    public void setClassTeacherResponse(ClassTeacherResponse classTeacherResponse) {
+        this.classTeacherResponse = classTeacherResponse;
+    }
+
+    public ClassStatus getClassStatus() {
+        return classStatus;
+    }
+
+    public void setClassStatus(ClassStatus classStatus) {
+        this.classStatus = classStatus;
+    }
+
+    public Integer getTotalStudents() {
+        return totalStudents;
+    }
+
+    public void setTotalStudents(Integer totalStudents) {
+        this.totalStudents = totalStudents;
+    }
+}

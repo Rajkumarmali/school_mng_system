@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Teacher {
@@ -43,11 +45,14 @@ public class Teacher {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
     private Parent parent;
 
+    @OneToOne(mappedBy = "hodTeacher")
+    private Department departmentHod;
+
     @ManyToOne
     private Department department;
 
-    @OneToOne(mappedBy = "classTeacher")
-    private Class classTeacher;
+    @OneToMany(mappedBy = "classTeacher")
+    private List<Class> classTeacher=new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -55,7 +60,7 @@ public class Teacher {
     public Teacher(Long id, String firstName, String lastName, String email, String phoneNumber,
                    LocalDate dob, String image, Gender gender, Cast cast, String aadharNumber,
                    String panNumber, String employeeId, Address address, User user, College college,
-                   Parent parent,  Department department, Class classTeacher, LocalDateTime createdAt,
+                   Parent parent, Department departmentHod,List<Class> classTeacher, Department department, LocalDateTime createdAt,
                    LocalDateTime updatedAt) {
         this.id = id;
         this.firstName = firstName;
@@ -218,14 +223,6 @@ public class Teacher {
         this.department = department;
     }
 
-    public Class getClassTeacher() {
-        return classTeacher;
-    }
-
-    public void setClassTeacher(Class classTeacher) {
-        this.classTeacher = classTeacher;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -242,4 +239,19 @@ public class Teacher {
         this.updatedAt = updatedAt;
     }
 
+    public Department getDepartmentHod() {
+        return departmentHod;
+    }
+
+    public void setDepartmentHod(Department departmentHod) {
+        this.departmentHod = departmentHod;
+    }
+
+    public List<Class> getClassTeacher() {
+        return classTeacher;
+    }
+
+    public void setClassTeacher(List<Class> classTeacher) {
+        this.classTeacher = classTeacher;
+    }
 }
