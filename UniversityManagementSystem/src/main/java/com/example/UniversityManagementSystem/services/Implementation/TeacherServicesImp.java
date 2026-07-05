@@ -10,6 +10,7 @@ import com.example.UniversityManagementSystem.entity.College;
 import com.example.UniversityManagementSystem.entity.Parent;
 import com.example.UniversityManagementSystem.entity.University;
 import com.example.UniversityManagementSystem.repository.CollegeRepository;
+import com.example.UniversityManagementSystem.repository.DepartmentRepository;
 import com.example.UniversityManagementSystem.repository.TeacherRepository;
 import com.example.UniversityManagementSystem.repository.UniversityRepository;
 import com.example.UniversityManagementSystem.services.*;
@@ -44,15 +45,18 @@ public class TeacherServicesImp implements TeacherServices {
 
     private final TeacherRepository teacherRepository;
     private final UniversityRepository universityRepository;
+    private final DepartmentRepository departmentRepository;
 
     public TeacherServicesImp(AuthService authService, AddressService addressService, CollegeRepository collegeRepository, ParentServices parentServices, TeacherRepository teacherRepository,
-                              UniversityRepository universityRepository) {
+                              UniversityRepository universityRepository,
+                              DepartmentRepository departmentRepository) {
         this.authService = authService;
         this.addressService = addressService;
         this.collegeRepository = collegeRepository;
         this.parentServices = parentServices;
         this.teacherRepository = teacherRepository;
         this.universityRepository = universityRepository;
+        this.departmentRepository = departmentRepository;
     }
 
     @Override
@@ -71,6 +75,8 @@ public class TeacherServicesImp implements TeacherServices {
         University university = universityRepository.findById(universityId).orElseThrow(()->{
                throw new IllegalArgumentException("University not found");
         });
+
+        Department department = departmentRepository.findByCode(dto.getDepartmentCode());
 
         User savedUser = authService.createUser(dto.getEmail(),college,universityId, "TEACHER");
 
@@ -117,6 +123,9 @@ public class TeacherServicesImp implements TeacherServices {
         teacher.setCollege(college);
         teacher.setParent(savedParent);
         teacher.setCreatedAt(LocalDateTime.now());
+        if(department!=null){
+            teacher.setDepartment(department);
+        }
 
         Teacher savedTeacher = teacherRepository.save(teacher);
 
@@ -164,6 +173,9 @@ public class TeacherServicesImp implements TeacherServices {
             teacherResponse.setEmployeeId(teacher.getEmployeeId());
             teacherResponse.setGender(teacher.getGender());
             teacherResponse.setCast(teacher.getCast());
+            if(teacher.getDepartment()!=null){
+                teacherResponse.setDepartmentCode(teacher.getDepartment().getCode());
+            }
             teacherResponse.setAadharNumber(teacher.getAadharNumber());
             teacherResponse.setPanNumber(teacher.getPanNumber());
             teacherResponse.setAddressResponse(addressResponse);
@@ -184,8 +196,18 @@ public class TeacherServicesImp implements TeacherServices {
     public String updateTeacher(Long teacherId,TeacherRequest dto) {
         Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(()->
                 new IllegalArgumentException("Teacher not found"));
-
-        if(dto.getAddressRequest()!=null){
+        if(dto.getDepartmentCode()!=null){
+          Department department = departmentRepository.findByCode(dto.getDepartmentCode());
+          if(department!=null) {
+              teacher.setDepartment(department);
+              teacher.setUpdatedAt(LocalDateTime.now());
+              teacherRepository.save(teacher);
+              return "Department update successfully";
+          } else{
+              return "Department not found";
+          }
+        }
+        else if(dto.getAddressRequest()!=null){
             return addressService.updateAddress(teacher.getAddress().getId(),dto.getAddressRequest());
         } else if(dto.getParentRequest()!=null){
             return parentServices.updateParent(teacher.getParent().getId(),dto.getParentRequest());
@@ -258,6 +280,10 @@ public class TeacherServicesImp implements TeacherServices {
         teacherResponse.setImage(teacher.getImage());
         teacherResponse.setAadharNumber(teacher.getAadharNumber());
         teacherResponse.setPanNumber(teacher.getPanNumber());
+        if(teacher.getDepartment()!=null){
+            teacherResponse.setDepartmentCode(teacher.getDepartment().getCode());
+            teacherResponse.setDepartmentName(teacher.getDepartment().getName());
+        }
         teacherResponse.setAddressResponse(addressResponse);
         teacherResponse.setParentResponse(parentResponse);
 

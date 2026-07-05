@@ -25,6 +25,7 @@ const Student = () => {
         gender: "MALE",
         cast: "GENERAL",
         aadharNumber: "",
+        departmentCode: "",
         addressRequest: {
             address: "",
             city: "",
@@ -207,6 +208,7 @@ const Student = () => {
                         <tr>
                             <th>S.No</th>
                             <th>Registration No.</th>
+                            <th>Department Code</th>
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Phone Number</th>
@@ -223,6 +225,7 @@ const Student = () => {
                                         <tr kay={student.id}>
                                             <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
                                             <td>{student.registrationNumber}</td>
+                                            <td>{student.departmentCode}</td>
                                             <td>{student.firstName}</td>
                                             <td>{student.lastName}</td>
                                             <td>{student.phoneNumber}</td>
@@ -399,8 +402,18 @@ const Student = () => {
                                     />
                                 </div>
                                 <div>
+                                    <label>Department Code</label>
+                                    <input type="text"
+                                        className="modal-input"
+                                        name='departmentCode'
+                                        value={studentData.departmentCode}
+                                        onChange={handlStudentChange}
+                                    />
+                                </div>
+                                <div>
                                     <label>Upload Image</label>
                                     <input type='file'
+                                        className="modal-input"
                                         ref={fileInputRef}
                                         accept='image/*'
                                         onChange={(e) => setImage(e.target.files[0])}
