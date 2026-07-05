@@ -50,6 +50,12 @@ public class Student {
     @ManyToMany(mappedBy = "students")
     private List<Class> classes=new ArrayList<>();
 
+    @OneToMany(mappedBy = "student")
+    private List<StudentFee> studentFees=new ArrayList<>();
+
+    @OneToMany(mappedBy = "student")
+    private List<FeePayment> feePayments=new ArrayList<>();
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -231,5 +237,21 @@ public class Student {
 
     public void setClasses(List<Class> classes) {
         this.classes = classes;
+    }
+
+    public List<StudentFee> getStudentFees() {
+        return studentFees;
+    }
+
+    public void setStudentFees(List<StudentFee> studentFees) {
+        this.studentFees = studentFees;
+    }
+
+    public List<FeePayment> getFeePayments() {
+        return feePayments;
+    }
+
+    public void setFeePayments(List<FeePayment> feePayments) {
+        this.feePayments = feePayments;
     }
 }

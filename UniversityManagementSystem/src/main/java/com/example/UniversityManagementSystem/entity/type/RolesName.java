@@ -4,6 +4,7 @@ public enum RolesName {
     SUPER_ADMIN,
     HOD,
     ADMIN,
+    ACCOUNTANT,
     TEACHER,
     STUDENT
 }

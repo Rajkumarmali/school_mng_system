@@ -32,6 +32,9 @@ public class Department {
     @OneToMany(mappedBy = "department")
     List<Class> classList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "department")
+    private List<FeeStructure> feeStructures=new ArrayList<>();
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -39,7 +42,7 @@ public class Department {
     }
 
     public Department(Long id, String name, String description, String code, College college, Teacher hodTeacher,
-                      List<Teacher> teacherList, List<Student> studentList, List<Class> classList,
+                      List<Teacher> teacherList, List<Student> studentList, List<Class> classList,List<FeeStructure> feeStructures,
                       LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
@@ -50,6 +53,7 @@ public class Department {
         this.teacherList = teacherList;
         this.studentList = studentList;
         this.classList = classList;
+        this.feeStructures=feeStructures;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -140,5 +144,13 @@ public class Department {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public List<FeeStructure> getFeeStructures() {
+        return feeStructures;
+    }
+
+    public void setFeeStructures(List<FeeStructure> feeStructures) {
+        this.feeStructures = feeStructures;
     }
 }
