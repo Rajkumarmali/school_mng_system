@@ -81,7 +81,6 @@ public class Teacher {
         this.parent = parent;
         this.departmentHod = departmentHod;
         this.department = department;
-
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

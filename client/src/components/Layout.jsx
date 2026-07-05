@@ -11,6 +11,8 @@ import Teacher from '../pages/Teacher/Teacher';
 import TeacherProfile from '../pages/Teacher/TeacherProfile';
 import College from '../pages/College/College';
 import CollegeProfile from '../pages/College/CollegeProfile';
+import Department from '../pages/department/Department';
+import DepartmentDetails from '../pages/department/DepartmentDetails';
 
 
 const Layout = () => {
@@ -33,6 +35,8 @@ const Layout = () => {
                         <Route path='/student/profile' element={<StudentProfile />} />
                         <Route path='teacher' element={<Teacher />} />
                         <Route path='teacher/profile' element={<TeacherProfile />} />
+                        <Route path='department' element={<Department />} />
+                        <Route path='department/details/:departmentId' element={<DepartmentDetails />} />
                     </Routes>
                 </div>
 

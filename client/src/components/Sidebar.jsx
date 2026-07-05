@@ -52,8 +52,13 @@ const Sidebar = () => {
                                 Users
                             </Link>
                         </li>
+                        <li>
+                            <Link to="/department" className="menu-item">
+                                <i className="bi bi-diagram-3-fill me-2"></i>
+                                Departments
+                            </Link>
+                        </li>
                     </>
-
                 }
 
             </ul>
