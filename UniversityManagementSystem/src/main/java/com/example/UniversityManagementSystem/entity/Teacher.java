@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Teacher {
@@ -43,18 +45,28 @@ public class Teacher {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
     private Parent parent;
 
+    @OneToOne(mappedBy = "hodTeacher")
+    private Department departmentHod;
+
+    @ManyToOne
+    private Department department;
+
+    @OneToMany(mappedBy = "classTeacher")
+    private List<Class> classTeacher=new ArrayList<>();
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Teacher(String phoneNumber, Long id, String firstName, String lastName, String email,
-                   LocalDate dob, String image, Gender gender, Cast cast, String aadharNumber, String panNumber,
-                   String employeeId, Address address, User user, College college, Parent parent,
-                   LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.phoneNumber = phoneNumber;
+    public Teacher(Long id, String firstName, String lastName, String email, String phoneNumber,
+                   LocalDate dob, String image, Gender gender, Cast cast, String aadharNumber,
+                   String panNumber, String employeeId, Address address, User user, College college,
+                   Parent parent, Department departmentHod,List<Class> classTeacher, Department department, LocalDateTime createdAt,
+                   LocalDateTime updatedAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.phoneNumber = phoneNumber;
         this.dob = dob;
         this.image = image;
         this.gender = gender;
@@ -64,8 +76,12 @@ public class Teacher {
         this.employeeId = employeeId;
         this.address = address;
         this.user = user;
+        this.classTeacher=classTeacher;
         this.college = college;
         this.parent = parent;
+        this.departmentHod = departmentHod;
+        this.department = department;
+
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -119,6 +135,14 @@ public class Teacher {
 
     public void setDob(LocalDate dob) {
         this.dob = dob;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public Gender getGender() {
@@ -193,6 +217,14 @@ public class Teacher {
         this.parent = parent;
     }
 
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -209,11 +241,19 @@ public class Teacher {
         this.updatedAt = updatedAt;
     }
 
-    public String getImage() {
-        return image;
+    public Department getDepartmentHod() {
+        return departmentHod;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setDepartmentHod(Department departmentHod) {
+        this.departmentHod = departmentHod;
+    }
+
+    public List<Class> getClassTeacher() {
+        return classTeacher;
+    }
+
+    public void setClassTeacher(List<Class> classTeacher) {
+        this.classTeacher = classTeacher;
     }
 }

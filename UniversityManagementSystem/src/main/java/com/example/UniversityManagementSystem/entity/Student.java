@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Student {
@@ -42,12 +44,23 @@ public class Student {
     @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Parent parent;
 
+    @ManyToOne()
+    private Department department;
+
+    @ManyToMany
+    @JoinTable(
+            name = "student_class",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "class_id")
+    )
+    private List<Class> classes=new ArrayList<>();
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public Student(Long id, String firstName, String lastName, String email, String registrationNumber,
                    String phoneNumber, LocalDate dob, String image, Gender gender, Cast cast, String aadhaarNumber,
-                   Address address, User user, College college, Parent parent, LocalDateTime createdAt,
+                   Address address, User user, College college, Parent parent, Department department, List<Class> classes, LocalDateTime createdAt,
                    LocalDateTime updatedAt) {
         this.id = id;
         this.firstName = firstName;
@@ -64,6 +77,8 @@ public class Student {
         this.user = user;
         this.college = college;
         this.parent = parent;
+        this.department = department;
+        this.classes = classes;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -127,6 +142,14 @@ public class Student {
         this.dob = dob;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     public Gender getGender() {
         return gender;
     }
@@ -167,12 +190,28 @@ public class Student {
         this.user = user;
     }
 
+    public College getCollege() {
+        return college;
+    }
+
+    public void setCollege(College college) {
+        this.college = college;
+    }
+
     public Parent getParent() {
         return parent;
     }
 
     public void setParent(Parent parent) {
         this.parent = parent;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -191,19 +230,11 @@ public class Student {
         this.updatedAt = updatedAt;
     }
 
-    public String getImage() {
-        return image;
+    public List<Class> getClasses() {
+        return classes;
     }
 
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public College getCollege() {
-        return college;
-    }
-
-    public void setCollege(College college) {
-        this.college = college;
+    public void setClasses(List<Class> classes) {
+        this.classes = classes;
     }
 }
