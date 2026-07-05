@@ -47,15 +47,20 @@ public class Student {
     @ManyToOne()
     private Department department;
 
-    @OneToMany(mappedBy = "student")
-    private List<StudentClass> studentClassList = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "student_class",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "class_id")
+    )
+    private List<Class> classes=new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public Student(Long id, String firstName, String lastName, String email, String registrationNumber,
                    String phoneNumber, LocalDate dob, String image, Gender gender, Cast cast, String aadhaarNumber,
-                   Address address, User user,List<StudentClass> studentClassList, College college, Parent parent, Department department, LocalDateTime createdAt,
+                   Address address, User user, College college, Parent parent, Department department, List<Class> classes, LocalDateTime createdAt,
                    LocalDateTime updatedAt) {
         this.id = id;
         this.firstName = firstName;
@@ -73,7 +78,7 @@ public class Student {
         this.college = college;
         this.parent = parent;
         this.department = department;
-        this.studentClassList = studentClassList;
+        this.classes = classes;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -209,14 +214,6 @@ public class Student {
         this.department = department;
     }
 
-    public List<StudentClass> getStudentClassList() {
-        return studentClassList;
-    }
-
-    public void setStudentClassList(List<StudentClass> studentClassList) {
-        this.studentClassList = studentClassList;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -231,5 +228,13 @@ public class Student {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public List<Class> getClasses() {
+        return classes;
+    }
+
+    public void setClasses(List<Class> classes) {
+        this.classes = classes;
     }
 }

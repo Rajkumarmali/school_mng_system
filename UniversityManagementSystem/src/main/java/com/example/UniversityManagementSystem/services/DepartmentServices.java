@@ -1,7 +1,6 @@
 package com.example.UniversityManagementSystem.services;
 
-import com.example.UniversityManagementSystem.dto.department.DepartmentRequest;
-import com.example.UniversityManagementSystem.dto.department.DepartmentResponse;
+import com.example.UniversityManagementSystem.dto.department.*;
 import org.springframework.data.domain.Page;
 
 public interface DepartmentServices {
@@ -10,4 +9,7 @@ public interface DepartmentServices {
     Page<DepartmentResponse> getAllDepartment(Long collegeId,int pageNumber,int pageSize);
     DepartmentResponse getDepartmentById(Long departmentId);
     String deleteDepartment(Long departmentId);
+    Page<DepartmentTeacherResponse> getDepartmentsTeacher(Long departmentId,int pageNumber,int pageSize);
+    Page<DepartmentStudentsResponse> getDepartmentsStudents(Long departmentId,int pageNumber,int pageSize);
+    Page<DepartmentClassResponse> getDepartmentsClasses(Long departmentId,int pageNumber,int pageSize);
 }

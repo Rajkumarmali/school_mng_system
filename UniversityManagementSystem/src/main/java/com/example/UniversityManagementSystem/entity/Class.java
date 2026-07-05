@@ -1,5 +1,6 @@
 package com.example.UniversityManagementSystem.entity;
 
+import com.example.UniversityManagementSystem.entity.type.ClassStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -16,14 +17,17 @@ public class Class {
     private String acedamicYear;
     private String semester;
 
+    @Enumerated(EnumType.STRING)
+    private ClassStatus classStatus;
+
     @ManyToOne
     private Department department;
 
-    @OneToOne
+    @ManyToOne
     private Teacher classTeacher;
 
-    @OneToMany(mappedBy = "aclass")
-    List<StudentClass> studentClassList = new ArrayList<>();
+    @ManyToMany(mappedBy = "classes")
+    private List<Student> students=new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -31,16 +35,17 @@ public class Class {
     public Class() {
     }
 
-    public Class(Long id, String name, String acedamicYear, String semester, Department department,
-                 Teacher classTeacher, List<StudentClass> studentClassList, LocalDateTime createdAt,
+    public Class(Long id, String name, String acedamicYear, String semester, ClassStatus classStatus, Department department,
+                 Teacher classTeacher, List<Student> students, LocalDateTime createdAt,
                  LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.acedamicYear = acedamicYear;
         this.semester = semester;
+        this.classStatus = classStatus;
         this.department = department;
         this.classTeacher = classTeacher;
-        this.studentClassList = studentClassList;
+        this.students = students;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -93,14 +98,6 @@ public class Class {
         this.classTeacher = classTeacher;
     }
 
-    public List<StudentClass> getStudentClassList() {
-        return studentClassList;
-    }
-
-    public void setStudentClassList(List<StudentClass> studentClassList) {
-        this.studentClassList = studentClassList;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -115,5 +112,21 @@ public class Class {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public ClassStatus getClassStatus() {
+        return classStatus;
+    }
+
+    public void setClassStatus(ClassStatus classStatus) {
+        this.classStatus = classStatus;
+    }
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
 }

@@ -1,13 +1,12 @@
 package com.example.UniversityManagementSystem.services.Implementation;
 
-import com.example.UniversityManagementSystem.dto.department.DepartmentRequest;
-import com.example.UniversityManagementSystem.dto.department.DepartmentResponse;
+import com.example.UniversityManagementSystem.dto.department.*;
+import com.example.UniversityManagementSystem.entity.Class;
 import com.example.UniversityManagementSystem.entity.College;
 import com.example.UniversityManagementSystem.entity.Department;
+import com.example.UniversityManagementSystem.entity.Student;
 import com.example.UniversityManagementSystem.entity.Teacher;
-import com.example.UniversityManagementSystem.repository.CollegeRepository;
-import com.example.UniversityManagementSystem.repository.DepartmentRepository;
-import com.example.UniversityManagementSystem.repository.TeacherRepository;
+import com.example.UniversityManagementSystem.repository.*;
 import com.example.UniversityManagementSystem.services.DepartmentServices;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.CacheEvict;
@@ -31,10 +30,14 @@ public class DepartmentServicesImp implements DepartmentServices {
 
     public DepartmentServicesImp(DepartmentRepository departmentRepository,
                                  CollegeRepository collegeRepository,
-                                 TeacherRepository teacherRepository) {
+                                 TeacherRepository teacherRepository,
+                                 StudentRepository studentRepository,
+                                 ClassRepository classRepository) {
         this.departmentRepository = departmentRepository;
         this.collegeRepository = collegeRepository;
         this.teacherRepository = teacherRepository;
+        this.studentRepository = studentRepository;
+        this.classRepository = classRepository;
     }
 
 
@@ -135,6 +138,9 @@ public class DepartmentServicesImp implements DepartmentServices {
         response.setName(department.getName());
         response.setCode(department.getCode());
         response.setDescription(department.getDescription());
+        response.setTotalTeacher(department.getTeacherList().size());
+        response.setTotalStudent(department.getStudentList().size());
+        response.setTotalClass(department.getClassList().size());
         if(department.getHodTeacher()!=null){
             response.setHodName(department.getHodTeacher().getFirstName()+" "+department.getHodTeacher().getLastName());
             response.setHodEmail(department.getHodTeacher().getEmail());
@@ -159,9 +165,86 @@ public class DepartmentServicesImp implements DepartmentServices {
         return "Delete department successfully";
     }
 
+    @Override
+    @PreAuthorize("hasAnyRole('HOD','ADMIN')")
+    @Cacheable(cacheNames = "departmentsTeachers",key = "{#departmentId,#pageNumber,#pageSize}")
+    public Page<DepartmentTeacherResponse> getDepartmentsTeacher(Long departmentId, int pageNumber, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+
+        Department department = departmentRepository.findById(departmentId).orElseThrow(()->
+                new IllegalArgumentException("Department not found"));
+
+        Page<Teacher> teachers = teacherRepository.findByDepartment(department,pageable);
+        Page<DepartmentTeacherResponse> responses = teachers.map((teacher)->{
+            DepartmentTeacherResponse res = new DepartmentTeacherResponse();
+            res.setId(teacher.getId());
+            res.setFirstName(teacher.getFirstName());
+            res.setLastName(teacher.getLastName());
+            res.setEmail(teacher.getEmail());
+            res.setPhoneNumber(teacher.getPhoneNumber());
+            res.setGender(teacher.getGender());
+            res.setEmployeeId(teacher.getEmployeeId());
+            return res;
+        });
+        return responses;
+    }
+
+    @Override
+    @PreAuthorize("hasAnyRole('HOD','ADMIN')")
+    @Cacheable(cacheNames = "departmentsStudents",key = "{#departmentId,#pageNumber,#pageSize}")
+    public Page<DepartmentStudentsResponse> getDepartmentsStudents(Long departmentId, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Department department = departmentRepository.findById(departmentId).orElseThrow(()->
+                new IllegalArgumentException("Department not found"));
+
+        Page<Student> students = studentRepository.findByDepartment(department,pageable);
+        Page<DepartmentStudentsResponse> responses = students.map(student -> {
+            DepartmentStudentsResponse res = new DepartmentStudentsResponse();
+            res.setId(student.getId());
+            res.setFirstName(student.getFirstName());
+            res.setLastName(student.getLastName());
+            res.setEmail(student.getEmail());
+            res.setPhoneNumber(student.getPhoneNumber());
+            res.setRegistrationNumber(student.getRegistrationNumber());
+            res.setGender(student.getGender());
+            return res;
+        });
+        return responses;
+    }
+
+    @Override
+    @Cacheable(cacheNames = "departmentsClasses",key = "{#departmentId,#pageNumber,#pageSize}")
+    public Page<DepartmentClassResponse> getDepartmentsClasses(Long departmentId, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+
+        Department department = departmentRepository.findById(departmentId).orElseThrow(()->
+                new IllegalArgumentException("Department not found"));
+
+        Page<Class> classes = classRepository.findByDepartment(department,pageable);
+
+        Page<DepartmentClassResponse> responses = classes.map(clas->{
+            DepartmentClassResponse res = new DepartmentClassResponse();
+            Teacher classTeacher = clas.getClassTeacher();
+            if(classTeacher!=null){
+                res.setClassTeacherName(classTeacher.getFirstName()+" "+classTeacher.getLastName());
+                res.setClassTeacherEmail(classTeacher.getEmail());
+                res.setClassTeacherPhoneNumber(classTeacher.getPhoneNumber());
+            }
+            res.setId(clas.getId());
+            res.setName(clas.getName());
+            res.setSemester(clas.getSemester());
+            res.setAcademicYear(clas.getAcedamicYear());
+            return res;
+        });
+        return responses;
+    }
+
     private static final Set<String> IGNORE_WORDS = Set.of(
             "of", "and", "the", "for", "in", "on"
     );
+    private final StudentRepository studentRepository;
+    private final ClassRepository classRepository;
 
     private String generateDepartmentCode(String departmentName) {
         StringBuilder code = new StringBuilder();

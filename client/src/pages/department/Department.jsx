@@ -47,9 +47,7 @@ const Department = () => {
     }
 
     const handleViewDetails = (departmentId) => {
-        navigate('/department/details', {
-            state: { departmentId }
-        })
+        navigate(`/department/details/${departmentId}`)
     }
 
     const totalPages = department?.departments?.totalPages || 0;
