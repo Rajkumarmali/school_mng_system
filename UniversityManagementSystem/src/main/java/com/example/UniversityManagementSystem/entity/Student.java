@@ -47,12 +47,7 @@ public class Student {
     @ManyToOne()
     private Department department;
 
-    @ManyToMany
-    @JoinTable(
-            name = "student_class",
-            joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "class_id")
-    )
+    @ManyToMany(mappedBy = "students")
     private List<Class> classes=new ArrayList<>();
 
     private LocalDateTime createdAt;

@@ -26,7 +26,11 @@ public class CacheConfig {
                 "departments",
                 "departmentsTeachers",
                 "departmentsStudents",
-                "departmentsClasses"
+                "departmentsClasses",
+                "departments",
+                "classes",
+                "class",
+                "classStudents"
         );
     }
 }

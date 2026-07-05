@@ -26,7 +26,12 @@ public class Class {
     @ManyToOne
     private Teacher classTeacher;
 
-    @ManyToMany(mappedBy = "classes")
+    @ManyToMany()
+    @JoinTable(
+            name = "class_student",
+            joinColumns = @JoinColumn(name = "class_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id")
+    )
     private List<Student> students=new ArrayList<>();
 
     private LocalDateTime createdAt;

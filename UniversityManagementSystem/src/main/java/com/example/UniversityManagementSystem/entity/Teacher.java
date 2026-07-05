@@ -76,11 +76,11 @@ public class Teacher {
         this.employeeId = employeeId;
         this.address = address;
         this.user = user;
-        this.classTeacher=classTeacher;
         this.college = college;
         this.parent = parent;
         this.departmentHod = departmentHod;
         this.department = department;
+        this.classTeacher = classTeacher;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

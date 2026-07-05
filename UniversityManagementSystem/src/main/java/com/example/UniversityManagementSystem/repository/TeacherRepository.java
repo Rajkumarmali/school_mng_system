@@ -14,5 +14,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 
     Teacher findByEmailOrEmployeeId(String hodTeacherEmailOrEmplId, String hodTeacherEmailOrEmplId1);
 
+    Teacher findByUserId(Long userId);
+
     Page<Teacher> findByDepartment(Department department, Pageable pageable);
 }

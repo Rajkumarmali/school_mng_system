@@ -11,6 +11,7 @@ const Sidebar = () => {
 
     const isSuperAdmin = roles.includes("SUPER_ADMIN")
     const isAdmin = roles.includes("ADMIN")
+    const isHod = roles.includes("HOD")
 
 
     return (
@@ -60,7 +61,17 @@ const Sidebar = () => {
                         </li>
                     </>
                 }
-
+                {
+                    (isHod || isAdmin) &&
+                    <>
+                        <li>
+                            <Link to="/classes" className="menu-item">
+                                <i className="bi bi-book-fill me-2"></i>
+                                Classes
+                            </Link>
+                        </li>
+                    </>
+                }
             </ul>
         </div>
     );

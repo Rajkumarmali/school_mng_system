@@ -1,0 +1,145 @@
+.class-student-card {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    padding:20px;
+}
+
+.class-student-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.class-student-header h2 {
+    margin: 0;
+    font-weight: 700;
+}
+
+.class-student-header p {
+    margin: 0;
+}
+
+.add-class-student-btn {
+    background: transparent;
+    color: white;
+    border: 1px solid white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.add-class-student-btn:hover {
+    background: transparent;
+    color: #3c58c9;
+}
+
+.class-student-table {
+    margin-top: 30px;
+}
+
+.class-student-table thead {
+  background: transparent !important;
+}
+
+.class-student-table th {
+    background: transparent !important;
+    font-weight: 600;
+    color: #495057;
+    padding: 14px;
+}
+
+.class-student-table td {
+    background: transparent !important;
+    vertical-align: middle;
+    padding: 14px;
+}
+
+.class-student-modal-table{
+    margin-top: 0px;
+}
+
+.class-student-modal-table thead {
+  background: transparent !important;
+}
+
+.class-student-modal-table  th {
+    background: transparent !important;
+    font-weight: 600;
+    color: #495057;
+    padding: 14px;
+}
+
+.class-student-modal-table td {
+    background: transparent !important;
+    vertical-align: middle;
+    padding: 14px;
+}
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    margin-top: 10px;
+}
+
+.pagination-info {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.page-size-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.page-size-selector select {
+    background: transparent;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 5px 10px;
+    outline: none;
+}
+.custom-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.custom-pagination li {
+    list-style: none;
+}
+
+.custom-pagination button {
+    border: none;
+    background: transparent;
+    color: #222; 
+    cursor: pointer;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.custom-pagination button:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+.custom-pagination .active-page {
+    background: #0d6efd;
+    color: white;
+}
+
+.custom-pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.dots {
+    font-size: 24px;
+    padding: 0 5px;
+}
