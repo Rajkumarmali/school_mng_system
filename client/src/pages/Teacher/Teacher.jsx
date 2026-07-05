@@ -28,6 +28,7 @@ const Teacher = () => {
             cast: 'GENERAL',
             aadharNumber: '',
             panNumber: '',
+            departmentCode: '',
             parentRequest: {
                 fatherName: '',
                 motherName: '',
@@ -215,6 +216,7 @@ const Teacher = () => {
                                     <tr>
                                         <th>S.No</th>
                                         <th>EmployeeId</th>
+                                        <th>Department Code</th>
                                         <th>FirstName</th>
                                         <th>LastName</th>
                                         <th>Email</th>
@@ -230,6 +232,7 @@ const Teacher = () => {
                                                 <tr key={teacher.id}>
                                                     <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
                                                     <td>{teacher.employeeId}</td>
+                                                    <td>{teacher.departmentCode}</td>
                                                     <td>{teacher.firstName}</td>
                                                     <td>{teacher.lastName}</td>
                                                     <td>{teacher.email}</td>
@@ -416,8 +419,17 @@ const Teacher = () => {
                                         onChange={handlePersonChange} />
                                 </div>
                                 <div>
+                                    <label>Department Code</label>
+                                    <input type="text"
+                                        className="modal-input"
+                                        name='departmentCode'
+                                        value={teacherData.departmentCode}
+                                        onChange={handlePersonChange} />
+                                </div>
+                                <div>
                                     <label>Upload Image</label>
                                     <input
+                                        className="modal-input"
                                         type='file'
                                         accept='image/*'
                                         onChange={(e) => setImage(e.target.files[0])}

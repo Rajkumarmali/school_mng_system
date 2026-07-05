@@ -11,6 +11,7 @@ import com.example.UniversityManagementSystem.entity.Parent;
 import com.example.UniversityManagementSystem.entity.Student;
 import com.example.UniversityManagementSystem.entity.University;
 import com.example.UniversityManagementSystem.repository.CollegeRepository;
+import com.example.UniversityManagementSystem.repository.DepartmentRepository;
 import com.example.UniversityManagementSystem.repository.StudentRepository;
 import com.example.UniversityManagementSystem.repository.UniversityRepository;
 import com.example.UniversityManagementSystem.services.AddressService;
@@ -44,16 +45,19 @@ public class StudentServicesImp implements StudentServices {
     private final AddressService addressService;
     private final ParentServices parentServices;
     private final UniversityRepository universityRepository;
+    private final DepartmentRepository departmentRepository;
 
 
     public StudentServicesImp(StudentRepository studentRepository, CollegeRepository collegeRepository, AuthService authService, AddressService addressService, ParentServices parentServices,
-                              UniversityRepository universityRepository) {
+                              UniversityRepository universityRepository,
+                              DepartmentRepository departmentRepository) {
         this.studentRepository = studentRepository;
         this.collegeRepository = collegeRepository;
         this.authService = authService;
         this.addressService = addressService;
         this.parentServices = parentServices;
         this.universityRepository = universityRepository;
+        this.departmentRepository = departmentRepository;
     }
 
     @Transactional
@@ -72,6 +76,8 @@ public class StudentServicesImp implements StudentServices {
         University university = universityRepository.findById(universityId).orElseThrow(()->{
            throw new IllegalArgumentException("University not found");
         });
+
+        Department department = departmentRepository.findByCode(dto.getDepartmentCode());
 
         Address savedAddress = addressService.createAddress(dto.getAddressRequest());
         User savedUser = authService.createUser(dto.getEmail(), college,universityId,"STUDENT");
@@ -114,6 +120,9 @@ public class StudentServicesImp implements StudentServices {
         student.setUser(savedUser);
         student.setCollege(college);
         student.setParent(savedParent);
+        if(department!=null){
+            student.setDepartment(department);
+        }
         student.setCreatedAt(LocalDateTime.now());
         Student savedStudent = studentRepository.save(student);
 
@@ -164,6 +173,9 @@ public class StudentServicesImp implements StudentServices {
             studentResponse.setRegistrationNumber(student.getRegistrationNumber());
             studentResponse.setCast(student.getCast());
             studentResponse.setAadharNumber(student.getAadhaarNumber());
+            if(student.getDepartment()!=null){
+                studentResponse.setDepartmentCode(student.getDepartment().getCode());
+            }
             studentResponse.setAddressResponse(addressResponse);
             studentResponse.setParentResponse(parentResponse);
             return studentResponse;
@@ -211,6 +223,10 @@ public class StudentServicesImp implements StudentServices {
         studentResponse.setImage(student.getImage());
         studentResponse.setAadharNumber(student.getAadhaarNumber());
         studentResponse.setUsername(student.getUser().getUsername());
+        if(student.getDepartment()!=null){
+            studentResponse.setDepartmentCode(student.getDepartment().getCode());
+            studentResponse.setDepartmentName(student.getDepartment().getName());
+        }
         studentResponse.setAddressResponse(addressResponse);
         studentResponse.setParentResponse(parentResponse);
         return studentResponse;
@@ -226,8 +242,14 @@ public class StudentServicesImp implements StudentServices {
     public String updateStudent(Long studentId, StudentRequest dto) {
         Student student = studentRepository.findById(studentId).orElseThrow(()->
                 new IllegalArgumentException("Student not found"));
-
-        if(dto.getAddressRequest()!=null){
+        if(dto.getDepartmentCode()!=null){
+            Department department = departmentRepository.findByCode(dto.getDepartmentCode());
+            student.setDepartment(department);
+            student.setUpdatedAt(LocalDateTime.now());
+            studentRepository.save(student);
+            return "Department update successfully";
+        }
+        else if(dto.getAddressRequest()!=null){
             return addressService.updateAddress(student.getAddress().getId(),dto.getAddressRequest());
         } else if(dto.getParentRequest()!=null){
             return parentServices.updateParent(student.getParent().getId(),dto.getParentRequest());

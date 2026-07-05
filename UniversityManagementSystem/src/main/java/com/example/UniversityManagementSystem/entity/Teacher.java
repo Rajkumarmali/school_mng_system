@@ -78,6 +78,7 @@ public class Teacher {
         this.user = user;
         this.college = college;
         this.parent = parent;
+        this.departmentHod = departmentHod;
         this.department = department;
         this.classTeacher = classTeacher;
         this.createdAt = createdAt;

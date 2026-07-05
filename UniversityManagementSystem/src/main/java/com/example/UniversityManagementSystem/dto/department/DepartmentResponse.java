@@ -9,12 +9,15 @@ public class DepartmentResponse {
     private String hodEmail;
     private String hodPhoneNumber;
     private String employeeId;
+    private Integer totalTeacher;
+    private Integer totalStudent;
+    private Integer totalClass;
 
     public DepartmentResponse() {
     }
 
     public DepartmentResponse(Long id, String name, String description, String hodName, String hodEmail,
-                              String hodPhoneNumber, String code, String employeeId) {
+                              String hodPhoneNumber, String code, String employeeId, Integer totalTeacher, Integer totalStudent, Integer totalClass) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -23,6 +26,9 @@ public class DepartmentResponse {
         this.hodPhoneNumber = hodPhoneNumber;
         this.code = code;
         this.employeeId = employeeId;
+        this.totalTeacher = totalTeacher;
+        this.totalStudent = totalStudent;
+        this.totalClass = totalClass;
     }
 
     public Long getId() {
@@ -87,5 +93,29 @@ public class DepartmentResponse {
 
     public void setEmployeeId(String employeeId) {
         this.employeeId = employeeId;
+    }
+
+    public Integer getTotalTeacher() {
+        return totalTeacher;
+    }
+
+    public void setTotalTeacher(Integer totalTeacher) {
+        this.totalTeacher = totalTeacher;
+    }
+
+    public Integer getTotalStudent() {
+        return totalStudent;
+    }
+
+    public void setTotalStudent(Integer totalStudent) {
+        this.totalStudent = totalStudent;
+    }
+
+    public Integer getTotalClass() {
+        return totalClass;
+    }
+
+    public void setTotalClass(Integer totalClass) {
+        this.totalClass = totalClass;
     }
 }

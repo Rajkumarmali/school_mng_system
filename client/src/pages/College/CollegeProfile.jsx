@@ -107,14 +107,16 @@ const CollegeProfile = () => {
                         <h2>{college.college?.name}({college.college?.shortName})</h2>
                         <p>College Code : {college.college?.collegeCode}</p>
                         <p>Email : {college?.college?.email}</p>
-                        <div className="section-header"><p>Phone : {college?.college?.phoneNumber}</p>
+                        <div className="section-header">
+                            <p>Phone : {college?.college?.phoneNumber}</p>
                             <button className="edit-icon-btn"
                                 data-bs-toggle="modal"
                                 data-bs-target="#exampleModal"
                                 onClick={handleEdit}
                             >
                                 <i className="bi bi-pencil-square"></i>
-                            </button></div>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div className="stats-container">

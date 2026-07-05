@@ -1,5 +1,6 @@
 package com.example.UniversityManagementSystem.repository;
 
+import com.example.UniversityManagementSystem.entity.Department;
 import com.example.UniversityManagementSystem.entity.Teacher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,4 +15,6 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     Teacher findByEmailOrEmployeeId(String hodTeacherEmailOrEmplId, String hodTeacherEmailOrEmplId1);
 
     Teacher findByUserId(Long userId);
+
+    Page<Teacher> findByDepartment(Department department, Pageable pageable);
 }

@@ -1,8 +1,7 @@
 package com.example.UniversityManagementSystem.controller;
 
 import com.example.UniversityManagementSystem.config.JwtProvider;
-import com.example.UniversityManagementSystem.dto.department.DepartmentRequest;
-import com.example.UniversityManagementSystem.dto.department.DepartmentResponse;
+import com.example.UniversityManagementSystem.dto.department.*;
 import com.example.UniversityManagementSystem.services.DepartmentServices;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -53,6 +52,30 @@ public class DepartmentController {
     @DeleteMapping("/delete-department/{id}")
     public ResponseEntity<String> deleteDepartment(@PathVariable Long id){
         String res = departmentServices.deleteDepartment(id);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("get-departments-teacher/{id}")
+    public ResponseEntity<Page<DepartmentTeacherResponse>> getDepartmentTeacher(@PathVariable Long id,
+                                                                          @RequestParam(defaultValue = "0") int pageNumber,
+                                                                          @RequestParam(defaultValue = "10") int pageSize){
+         Page<DepartmentTeacherResponse> res = departmentServices.getDepartmentsTeacher(id,pageNumber,pageSize);
+         return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("get-departments-student/{id}")
+    public ResponseEntity<Page<DepartmentStudentsResponse>> getDepartmentStudent(@PathVariable Long id,
+                                                                                 @RequestParam(defaultValue = "0") int pageNumber,
+                                                                                 @RequestParam(defaultValue = "10") int pageSize){
+        Page<DepartmentStudentsResponse> res = departmentServices.getDepartmentsStudents(id,pageNumber,pageSize);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("get-departments-class/{id}")
+    public ResponseEntity<Page<DepartmentClassResponse>> getDepartmentClasses(@PathVariable Long id,
+                                                                              @RequestParam(defaultValue = "0") int pageNumber,
+                                                                              @RequestParam(defaultValue = "10") int pageSize){
+        Page<DepartmentClassResponse> res = departmentServices.getDepartmentsClasses(id,pageNumber,pageSize);
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
 }
