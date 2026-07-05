@@ -1,6 +1,7 @@
 package com.example.UniversityManagementSystem.controller;
 
 import com.example.UniversityManagementSystem.config.JwtProvider;
+import com.example.UniversityManagementSystem.dto.user.RoleResponse;
 import com.example.UniversityManagementSystem.dto.user.UpdateUserRequest;
 import com.example.UniversityManagementSystem.dto.user.UserResponse;
 import com.example.UniversityManagementSystem.services.UserServices;
@@ -57,5 +58,16 @@ public class UserController {
         Long userId = jwtProvider.getUserIdFromToken(jwt);
         String res = userServices.updateUserImage(userId,image);
         return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+    @GetMapping("/get-allroles")
+    public ResponseEntity<List<RoleResponse>> getAllRoles(@RequestHeader("Authorization") String jwt){
+        Long collegeId = jwtProvider.getCollegeIdFromToken(jwt);
+        List<RoleResponse> res = userServices.getAllRole(collegeId);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+    @PostMapping("/update-userrole/{id}")
+    public ResponseEntity<String> updateUserRole(@PathVariable Long id,@RequestBody List<Long> roleIds){
+          String res = userServices.updateUserRoles(id,roleIds);
+          return new ResponseEntity<>(res,HttpStatus.OK);
     }
 }

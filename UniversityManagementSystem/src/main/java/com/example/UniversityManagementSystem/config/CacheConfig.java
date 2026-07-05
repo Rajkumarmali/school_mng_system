@@ -20,6 +20,8 @@ public class CacheConfig {
                 "students",
                 "teacher",
                 "teachers",
+                "roles",
+                "teachers",
                 "department",
                 "departments",
                 "departmentsTeachers",

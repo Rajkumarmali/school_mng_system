@@ -4,9 +4,11 @@ import com.example.UniversityManagementSystem.dto.address.AddressResponse;
 import com.example.UniversityManagementSystem.dto.parent.ParentResponse;
 import com.example.UniversityManagementSystem.dto.student.StudentResponse;
 import com.example.UniversityManagementSystem.dto.teacher.TeacherResponse;
+import com.example.UniversityManagementSystem.dto.user.RoleResponse;
 import com.example.UniversityManagementSystem.dto.user.UpdateUserRequest;
 import com.example.UniversityManagementSystem.dto.user.UserResponse;
 import com.example.UniversityManagementSystem.entity.*;
+import com.example.UniversityManagementSystem.repository.RolesRepository;
 import com.example.UniversityManagementSystem.repository.UserRepository;
 import com.example.UniversityManagementSystem.services.UserServices;
 import org.springframework.cache.annotation.CacheEvict;
@@ -32,9 +34,12 @@ import java.util.stream.Collectors;
 public class UserServicesImp implements UserServices {
 
     private final UserRepository userRepository;
+    private final RolesRepository rolesRepository;
 
-    public UserServicesImp(UserRepository userRepository) {
+    public UserServicesImp(UserRepository userRepository,
+                           RolesRepository rolesRepository) {
         this.userRepository = userRepository;
+        this.rolesRepository = rolesRepository;
     }
 
     @Override
@@ -116,8 +121,16 @@ public class UserServicesImp implements UserServices {
             studentResponse.setParentResponse(parentResponse);
             response.setStudentResponse(studentResponse);
         }
+
+        List<Roles> rolesList = user.getRoles();
+        List<RoleResponse> roleResponses = rolesList.stream().map(roles -> {
+            RoleResponse res = new RoleResponse();
+            res.setId(roles.getId());
+            res.setName(roles.getName());
+            return res;
+        }).toList();
+        response.setRoleResponse(roleResponses);
         response.setUserImage(user.getUserProfile());
-        response.setUserRoles(userRoles);
         response.setId(user.getId());
         response.setUserName(user.getUsername());
         response.setEmail(user.getEmail());
@@ -194,5 +207,35 @@ public class UserServicesImp implements UserServices {
             throw new RuntimeException(e);
         }
 
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    @Cacheable(cacheNames = "roles", key = "#collegeId != null ? #collegeId : 0")
+    public List<RoleResponse> getAllRole(Long collegeId) {
+        List<Roles> rolesList = rolesRepository.findByCollegeId(collegeId);
+        List<RoleResponse> responses = rolesList.stream().map(roles -> {
+            RoleResponse res = new RoleResponse();
+            res.setId(roles.getId());
+            res.setName(roles.getName());
+            return  res;
+        }).toList();
+        return responses;
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "users",allEntries = true),
+            @CacheEvict(cacheNames = "user",key = "#userId")
+    })
+    public String updateUserRoles(Long userId, List<Long> roleIds) {
+        User user = userRepository.findById(userId).orElseThrow(()->
+             new IllegalArgumentException("User not found")
+        );
+        List<Roles> rolesList = rolesRepository.findAllById(roleIds);
+        user.setRoles(rolesList);
+        userRepository.save(user);
+        return "User roles update successfully";
     }
 }
