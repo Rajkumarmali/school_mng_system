@@ -154,6 +154,7 @@ const Classes = () => {
                     <thead>
                         <tr>
                             <th>S No.</th>
+                            <th>ClassCode</th>
                             <th>Name</th>
                             <th>Semester</th>
                             <th>academic Year</th>
@@ -183,6 +184,7 @@ const Classes = () => {
                                 )?.map((clas, index) =>
                                     <tr key={clas.id}>
                                         <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                        <td>{clas.classCode}</td>
                                         <td>{clas.name}</td>
                                         <td>{clas.semester}</td>
                                         <td>{clas.academicYear}</td>

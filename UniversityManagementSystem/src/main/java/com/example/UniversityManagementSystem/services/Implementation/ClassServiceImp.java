@@ -63,6 +63,8 @@ public class ClassServiceImp implements ClassService {
         }
         clas.setCreatedAt(LocalDateTime.now());
         classRepository.save(clas);
+        clas.setClassCode(String.format("CLS%04d", clas.getId()));
+        classRepository.save(clas);
         return "Create class successfully";
     }
 
@@ -132,6 +134,7 @@ public class ClassServiceImp implements ClassService {
             res.setName(clas.getName());
             res.setAcademicYear(clas.getAcedamicYear());
             res.setSemester(clas.getSemester());
+            res.setClassCode(clas.getClassCode());
             res.setDepartmentCode(clas.getDepartment().getCode());
             return res;
         });
@@ -162,6 +165,7 @@ public class ClassServiceImp implements ClassService {
             res.setName(clas.getName());
             res.setAcademicYear(clas.getAcedamicYear());
             res.setSemester(clas.getSemester());
+            res.setClassCode(clas.getClassCode());
             res.setDepartmentCode(clas.getDepartment().getCode());
             return res;
         });
@@ -192,6 +196,7 @@ public class ClassServiceImp implements ClassService {
         response.setName(clas.getName());
         response.setAcademicYear(clas.getAcedamicYear());
         response.setSemester(clas.getSemester());
+        response.setClassCode(clas.getClassCode());
         response.setDepartmentName(clas.getDepartment().getName());
         response.setDepartmentCode(clas.getDepartment().getCode());
         return response;

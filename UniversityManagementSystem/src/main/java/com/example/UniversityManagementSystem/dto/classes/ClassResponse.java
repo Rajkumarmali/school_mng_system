@@ -9,6 +9,7 @@ public class ClassResponse {
     private String semester;
     private String departmentName;
     private String departmentCode;
+    private String classCode;
     private ClassTeacherResponse classTeacherResponse;
     private ClassStatus classStatus;
     private Integer totalStudents;
@@ -16,13 +17,14 @@ public class ClassResponse {
     public ClassResponse() {
     }
 
-    public ClassResponse(Long id, String name, String academicYear, String semester, String departmentName, String departmentCode, ClassTeacherResponse classTeacherResponse, ClassStatus classStatus, Integer totalStudents) {
+    public ClassResponse(Long id, String name, String academicYear, String semester, String departmentName, String departmentCode, String classCode, ClassTeacherResponse classTeacherResponse, ClassStatus classStatus, Integer totalStudents) {
         this.id = id;
         this.name = name;
         this.academicYear = academicYear;
         this.semester = semester;
         this.departmentName = departmentName;
         this.departmentCode = departmentCode;
+        this.classCode = classCode;
         this.classTeacherResponse = classTeacherResponse;
         this.classStatus = classStatus;
         this.totalStudents = totalStudents;
@@ -98,5 +100,13 @@ public class ClassResponse {
 
     public void setTotalStudents(Integer totalStudents) {
         this.totalStudents = totalStudents;
+    }
+
+    public String getClassCode() {
+        return classCode;
+    }
+
+    public void setClassCode(String classCode) {
+        this.classCode = classCode;
     }
 }
