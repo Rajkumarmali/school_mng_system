@@ -18,8 +18,13 @@ public class FeeStructure {
     @ManyToOne
     private Department department;
 
+    private String Description;
+
     @ManyToOne
     private FeeType feeType;
+
+    @ManyToOne
+    private Class aClass;
 
     @OneToMany(mappedBy = "feeStructure")
     private List<StudentFee> studentFees = new ArrayList<>();
@@ -33,13 +38,14 @@ public class FeeStructure {
     public FeeStructure() {
     }
 
-    public FeeStructure(Long id, Double amount, String academicYear, Department department, FeeType feeType,
+    public FeeStructure(Long id, Double amount, String academicYear, Department department, String description, FeeType feeType,
                         List<StudentFee> studentFees, List<FeePayment> feePayments, LocalDateTime createdAt,
                         LocalDateTime updatedAt) {
         this.id = id;
         this.amount = amount;
         this.academicYear = academicYear;
         this.department = department;
+        Description = description;
         this.feeType = feeType;
         this.studentFees = studentFees;
         this.feePayments = feePayments;
@@ -117,5 +123,13 @@ public class FeeStructure {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public void setDescription(String description) {
+        Description = description;
     }
 }
