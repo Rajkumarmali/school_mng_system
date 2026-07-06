@@ -17,6 +17,8 @@ public class Class {
     private String acedamicYear;
     private String semester;
 
+    private String classCode;
+
     @Enumerated(EnumType.STRING)
     private ClassStatus classStatus;
 
@@ -34,23 +36,28 @@ public class Class {
     )
     private List<Student> students=new ArrayList<>();
 
+    @OneToMany(mappedBy = "aClass")
+    private List<FeeStructure> feeStructure= new ArrayList<>();
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public Class() {
     }
 
-    public Class(Long id, String name, String acedamicYear, String semester, ClassStatus classStatus, Department department,
-                 Teacher classTeacher, List<Student> students, LocalDateTime createdAt,
+    public Class(Long id, String name, String acedamicYear, String semester, String classCode, ClassStatus classStatus, Department department,
+                 Teacher classTeacher, List<Student> students, List<FeeStructure> feeStructure, LocalDateTime createdAt,
                  LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.acedamicYear = acedamicYear;
         this.semester = semester;
+        this.classCode = classCode;
         this.classStatus = classStatus;
         this.department = department;
         this.classTeacher = classTeacher;
         this.students = students;
+        this.feeStructure=feeStructure;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -133,5 +140,21 @@ public class Class {
 
     public void setStudents(List<Student> students) {
         this.students = students;
+    }
+
+    public List<FeeStructure> getFeeStructure() {
+        return feeStructure;
+    }
+
+    public void setFeeStructure(List<FeeStructure> feeStructure) {
+        this.feeStructure = feeStructure;
+    }
+
+    public String getClassCode() {
+        return classCode;
+    }
+
+    public void setClassCode(String classCode) {
+        this.classCode = classCode;
     }
 }
