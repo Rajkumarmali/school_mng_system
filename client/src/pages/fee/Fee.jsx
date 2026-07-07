@@ -3,7 +3,7 @@ import './Fee.css'
 import { useSearchParams } from 'react-router-dom'
 import FeeType from './FeeType';
 import FeeStructure from './FeeStructure';
-import PendingFee from './PendingFee';
+
 
 
 const Fee = () => {
@@ -39,13 +39,6 @@ const Fee = () => {
                             Fee Structure
                         </button>
                     </li>
-                    <li className="nav-item">
-                        <button className="nav-link"
-                            onClick={() => setSearchParams({ tab: "pending-fee" })}
-                        >
-                            Pending Fees
-                        </button>
-                    </li>
                 </ul>
             </nav>
             <div className="fee-card">
@@ -56,12 +49,9 @@ const Fee = () => {
                         activeTab === "fee-structure" ?
                             < FeeStructure />
                             :
-                            activeTab === "pending-fee" ?
-                                <PendingFee />
-                                :
-                                <div>
-                                    Dashboard
-                                </div>
+                            <div>
+                                Dashboard
+                            </div>
                 }
             </div>
         </div>

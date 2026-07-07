@@ -16,6 +16,9 @@ public class FeeStructure {
     private String academicYear;
 
     @ManyToOne
+    private College college;
+
+    @ManyToOne
     private Department department;
 
     private String Description;
@@ -38,15 +41,17 @@ public class FeeStructure {
     public FeeStructure() {
     }
 
-    public FeeStructure(Long id, Double amount, String academicYear, Department department, String description, FeeType feeType,
+    public FeeStructure(Long id, Double amount, String academicYear, College college, Department department, String description, FeeType feeType, Class aClass,
                         List<StudentFee> studentFees, List<FeePayment> feePayments, LocalDateTime createdAt,
                         LocalDateTime updatedAt) {
         this.id = id;
         this.amount = amount;
         this.academicYear = academicYear;
+        this.college = college;
         this.department = department;
         Description = description;
         this.feeType = feeType;
+        this.aClass = aClass;
         this.studentFees = studentFees;
         this.feePayments = feePayments;
         this.createdAt = createdAt;
@@ -131,5 +136,21 @@ public class FeeStructure {
 
     public void setDescription(String description) {
         Description = description;
+    }
+
+    public College getCollege() {
+        return college;
+    }
+
+    public void setCollege(College college) {
+        this.college = college;
+    }
+
+    public Class getAClass() {
+        return aClass;
+    }
+
+    public void setAClass(Class aClass) {
+        this.aClass = aClass;
     }
 }

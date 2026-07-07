@@ -1,6 +1,8 @@
 package com.example.UniversityManagementSystem.controller;
 
 import com.example.UniversityManagementSystem.config.JwtProvider;
+import com.example.UniversityManagementSystem.dto.fee.FeeStructureRequest;
+import com.example.UniversityManagementSystem.dto.fee.FeeStructureResponse;
 import com.example.UniversityManagementSystem.dto.fee.FeeTypeRequest;
 import com.example.UniversityManagementSystem.dto.fee.FeeTypeResponse;
 import com.example.UniversityManagementSystem.services.FeeServices;
@@ -53,5 +55,40 @@ public class FeeController {
     public ResponseEntity<String> deleteFeeType(@PathVariable Long id){
         String res = feeServices.deleteFeeType(id);
         return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @PostMapping("/create-feestructure")
+    public ResponseEntity<String> createFeeStructure(@RequestHeader("Authorization") String jwt,
+                                                     @RequestBody FeeStructureRequest dto){
+        Long collegeId = jwtProvider.getCollegeIdFromToken(jwt);
+        String res = feeServices.createFeeStructure(collegeId,dto);
+        return new ResponseEntity<>(res,HttpStatus.CREATED);
+    }
+
+    @GetMapping("/get-all-feestructure")
+    public ResponseEntity<Page<FeeStructureResponse>> getAllFeeStructure(@RequestHeader("Authorization") String jwt,
+                                                                         @RequestParam(defaultValue = "0") int pageNumber,
+                                                                         @RequestParam(defaultValue = "10") int pageSize){
+        Long collegeId = jwtProvider.getCollegeIdFromToken(jwt);
+        Page<FeeStructureResponse> res = feeServices.getAllFeeStructure(collegeId,pageNumber,pageSize);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/get-feestructurebyid/{id}")
+    public ResponseEntity<FeeStructureResponse> getFeeStructureById(@PathVariable Long id){
+        FeeStructureResponse res = feeServices.getFeeStructureById(id);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @PostMapping("/update-feestructure/{id}")
+    public ResponseEntity<String> updateFeeStructure(@PathVariable Long id,@RequestBody FeeStructureRequest dto){
+        String res = feeServices.updateFeeStructure(id,dto);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/get-deletefeestructure/{id}")
+    public ResponseEntity<String> deleteFeeStructure(@PathVariable Long id){
+        String res = feeServices.deleteFeeStructure(id);
+        return new ResponseEntity<>(res,HttpStatus.OK);
     }
 }
