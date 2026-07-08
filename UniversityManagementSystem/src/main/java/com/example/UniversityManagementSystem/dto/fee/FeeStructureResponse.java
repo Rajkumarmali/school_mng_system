@@ -10,11 +10,17 @@ public class FeeStructureResponse {
     private String departmentCode;
     private String departmentName;
     private String feeTypeName;
+    private Double totalCollectionAmount;
+    private Double totalCollectedAmount;
+    private Double totalPendingAmount;
+    private Integer totalStudent;
+    private Integer totalPaidStudent;
+    private Integer totalUnPaidStudent;
 
     public FeeStructureResponse() {
     }
 
-    public FeeStructureResponse(Long id, Double amount, String academicYear, String description, String classCode, String className, String departmentCode, String departmentName, String feeTypeName) {
+    public FeeStructureResponse(Long id, Double amount, String academicYear, String description, String classCode, String className, String departmentCode, String departmentName, String feeTypeName, Double totalCollectionAmount, Double totalCollectedAmount, Double totalPendingAmount, Integer totalStudent, Integer totalPainStudent, Integer totalUnPaidStudent) {
         this.id = id;
         this.amount = amount;
         this.academicYear = academicYear;
@@ -24,6 +30,12 @@ public class FeeStructureResponse {
         this.departmentCode = departmentCode;
         this.departmentName = departmentName;
         this.feeTypeName = feeTypeName;
+        this.totalCollectionAmount = totalCollectionAmount;
+        this.totalCollectedAmount = totalCollectedAmount;
+        this.totalPendingAmount = totalPendingAmount;
+        this.totalStudent = totalStudent;
+        this.totalPaidStudent = totalPainStudent;
+        this.totalUnPaidStudent = totalUnPaidStudent;
     }
 
     public Long getId() {
@@ -97,5 +109,53 @@ public class FeeStructureResponse {
 
     public void setDepartmentName(String departmentName) {
         this.departmentName = departmentName;
+    }
+
+    public Double getTotalCollectedAmount() {
+        return totalCollectedAmount;
+    }
+
+    public void setTotalCollectedAmount(Double totalCollectedAmount) {
+        this.totalCollectedAmount = totalCollectedAmount;
+    }
+
+    public Integer getTotalStudent() {
+        return totalStudent;
+    }
+
+    public void setTotalStudent(Integer totalStudent) {
+        this.totalStudent = totalStudent;
+    }
+
+    public Integer getTotalPaidStudent() {
+        return totalPaidStudent;
+    }
+
+    public void setTotalPaidStudent(Integer totalPaidStudent) {
+        this.totalPaidStudent = totalPaidStudent;
+    }
+
+    public Integer getTotalUnPaidStudent() {
+        return totalUnPaidStudent;
+    }
+
+    public void setTotalUnPaidStudent(Integer totalUnPaidStudent) {
+        this.totalUnPaidStudent = totalUnPaidStudent;
+    }
+
+    public Double getTotalPendingAmount() {
+        return totalPendingAmount;
+    }
+
+    public void setTotalPendingAmount(Double totalPendingAmount) {
+        this.totalPendingAmount = totalPendingAmount;
+    }
+
+    public Double getTotalCollectionAmount() {
+        return totalCollectionAmount;
+    }
+
+    public void setTotalCollectionAmount(Double totalCollectionAmount) {
+        this.totalCollectionAmount = totalCollectionAmount;
     }
 }

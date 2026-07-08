@@ -3,10 +3,13 @@ import { useSearchParams } from 'react-router-dom'
 import './FeeStructureDetatils.css'
 import { useDispatch, useSelector } from 'react-redux';
 import { getFeeStructureById, updateFeeStructure } from '../../state/fee/Action';
+import FeeStudents from './FeeStudents';
 
 const FeeStructureDetails = () => {
     const [searchParams, setSearchParams] = useSearchParams();
+    const tab = searchParams.get("tab")
     const feeStructureId = searchParams.get("id");
+    const studentStatus = searchParams.get("studentStatus")
 
     const dispatch = useDispatch()
     const fee = useSelector((state) => state.fee)
@@ -44,90 +47,135 @@ const FeeStructureDetails = () => {
         })
     }
 
+    const handleView = (status) => {
+        setSearchParams({
+            tab,
+            id: feeStructureId,
+            studentStatus: status
+        })
+    }
+
     useEffect(() => {
         dispatch(getFeeStructureById(feeStructureId))
     }, [dispatch, feeStructureId]);
 
     return (
         <div>
-            <div className="fee-structure-detail-header">
-                <div>
-                    <h2>Fee Structure Details</h2>
-                </div>
+            {
+                !studentStatus ?
+                    <div>
+                        <div className="fee-structure-detail-header">
+                            <div>
+                                <h2>Fee Structure Details</h2>
+                            </div>
 
-                <button
-                    className="back-fee-structure-detail-btn"
-                    onClick={handleBack}
-                >
-                    <i className="bi bi-arrow-left"></i>
-                    Back
-                </button>
-            </div>
-            <div className="fee-structure-details-info">
-                <div className="fee-structure-details-contact">
-                    <div>
-                        <i className="bi bi-cash-stack"></i>
-                        <span> <strong>Fee Type :  </strong>{fee?.feeStructure?.feeTypeName}</span>
+                            <button
+                                className="back-fee-structure-detail-btn"
+                                onClick={handleBack}
+                            >
+                                <i className="bi bi-arrow-left"></i>
+                                Back
+                            </button>
+                        </div>
+                        <div className="fee-structure-details-info">
+                            <div className="fee-structure-details-contact">
+                                <div>
+                                    <i className="bi bi-cash-stack"></i>
+                                    <span> <strong>Fee Type :  </strong>{fee?.feeStructure?.feeTypeName}</span>
+                                </div>
+                                <div>
+                                    <i className="bi bi-currency-rupee"></i>
+                                    <span> <strong>Amount :  </strong>₹ {fee?.feeStructure?.amount}</span>
+                                </div>
+                                <div>
+                                    <i className="bi bi-calendar-event"></i>
+                                    <span><strong>Academic Year : </strong>{fee?.feeStructure?.academicYear}</span>
+                                </div>
+                            </div>
+                            <div className="fee-structure-details-contact">
+                                <div>
+                                    <i className="bi bi-mortarboard-fill"></i>
+                                    <span>
+                                        <strong>Class : </strong>
+                                        {fee?.feeStructure?.className} ({fee?.feeStructure?.classCode})
+                                    </span>
+                                </div>
+                                <div>
+                                    <i className="bi bi-diagram-3-fill me-2"></i>
+                                    <span>
+                                        <strong>Department : </strong>
+                                        {fee?.feeStructure?.departmentName} ({fee?.feeStructure?.departmentCode})
+                                    </span>
+                                </div>
+                                <div>
+                                    <i className="bi bi-card-text"></i>
+                                    <span><strong>Description :</strong> {fee?.feeStructure?.description}</span>
+                                    <button className="edit-icon-btn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editFeeStructureModal"
+                                        onClick={handleSetData}
+                                    >
+                                        <i className="bi bi-pencil-square"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="stats-container">
+                            <div className="stat-card">
+                                <i className="bi bi-wallet2"></i>
+                                <h3>{fee?.feeStructure?.totalCollectionAmount}</h3>
+                                <span>Total Collection Amount</span>
+                            </div>
+                            <div className="stat-card">
+                                <i className="bi bi-cash-coin"></i>
+                                <h3>{fee?.feeStructure?.totalCollectedAmount}</h3>
+                                <span>Total Collected Amount</span>
+                            </div>
+                            <div className="stat-card">
+                                <i className="bi bi-hourglass-split"></i>
+                                <h3>{fee?.feeStructure?.totalPendingAmount}</h3>
+                                <span>Total Pending Amount</span>
+                            </div>
+                            <div className="stat-card">
+                                <button
+                                    className="stat-view-btn"
+                                    onClick={() => handleView("all")}
+                                >
+                                    <i className="bi bi-eye-fill"></i>
+                                </button>
+                                <i className="bi bi-mortarboard-fill"></i>
+                                <h3>{fee?.feeStructure?.totalStudent}</h3>
+                                <span>Total Students</span>
+                            </div>
+                            <div className="stat-card">
+                                <button
+                                    className="stat-view-btn"
+                                    onClick={() => handleView("paid")}
+                                >
+                                    <i className="bi bi-eye-fill"></i>
+                                </button>
+                                <i className="bi bi-patch-check-fill"></i>
+                                <h3>{fee?.feeStructure?.totalPaidStudent}</h3>
+                                <span>Total Paid Student</span>
+                            </div>
+                            <div className="stat-card">
+                                <button
+                                    className="stat-view-btn"
+                                    onClick={() => handleView("unpaid")}
+                                >
+                                    <i className="bi bi-eye-fill"></i>
+                                </button>
+                                <i className="bi bi-clock-history"></i>
+                                <h3>{fee?.feeStructure?.totalUnPaidStudent}</h3>
+                                <span>Total Unpaid Student</span>
+                            </div>
+                        </div>
                     </div>
+                    :
                     <div>
-                        <i className="bi bi-currency-rupee"></i>
-                        <span> <strong>Amount :  </strong>₹ {fee?.feeStructure?.amount}</span>
+                        <FeeStudents />
                     </div>
-                    <div>
-                        <i className="bi bi-calendar-event"></i>
-                        <span><strong>Academic Year : </strong>{fee?.feeStructure?.academicYear}</span>
-                    </div>
-                </div>
-                <div className="fee-structure-details-contact">
-                    <div>
-                        <i className="bi bi-mortarboard-fill"></i>
-                        <span>
-                            <strong>Class : </strong>
-                            {fee?.feeStructure?.className} ({fee?.feeStructure?.classCode})
-                        </span>
-                    </div>
-                    <div>
-                        <i className="bi bi-diagram-3-fill me-2"></i>
-                        <span>
-                            <strong>Department : </strong>
-                            {fee?.feeStructure?.departmentName} ({fee?.feeStructure?.departmentCode})
-                        </span>
-                    </div>
-                    <div>
-                        <i className="bi bi-card-text"></i>
-                        <span><strong>Description :</strong> {fee?.feeStructure?.description}</span>
-                        <button className="edit-icon-btn"
-                            data-bs-toggle="modal"
-                            data-bs-target="#editFeeStructureModal"
-                            onClick={handleSetData}
-                        >
-                            <i className="bi bi-pencil-square"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div className="stats-container">
-                <div className="stat-card">
-                    <i className="bi bi-cash-stack"></i>
-                    <h3>1000</h3>
-                    <span>Total Collection</span>
-                </div>
-                <div className="stat-card">
-                    <i className="bi bi-mortarboard-fill"></i>
-                    <h3>1000</h3>
-                    <span>Total Students</span>
-                </div>
-                <div className="stat-card">
-                    <i className="bi bi-patch-check-fill"></i>
-                    <h3>1000</h3>
-                    <span>Total Paid Student</span>
-                </div>
-                <div className="stat-card">
-                    <i className="bi bi-clock-history"></i>
-                    <h3>1000</h3>
-                    <span>Total Unpaid Student</span>
-                </div>
-            </div>
+            }
 
             <div class="modal fade" id="editFeeStructureModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-xl">

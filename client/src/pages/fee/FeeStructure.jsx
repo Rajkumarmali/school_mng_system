@@ -177,6 +177,8 @@ const FeeStructure = () => {
                                     <th>Class</th>
                                     <th>AcademicYear</th>
                                     <th>Amount</th>
+                                    <th>DueDate</th>
+                                    <th>Status</th>
                                     <th className='text-center'>Action</th>
                                 </tr>
                             </thead>
@@ -191,6 +193,8 @@ const FeeStructure = () => {
                                                 <td>{fee.classCode}</td>
                                                 <td>{fee.academicYear}</td>
                                                 <td>{fee.amount}</td>
+                                                <td>{fee.dueDate}</td>
+                                                <td>{fee.status}</td>
                                                 <td className='text-center'>
                                                     <button
                                                         className="btn btn-sm custom-reset-btn me-2"

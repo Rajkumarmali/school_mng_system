@@ -1,9 +1,6 @@
 package com.example.UniversityManagementSystem.services;
 
-import com.example.UniversityManagementSystem.dto.fee.FeeStructureRequest;
-import com.example.UniversityManagementSystem.dto.fee.FeeStructureResponse;
-import com.example.UniversityManagementSystem.dto.fee.FeeTypeRequest;
-import com.example.UniversityManagementSystem.dto.fee.FeeTypeResponse;
+import com.example.UniversityManagementSystem.dto.fee.*;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -19,4 +16,7 @@ public interface FeeServices {
     FeeStructureResponse getFeeStructureById(Long feeStructureId);
     String updateFeeStructure(Long feeStructureId,FeeStructureRequest dto);
     String deleteFeeStructure(Long feeStructureId);
+    Page<FeeStudentResponse> getAllStudent(Long feeStructureId,int pageNumber,int pageSize);
+    Page<FeeStudentResponse> getAllPaidStudent(Long feeStructureId,int pageNumber,int pageSize);
+    Page<FeeStudentResponse> getAllUnPaidStudent(Long feeStructureId,int pageNumber,int pageSize);
 }

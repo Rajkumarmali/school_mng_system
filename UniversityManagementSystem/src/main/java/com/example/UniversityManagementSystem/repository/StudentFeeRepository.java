@@ -1,7 +1,15 @@
 package com.example.UniversityManagementSystem.repository;
 
+import com.example.UniversityManagementSystem.entity.FeeStructure;
 import com.example.UniversityManagementSystem.entity.StudentFee;
+import com.example.UniversityManagementSystem.entity.type.StudentFeeStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface StudentFeeRepository extends JpaRepository<StudentFee, Long> {
+public interface StudentFeeRepository extends JpaRepository<StudentFee, Long> { Page<StudentFee> findByFeeStructureId(Long feeStructureId, Pageable pageable);
+
+    Page<StudentFee> findByFeeStructure(FeeStructure feeStructure, Pageable pageable);
+
+    Page<StudentFee> findByFeeStructureAndStatus(FeeStructure feeStructure, StudentFeeStatus studentFeeStatus, Pageable pageable);
 }

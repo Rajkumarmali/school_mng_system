@@ -1,4 +1,14 @@
-import { CREATE_FEE_STRUCTURE_FAILER, CREATE_FEE_STRUCTURE_REQUEST, CREATE_FEE_STRUCTURE_SUCCESS, CREATE_FEE_TYPE_FAILER, CREATE_FEE_TYPE_REQUEST, CREATE_FEE_TYPE_SUCCESS, DELETE_FEE_STRUCTURE_FAILER, DELETE_FEE_STRUCTURE_REQUEST, DELETE_FEE_STRUCTURE_SUCCESS, DELETE_FEE_TYPE_FAILER, DELETE_FEE_TYPE_REQUEST, DELETE_FEE_TYPE_SUCCESS, GET_FEE_STRUCTURE_BYID_FAILER, GET_FEE_STRUCTURE_BYID_REQUEST, GET_FEE_STRUCTURE_BYID_SUCCESS, GET_FEE_STRUCTURE_FAILER, GET_FEE_STRUCTURE_REQUEST, GET_FEE_STRUCTURE_SUCCESS, GET_FEE_TYPE_BYID_FAILER, GET_FEE_TYPE_BYID_REQUEST, GET_FEE_TYPE_BYID_SUCCESS, GET_FEE_TYPE_FAILER, GET_FEE_TYPE_REQUEST, GET_FEE_TYPE_SUCCESS, UPDATE_FEE_STRUCTURE_FAILER, UPDATE_FEE_STRUCTURE_REQUEST, UPDATE_FEE_STRUCTURE_SUCCESS, UPDATE_FEE_TYPE_FAILER, UPDATE_FEE_TYPE_REQUEST, UPDATE_FEE_TYPE_SUCCESS } from "./ActionType"
+import {
+    CREATE_FEE_STRUCTURE_FAILER, CREATE_FEE_STRUCTURE_REQUEST, CREATE_FEE_STRUCTURE_SUCCESS, CREATE_FEE_TYPE_FAILER,
+    CREATE_FEE_TYPE_REQUEST, CREATE_FEE_TYPE_SUCCESS, DELETE_FEE_STRUCTURE_FAILER, DELETE_FEE_STRUCTURE_REQUEST,
+    DELETE_FEE_STRUCTURE_SUCCESS, DELETE_FEE_TYPE_FAILER, DELETE_FEE_TYPE_REQUEST, DELETE_FEE_TYPE_SUCCESS,
+    GET_FEE_STRUCTURE_BYID_FAILER, GET_FEE_STRUCTURE_BYID_REQUEST, GET_FEE_STRUCTURE_BYID_SUCCESS, GET_FEE_STRUCTURE_FAILER,
+    GET_FEE_STRUCTURE_REQUEST, GET_FEE_STRUCTURE_SUCCESS, GET_FEE_STUDENT_FAILER, GET_FEE_STUDENT_REQUEST, GET_FEE_STUDENT_SUCCESS, GET_FEE_TYPE_BYID_FAILER,
+    GET_FEE_TYPE_BYID_REQUEST, GET_FEE_TYPE_BYID_SUCCESS, GET_FEE_TYPE_FAILER, GET_FEE_TYPE_REQUEST, GET_FEE_TYPE_SUCCESS,
+    GET_PAID_FEE_STUDENT_FAILER,
+    GET_PAID_FEE_STUDENT_REQUEST, GET_PAID_FEE_STUDENT_SUCCESS, GET_UNPAID_FEE_STUDENT_FAILER, GET_UNPAID_FEE_STUDENT_REQUEST, GET_UNPAID_FEE_STUDENT_SUCCESS, UPDATE_FEE_STRUCTURE_FAILER, UPDATE_FEE_STRUCTURE_REQUEST,
+    UPDATE_FEE_STRUCTURE_SUCCESS, UPDATE_FEE_TYPE_FAILER, UPDATE_FEE_TYPE_REQUEST, UPDATE_FEE_TYPE_SUCCESS
+} from "./ActionType"
 
 const initialState = {
     isLoading: false,
@@ -6,7 +16,10 @@ const initialState = {
     feeTypes: [],
     feeType: null,
     feeStructures: [],
-    feeStructure: null
+    feeStructure: null,
+    feeStudents: [],
+    paidFeeStudents: [],
+    unpaidFeeStudents: [],
 }
 
 export const feeReducer = (state = initialState, action) => {
@@ -21,6 +34,9 @@ export const feeReducer = (state = initialState, action) => {
         case GET_FEE_STRUCTURE_REQUEST:
         case GET_FEE_STRUCTURE_BYID_REQUEST:
         case DELETE_FEE_STRUCTURE_REQUEST:
+        case GET_FEE_STUDENT_REQUEST:
+        case GET_PAID_FEE_STUDENT_REQUEST:
+        case GET_UNPAID_FEE_STUDENT_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -65,6 +81,27 @@ export const feeReducer = (state = initialState, action) => {
                 error: null,
                 feeStructure: action.payload
             }
+        case GET_FEE_STUDENT_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                error: null,
+                feeStudents: action.payload
+            }
+        case GET_PAID_FEE_STUDENT_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                error: null,
+                paidFeeStudents: action.payload
+            }
+        case GET_UNPAID_FEE_STUDENT_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                error: null,
+                unpaidFeeStudents: action.payload
+            }
         case CREATE_FEE_TYPE_FAILER:
         case UPDATE_FEE_TYPE_FAILER:
         case DELETE_FEE_TYPE_FAILER:
@@ -75,6 +112,9 @@ export const feeReducer = (state = initialState, action) => {
         case DELETE_FEE_STRUCTURE_FAILER:
         case GET_FEE_STRUCTURE_FAILER:
         case GET_FEE_STRUCTURE_BYID_FAILER:
+        case GET_FEE_STUDENT_FAILER:
+        case GET_PAID_FEE_STUDENT_FAILER:
+        case GET_UNPAID_FEE_STUDENT_FAILER:
             return {
                 ...state,
                 isLoading: false,

@@ -34,7 +34,10 @@ public class CacheConfig {
                 "feeType",
                 "feeTypes",
                 "feeStructure",
-                "feeStructures"
+                "feeStructures",
+                "feeStudents",
+                "feePaidStudents",
+                "feeUnpaidStudents"
         );
     }
 }

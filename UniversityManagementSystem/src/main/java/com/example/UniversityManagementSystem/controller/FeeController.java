@@ -1,10 +1,7 @@
 package com.example.UniversityManagementSystem.controller;
 
 import com.example.UniversityManagementSystem.config.JwtProvider;
-import com.example.UniversityManagementSystem.dto.fee.FeeStructureRequest;
-import com.example.UniversityManagementSystem.dto.fee.FeeStructureResponse;
-import com.example.UniversityManagementSystem.dto.fee.FeeTypeRequest;
-import com.example.UniversityManagementSystem.dto.fee.FeeTypeResponse;
+import com.example.UniversityManagementSystem.dto.fee.*;
 import com.example.UniversityManagementSystem.services.FeeServices;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -91,4 +88,29 @@ public class FeeController {
         String res = feeServices.deleteFeeStructure(id);
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
+
+    @GetMapping("/get-feestudent/{id}")
+    public ResponseEntity<Page<FeeStudentResponse>> getAllFeeStudents(@PathVariable Long id,
+                                                                      @RequestParam(defaultValue = "0") int pageNumber,
+                                                                      @RequestParam(defaultValue = "10") int pageSize){
+        Page<FeeStudentResponse> res = feeServices.getAllStudent(id,pageNumber,pageSize);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/get-paid-feestudent/{id}")
+    public ResponseEntity<Page<FeeStudentResponse>> getAllPaidFeeStudent(@PathVariable Long id,
+                                                                      @RequestParam(defaultValue = "0") int pageNumber,
+                                                                      @RequestParam(defaultValue = "10") int pageSize){
+        Page<FeeStudentResponse> res = feeServices.getAllPaidStudent(id,pageNumber,pageSize);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/get-unpaid-feestudent/{id}")
+    public ResponseEntity<Page<FeeStudentResponse>> getAllUnpaidFeeStudent(@PathVariable Long id,
+                                                                      @RequestParam(defaultValue = "0") int pageNumber,
+                                                                      @RequestParam(defaultValue = "10") int pageSize){
+        Page<FeeStudentResponse> res = feeServices.getAllUnPaidStudent(id,pageNumber,pageSize);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
 }
