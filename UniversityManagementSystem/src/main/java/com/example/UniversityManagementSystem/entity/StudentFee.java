@@ -20,18 +20,22 @@ public class StudentFee {
     @ManyToOne
     private Student student;
 
+    @OneToOne
+    private FeePayment feePayment;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public StudentFee() {
     }
 
-    public StudentFee(Long id, StudentFeeStatus status, FeeStructure feeStructure, Student student,
+    public StudentFee(Long id, StudentFeeStatus status, FeeStructure feeStructure, Student student, FeePayment feePayment,
                       LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.status = status;
         this.feeStructure = feeStructure;
         this.student = student;
+        this.feePayment = feePayment;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -82,5 +86,13 @@ public class StudentFee {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public FeePayment getFeePayment() {
+        return feePayment;
+    }
+
+    public void setFeePayment(FeePayment feePayment) {
+        this.feePayment = feePayment;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.UniversityManagementSystem.entity;
 
+import com.example.UniversityManagementSystem.entity.type.FeeStructureStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ public class FeeStructure {
 
     private Double amount;
     private String academicYear;
+    private LocalDateTime dueData;
 
     @ManyToOne
     private Department department;
@@ -23,14 +25,14 @@ public class FeeStructure {
     @ManyToOne
     private FeeType feeType;
 
+    @Enumerated(EnumType.STRING)
+    private FeeStructureStatus status;
+
     @ManyToOne
     private Class aClass;
 
     @OneToMany(mappedBy = "feeStructure")
     private List<StudentFee> studentFees = new ArrayList<>();
-
-    @OneToMany(mappedBy = "feeStructure")
-    private List<FeePayment> feePayments=new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -38,17 +40,20 @@ public class FeeStructure {
     public FeeStructure() {
     }
 
-    public FeeStructure(Long id, Double amount, String academicYear, Department department, String description, FeeType feeType,
-                        List<StudentFee> studentFees, List<FeePayment> feePayments, LocalDateTime createdAt,
+    public FeeStructure(Long id, Double amount, String academicYear, LocalDateTime dueData, Department department,
+                        String description, FeeType feeType, FeeStructureStatus status, Class aClass,
+                        List<StudentFee> studentFees, LocalDateTime createdAt,
                         LocalDateTime updatedAt) {
         this.id = id;
         this.amount = amount;
         this.academicYear = academicYear;
+        this.dueData = dueData;
         this.department = department;
         Description = description;
         this.feeType = feeType;
+        this.status = status;
+        this.aClass = aClass;
         this.studentFees = studentFees;
-        this.feePayments = feePayments;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -77,12 +82,28 @@ public class FeeStructure {
         this.academicYear = academicYear;
     }
 
+    public LocalDateTime getDueData() {
+        return dueData;
+    }
+
+    public void setDueData(LocalDateTime dueData) {
+        this.dueData = dueData;
+    }
+
     public Department getDepartment() {
         return department;
     }
 
     public void setDepartment(Department department) {
         this.department = department;
+    }
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public void setDescription(String description) {
+        Description = description;
     }
 
     public FeeType getFeeType() {
@@ -93,20 +114,28 @@ public class FeeStructure {
         this.feeType = feeType;
     }
 
+    public FeeStructureStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(FeeStructureStatus status) {
+        this.status = status;
+    }
+
+    public Class getaClass() {
+        return aClass;
+    }
+
+    public void setaClass(Class aClass) {
+        this.aClass = aClass;
+    }
+
     public List<StudentFee> getStudentFees() {
         return studentFees;
     }
 
     public void setStudentFees(List<StudentFee> studentFees) {
         this.studentFees = studentFees;
-    }
-
-    public List<FeePayment> getFeePayments() {
-        return feePayments;
-    }
-
-    public void setFeePayments(List<FeePayment> feePayments) {
-        this.feePayments = feePayments;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -123,13 +152,5 @@ public class FeeStructure {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public String getDescription() {
-        return Description;
-    }
-
-    public void setDescription(String description) {
-        Description = description;
     }
 }
