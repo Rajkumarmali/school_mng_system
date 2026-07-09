@@ -1,5 +1,9 @@
 package com.example.UniversityManagementSystem.dto.fee;
 
+import com.example.UniversityManagementSystem.entity.type.FeeStructureStatus;
+
+import java.time.LocalDateTime;
+
 public class FeeStructureResponse {
     private Long id;
     private Double amount;
@@ -10,6 +14,8 @@ public class FeeStructureResponse {
     private String departmentCode;
     private String departmentName;
     private String feeTypeName;
+    private LocalDateTime dueDate;
+    private FeeStructureStatus status;
     private Double totalCollectionAmount;
     private Double totalCollectedAmount;
     private Double totalPendingAmount;
@@ -20,7 +26,7 @@ public class FeeStructureResponse {
     public FeeStructureResponse() {
     }
 
-    public FeeStructureResponse(Long id, Double amount, String academicYear, String description, String classCode, String className, String departmentCode, String departmentName, String feeTypeName, Double totalCollectionAmount, Double totalCollectedAmount, Double totalPendingAmount, Integer totalStudent, Integer totalPainStudent, Integer totalUnPaidStudent) {
+    public FeeStructureResponse(Long id, Double amount, String academicYear, String description, String classCode, String className, String departmentCode, String departmentName, String feeTypeName, LocalDateTime dueDate, FeeStructureStatus status, Double totalCollectionAmount, Double totalCollectedAmount, Double totalPendingAmount, Integer totalStudent, Integer totalPainStudent, Integer totalUnPaidStudent) {
         this.id = id;
         this.amount = amount;
         this.academicYear = academicYear;
@@ -30,6 +36,8 @@ public class FeeStructureResponse {
         this.departmentCode = departmentCode;
         this.departmentName = departmentName;
         this.feeTypeName = feeTypeName;
+        this.dueDate = dueDate;
+        this.status = status;
         this.totalCollectionAmount = totalCollectionAmount;
         this.totalCollectedAmount = totalCollectedAmount;
         this.totalPendingAmount = totalPendingAmount;
@@ -157,5 +165,21 @@ public class FeeStructureResponse {
 
     public void setTotalCollectionAmount(Double totalCollectionAmount) {
         this.totalCollectionAmount = totalCollectionAmount;
+    }
+
+    public LocalDateTime getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDateTime dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public FeeStructureStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(FeeStructureStatus status) {
+        this.status = status;
     }
 }

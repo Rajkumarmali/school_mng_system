@@ -3,6 +3,8 @@ package com.example.UniversityManagementSystem.services.Implementation;
 import com.example.UniversityManagementSystem.dto.fee.*;
 import com.example.UniversityManagementSystem.entity.*;
 import com.example.UniversityManagementSystem.entity.Class;
+import com.example.UniversityManagementSystem.entity.type.FeeStructureStatus;
+import com.example.UniversityManagementSystem.entity.type.PaymentMode;
 import com.example.UniversityManagementSystem.entity.type.StudentFeeStatus;
 import com.example.UniversityManagementSystem.repository.*;
 import com.example.UniversityManagementSystem.services.FeeServices;
@@ -16,7 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,26 +33,29 @@ public class FeeServiceImp implements FeeServices {
     private final DepartmentRepository departmentRepository;
     private final FeeStructureRepository feeStructureRepository;
     private final StudentFeeRepository studentFeeRepository;
+    private final StudentRepository studentRepository;
+    private final FeePaymentRepository feePaymentRepository;
 
     public FeeServiceImp(CollegeRepository collegeRepository,
                          FeeTypeRepository feeTypeRepository,
                          ClassRepository classRepository,
                          DepartmentRepository departmentRepository,
                          FeeStructureRepository feeStructureRepository,
-                         StudentFeeRepository studentFeeRepository) {
+                         StudentFeeRepository studentFeeRepository,
+                         StudentRepository studentRepository,
+                         FeePaymentRepository feePaymentRepository) {
         this.collegeRepository = collegeRepository;
         this.feeTypeRepository = feeTypeRepository;
         this.classRepository = classRepository;
         this.departmentRepository = departmentRepository;
         this.feeStructureRepository = feeStructureRepository;
         this.studentFeeRepository = studentFeeRepository;
+        this.studentRepository = studentRepository;
+        this.feePaymentRepository = feePaymentRepository;
     }
 
     @Transactional
     @PreAuthorize("hasRole('ACCOUNTANT')")
-    @Caching(evict = {
-         @CacheEvict(cacheNames = "feeTypes",allEntries = true)
-    })
     @Override
     public String createFeeType(Long collegeId, FeeTypeRequest dto) {
         College college = null;
@@ -67,7 +74,6 @@ public class FeeServiceImp implements FeeServices {
     }
 
     @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
-    @Cacheable(cacheNames = "feeTypes",  key = "#collegeId == null ? 'UNKNOWN' : #collegeId")
     @Override
     public List<FeeTypeResponse> getAllFeeType(Long collegeId) {
 
@@ -100,10 +106,6 @@ public class FeeServiceImp implements FeeServices {
 
     @Override
     @PreAuthorize("hasRole('ACCOUNTANT')")
-    @Caching(evict = {
-            @CacheEvict(cacheNames = "feeTypes",allEntries = true),
-            @CacheEvict(cacheNames = "feeType",key = "#feeTypeId")
-    })
     public String updateFeeType(Long feeTypeId, FeeTypeRequest dto) {
         FeeType feeType = feeTypeRepository.findById(feeTypeId).orElseThrow(()->
                 new IllegalArgumentException("Fee type not found"));
@@ -116,10 +118,6 @@ public class FeeServiceImp implements FeeServices {
 
     @PreAuthorize("hasRole('ACCOUNTANT')")
     @Override
-    @Caching(evict = {
-            @CacheEvict(cacheNames = "feeTypes",allEntries = true),
-            @CacheEvict(cacheNames = "feeType",key = "#feeTypeId")
-    })
     public String deleteFeeType(Long feeTypeId) {
         FeeType feeType = feeTypeRepository.findById(feeTypeId).orElseThrow(()->
                 new IllegalArgumentException("Fee type not found"));
@@ -129,9 +127,6 @@ public class FeeServiceImp implements FeeServices {
 
     @PreAuthorize("hasRole('ACCOUNTANT')")
     @Override
-    @Caching(evict = {
-            @CacheEvict(cacheNames = "feeStructures",allEntries = true)
-    })
     @Transactional
     public String createFeeStructure(Long collegeId, FeeStructureRequest dto) {
         College college = null;
@@ -158,6 +153,7 @@ public class FeeServiceImp implements FeeServices {
         feeStructure.setAClass(clas);
         feeStructure.setDepartment(department);
         feeStructure.setFeeType(feeType);
+        feeStructure.setStatus(FeeStructureStatus.ACTIVE);
         feeStructure.setCreatedAt(LocalDateTime.now());
 
         FeeStructure savedFeeStructure= feeStructureRepository.save(feeStructure);
@@ -181,7 +177,6 @@ public class FeeServiceImp implements FeeServices {
 
     @Override
     @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
-    @Cacheable(cacheNames = "feeStructures",key = "{#collegeId,#pageNumber,#pageSize}")
     public Page<FeeStructureResponse> getAllFeeStructure(Long collegeId, int pageNumber, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
@@ -190,6 +185,8 @@ public class FeeServiceImp implements FeeServices {
            FeeStructureResponse res = new FeeStructureResponse();
            res.setId(fee.getId());
            res.setAmount(fee.getAmount());
+           res.setDueDate(fee.getDueDate());
+           res.setStatus(fee.getStatus());
            res.setAcademicYear(fee.getAcademicYear());
            res.setDescription(fee.getDescription());
            if(fee.getFeeType()!=null)
@@ -206,7 +203,6 @@ public class FeeServiceImp implements FeeServices {
 
     @Override
     @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
-    @Cacheable(cacheNames = "feeStructure",key = "#feeStructureId")
     public FeeStructureResponse getFeeStructureById(Long feeStructureId) {
 
         FeeStructure feeStructure = feeStructureRepository.findById(feeStructureId).orElseThrow(()->
@@ -215,6 +211,8 @@ public class FeeServiceImp implements FeeServices {
         FeeStructureResponse response = new FeeStructureResponse();
         response.setId(feeStructure.getId());
         response.setAmount(feeStructure.getAmount());
+        response.setDueDate(feeStructure.getDueDate());
+        response.setStatus(feeStructure.getStatus());
         response.setAcademicYear(feeStructure.getAcademicYear());
         response.setDescription(feeStructure.getDescription());
         if(feeStructure.getFeeType()!=null)
@@ -255,10 +253,6 @@ public class FeeServiceImp implements FeeServices {
 
     @Override
     @PreAuthorize("hasRole('ACCOUNTANT')")
-    @Caching(evict = {
-            @CacheEvict(cacheNames = "feeStructures",allEntries = true),
-            @CacheEvict(cacheNames = "feeStructure",key = "#feeStructureId")
-    })
     public String updateFeeStructure(Long feeStructureId, FeeStructureRequest dto) {
         FeeStructure feeStructure = feeStructureRepository.findById(feeStructureId).orElseThrow(()->
                 new IllegalArgumentException("Fee Structure not found"));
@@ -274,10 +268,6 @@ public class FeeServiceImp implements FeeServices {
 
     @Override
     @PreAuthorize("hasRole('ACCOUNTANT')")
-    @Caching(evict = {
-            @CacheEvict(cacheNames = "feeStructures",allEntries = true),
-            @CacheEvict(cacheNames = "feeStructure",key = "#feeStructureId")
-    })
     public String deleteFeeStructure(Long feeStructureId) {
         FeeStructure feeStructure = feeStructureRepository.findById(feeStructureId).orElseThrow(()->
                 new IllegalArgumentException("Fee Structure not found"));
@@ -287,30 +277,38 @@ public class FeeServiceImp implements FeeServices {
 
     @Override
     @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
-    @Cacheable(cacheNames = "feeStudents",key = "{#feeStructureId,#pageNumber,#pageSize}")
-    public Page<FeeStudentResponse> getAllStudent(Long feeStructureId, int pageNumber, int pageSize) {
+    public Page<StudentFeeResponse> getFeeStructureAllStudent(Long feeStructureId, int pageNumber, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
         FeeStructure feeStructure = feeStructureRepository.findById(feeStructureId).orElseThrow(()->
             new IllegalArgumentException("Fee Structure not found"));
 
         Page<StudentFee> studentFees = studentFeeRepository.findByFeeStructure(feeStructure,pageable);
-        Page<FeeStudentResponse> responses = studentFees.map(studentFee -> {
-           FeeStudentResponse res = new FeeStudentResponse();
+        Page<StudentFeeResponse> responses = studentFees.map(studentFee -> {
+
+            Student student = studentFee.getStudent();
+           StudentFeeResponse res = new StudentFeeResponse();
+
+           StudentResponse studentResponse = new StudentResponse();
+           studentResponse.setId(student.getId());
+           studentResponse.setName(student.getFirstName()+" "+student.getLastName());
+           studentResponse.setEmail(student.getEmail());
+           studentResponse.setPhoneNumber(student.getPhoneNumber());
+           studentResponse.setRegistrationNumber(student.getRegistrationNumber());
+
            res.setId(studentFee.getId());
-           res.setName(studentFee.getStudent().getFirstName()+" "+studentFee.getStudent().getLastName());
-           res.setEmail(studentFee.getStudent().getEmail());
-           res.setPhoneNumber(studentFee.getStudent().getPhoneNumber());
-           res.setRegistrationNumber(studentFee.getStudent().getRegistrationNumber());
            res.setAmount(feeStructure.getAmount());
            res.setStatus(studentFee.getStatus());
+
+           res.setStudentResponse(studentResponse);
            return res;
         });
         return responses;
     }
 
     @Override
-    public Page<FeeStudentResponse> getAllPaidStudent(Long feeStructureId, int pageNumber, int pageSize) {
+    @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
+    public Page<StudentFeeResponse> getAllPaidStudent(Long feeStructureId, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         FeeStructure feeStructure = feeStructureRepository.findById(feeStructureId).orElseThrow(()->
                 new IllegalArgumentException("Fee Structure not found"));
@@ -318,16 +316,24 @@ public class FeeServiceImp implements FeeServices {
         Page<StudentFee> studentFees = studentFeeRepository
                 .findByFeeStructureAndStatus(feeStructure,StudentFeeStatus.PAID,pageable);
 
-        Page<FeeStudentResponse> responses = studentFees.map(studentFee -> {
-            FeeStudentResponse res = new FeeStudentResponse();
+        Page<StudentFeeResponse> responses = studentFees.map(studentFee -> {
+            Student student = studentFee.getStudent();
+
+            StudentFeeResponse res = new StudentFeeResponse();
+            StudentResponse studentResponse = new StudentResponse();
+
+            studentResponse.setId(student.getId());
+            studentResponse.setName(student.getFirstName()+" "+student.getLastName());
+            studentResponse.setEmail(student.getEmail());
+            studentResponse.setPhoneNumber(student.getPhoneNumber());
+            studentResponse.setRegistrationNumber(student.getRegistrationNumber());
+
             res.setId(studentFee.getId());
-            res.setName(studentFee.getStudent().getFirstName()+" "+studentFee.getStudent().getLastName());
-            res.setEmail(studentFee.getStudent().getEmail());
-            res.setPhoneNumber(studentFee.getStudent().getPhoneNumber());
-            res.setRegistrationNumber(studentFee.getStudent().getRegistrationNumber());
             res.setAmount(feeStructure.getAmount());
             res.setStatus(studentFee.getStatus());
             res.setStatus(studentFee.getStatus());
+
+            res.setStudentResponse(studentResponse);
             return res;
         });
         return responses;
@@ -335,8 +341,7 @@ public class FeeServiceImp implements FeeServices {
 
     @Override
     @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
-    @Cacheable(cacheNames = "feeUnpaidStudents",key = "{#feeStructureId,#pageNumber,#pageSize}")
-    public Page<FeeStudentResponse> getAllUnPaidStudent(Long feeStructureId, int pageNumber, int pageSize) {
+    public Page<StudentFeeResponse> getAllUnPaidStudent(Long feeStructureId, int pageNumber, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         FeeStructure feeStructure = feeStructureRepository.findById(feeStructureId).orElseThrow(()->
@@ -345,18 +350,253 @@ public class FeeServiceImp implements FeeServices {
         Page<StudentFee> studentFees = studentFeeRepository
                 .findByFeeStructureAndStatus(feeStructure,StudentFeeStatus.PENDING,pageable);
 
-        Page<FeeStudentResponse> responses = studentFees.map(studentFee -> {
-            FeeStudentResponse res = new FeeStudentResponse();
+        Page<StudentFeeResponse> responses = studentFees.map(studentFee -> {
+            Student student = studentFee.getStudent();
+
+            StudentFeeResponse res = new StudentFeeResponse();
+            StudentResponse studentResponse = new StudentResponse();
+            studentResponse.setId(student.getId());
+            studentResponse.setName(student.getFirstName()+" "+student.getLastName());
+            studentResponse.setEmail(student.getEmail());
+            studentResponse.setPhoneNumber(student.getPhoneNumber());
+            studentResponse.setRegistrationNumber(student.getRegistrationNumber());
+
             res.setId(studentFee.getId());
-            res.setName(studentFee.getStudent().getFirstName()+" "+studentFee.getStudent().getLastName());
-            res.setEmail(studentFee.getStudent().getEmail());
-            res.setPhoneNumber(studentFee.getStudent().getPhoneNumber());
-            res.setRegistrationNumber(studentFee.getStudent().getRegistrationNumber());
             res.setAmount(feeStructure.getAmount());
             res.setStatus(studentFee.getStatus());
             res.setStatus(studentFee.getStatus());
+            res.setStudentResponse(studentResponse);
             return res;
         });
         return responses;
     }
+
+    @Override
+    @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
+    public StudentFeeResponse getStudentFeeById(Long studentFeeId) {
+        StudentFee studentFee = studentFeeRepository.findById(studentFeeId).orElseThrow(()->
+                new IllegalArgumentException("Not found"));
+
+        Student student = studentFee.getStudent();
+
+        StudentFeeResponse response = new StudentFeeResponse();
+        StudentResponse studentResponse = new StudentResponse();
+        studentResponse.setId(student.getId());
+        studentResponse.setName(student.getFirstName()+" "+student.getLastName());
+        studentResponse.setEmail(student.getEmail());
+        studentResponse.setPhoneNumber(student.getPhoneNumber());
+        studentResponse.setGender(student.getGender());
+        studentResponse.setRegistrationNumber(student.getRegistrationNumber());
+
+        response.setId(studentFee.getId());
+        response.setFeeTypename(studentFee.getFeeStructure().getFeeType().getName());
+        response.setAmount(studentFee.getFeeStructure().getAmount());
+        response.setStatus(studentFee.getStatus());
+        response.setAcademicYear(studentFee.getFeeStructure().getAcademicYear());
+        response.setClassName(studentFee.getFeeStructure().getAClass().getName());
+        response.setClassCode(studentFee.getFeeStructure().getAClass().getClassCode());
+        response.setDepartmentName(studentFee.getFeeStructure().getDepartment().getName());
+        response.setDepartmentCode(studentFee.getFeeStructure().getDepartment().getCode());
+
+        response.setStudentResponse(studentResponse);
+
+        if(studentFee.getFeePayment()!=null){
+            FeePayment feePayment = studentFee.getFeePayment();
+
+            FeePaymentResponse res = new FeePaymentResponse();
+            res.setId(feePayment.getId());
+            res.setAmount(feePayment.getAmount());
+            res.setPaymentMode(feePayment.getPaymentMode());
+            res.setPaymentDataAndTime(feePayment.getPaymentDataAndTime());
+            res.setTransactionId(feePayment.getTransactionId());
+            res.setReceiptNumber(feePayment.getReceiptNumber());
+
+            response.setFeePaymentResponse(res);
+        }
+        return response;
+    }
+
+    @Override
+    public Page<StudentFeeResponse> getStudentFeeByStudentI(Long studentId,int pageNumber,int pageSize) {
+        Pageable pageable= PageRequest.of(pageNumber,pageSize);
+        Page<StudentFee> studentFees = studentFeeRepository.findByStudentId(studentId,pageable);
+        Page<StudentFeeResponse> responses = studentFees.map(stufee->{
+
+            StudentFeeResponse res = new StudentFeeResponse();
+            FeePaymentResponse feePaymentResponse = new FeePaymentResponse();
+
+            res.setId(stufee.getId());
+            res.setFeeTypename(stufee.getFeeStructure().getFeeType().getName());
+            res.setAmount(stufee.getFeeStructure().getAmount());
+            res.setAcademicYear(stufee.getFeeStructure().getAcademicYear());
+            res.setClassCode(stufee.getFeeStructure().getAClass().getClassCode());
+            res.setStatus(stufee.getStatus());
+            res.setDueDate(stufee.getFeeStructure().getDueDate());
+
+            if(stufee.getFeePayment()!=null) {
+                feePaymentResponse.setPaymentDataAndTime(stufee.getFeePayment().getPaymentDataAndTime());
+                feePaymentResponse.setPaymentMode(stufee.getFeePayment().getPaymentMode());
+                feePaymentResponse.setReceiptNumber(stufee.getFeePayment().getReceiptNumber());
+            }
+            res.setFeePaymentResponse(feePaymentResponse);
+            return res;
+        });
+        return responses;
+    }
+
+    @Override
+    public Page<StudentResponse> getStudents(Long collegeId, int pageNumber, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Page<Student> students = studentRepository.findByCollegeId(collegeId,pageable);
+
+        Page<StudentResponse> responses = students.map(stu->{
+           StudentResponse res = new StudentResponse();
+           List<StudentFee> studentFees = stu.getStudentFees();
+
+           Double totalFee=studentFees.stream()
+                           .map(StudentFee::getFeeStructure)
+                                   .mapToDouble(FeeStructure::getAmount)
+                                           .sum();
+
+           Double totalPaidFee = studentFees.stream().
+                   filter(sf->sf.getStatus()==StudentFeeStatus.PAID)
+                           .map(StudentFee::getFeeStructure)
+                                   .mapToDouble(FeeStructure::getAmount)
+                                           .sum();
+
+           double totalPendingFee = studentFees.stream()
+                           .filter(sf->sf.getStatus()==StudentFeeStatus.PENDING)
+                                   .map(StudentFee::getFeeStructure)
+                                           .mapToDouble(FeeStructure::getAmount)
+                                                   .sum();
+
+           res.setId(stu.getId());
+           res.setName(stu.getFirstName()+" "+stu.getLastName());
+           res.setRegistrationNumber(stu.getRegistrationNumber());
+           res.setEmail(stu.getEmail());
+           res.setPhoneNumber(stu.getPhoneNumber());
+           res.setTotalFee(totalFee);
+           res.setTotalPaidFee(totalPaidFee);
+           res.setTotalPendingFee(totalPendingFee);
+
+           return res;
+        });
+        return responses;
+    }
+
+    @Override
+    @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
+    public StudentResponse getStudentById(Long studentId) {
+
+        Student student = studentRepository.findById(studentId).orElseThrow(()->
+                new IllegalArgumentException("Student not found"));
+
+        Double totalFee = student.getStudentFees()
+                .stream()
+                .map(StudentFee::getFeeStructure)
+                .mapToDouble(FeeStructure::getAmount)
+                .sum();
+
+        Double totalPaidFee = student.getStudentFees().stream()
+                .filter(sf->sf.getStatus()==StudentFeeStatus.PAID)
+                .map(StudentFee::getFeeStructure)
+                .mapToDouble(FeeStructure::getAmount)
+                .sum();
+
+        Double totalPendingFee = student.getStudentFees().stream()
+                .filter(sf->sf.getStatus()==StudentFeeStatus.PENDING)
+                .map(StudentFee::getFeeStructure)
+                .mapToDouble(FeeStructure::getAmount)
+                .sum();
+
+        StudentResponse response = new StudentResponse();
+        response.setRegistrationNumber(student.getRegistrationNumber());
+        response.setName(student.getFirstName()+" "+student.getLastName());
+        response.setPhoneNumber(student.getPhoneNumber());
+        response.setEmail(student.getEmail());
+        response.setGender(student.getGender());
+        response.setDepartmentCode(student.getDepartment().getCode());
+        response.setDepartmentName(student.getDepartment().getName());
+
+        response.setFatherName(student.getParent().getFatherName());
+        response.setFatherNumber(student.getParent().getFatherNumber());
+        response.setMotherName(student.getParent().getMotherName());
+        response.setMotherNumber(student.getParent().getMotherNumber());
+
+        response.setTotalFee(totalFee);
+        response.setTotalPaidFee(totalPaidFee);
+        response.setTotalPendingFee(totalPendingFee);
+
+        return response;
+    }
+
+
+    @Override
+    @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
+    public Page<StudentFeeResponse> getPayments(Long collegeId, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Page<FeePayment> feePayments = feePaymentRepository.findByStudentFeeFeeStructureCollegeId(collegeId,pageable);
+
+        Page<StudentFeeResponse> responses = feePayments.map(payment->{
+
+            Student student = payment.getStudentFee().getStudent();
+
+            StudentFeeResponse res = new StudentFeeResponse();
+            FeePaymentResponse feePaymentResponse = new FeePaymentResponse();
+            StudentResponse studentResponse = new StudentResponse();
+
+            feePaymentResponse.setId(payment.getId());
+            feePaymentResponse.setAmount(payment.getAmount());
+            feePaymentResponse.setPaymentDataAndTime(payment.getPaymentDataAndTime());
+            feePaymentResponse.setPaymentMode(payment.getPaymentMode());
+            feePaymentResponse.setReceiptNumber(payment.getReceiptNumber());
+            feePaymentResponse.setTransactionId(payment.getTransactionId());
+
+            studentResponse.setId(student.getId());
+            studentResponse.setName(student.getFirstName()+" "+student.getLastName());
+            studentResponse.setRegistrationNumber(student.getRegistrationNumber());
+
+            res.setFeePaymentResponse(feePaymentResponse);
+            res.setStudentResponse(studentResponse);
+            res.setFeeTypename(payment.getStudentFee().getFeeStructure().getFeeType().getName());
+            res.setAcademicYear(payment.getStudentFee().getFeeStructure().getAcademicYear());
+
+            return res;
+        });
+        return responses;
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasAnyRole('ACCOUNTANT')")
+    public String payFeeByCash(Long studentFeeId) {
+
+        StudentFee studentFee = studentFeeRepository.findById(studentFeeId).orElseThrow(()->
+                new RuntimeException("Student fee not found"));
+
+        if(studentFee.getStatus()==StudentFeeStatus.PAID){
+            return "Already paid this fee";
+        }
+
+        String date = LocalDate.now()
+                .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String receiptNo = "REC-"+date+"-"+studentFeeId;
+
+        FeePayment feePayment = new FeePayment();
+        feePayment.setAmount(studentFee.getFeeStructure().getAmount());
+        feePayment.setPaymentMode(PaymentMode.CASH);
+        feePayment.setReceiptNumber(receiptNo);
+        feePayment.setPaymentDataAndTime(LocalDateTime.now());
+        feePayment.setCreatedAt(LocalDateTime.now());
+        FeePayment savedFeePayment = feePaymentRepository.save(feePayment);
+
+        studentFee.setStatus(StudentFeeStatus.PAID);
+        studentFee.setFeePayment(savedFeePayment);
+        studentFee.setUpdatedAt(LocalDateTime.now());
+        studentFeeRepository.save(studentFee);
+
+        return "Fee pay successfully";
+    }
+
 }

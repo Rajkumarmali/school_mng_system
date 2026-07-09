@@ -88,11 +88,22 @@ const FeeStructureDetails = () => {
                                     <span> <strong>Amount :  </strong>₹ {fee?.feeStructure?.amount}</span>
                                 </div>
                                 <div>
-                                    <i className="bi bi-calendar-event"></i>
-                                    <span><strong>Academic Year : </strong>{fee?.feeStructure?.academicYear}</span>
+                                    <i className="bi bi-calendar-event-fill"></i>
+                                    <span> <strong>Due Date :  </strong>{
+                                        fee?.feeStructure?.dueDate &&
+                                        new Date(fee?.feeStructure?.dueDate).toLocaleDateString("en-GB").replace(/\//g, "-")
+                                    }</span>
+                                </div>
+                                <div>
+                                    <i className="bi bi-info-circle-fill"></i>
+                                    <span> <strong>Status :  </strong>{fee?.feeStructure?.status}</span>
                                 </div>
                             </div>
                             <div className="fee-structure-details-contact">
+                                <div>
+                                    <i className="bi bi-calendar-event"></i>
+                                    <span><strong>Academic Year : </strong>{fee?.feeStructure?.academicYear}</span>
+                                </div>
                                 <div>
                                     <i className="bi bi-mortarboard-fill"></i>
                                     <span>
@@ -101,7 +112,7 @@ const FeeStructureDetails = () => {
                                     </span>
                                 </div>
                                 <div>
-                                    <i className="bi bi-diagram-3-fill me-2"></i>
+                                    <i className="bi bi-diagram-3-fill"></i>
                                     <span>
                                         <strong>Department : </strong>
                                         {fee?.feeStructure?.departmentName} ({fee?.feeStructure?.departmentCode})

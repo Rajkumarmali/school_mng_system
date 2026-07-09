@@ -12,7 +12,7 @@ const FeeStudents = () => {
     const feeStructureId = searchParams.get("id")
     const studentStatus = searchParams.get("studentStatus")
     const pageNumber = Number(searchParams.get('page')) || 1
-    const pageSize = Number(searchParams.get("size")) || 1;
+    const pageSize = Number(searchParams.get("size")) || 10;
     const feeStudentId = searchParams.get("feeStudentId")
 
     const dispatch = useDispatch();
@@ -177,10 +177,10 @@ const FeeStudents = () => {
                                                     : fee?.unpaidFeeStudents?.content)?.map((s, index) =>
                                                         <tr key={s.id}>
                                                             <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                                            <td>{s.registrationNumber}</td>
-                                                            <td>{s.name}</td>
-                                                            <td>{s.phoneNumber}</td>
-                                                            <td>{s.email}</td>
+                                                            <td>{s.studentResponse.registrationNumber}</td>
+                                                            <td>{s.studentResponse.name}</td>
+                                                            <td>{s.studentResponse.phoneNumber}</td>
+                                                            <td>{s.studentResponse.email}</td>
                                                             <td>{s.amount}</td>
                                                             <td>{s.status}</td>
                                                             <td className='text-center'>

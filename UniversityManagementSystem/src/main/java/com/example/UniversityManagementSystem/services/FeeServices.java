@@ -16,7 +16,13 @@ public interface FeeServices {
     FeeStructureResponse getFeeStructureById(Long feeStructureId);
     String updateFeeStructure(Long feeStructureId,FeeStructureRequest dto);
     String deleteFeeStructure(Long feeStructureId);
-    Page<FeeStudentResponse> getAllStudent(Long feeStructureId,int pageNumber,int pageSize);
-    Page<FeeStudentResponse> getAllPaidStudent(Long feeStructureId,int pageNumber,int pageSize);
-    Page<FeeStudentResponse> getAllUnPaidStudent(Long feeStructureId,int pageNumber,int pageSize);
+    Page<StudentFeeResponse> getFeeStructureAllStudent(Long feeStructureId, int pageNumber, int pageSize);
+    Page<StudentFeeResponse> getAllPaidStudent(Long feeStructureId, int pageNumber, int pageSize);
+    Page<StudentFeeResponse> getAllUnPaidStudent(Long feeStructureId, int pageNumber, int pageSize);
+    StudentFeeResponse getStudentFeeById(Long studentFeeId);
+    Page<StudentFeeResponse> getStudentFeeByStudentI(Long studentId,int pageNumber, int pageSize);
+    Page<StudentResponse> getStudents(Long collegeId,int pageNumber,int pageSize);
+    StudentResponse getStudentById(Long studentId);
+    Page<StudentFeeResponse> getPayments(Long collegeId,int pageNumber,int pageSize);
+    String payFeeByCash(Long studentFeeId);
 }

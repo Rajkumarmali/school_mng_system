@@ -3,13 +3,15 @@ import './Fee.css'
 import { useSearchParams } from 'react-router-dom'
 import FeeType from './FeeType';
 import FeeStructure from './FeeStructure';
+import Students from './Students';
+import Payments from './Payment';
 
 
 
 const Fee = () => {
 
     const [searchParams, setSearchParams] = useSearchParams();
-    const activeTab = searchParams.get("tab") || "info"
+    const activeTab = searchParams.get("tab") || "fee"
 
     return (
         <div className='fee-container'>
@@ -18,7 +20,7 @@ const Fee = () => {
                     <li class="nav-item">
                         <button
                             class="nav-link"
-                            onClick={() => setSearchParams({ tab: "info" })}
+                            onClick={() => setSearchParams({ tab: "fee" })}
                         >
                             Fee Dashboard
                         </button>
@@ -39,6 +41,22 @@ const Fee = () => {
                             Fee Structure
                         </button>
                     </li>
+                    <li class="nav-item">
+                        <button
+                            class="nav-link"
+                            onClick={() => setSearchParams({ tab: "fee-student" })}
+                        >
+                            Students
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button
+                            class="nav-link"
+                            onClick={() => setSearchParams({ tab: "fee-payment" })}
+                        >
+                            Payments
+                        </button>
+                    </li>
                 </ul>
             </nav>
             <div className="fee-card">
@@ -47,11 +65,17 @@ const Fee = () => {
                         <FeeType />
                         :
                         activeTab === "fee-structure" ?
-                            < FeeStructure />
+                            <FeeStructure />
                             :
-                            <div>
-                                Dashboard
-                            </div>
+                            activeTab === "fee-student" ?
+                                <Students />
+                                :
+                                activeTab === "fee-payment" ?
+                                    <Payments />
+                                    :
+                                    <div>
+                                        Dashboard
+                                    </div>
                 }
             </div>
         </div>

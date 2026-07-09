@@ -1,17 +1,12 @@
 package com.example.UniversityManagementSystem.dto.fee;
 
-import com.example.UniversityManagementSystem.entity.type.Gender;
 import com.example.UniversityManagementSystem.entity.type.StudentFeeStatus;
 
-public class FeeStudentResponse {
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
+public class StudentFeeResponse {
     private Long id;
-
-    private String name;
-    private String email;
-    private String registrationNumber;
-    private String phoneNumber;
-    private Gender gender;
-
     private String feeTypename;
     private Double amount;
     private StudentFeeStatus status;
@@ -20,19 +15,18 @@ public class FeeStudentResponse {
     private String className;
     private String departmentCode;
     private String departmentName;
+    private LocalDateTime DueDate;
+    private StudentResponse studentResponse;
+    private FeePaymentResponse feePaymentResponse;
 
-    public FeeStudentResponse() {
+    public StudentFeeResponse() {
     }
 
-    public FeeStudentResponse(Long id, String name, String email, String registrationNumber, String phoneNumber,
-                              Gender gender, String feeTypename, Double amount, StudentFeeStatus status, String academicYear, String classCode, String className,
-                              String departmentCode, String departmentName) {
+    public StudentFeeResponse(Long id, StudentResponse studentResponse, String feeTypename, Double amount,
+                              StudentFeeStatus status, String academicYear, String classCode, String className,
+                              String departmentCode, String departmentName, LocalDateTime dueDate, FeePaymentResponse feePaymentResponse) {
         this.id = id;
-        this.name = name;
-        this.email = email;
-        this.registrationNumber = registrationNumber;
-        this.phoneNumber = phoneNumber;
-        this.gender = gender;
+        this.studentResponse = studentResponse;
         this.feeTypename = feeTypename;
         this.amount = amount;
         this.status = status;
@@ -41,6 +35,8 @@ public class FeeStudentResponse {
         this.className = className;
         this.departmentCode = departmentCode;
         this.departmentName = departmentName;
+        DueDate = dueDate;
+        this.feePaymentResponse = feePaymentResponse;
     }
 
     public Long getId() {
@@ -49,46 +45,6 @@ public class FeeStudentResponse {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getRegistrationNumber() {
-        return registrationNumber;
-    }
-
-    public void setRegistrationNumber(String registrationNumber) {
-        this.registrationNumber = registrationNumber;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public Gender getGender() {
-        return gender;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
     }
 
     public Double getAmount() {
@@ -153,5 +109,29 @@ public class FeeStudentResponse {
 
     public void setFeeTypename(String feeTypename) {
         this.feeTypename = feeTypename;
+    }
+
+    public FeePaymentResponse getFeePaymentResponse() {
+        return feePaymentResponse;
+    }
+
+    public void setFeePaymentResponse(FeePaymentResponse feePaymentResponse) {
+        this.feePaymentResponse = feePaymentResponse;
+    }
+
+    public StudentResponse getStudentResponse() {
+        return studentResponse;
+    }
+
+    public void setStudentResponse(StudentResponse studentResponse) {
+        this.studentResponse = studentResponse;
+    }
+
+    public LocalDateTime getDueDate() {
+        return DueDate;
+    }
+
+    public void setDueDate(LocalDateTime dueDate) {
+        DueDate = dueDate;
     }
 }

@@ -11,3 +11,98 @@
     background: transparent;
     color: #3c58c9;
 }
+
+.fee-student-profile-header {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    /* padding: 30px; */
+}
+
+.fee-student-profile-avatar {
+    width: 140px;
+    height: 140px;
+    border-radius: 4px;
+    background: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 70px;
+    color: #6c757d;
+}
+
+.fee-student-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.fee-student-profile-info {
+    flex: 1;
+    display: flex;
+    gap:30px
+}
+.fee-student-profile-contact {
+    margin-top: 25px;
+}
+.fee-student-profile-contact div {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.fee-student-fee-info {
+    margin-top: 30px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.fee-student-fee-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.fee-student-fee-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px 35px;
+}
+
+.fee-student-fee-header h4 {
+    margin: 0;
+    font-weight: 700;
+}
+.print-btn{
+    border: none;
+    background: transparent;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.print-btn:hover {
+    transform: scale(1.1);
+    color:#3c58c9;
+}
+
+.fee-student-fee-grid div {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.fee-student-fee-grid i {
+    width: 22px;
+    font-size: 18px;
+    color: #3c58c9;
+}
+
+.fee-student-fee-grid span {
+    font-size: 15px;
+}
+
+.fee-student-fee-grid strong {
+    margin-right: 4px;
+}

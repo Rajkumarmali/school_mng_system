@@ -53,9 +53,6 @@ public class Student {
     @OneToMany(mappedBy = "student")
     private List<StudentFee> studentFees=new ArrayList<>();
 
-    @OneToMany(mappedBy = "student")
-    private List<FeePayment> feePayments=new ArrayList<>();
-
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -247,11 +244,4 @@ public class Student {
         this.studentFees = studentFees;
     }
 
-    public List<FeePayment> getFeePayments() {
-        return feePayments;
-    }
-
-    public void setFeePayments(List<FeePayment> feePayments) {
-        this.feePayments = feePayments;
-    }
 }

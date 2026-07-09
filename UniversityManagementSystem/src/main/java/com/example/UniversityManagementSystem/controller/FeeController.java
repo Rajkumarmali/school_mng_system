@@ -90,27 +90,71 @@ public class FeeController {
     }
 
     @GetMapping("/get-feestudent/{id}")
-    public ResponseEntity<Page<FeeStudentResponse>> getAllFeeStudents(@PathVariable Long id,
+    public ResponseEntity<Page<StudentFeeResponse>> getAllFeeStudents(@PathVariable Long id,
                                                                       @RequestParam(defaultValue = "0") int pageNumber,
                                                                       @RequestParam(defaultValue = "10") int pageSize){
-        Page<FeeStudentResponse> res = feeServices.getAllStudent(id,pageNumber,pageSize);
+        Page<StudentFeeResponse> res = feeServices.getFeeStructureAllStudent(id,pageNumber,pageSize);
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
 
     @GetMapping("/get-paid-feestudent/{id}")
-    public ResponseEntity<Page<FeeStudentResponse>> getAllPaidFeeStudent(@PathVariable Long id,
-                                                                      @RequestParam(defaultValue = "0") int pageNumber,
-                                                                      @RequestParam(defaultValue = "10") int pageSize){
-        Page<FeeStudentResponse> res = feeServices.getAllPaidStudent(id,pageNumber,pageSize);
+    public ResponseEntity<Page<StudentFeeResponse>> getAllPaidFeeStudent(@PathVariable Long id,
+                                                                         @RequestParam(defaultValue = "0") int pageNumber,
+                                                                         @RequestParam(defaultValue = "10") int pageSize){
+        Page<StudentFeeResponse> res = feeServices.getAllPaidStudent(id,pageNumber,pageSize);
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
 
     @GetMapping("/get-unpaid-feestudent/{id}")
-    public ResponseEntity<Page<FeeStudentResponse>> getAllUnpaidFeeStudent(@PathVariable Long id,
-                                                                      @RequestParam(defaultValue = "0") int pageNumber,
-                                                                      @RequestParam(defaultValue = "10") int pageSize){
-        Page<FeeStudentResponse> res = feeServices.getAllUnPaidStudent(id,pageNumber,pageSize);
+    public ResponseEntity<Page<StudentFeeResponse>> getAllUnpaidFeeStudent(@PathVariable Long id,
+                                                                           @RequestParam(defaultValue = "0") int pageNumber,
+                                                                           @RequestParam(defaultValue = "10") int pageSize){
+        Page<StudentFeeResponse> res = feeServices.getAllUnPaidStudent(id,pageNumber,pageSize);
         return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/get-studentfee-byid/{id}")
+    public ResponseEntity<StudentFeeResponse> getFeeStudentById(@PathVariable Long id){
+        StudentFeeResponse res = feeServices.getStudentFeeById(id);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/get-students")
+    public ResponseEntity<Page<StudentResponse>> getAllStudent(@RequestHeader("Authorization") String jwt,
+                                                               @RequestParam(defaultValue = "0") int pageNumber,
+                                                               @RequestParam(defaultValue = "10") int pageSize){
+        Long collegeId= jwtProvider.getCollegeIdFromToken(jwt);
+        Page<StudentResponse> res = feeServices.getStudents(collegeId,pageNumber,pageSize);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/get-studentbyid/{studentId}")
+    public ResponseEntity<StudentResponse> getStudentById(@PathVariable Long studentId){
+          StudentResponse res = feeServices.getStudentById(studentId);
+          return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/get-payments")
+    public ResponseEntity<Page<StudentFeeResponse>> getAllPayments(@RequestHeader("Authorization") String jwt,
+                                                               @RequestParam(defaultValue = "0") int pageNumber,
+                                                               @RequestParam(defaultValue = "10") int pageSize){
+        Long collegeId= jwtProvider.getCollegeIdFromToken(jwt);
+        Page<StudentFeeResponse> res = feeServices.getPayments(collegeId,pageNumber,pageSize);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @PostMapping("/pay-feebycash/{id}")
+    public ResponseEntity<String> payFeeByCash(@PathVariable Long id){
+        String res = feeServices.payFeeByCash(id);
+        return new ResponseEntity<>(res,HttpStatus.CREATED);
+    }
+
+    @GetMapping("/get-studentfeebystudentid/{id}")
+    public ResponseEntity<Page<StudentFeeResponse>> getStudentFeeByStudentId(@PathVariable Long id,
+                                                                               @RequestParam(defaultValue = "0") int pageNumber,
+                                                                               @RequestParam(defaultValue = "10") int pageSize){
+         Page<StudentFeeResponse> res = feeServices.getStudentFeeByStudentI(id,pageNumber,pageSize);
+         return new ResponseEntity<>(res,HttpStatus.OK);
     }
 
 }

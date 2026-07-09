@@ -193,7 +193,10 @@ const FeeStructure = () => {
                                                 <td>{fee.classCode}</td>
                                                 <td>{fee.academicYear}</td>
                                                 <td>{fee.amount}</td>
-                                                <td>{fee.dueDate}</td>
+                                                <td> {
+                                                    fee.dueDate &&
+                                                    new Date(fee.dueDate).toLocaleDateString("en-GB").replace(/\//g, "-")
+                                                }</td>
                                                 <td>{fee.status}</td>
                                                 <td className='text-center'>
                                                     <button
