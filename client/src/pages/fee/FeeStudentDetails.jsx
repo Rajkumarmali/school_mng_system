@@ -2,10 +2,16 @@ import React, { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom';
 import './FeeStudentDetails.css'
 import { useDispatch, useSelector } from 'react-redux';
-import { getFeeStudentById } from '../../state/fee/Action';
+import { getFeeStudentById, payFeeByCash } from '../../state/fee/Action';
+import { jwtDecode } from 'jwt-decode';
 
 
 const FeeStudentDetails = () => {
+
+    const token = localStorage.getItem("token")
+    const decoded = jwtDecode(token)
+    const roles = decoded.roles;
+    const isAccountant = roles.includes("ACCOUNTANT")
 
     const [searchParams, setSearchParams] = useSearchParams();
     const tab = searchParams.get("tab")
@@ -27,6 +33,11 @@ const FeeStudentDetails = () => {
             page: pageNumber,
             size: pageSize
         })
+    }
+
+    const handlePayFee = async (studentFeeId) => {
+        await dispatch(payFeeByCash(studentFeeId))
+        await dispatch(getFeeStudentById(studentFeeId))
     }
 
     useEffect(() => {
@@ -104,10 +115,17 @@ const FeeStudentDetails = () => {
                 <div className="fee-student-fee-header">
                     <h4>Fee Details</h4>
                     {
-                        fee?.feeStudent?.feePaymentResponse &&
-                        <button className="print-btn">
-                            <i class="bi bi-printer-fill"></i>
-                        </button>
+                        fee?.feeStudent?.feePaymentResponse ?
+                            <button className="print-btn">
+                                <i class="bi bi-printer-fill"></i>
+                            </button>
+                            :
+                            isAccountant &&
+                            <button className="print-btn"
+                                onClick={() => handlePayFee(fee?.feeStudent?.id)}
+                            >
+                                Collect Cash
+                            </button>
                     }
                 </div>
 

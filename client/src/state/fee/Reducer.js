@@ -7,6 +7,7 @@ import {
     GET_FEE_STUDENT_BYID_SUCCESS, GET_FEE_STUDENT_FAILER, GET_FEE_STUDENT_REQUEST, GET_FEE_STUDENT_SUCCESS,
     GET_FEE_TYPE_BYID_FAILER, GET_FEE_TYPE_BYID_REQUEST, GET_FEE_TYPE_BYID_SUCCESS, GET_FEE_TYPE_FAILER, GET_FEE_TYPE_REQUEST,
     GET_FEE_TYPE_SUCCESS, GET_PAID_FEE_STUDENT_FAILER, GET_PAID_FEE_STUDENT_REQUEST, GET_PAID_FEE_STUDENT_SUCCESS,
+    GET_PAYMENT_BYID_FAILER, GET_PAYMENT_BYID_REQUEST, GET_PAYMENT_BYID_SUCCESS,
     GET_PAYMENT_FAILER, GET_PAYMENT_REQUEST, GET_PAYMENT_SUCCESS, GET_STUDENT_BYID_FAILER, GET_STUDENT_BYID_REQUEST,
     GET_STUDENT_BYID_SUCCESS,
     GET_STUDENT_FAILER, GET_STUDENT_REQUEST, GET_STUDENT_SUCCESS,
@@ -30,6 +31,7 @@ const initialState = {
     student: null,
     studentsFees: [],
     payments: [],
+    payment: null,
     paidFeeStudents: [],
     unpaidFeeStudents: [],
 }
@@ -55,6 +57,7 @@ export const feeReducer = (state = initialState, action) => {
         case PAY_FEE_BY_CASH_REQUEST:
         case GET_STUDENTS_FEES_REQUEST:
         case GET_STUDENT_BYID_REQUEST:
+        case GET_PAYMENT_BYID_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -157,6 +160,13 @@ export const feeReducer = (state = initialState, action) => {
                 student: action.payload
             }
         }
+        case GET_PAYMENT_BYID_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                error: null,
+                payment: action.payload
+            }
         case CREATE_FEE_TYPE_FAILER:
         case UPDATE_FEE_TYPE_FAILER:
         case DELETE_FEE_TYPE_FAILER:
@@ -176,6 +186,7 @@ export const feeReducer = (state = initialState, action) => {
         case PAY_FEE_BY_CASH_FAILER:
         case GET_STUDENTS_FEES_FAILER:
         case GET_STUDENT_BYID_FAILER:
+        case GET_PAYMENT_BYID_FAILER:
             return {
                 ...state,
                 isLoading: false,

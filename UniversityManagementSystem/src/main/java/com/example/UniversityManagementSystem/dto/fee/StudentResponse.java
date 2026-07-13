@@ -2,7 +2,9 @@ package com.example.UniversityManagementSystem.dto.fee;
 
 import com.example.UniversityManagementSystem.entity.type.Gender;
 
-public class StudentResponse {
+import java.io.Serializable;
+
+public class StudentResponse implements Serializable {
     private Long id;
     private String name;
     private String email;

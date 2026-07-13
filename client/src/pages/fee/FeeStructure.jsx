@@ -28,6 +28,7 @@ const FeeStructure = () => {
         description: "",
         classCode: "",
         departmentCode: "",
+        dueDate: "",
         feeTypeId: 0
     })
 
@@ -46,6 +47,7 @@ const FeeStructure = () => {
             description: "",
             classCode: "",
             departmentCode: "",
+            dueDate: "",
             feeTypeId: fee?.feeTypes?.[0]?.id || 0
         })
     }
@@ -123,7 +125,13 @@ const FeeStructure = () => {
     }
 
     const handleSave = async () => {
-        await dispatch(createFeeStructure(feeStructureData));
+        const payload = {
+            ...feeStructureData,
+            dueDate: feeStructureData.dueDate ?
+                new Date(feeStructureData.dueDate).toISOString()
+                : null
+        }
+        await dispatch(createFeeStructure(payload));
         await dispatch(getAllFeeStructure(pageNumber, pageSize));
         handleClearData()
     }
@@ -350,6 +358,15 @@ const FeeStructure = () => {
                                         className="modal-input"
                                         name='amount'
                                         value={feeStructureData.amount}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Due Date</label>
+                                    <input type="date"
+                                        className="modal-input"
+                                        name='dueDate'
+                                        value={feeStructureData.dueDate}
                                         onChange={handleChange}
                                     />
                                 </div>

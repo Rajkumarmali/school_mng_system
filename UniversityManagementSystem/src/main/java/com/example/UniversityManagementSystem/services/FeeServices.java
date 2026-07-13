@@ -24,5 +24,6 @@ public interface FeeServices {
     Page<StudentResponse> getStudents(Long collegeId,int pageNumber,int pageSize);
     StudentResponse getStudentById(Long studentId);
     Page<StudentFeeResponse> getPayments(Long collegeId,int pageNumber,int pageSize);
+    StudentFeeResponse getPaymentById(Long paymentId);
     String payFeeByCash(Long studentFeeId);
 }

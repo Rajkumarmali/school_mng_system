@@ -143,6 +143,12 @@ public class FeeController {
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
 
+    @GetMapping("/get-payentbyid/{paymentId}")
+    public ResponseEntity<StudentFeeResponse> getPaymentById(@PathVariable Long paymentId){
+        StudentFeeResponse res = feeServices.getPaymentById(paymentId);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
     @PostMapping("/pay-feebycash/{id}")
     public ResponseEntity<String> payFeeByCash(@PathVariable Long id){
         String res = feeServices.payFeeByCash(id);

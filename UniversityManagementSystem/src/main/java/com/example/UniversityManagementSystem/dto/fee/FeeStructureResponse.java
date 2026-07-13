@@ -2,9 +2,10 @@ package com.example.UniversityManagementSystem.dto.fee;
 
 import com.example.UniversityManagementSystem.entity.type.FeeStructureStatus;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class FeeStructureResponse {
+public class FeeStructureResponse implements Serializable {
     private Long id;
     private Double amount;
     private String academicYear;

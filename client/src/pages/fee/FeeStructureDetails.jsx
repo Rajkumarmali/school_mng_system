@@ -18,6 +18,8 @@ const FeeStructureDetails = () => {
         amount: 0,
         academicYear: "",
         description: "",
+        feeStructureStatus: "",
+        dueDate: "",
     })
 
     const handleChange = (e) => {
@@ -33,11 +35,21 @@ const FeeStructureDetails = () => {
             amount: fee?.feeStructure?.amount || 0,
             academicYear: fee?.feeStructure?.academicYear || "",
             description: fee?.feeStructure?.description || "",
+            feeStructureStatus: fee?.feeStructure?.status || "ACTIVE",
+            dueDate: fee?.feeStructure?.dueDate
+                ? fee.feeStructure.dueDate.split("T")[0]
+                : ""
         })
     }
 
     const handleSave = async () => {
-        await dispatch(updateFeeStructure(feeStructureId, feeStructureData))
+        const payload = {
+            ...feeStructureData,
+            dueDate: feeStructureData.dueDate
+                ? new Date(feeStructureData.dueDate).toISOString()
+                : null
+        };
+        await dispatch(updateFeeStructure(feeStructureId, payload))
         await dispatch(getFeeStructureById(feeStructureId))
     }
 
@@ -221,6 +233,28 @@ const FeeStructureDetails = () => {
                                         className="modal-input"
                                         name='description'
                                         value={feeStructureData.description}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Status</label>
+                                    <select type="text"
+                                        className="modal-input"
+                                        name='feeStructureStatus'
+                                        value={feeStructureData.feeStructureStatus}
+                                        onChange={handleChange}
+                                    >
+                                        <option>ACTIVE</option>
+                                        <option>INACTIVE</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Due Date</label>
+                                    <input
+                                        type='date'
+                                        className="modal-input"
+                                        name='dueDate'
+                                        value={feeStructureData.dueDate}
                                         onChange={handleChange}
                                     />
                                 </div>

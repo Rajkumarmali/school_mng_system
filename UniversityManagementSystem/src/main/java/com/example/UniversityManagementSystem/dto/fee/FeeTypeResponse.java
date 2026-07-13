@@ -1,6 +1,8 @@
 package com.example.UniversityManagementSystem.dto.fee;
 
-public class FeeTypeResponse {
+import java.io.Serializable;
+
+public class FeeTypeResponse implements Serializable {
     private Long id;
     private String name;
     private String description;

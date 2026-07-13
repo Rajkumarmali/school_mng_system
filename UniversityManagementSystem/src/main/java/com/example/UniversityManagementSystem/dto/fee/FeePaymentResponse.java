@@ -2,9 +2,10 @@ package com.example.UniversityManagementSystem.dto.fee;
 
 import com.example.UniversityManagementSystem.entity.type.PaymentMode;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class FeePaymentResponse {
+public class FeePaymentResponse implements Serializable {
     private Long id;
     private Double amount;
     private PaymentMode paymentMode;

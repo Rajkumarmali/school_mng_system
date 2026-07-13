@@ -57,6 +57,9 @@ public class FeeServiceImp implements FeeServices {
     @Transactional
     @PreAuthorize("hasRole('ACCOUNTANT')")
     @Override
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "feeTypes",allEntries = true)
+    })
     public String createFeeType(Long collegeId, FeeTypeRequest dto) {
         College college = null;
 
@@ -75,6 +78,7 @@ public class FeeServiceImp implements FeeServices {
 
     @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
     @Override
+    @Cacheable(cacheNames = "feeTypes", key = "#collegeId != null ? #collegeId : 'UNIVERSITYFEETYPES'")
     public List<FeeTypeResponse> getAllFeeType(Long collegeId) {
 
         List<FeeType> feeTypes = feeTypeRepository.findByCollegeId(collegeId);
@@ -90,9 +94,9 @@ public class FeeServiceImp implements FeeServices {
         return responses;
     }
 
+    @Override
     @PreAuthorize("hasRole('ACCOUNTANT')")
     @Cacheable(cacheNames = "feeType",key = "#feeTypeId")
-    @Override
     public FeeTypeResponse getFeeTypeById(Long feeTypeId) {
         FeeType feeType = feeTypeRepository.findById(feeTypeId).orElseThrow(()->
                 new IllegalArgumentException("Fee type not found"));
@@ -106,6 +110,10 @@ public class FeeServiceImp implements FeeServices {
 
     @Override
     @PreAuthorize("hasRole('ACCOUNTANT')")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "feeTypes",allEntries = true),
+            @CacheEvict(cacheNames = "feeType",key = "#feeTypeId")
+    })
     public String updateFeeType(Long feeTypeId, FeeTypeRequest dto) {
         FeeType feeType = feeTypeRepository.findById(feeTypeId).orElseThrow(()->
                 new IllegalArgumentException("Fee type not found"));
@@ -116,8 +124,12 @@ public class FeeServiceImp implements FeeServices {
         return "Fee type update successfully";
     }
 
-    @PreAuthorize("hasRole('ACCOUNTANT')")
     @Override
+    @PreAuthorize("hasRole('ACCOUNTANT')")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "feeTypes",allEntries = true),
+            @CacheEvict(cacheNames = "feeType",key = "#feeTypeId")
+    })
     public String deleteFeeType(Long feeTypeId) {
         FeeType feeType = feeTypeRepository.findById(feeTypeId).orElseThrow(()->
                 new IllegalArgumentException("Fee type not found"));
@@ -125,9 +137,14 @@ public class FeeServiceImp implements FeeServices {
         return "Fee Type delete successfully";
     }
 
-    @PreAuthorize("hasRole('ACCOUNTANT')")
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ACCOUNTANT')")
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "feeStructures",allEntries = true)
+            }
+    )
     public String createFeeStructure(Long collegeId, FeeStructureRequest dto) {
         College college = null;
         if(collegeId!=null){
@@ -154,6 +171,7 @@ public class FeeServiceImp implements FeeServices {
         feeStructure.setDepartment(department);
         feeStructure.setFeeType(feeType);
         feeStructure.setStatus(FeeStructureStatus.ACTIVE);
+        feeStructure.setDueDate(dto.getDueDate());
         feeStructure.setCreatedAt(LocalDateTime.now());
 
         FeeStructure savedFeeStructure= feeStructureRepository.save(feeStructure);
@@ -177,6 +195,7 @@ public class FeeServiceImp implements FeeServices {
 
     @Override
     @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
+    @Cacheable(cacheNames = "feeStructures",key = "{#collegeId,#pageNumber,#pageSize}")
     public Page<FeeStructureResponse> getAllFeeStructure(Long collegeId, int pageNumber, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
@@ -203,6 +222,7 @@ public class FeeServiceImp implements FeeServices {
 
     @Override
     @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
+    @Cacheable(cacheNames = "feeStructure",key = "#feeStructureId")
     public FeeStructureResponse getFeeStructureById(Long feeStructureId) {
 
         FeeStructure feeStructure = feeStructureRepository.findById(feeStructureId).orElseThrow(()->
@@ -253,12 +273,19 @@ public class FeeServiceImp implements FeeServices {
 
     @Override
     @PreAuthorize("hasRole('ACCOUNTANT')")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "feeStructures",allEntries = true),
+            @CacheEvict(cacheNames = "feeStructure",key = "#feeStructureId")
+    })
     public String updateFeeStructure(Long feeStructureId, FeeStructureRequest dto) {
         FeeStructure feeStructure = feeStructureRepository.findById(feeStructureId).orElseThrow(()->
                 new IllegalArgumentException("Fee Structure not found"));
+        System.out.println(dto.getDueDate());
         feeStructure.setAmount(dto.getAmount());
         feeStructure.setDescription(dto.getDescription());
         feeStructure.setAcademicYear(dto.getAcademicYear());
+        feeStructure.setStatus(dto.getFeeStructureStatus());
+        feeStructure.setDueDate(dto.getDueDate());
         feeStructure.setUpdatedAt(LocalDateTime.now());
 
         feeStructureRepository.save(feeStructure);
@@ -268,6 +295,10 @@ public class FeeServiceImp implements FeeServices {
 
     @Override
     @PreAuthorize("hasRole('ACCOUNTANT')")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "feeStructures",allEntries = true),
+            @CacheEvict(cacheNames = "feeStructure",key = "#feeStructureId")
+    })
     public String deleteFeeStructure(Long feeStructureId) {
         FeeStructure feeStructure = feeStructureRepository.findById(feeStructureId).orElseThrow(()->
                 new IllegalArgumentException("Fee Structure not found"));
@@ -277,6 +308,7 @@ public class FeeServiceImp implements FeeServices {
 
     @Override
     @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
+    @Cacheable(cacheNames = "feeStructureAllStudents",key = "{#feeStructureId,#pageNumber,#pageSize}")
     public Page<StudentFeeResponse> getFeeStructureAllStudent(Long feeStructureId, int pageNumber, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
@@ -308,6 +340,7 @@ public class FeeServiceImp implements FeeServices {
 
     @Override
     @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
+    @Cacheable(cacheNames = "feeStructurePaidStudents",key = "{#feeStructureId,#pageNumber,#pageSize}")
     public Page<StudentFeeResponse> getAllPaidStudent(Long feeStructureId, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         FeeStructure feeStructure = feeStructureRepository.findById(feeStructureId).orElseThrow(()->
@@ -341,6 +374,7 @@ public class FeeServiceImp implements FeeServices {
 
     @Override
     @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
+    @Cacheable(cacheNames = "feeStructureUnpaidStudents",key = "{#feeStructureId,#pageNumber,#pageSize}")
     public Page<StudentFeeResponse> getAllUnPaidStudent(Long feeStructureId, int pageNumber, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
@@ -373,6 +407,7 @@ public class FeeServiceImp implements FeeServices {
 
     @Override
     @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
+    @Cacheable(cacheNames = "studentsFee",key = "#studentFeeId")
     public StudentFeeResponse getStudentFeeById(Long studentFeeId) {
         StudentFee studentFee = studentFeeRepository.findById(studentFeeId).orElseThrow(()->
                 new IllegalArgumentException("Not found"));
@@ -393,10 +428,14 @@ public class FeeServiceImp implements FeeServices {
         response.setAmount(studentFee.getFeeStructure().getAmount());
         response.setStatus(studentFee.getStatus());
         response.setAcademicYear(studentFee.getFeeStructure().getAcademicYear());
-        response.setClassName(studentFee.getFeeStructure().getAClass().getName());
-        response.setClassCode(studentFee.getFeeStructure().getAClass().getClassCode());
-        response.setDepartmentName(studentFee.getFeeStructure().getDepartment().getName());
-        response.setDepartmentCode(studentFee.getFeeStructure().getDepartment().getCode());
+        if(studentFee.getFeeStructure().getAClass()!=null){
+            response.setClassName(studentFee.getFeeStructure().getAClass().getName());
+            response.setClassCode(studentFee.getFeeStructure().getAClass().getClassCode());
+        }
+       if(studentFee.getFeeStructure().getDepartment()!=null){
+           response.setDepartmentName(studentFee.getFeeStructure().getDepartment().getName());
+           response.setDepartmentCode(studentFee.getFeeStructure().getDepartment().getCode());
+       }
 
         response.setStudentResponse(studentResponse);
 
@@ -417,6 +456,8 @@ public class FeeServiceImp implements FeeServices {
     }
 
     @Override
+    @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
+    @Cacheable(cacheNames = "studentsFees",key = "{#studentId,#pageNumber,#pageSize}")
     public Page<StudentFeeResponse> getStudentFeeByStudentI(Long studentId,int pageNumber,int pageSize) {
         Pageable pageable= PageRequest.of(pageNumber,pageSize);
         Page<StudentFee> studentFees = studentFeeRepository.findByStudentId(studentId,pageable);
@@ -445,6 +486,8 @@ public class FeeServiceImp implements FeeServices {
     }
 
     @Override
+    @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
+    @Cacheable(cacheNames = "studentFees",key = "{#collegeId,#pageNumber,#pageSize}")
     public Page<StudentResponse> getStudents(Long collegeId, int pageNumber, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
@@ -487,6 +530,7 @@ public class FeeServiceImp implements FeeServices {
 
     @Override
     @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
+    @Cacheable(cacheNames = "studentFee",key = "#studentId")
     public StudentResponse getStudentById(Long studentId) {
 
         Student student = studentRepository.findById(studentId).orElseThrow(()->
@@ -531,9 +575,9 @@ public class FeeServiceImp implements FeeServices {
         return response;
     }
 
-
     @Override
     @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
+    @Cacheable(cacheNames = "payments",key = "{#collegeId,#pageNumber,#pageSize}")
     public Page<StudentFeeResponse> getPayments(Long collegeId, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
         Page<FeePayment> feePayments = feePaymentRepository.findByStudentFeeFeeStructureCollegeId(collegeId,pageable);
@@ -568,8 +612,67 @@ public class FeeServiceImp implements FeeServices {
     }
 
     @Override
+    @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
+    @Cacheable(cacheNames = "payment",key = "#paymentId")
+    public StudentFeeResponse getPaymentById(Long paymentId) {
+        FeePayment feePayment = feePaymentRepository.findById(paymentId).orElseThrow(()->
+                new IllegalArgumentException("Fee payment not found"));
+
+        StudentFeeResponse response = new StudentFeeResponse();
+        StudentResponse studentResponse = new StudentResponse();
+        FeePaymentResponse feePaymentResponse = new FeePaymentResponse();
+
+        feePaymentResponse.setId(feePayment.getId());
+        feePaymentResponse.setAmount(feePayment.getAmount());
+        feePaymentResponse.setPaymentMode(feePayment.getPaymentMode());
+        feePaymentResponse.setTransactionId(feePayment.getTransactionId());
+        feePaymentResponse.setReceiptNumber(feePayment.getReceiptNumber());
+        feePaymentResponse.setPaymentDataAndTime(feePayment.getPaymentDataAndTime());
+
+        Student student = feePayment.getStudentFee().getStudent();
+        studentResponse.setId(student.getId());
+        studentResponse.setName(student.getFirstName()+" "+student.getLastName());
+        studentResponse.setEmail(student.getEmail());
+        studentResponse.setPhoneNumber(student.getPhoneNumber());
+        studentResponse.setRegistrationNumber(student.getRegistrationNumber());
+        studentResponse.setGender(student.getGender());
+        studentResponse.setFatherName(student.getParent().getFatherName());
+        studentResponse.setFatherNumber(student.getParent().getFatherNumber());
+        studentResponse.setMotherNumber(student.getParent().getMotherNumber());
+        studentResponse.setMotherName(student.getParent().getMotherName());
+
+        response.setFeeTypename(feePayment.getStudentFee().getFeeStructure().getFeeType().getName());
+        response.setAcademicYear(feePayment.getStudentFee().getFeeStructure().getAcademicYear());
+        if(feePayment.getStudentFee().getFeeStructure().getAClass()!=null){
+            response.setClassCode(feePayment.getStudentFee().getFeeStructure().getAClass().getClassCode());
+            response.setClassName(feePayment.getStudentFee().getFeeStructure().getAClass().getName());
+        }
+        if(feePayment.getStudentFee().getFeeStructure().getDepartment()!=null){
+            response.setDepartmentCode(feePayment.getStudentFee().getFeeStructure().getDepartment().getCode());
+            response.setDepartmentName(feePayment.getStudentFee().getFeeStructure().getDepartment().getName());
+        }
+        response.setDueDate(feePayment.getStudentFee().getFeeStructure().getDueDate());
+        response.setStudentResponse(studentResponse);
+        response.setFeePaymentResponse(feePaymentResponse);
+
+        return response;
+    }
+
+
+    @Override
     @Transactional
     @PreAuthorize("hasAnyRole('ACCOUNTANT')")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "payments",allEntries = true),
+            @CacheEvict(cacheNames = "studentFee",key = "#studentFeeId"),
+            @CacheEvict(cacheNames = "studentFees",allEntries = true),
+            @CacheEvict(cacheNames = "studentsFees",allEntries = true),
+            @CacheEvict(cacheNames = "studentsFee",allEntries = true),
+            @CacheEvict(cacheNames = "feeStructure",allEntries = true),
+            @CacheEvict(cacheNames = "feeStructureAllStudents",allEntries = true),
+            @CacheEvict(cacheNames = "feeStructurePaidStudents",allEntries = true),
+            @CacheEvict(cacheNames = "feeStructureUnpaidStudents",allEntries = true),
+    })
     public String payFeeByCash(Long studentFeeId) {
 
         StudentFee studentFee = studentFeeRepository.findById(studentFeeId).orElseThrow(()->

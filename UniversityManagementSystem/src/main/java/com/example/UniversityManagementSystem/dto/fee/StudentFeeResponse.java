@@ -2,10 +2,10 @@ package com.example.UniversityManagementSystem.dto.fee;
 
 import com.example.UniversityManagementSystem.entity.type.StudentFeeStatus;
 
-import java.sql.Timestamp;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class StudentFeeResponse {
+public class StudentFeeResponse implements Serializable {
     private Long id;
     private String feeTypename;
     private Double amount;

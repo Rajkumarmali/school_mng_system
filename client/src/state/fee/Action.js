@@ -7,6 +7,9 @@ import {
     GET_FEE_STUDENT_FAILER, GET_FEE_STUDENT_REQUEST, GET_FEE_STUDENT_SUCCESS,
     GET_FEE_TYPE_BYID_FAILER, GET_FEE_TYPE_BYID_REQUEST, GET_FEE_TYPE_BYID_SUCCESS, GET_FEE_TYPE_FAILER, GET_FEE_TYPE_REQUEST,
     GET_FEE_TYPE_SUCCESS, GET_PAID_FEE_STUDENT_FAILER, GET_PAID_FEE_STUDENT_REQUEST, GET_PAID_FEE_STUDENT_SUCCESS,
+    GET_PAYMENT_BYID_FAILER,
+    GET_PAYMENT_BYID_REQUEST,
+    GET_PAYMENT_BYID_SUCCESS,
     GET_PAYMENT_FAILER, GET_PAYMENT_REQUEST, GET_PAYMENT_SUCCESS, GET_STUDENT_BYID_FAILER, GET_STUDENT_BYID_REQUEST,
     GET_STUDENT_BYID_SUCCESS, GET_STUDENT_FAILER, GET_STUDENT_REQUEST, GET_STUDENT_SUCCESS,
     GET_STUDENTS_FEES_FAILER, GET_STUDENTS_FEES_REQUEST, GET_STUDENTS_FEES_SUCCESS,
@@ -307,6 +310,23 @@ export const getPayments = (pageNumber, pageSize) => async (dispatch) => {
         dispatch({ type: GET_PAYMENT_SUCCESS, payload: data })
     } catch (err) {
         dispatch({ type: GET_PAYMENT_FAILER, payload: err.message })
+    }
+}
+
+export const getPaymentById = (paymentId) => async (dispatch) => {
+    dispatch({ type: GET_PAYMENT_BYID_REQUEST })
+    try {
+        const res = await fetch(`${BASE_API}/fee/get-payentbyid/${paymentId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+        })
+        const data = await res.json();
+        dispatch({ type: GET_PAYMENT_BYID_SUCCESS, payload: data })
+    } catch (err) {
+        dispatch({ type: GET_PAYMENT_BYID_FAILER, payload: err.message })
     }
 }
 
