@@ -5,9 +5,10 @@ import com.example.UniversityManagementSystem.dto.parent.ParentResponse;
 import com.example.UniversityManagementSystem.entity.type.Cast;
 import com.example.UniversityManagementSystem.entity.type.Gender;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class TeacherResponse {
+public class TeacherResponse implements Serializable {
 
     private Long id;
     private Long userId;

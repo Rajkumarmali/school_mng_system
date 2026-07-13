@@ -1,6 +1,8 @@
 package com.example.UniversityManagementSystem.dto.parent;
 
-public class ParentResponse {
+import java.io.Serializable;
+
+public class ParentResponse implements Serializable {
     private String fatherName;
     private String fatherNumber;
     private String fatherOccupation;
