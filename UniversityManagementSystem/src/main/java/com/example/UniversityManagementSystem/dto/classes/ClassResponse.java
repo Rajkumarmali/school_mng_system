@@ -2,7 +2,9 @@ package com.example.UniversityManagementSystem.dto.classes;
 
 import com.example.UniversityManagementSystem.entity.type.ClassStatus;
 
-public class ClassResponse {
+import java.io.Serializable;
+
+public class ClassResponse implements Serializable {
     private Long id;
     private String name;
     private String academicYear;

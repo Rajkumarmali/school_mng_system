@@ -206,7 +206,8 @@ public class ClassServiceImp implements ClassService {
     @Transactional
     @PreAuthorize("hasRole('HOD')")
     @Caching(evict = {
-            @CacheEvict(cacheNames = "classStudents",allEntries = true)
+            @CacheEvict(cacheNames = "classStudents",allEntries = true),
+            @CacheEvict(cacheNames = "class",key = "#classId")
     })
     public String addStudentInClass(Long classId, List<ClassStudentRequest> dto) {
         Class clas= classRepository.findById(classId).orElseThrow(()->
@@ -226,7 +227,8 @@ public class ClassServiceImp implements ClassService {
     @Override
     @PreAuthorize("hasRole('HOD')")
     @Caching(evict = {
-            @CacheEvict(cacheNames = "classStudents",allEntries = true)
+            @CacheEvict(cacheNames = "classStudents",allEntries = true),
+            @CacheEvict(cacheNames = "class",key = "#classId")
     })
     public String deleteStudentFromClass(Long classId, Long studentId) {
         Class clas = classRepository.findById(classId).orElseThrow(()->
