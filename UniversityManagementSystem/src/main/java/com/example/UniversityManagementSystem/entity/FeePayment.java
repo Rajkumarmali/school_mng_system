@@ -10,16 +10,14 @@ public class FeePayment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private Double amount;
     private PaymentMode paymentMode;
     private String transactionId;
+    private LocalDateTime paymentDataAndTime;
+    private String receiptNumber;
 
-    @ManyToOne
-    private Student student;
-
-    @ManyToOne
-    private FeeStructure feeStructure;
+    @OneToOne(mappedBy = "feePayment")
+    private StudentFee studentFee;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -27,14 +25,16 @@ public class FeePayment {
     public FeePayment() {
     }
 
-    public FeePayment(Long id, Double amount, PaymentMode paymentMode, String transactionId, Student student,
-                      FeeStructure feeStructure, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public FeePayment(Long id, Double amount, PaymentMode paymentMode, String transactionId,
+                      LocalDateTime paymentDataAndTime, String receiptNumber, StudentFee studentFee,
+                      LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.amount = amount;
         this.paymentMode = paymentMode;
         this.transactionId = transactionId;
-        this.student = student;
-        this.feeStructure = feeStructure;
+        this.paymentDataAndTime = paymentDataAndTime;
+        this.receiptNumber = receiptNumber;
+        this.studentFee = studentFee;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -71,22 +71,6 @@ public class FeePayment {
         this.transactionId = transactionId;
     }
 
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
-    public FeeStructure getFeeStructure() {
-        return feeStructure;
-    }
-
-    public void setFeeStructure(FeeStructure feeStructure) {
-        this.feeStructure = feeStructure;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -101,5 +85,30 @@ public class FeePayment {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public LocalDateTime getPaymentDataAndTime() {
+        return paymentDataAndTime;
+    }
+
+    public void setPaymentDataAndTime(LocalDateTime paymentDataAndTime) {
+        this.paymentDataAndTime = paymentDataAndTime;
+    }
+
+
+    public String getReceiptNumber() {
+        return receiptNumber;
+    }
+
+    public void setReceiptNumber(String receiptNumber) {
+        this.receiptNumber = receiptNumber;
+    }
+
+    public StudentFee getStudentFee() {
+        return studentFee;
+    }
+
+    public void setStudentFee(StudentFee studentFee) {
+        this.studentFee = studentFee;
     }
 }
