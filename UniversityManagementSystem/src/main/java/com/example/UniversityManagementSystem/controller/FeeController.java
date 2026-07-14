@@ -163,4 +163,29 @@ public class FeeController {
          return new ResponseEntity<>(res,HttpStatus.OK);
     }
 
+    @GetMapping("/get-studentspaidfee")
+    public ResponseEntity<Page<StudentFeeResponse>> getPaidStudentFeeByStudent(@RequestHeader("Authorization") String jwt,
+                                                                               @RequestParam(defaultValue = "0") int pageNumber,
+                                                                               @RequestParam(defaultValue = "10")int pageSize){
+        Long userId = jwtProvider.getUserIdFromToken(jwt);
+        Page<StudentFeeResponse> res = feeServices.getPaidStudentFeeByStudent(userId,pageNumber,pageSize);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/get-studentsunpaidfee")
+    public ResponseEntity<Page<StudentFeeResponse>> getUnpaidStudentFeeByStudent(@RequestHeader("Authorization") String jwt,
+                                                                               @RequestParam(defaultValue = "0") int pageNumber,
+                                                                               @RequestParam(defaultValue = "10")int pageSize){
+        Long userId = jwtProvider.getUserIdFromToken(jwt);
+        Page<StudentFeeResponse> res = feeServices.getUnpaidStudentFeeByStudent(userId,pageNumber,pageSize);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/get-studentfeeoverview")
+    public ResponseEntity<StudentResponse> getStudentFeeOverview(@RequestHeader("Authorization") String jwt){
+        Long userId = jwtProvider.getUserIdFromToken(jwt);
+        StudentResponse res = feeServices.getFeeOverviewForStudent(userId);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
 }

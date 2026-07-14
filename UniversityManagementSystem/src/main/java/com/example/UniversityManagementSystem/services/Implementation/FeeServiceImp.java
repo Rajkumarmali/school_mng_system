@@ -672,6 +672,9 @@ public class FeeServiceImp implements FeeServices {
             @CacheEvict(cacheNames = "feeStructureAllStudents",allEntries = true),
             @CacheEvict(cacheNames = "feeStructurePaidStudents",allEntries = true),
             @CacheEvict(cacheNames = "feeStructureUnpaidStudents",allEntries = true),
+            @CacheEvict(cacheNames = "studentpaidfee",allEntries = true),
+            @CacheEvict(cacheNames = "studentunpaidfee",allEntries = true),
+            @CacheEvict(cacheNames = "studentFeeOverview",allEntries = true),
     })
     public String payFeeByCash(Long studentFeeId) {
 
@@ -701,5 +704,108 @@ public class FeeServiceImp implements FeeServices {
 
         return "Fee pay successfully";
     }
+
+    @Override
+    @PreAuthorize("hasRole('STUDENT')")
+    @Cacheable(cacheNames = "studentpaidfee",key = "{#userId,#pageNumber,#pageSize}")
+    public Page<StudentFeeResponse> getPaidStudentFeeByStudent(Long userId, int pageNumber, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+
+        Student student = studentRepository.findByUserId(userId);
+
+        Page<StudentFee> studentFees = studentFeeRepository.findByStudentAndStatus(student,StudentFeeStatus.PAID,pageable);
+
+        Page<StudentFeeResponse> responses = studentFees.map(stufee->{
+
+            FeePayment feePayment = stufee.getFeePayment();
+
+            StudentFeeResponse res = new StudentFeeResponse();
+            FeePaymentResponse feePaymentResponse = new FeePaymentResponse();
+
+            feePaymentResponse.setPaymentDataAndTime(feePayment.getPaymentDataAndTime());
+            feePaymentResponse.setTransactionId(feePayment.getTransactionId());
+            feePaymentResponse.setReceiptNumber(feePayment.getReceiptNumber());
+            feePaymentResponse.setPaymentMode(feePayment.getPaymentMode());
+
+            res.setId(stufee.getId());
+            res.setFeeTypename(stufee.getFeeStructure().getFeeType().getName());
+            res.setAmount(stufee.getFeeStructure().getAmount());
+            res.setStatus(stufee.getStatus());
+            res.setAcademicYear(stufee.getFeeStructure().getAcademicYear());
+            res.setDueDate(stufee.getFeeStructure().getDueDate());
+            res.setClassName(stufee.getFeeStructure().getAClass().getName());
+            res.setClassCode(stufee.getFeeStructure().getAClass().getClassCode());
+
+            res.setFeePaymentResponse(feePaymentResponse);
+
+            return res;
+        });
+
+        return responses;
+    }
+
+    @Override
+    @PreAuthorize("hasRole('STUDENT')")
+    @Cacheable(cacheNames = "studentunpaidfee",key = "{#userId,#pageNumber,#pageSize}")
+    public Page<StudentFeeResponse> getUnpaidStudentFeeByStudent(Long userId, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+
+        Student student = studentRepository.findByUserId(userId);
+
+        Page<StudentFee> studentFees = studentFeeRepository.findByStudentAndStatus(student,StudentFeeStatus.PENDING,pageable);
+
+        Page<StudentFeeResponse> responses = studentFees.map(stufee->{
+
+            StudentFeeResponse res = new StudentFeeResponse();
+
+            res.setId(stufee.getId());
+            res.setFeeTypename(stufee.getFeeStructure().getFeeType().getName());
+            res.setAmount(stufee.getFeeStructure().getAmount());
+            res.setStatus(stufee.getStatus());
+            res.setAcademicYear(stufee.getFeeStructure().getAcademicYear());
+            res.setDueDate(stufee.getFeeStructure().getDueDate());
+            res.setClassName(stufee.getFeeStructure().getAClass().getName());
+            res.setClassCode(stufee.getFeeStructure().getAClass().getClassCode());
+
+            return res;
+        });
+
+        return responses;
+    }
+
+    @Override
+    @PreAuthorize("hasRole('STUDENT')")
+    @Cacheable(cacheNames = "studentFeeOverview",key = "#userId")
+    public StudentResponse getFeeOverviewForStudent(Long userId) {
+
+        Student student = studentRepository.findByUserId(userId);
+        List<StudentFee> studentFee = student.getStudentFees();
+
+        Double totalFee = studentFee.stream()
+                .map(StudentFee::getFeeStructure)
+                .mapToDouble(FeeStructure::getAmount)
+                .sum();
+
+       Double totalPaidFee = studentFee.stream()
+               .filter(sf->sf.getStatus()==StudentFeeStatus.PAID)
+               .map(StudentFee::getFeeStructure)
+               .mapToDouble(FeeStructure::getAmount)
+               .sum();
+
+       Double totalPendingFee = studentFee.stream()
+               .filter(sf->sf.getStatus()==StudentFeeStatus.PENDING)
+               .map(StudentFee::getFeeStructure)
+               .mapToDouble(FeeStructure::getAmount)
+               .sum();
+
+        StudentResponse response = new StudentResponse();
+        response.setTotalFee(totalFee);
+        response.setTotalPaidFee(totalPaidFee);
+        response.setTotalPendingFee(totalPendingFee);
+
+        return response;
+    }
+
 
 }

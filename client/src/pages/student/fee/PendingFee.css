@@ -1,0 +1,86 @@
+.student-fee-table {
+    margin-bottom: 0;
+}
+
+.student-fee-table thead {
+  background: transparent !important;
+}
+
+.student-fee-table th {
+    background: transparent !important;
+    font-weight: 600;
+    padding: 14px;
+}
+
+.student-fee-table td {
+    background: transparent !important;
+    vertical-align: middle;
+    padding: 14px;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    margin-top: 10px;
+}
+
+.pagination-info {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.page-size-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.page-size-selector select {
+    background: transparent;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 5px 10px;
+    outline: none;
+}
+.custom-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.custom-pagination li {
+    list-style: none;
+}
+
+.custom-pagination button {
+    border: none;
+    background: transparent;
+    color: #222; 
+    cursor: pointer;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.custom-pagination button:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+.custom-pagination .active-page {
+    background: #0d6efd;
+    color: white;
+}
+
+.custom-pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.dots {
+    font-size: 24px;
+    padding: 0 5px;
+}

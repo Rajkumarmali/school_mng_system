@@ -2,7 +2,10 @@ import {
     CREATE_STUDENT_FAILER, CREATE_STUDENT_REQUEST, CREATE_STUDENT_SUCCESS, DELETE_STUDENT_FAILER,
     DELETE_STUDENT_REQUEST, DELETE_STUDENT_SUCCESS, GET_ALLSTUDENT_FAILER, GET_ALLSTUDENT_REQUEST,
     GET_ALLSTUDENT_SUCCESS, GET_STUDENT_BYID_FAILER, GET_STUDENT_BYID_REQUEST, GET_STUDENT_BYID_SUCCESS,
-    UPDATE_STUDENT_FAILER, UPDATE_STUDENT_IMAGE_FAILER, UPDATE_STUDENT_IMAGE_REQUEST, UPDATE_STUDENT_IMAGE_SUCCESS, UPDATE_STUDENT_REQUEST, UPDATE_STUDENT_SUCCESS
+    GET_STUDENTS_FEEOVERVIEW_FAILER, GET_STUDENTS_FEEOVERVIEW_REQUEST, GET_STUDENTS_FEEOVERVIEW_SUCCESS,
+    GET_STUDENTS_PAIDFEE_FAILER, GET_STUDENTS_PAIDFEE_REQUEST, GET_STUDENTS_PAIDFEE_SUCCESS, GET_STUDENTS_UNPAIDFEE_FAILER, GET_STUDENTS_UNPAIDFEE_REQUEST,
+    GET_STUDENTS_UNPAIDFEE_SUCCESS, UPDATE_STUDENT_FAILER, UPDATE_STUDENT_IMAGE_FAILER, UPDATE_STUDENT_IMAGE_REQUEST,
+    UPDATE_STUDENT_IMAGE_SUCCESS, UPDATE_STUDENT_REQUEST, UPDATE_STUDENT_SUCCESS
 } from "./ActionType"
 
 const BASE_API = process.env.REACT_APP_BASE_URL;
@@ -117,5 +120,56 @@ export const updateStudentImage = (studentId, image) => async (dispatch) => {
         dispatch({ type: UPDATE_STUDENT_IMAGE_SUCCESS, payload: data })
     } catch (err) {
         dispatch({ type: UPDATE_STUDENT_IMAGE_FAILER, payload: err.message })
+    }
+}
+
+export const getStudentPaidFee = (pageNumber, pageSize) => async (dispatch) => {
+    dispatch({ type: GET_STUDENTS_PAIDFEE_REQUEST })
+    try {
+        const res = await fetch(`${BASE_API}/fee/get-studentspaidfee?pageNumber=${pageNumber - 1}&pageSize=${pageSize}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+        })
+        const data = await res.json();
+        dispatch({ type: GET_STUDENTS_PAIDFEE_SUCCESS, payload: data })
+    } catch (err) {
+        dispatch({ type: GET_STUDENTS_PAIDFEE_FAILER, payload: err.message })
+    }
+}
+
+export const getStudentUnPaidFee = (pageNumber, pageSize) => async (dispatch) => {
+    dispatch({ type: GET_STUDENTS_UNPAIDFEE_REQUEST })
+    try {
+        const res = await fetch(`${BASE_API}/fee/get-studentsunpaidfee?pageNumber=${pageNumber - 1}&pageSize=${pageSize}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+        })
+        const data = await res.json();
+        dispatch({ type: GET_STUDENTS_UNPAIDFEE_SUCCESS, payload: data })
+    } catch (err) {
+        dispatch({ type: GET_STUDENTS_UNPAIDFEE_FAILER, payload: err.message })
+    }
+}
+
+export const getStudentFeeOverview = () => async (dispatch) => {
+    dispatch({ type: GET_STUDENTS_FEEOVERVIEW_REQUEST })
+    try {
+        const res = await fetch(`${BASE_API}/fee/get-studentfeeoverview`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+        })
+        const data = await res.json();
+        dispatch({ type: GET_STUDENTS_FEEOVERVIEW_SUCCESS, payload: data })
+    } catch (err) {
+        dispatch({ type: GET_STUDENTS_FEEOVERVIEW_FAILER, payload: err.message })
     }
 }

@@ -13,6 +13,7 @@ const Sidebar = () => {
     const isAdmin = roles.includes("ADMIN")
     const isHod = roles.includes("HOD")
     const isAccountant = roles.includes("ACCOUNTANT")
+    const isStudent = roles.includes("STUDENT")
 
     return (
         <div className="sidebar">
@@ -76,6 +77,15 @@ const Sidebar = () => {
                     (isAccountant || isAdmin) &&
                     <li>
                         <Link to="/fee" className="menu-item">
+                            <i className="bi bi-cash-coin me-2"></i>
+                            Fee
+                        </Link>
+                    </li>
+                }
+                {
+                    isStudent &&
+                    <li>
+                        <Link to="/student/fee" className="menu-item">
                             <i className="bi bi-cash-coin me-2"></i>
                             Fee
                         </Link>
