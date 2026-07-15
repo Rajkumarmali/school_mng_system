@@ -3,6 +3,7 @@ package com.example.UniversityManagementSystem.services;
 import com.example.UniversityManagementSystem.dto.fee.*;
 import org.springframework.data.domain.Page;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 public interface FeeServices {
@@ -27,4 +28,5 @@ public interface FeeServices {
     StudentFeeResponse getPaymentById(Long paymentId);
     String payFeeByCash(Long studentFeeId);
     FeeOverviewResponse getFeeOverview();
+    ByteArrayInputStream generateReceipt(Long studentFeeId);
 }

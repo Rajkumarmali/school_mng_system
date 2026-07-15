@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
-import { getPaymentById } from '../../state/fee/Action';
+import { downloadFeeReceipt, getPaymentById } from '../../state/fee/Action';
 import './PaymentDetails.css'
 
 const PaymentDetails = () => {
@@ -13,7 +13,6 @@ const PaymentDetails = () => {
 
     const dispatch = useDispatch();
     const fee = useSelector((state) => state.fee)
-    console.log(fee)
 
     const handleBack = () => {
         setSearchParams({
@@ -23,6 +22,12 @@ const PaymentDetails = () => {
 
         })
     }
+
+    const handleDownloadFeeReceipt = async (studentFeeId) => {
+        const pdfBlob = await dispatch(downloadFeeReceipt(studentFeeId));
+        const url = window.URL.createObjectURL(pdfBlob);
+        window.open(url, "_blank");
+    };
 
     useEffect(() => {
         dispatch(getPaymentById(paymentId))
@@ -99,7 +104,8 @@ const PaymentDetails = () => {
             <div className="payment-fee-info">
                 <div className="payment-fee-header">
                     <h4>Fee Details</h4>
-                    <button className="print-btn">
+                    <button className="print-btn"
+                        onClick={() => handleDownloadFeeReceipt(fee?.payment?.id)}>
                         <i class="bi bi-printer-fill"></i>
                     </button>
                 </div>

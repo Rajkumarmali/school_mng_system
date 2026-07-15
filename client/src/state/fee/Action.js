@@ -1,7 +1,7 @@
 import {
     CREATE_FEE_STRUCTURE_FAILER, CREATE_FEE_STRUCTURE_REQUEST, CREATE_FEE_STRUCTURE_SUCCESS, CREATE_FEE_TYPE_FAILER,
     CREATE_FEE_TYPE_REQUEST, CREATE_FEE_TYPE_SUCCESS, DELETE_FEE_STRUCTURE_FAILER, DELETE_FEE_STRUCTURE_REQUEST,
-    DELETE_FEE_STRUCTURE_SUCCESS, DELETE_FEE_TYPE_REQUEST, DELETE_FEE_TYPE_SUCCESS, GET_FEE_OVERVIEW_FAILER,
+    DELETE_FEE_STRUCTURE_SUCCESS, DELETE_FEE_TYPE_REQUEST, DELETE_FEE_TYPE_SUCCESS, DOWNLOAD_FEE_RECEIPT_FAILER, DOWNLOAD_FEE_RECEIPT_REQUEST, GET_FEE_OVERVIEW_FAILER,
     GET_FEE_OVERVIEW_REQUEST, GET_FEE_OVERVIEW_SUCCESS, GET_FEE_STRUCTURE_BYID_FAILER, GET_FEE_STRUCTURE_BYID_REQUEST,
     GET_FEE_STRUCTURE_BYID_SUCCESS, GET_FEE_STRUCTURE_FAILER, GET_FEE_STRUCTURE_REQUEST, GET_FEE_STRUCTURE_SUCCESS,
     GET_FEE_STUDENT_BYID_FAILER, GET_FEE_STUDENT_BYID_REQUEST, GET_FEE_STUDENT_BYID_SUCCESS, GET_FEE_STUDENT_FAILER,
@@ -375,5 +375,22 @@ export const getFeeOverview = () => async (dispatch) => {
         dispatch({ type: GET_FEE_OVERVIEW_SUCCESS, payload: data })
     } catch (err) {
         dispatch({ type: GET_FEE_OVERVIEW_FAILER, payload: err.message })
+    }
+}
+
+export const downloadFeeReceipt = (studentFeeId) => async (dispatch) => {
+    dispatch({ type: DOWNLOAD_FEE_RECEIPT_REQUEST })
+    try {
+        const res = await fetch(`${BASE_API}/fee/get/fee/receipt/${studentFeeId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+        })
+        const blob = res.blob();
+        return blob;
+    } catch (err) {
+        dispatch({ type: DOWNLOAD_FEE_RECEIPT_FAILER, payload: err.message })
     }
 }

@@ -8,6 +8,12 @@ import com.example.UniversityManagementSystem.entity.type.PaymentMode;
 import com.example.UniversityManagementSystem.entity.type.StudentFeeStatus;
 import com.example.UniversityManagementSystem.repository.*;
 import com.example.UniversityManagementSystem.services.FeeServices;
+import com.lowagie.text.*;
+import com.lowagie.text.Font;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -18,6 +24,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -643,6 +652,7 @@ public class FeeServiceImp implements FeeServices {
         studentResponse.setMotherNumber(student.getParent().getMotherNumber());
         studentResponse.setMotherName(student.getParent().getMotherName());
 
+        response.setId(feePayment.getStudentFee().getId());
         response.setFeeTypename(feePayment.getStudentFee().getFeeStructure().getFeeType().getName());
         response.setAcademicYear(feePayment.getStudentFee().getFeeStructure().getAcademicYear());
         if(feePayment.getStudentFee().getFeeStructure().getAClass()!=null){
@@ -734,6 +744,164 @@ public class FeeServiceImp implements FeeServices {
        response.setTotalPendingFee(totalPendingFee);
 
         return response;
+    }
+
+    @Override
+    public ByteArrayInputStream generateReceipt(Long studentFeeId) {
+
+        StudentFee studentFee = studentFeeRepository.findById(studentFeeId)
+                .orElseThrow(() -> new IllegalArgumentException("Student Fee not found"));
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Document document = new Document(PageSize.A4, 40, 40, 40, 40);
+
+        PdfWriter.getInstance(document, out);
+        document.open();
+
+        Font headingFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14, Color.WHITE);
+        Font normalFont = FontFactory.getFont(FontFactory.HELVETICA, 11);
+        Font boldFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 11);
+
+        Paragraph title = new Paragraph("FEE RECEIPT");
+        title.setAlignment(Element.ALIGN_CENTER);
+        document.add(title);
+
+        document.add(new Paragraph(" "));
+
+        PdfPTable receiptTable = new PdfPTable(2);
+        receiptTable.setWidthPercentage(100);
+        receiptTable.setSpacingAfter(20);
+
+        receiptTable.setWidths(new float[]{3,5});
+
+        addRow(receiptTable,"Receipt Number",
+                studentFee.getFeePayment().getReceiptNumber());
+
+        addRow(receiptTable,"Transaction ID",
+                studentFee.getFeePayment().getTransactionId());
+
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a");
+
+        addRow(receiptTable,"Payment Date And Time",
+                studentFee.getFeePayment()
+                        .getPaymentDataAndTime()
+                        .format(formatter));
+
+        if (studentFee.getFeePayment() != null &&
+                studentFee.getFeePayment().getPaymentMode() != null) {
+            addRow(receiptTable,"Payment Mode",
+                    studentFee.getFeePayment().getPaymentMode().name());
+        }
+
+        document.add(receiptTable);
+
+        PdfPCell header = new PdfPCell(new Phrase("STUDENT INFORMATION", headingFont));
+        header.setColspan(2);
+        header.setBackgroundColor(Color.GRAY);
+        header.setHorizontalAlignment(Element.ALIGN_CENTER);
+        header.setPadding(8);
+
+        PdfPTable studentTable = new PdfPTable(2);
+        studentTable.setWidthPercentage(100);
+        studentTable.setSpacingAfter(20);
+
+        studentTable.addCell(header);
+
+        addRow(studentTable,"Student Name",
+                studentFee.getStudent().getFirstName()+" "+
+                        studentFee.getStudent().getLastName());
+
+        addRow(studentTable,"Registration Number",
+                studentFee.getStudent().getRegistrationNumber());
+
+        addRow(studentTable,"Email",
+                studentFee.getStudent().getEmail());
+
+        addRow(studentTable,"Phone",
+                studentFee.getStudent().getPhoneNumber());
+
+        addRow(studentTable,"Father Name",
+                studentFee.getStudent().getParent().getFatherName());
+
+        document.add(studentTable);
+
+
+        PdfPCell feeHeader = new PdfPCell(new Phrase("FEE DETAILS", headingFont));
+        feeHeader.setColspan(2);
+        feeHeader.setBackgroundColor(Color.GRAY);
+        feeHeader.setHorizontalAlignment(Element.ALIGN_CENTER);
+        feeHeader.setPadding(8);
+
+        PdfPTable feeTable = new PdfPTable(2);
+        feeTable.setWidthPercentage(100);
+        feeTable.setSpacingAfter(20);
+
+        feeTable.addCell(feeHeader);
+
+        addRow(feeTable,"Fee Type",
+                studentFee.getFeeStructure().getFeeType().getName());
+
+        addRow(feeTable,"Academic Year",
+                studentFee.getFeeStructure().getAcademicYear());
+
+        addRow(feeTable,"Amount",
+                "₹ " + studentFee.getFeeStructure().getAmount());
+
+        addRow(feeTable,"Status",
+                studentFee.getStatus().name());
+
+        document.add(feeTable);
+
+        document.add(new Paragraph(" "));
+
+
+        PdfPTable signTable = new PdfPTable(2);
+        signTable.setWidthPercentage(100);
+
+        PdfPCell left = new PdfPCell(new Phrase(
+                "Generated On : " + LocalDate.now(),
+                normalFont));
+
+        left.setBorder(Rectangle.NO_BORDER);
+
+        PdfPCell right = new PdfPCell(new Phrase(
+                "Authorized Signature",
+                boldFont));
+
+        right.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        right.setBorder(Rectangle.NO_BORDER);
+
+        signTable.addCell(left);
+        signTable.addCell(right);
+
+        document.add(signTable);
+
+        document.add(new Paragraph(" "));
+        
+        document.close();
+
+        return new ByteArrayInputStream(out.toByteArray());
+    }
+
+    private void addRow(PdfPTable table, String key, String value) {
+
+        PdfPCell keyCell = new PdfPCell(new Phrase(
+                key,
+                FontFactory.getFont(FontFactory.HELVETICA_BOLD,11)));
+
+        keyCell.setBackgroundColor(new Color(240,240,240));
+        keyCell.setPadding(8);
+
+        PdfPCell valueCell = new PdfPCell(new Phrase(
+                value,
+                FontFactory.getFont(FontFactory.HELVETICA,11)));
+
+        valueCell.setPadding(8);
+
+        table.addCell(keyCell);
+        table.addCell(valueCell);
     }
 
 }
