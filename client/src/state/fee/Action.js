@@ -14,9 +14,12 @@ import {
     GET_STUDENT_BYID_SUCCESS, GET_STUDENT_FAILER, GET_STUDENT_REQUEST, GET_STUDENT_SUCCESS,
     GET_STUDENTS_FEES_FAILER, GET_STUDENTS_FEES_REQUEST, GET_STUDENTS_FEES_SUCCESS,
     GET_UNPAID_FEE_STUDENT_FAILER, GET_UNPAID_FEE_STUDENT_REQUEST, GET_UNPAID_FEE_STUDENT_SUCCESS, PAY_FEE_BY_CASH_FAILER,
-    PAY_FEE_BY_CASH_REQUEST, PAY_FEE_BY_CASH_SUCCESS, UPDATE_FEE_STRUCTURE_FAILER,
+    PAY_FEE_BY_CASH_REQUEST, PAY_FEE_BY_CASH_SUCCESS, PAY_FEE_BY_RAZORPAY_REQUEST, PAY_FEE_BY_RAZORPAY_SUCCESS, PAY_FEE_BYRAZORPAY_FAILER, UPDATE_FEE_STRUCTURE_FAILER,
     UPDATE_FEE_STRUCTURE_REQUEST, UPDATE_FEE_STRUCTURE_SUCCESS, UPDATE_FEE_TYPE_FAILER, UPDATE_FEE_TYPE_REQUEST,
-    UPDATE_FEE_TYPE_SUCCESS
+    UPDATE_FEE_TYPE_SUCCESS,
+    UPDATE_PAYMENT_FAILER,
+    UPDATE_PAYMENT_REQUEST,
+    UPDATE_PAYMENT_SUCCESS
 } from "./ActionType";
 
 const BASE_API = process.env.REACT_APP_BASE_URL;
@@ -344,6 +347,45 @@ export const payFeeByCash = (studentFeeId) => async (dispatch) => {
         dispatch({ type: PAY_FEE_BY_CASH_SUCCESS, payload: data })
     } catch (err) {
         dispatch({ type: PAY_FEE_BY_CASH_FAILER, payload: err.message })
+    }
+}
+
+export const payFeeByRazor = (studentFeeId) => async (dispatch) => {
+    dispatch({ type: PAY_FEE_BY_RAZORPAY_REQUEST })
+    try {
+        const res = await fetch(`${BASE_API}/fee/pay-payfeebyrazor/${studentFeeId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+        })
+        const data = await res.json();
+        if (data?.paymentLink) {
+            window.location.href = data?.paymentLink;
+        } else {
+            alert("something error")
+        }
+        dispatch({ type: PAY_FEE_BY_RAZORPAY_SUCCESS, payload: data })
+    } catch (err) {
+        dispatch({ type: PAY_FEE_BYRAZORPAY_FAILER, payload: err.message })
+    }
+}
+
+export const updatePayment = (paymentData) => async (dispatch) => {
+    dispatch({ type: UPDATE_PAYMENT_REQUEST })
+    try {
+        const res = await fetch(`${BASE_API}/fee/pay?paymentId=${paymentData.paymentId}&studentFeeId=${paymentData.studentFeeId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+        })
+        const data = await res.json();
+        dispatch({ type: UPDATE_PAYMENT_SUCCESS, payload: data })
+    } catch (err) {
+        dispatch({ type: UPDATE_PAYMENT_FAILER, payload: err.message })
     }
 }
 

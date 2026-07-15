@@ -188,4 +188,22 @@ public class FeeController {
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
 
+    @PostMapping("/pay-payfeebyrazor/{studentFeeId}")
+    public ResponseEntity<PaymentLinkResponse> payFeeByRazorPay(@PathVariable Long studentFeeId){
+        PaymentLinkResponse res = null;
+        try {
+            res = feeServices.payFeeByRazorPay(studentFeeId);
+        } catch (com.razorpay.RazorpayException e) {
+            throw new RuntimeException(e);
+        }
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @PostMapping("/pay")
+    public ResponseEntity<String> redirect(@RequestParam(name="paymentId") String paymentId,
+                                           @RequestParam(name="studentFeeId") Long studentFeeId){
+        String res = feeServices.redirect(paymentId,studentFeeId);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
 }

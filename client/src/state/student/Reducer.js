@@ -92,7 +92,7 @@ export const studentReducer = (state = initialState, action) => {
             }
         default:
             return {
-                state
+                ...state
             }
     }
 }

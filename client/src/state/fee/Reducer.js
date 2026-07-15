@@ -194,7 +194,7 @@ export const feeReducer = (state = initialState, action) => {
             }
         default:
             return {
-                state
+                ...state
             }
     }
 }

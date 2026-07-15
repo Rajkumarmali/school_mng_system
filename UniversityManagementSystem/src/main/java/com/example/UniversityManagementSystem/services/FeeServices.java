@@ -1,6 +1,7 @@
 package com.example.UniversityManagementSystem.services;
 
 import com.example.UniversityManagementSystem.dto.fee.*;
+import com.razorpay.RazorpayException;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -29,4 +30,6 @@ public interface FeeServices {
     Page<StudentFeeResponse> getPaidStudentFeeByStudent(Long userId,int pageNumber,int pageSize);
     Page<StudentFeeResponse> getUnpaidStudentFeeByStudent(Long userId,int pageNumber,int pageSize);
     StudentResponse getFeeOverviewForStudent(Long userId);
+    PaymentLinkResponse payFeeByRazorPay(Long studentFeeId) throws RazorpayException;
+    String redirect(String paymentId,Long studentFeeId);
 }

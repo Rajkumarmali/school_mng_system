@@ -8,7 +8,13 @@ import com.example.UniversityManagementSystem.entity.type.PaymentMode;
 import com.example.UniversityManagementSystem.entity.type.StudentFeeStatus;
 import com.example.UniversityManagementSystem.repository.*;
 import com.example.UniversityManagementSystem.services.FeeServices;
+import com.razorpay.Payment;
+import com.razorpay.PaymentLink;
+import com.razorpay.RazorpayClient;
+import com.razorpay.RazorpayException;
 import jakarta.transaction.Transactional;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -53,6 +59,12 @@ public class FeeServiceImp implements FeeServices {
         this.studentRepository = studentRepository;
         this.feePaymentRepository = feePaymentRepository;
     }
+
+    @Value("${razorpay.api.key}")
+    String apiKey;
+
+    @Value("${razorpay.api.secret}")
+    String apiSecret;
 
     @Transactional
     @PreAuthorize("hasRole('ACCOUNTANT')")
@@ -406,7 +418,7 @@ public class FeeServiceImp implements FeeServices {
     }
 
     @Override
-    @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
+    @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN','STUDENT')")
     @Cacheable(cacheNames = "studentsFee",key = "#studentFeeId")
     public StudentFeeResponse getStudentFeeById(Long studentFeeId) {
         StudentFee studentFee = studentFeeRepository.findById(studentFeeId).orElseThrow(()->
@@ -805,6 +817,100 @@ public class FeeServiceImp implements FeeServices {
         response.setTotalPendingFee(totalPendingFee);
 
         return response;
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('STUDENT')")
+    public PaymentLinkResponse payFeeByRazorPay(Long studentFeeId) throws RazorpayException {
+        try{
+
+            StudentFee studentFee = studentFeeRepository.findById(studentFeeId).orElseThrow(()->
+                    new IllegalArgumentException("Student fee not found"));
+
+            RazorpayClient razorpayClient = new RazorpayClient(apiKey,apiSecret);
+            JSONObject paymentLinkRequest = new JSONObject();
+            paymentLinkRequest.put("amount",studentFee.getFeeStructure().getAmount()*100);
+            paymentLinkRequest.put("currency","INR");
+
+            paymentLinkRequest.put("callback_url","http://localhost:3000/student/fee?tab=pending-fee&feeId="+studentFeeId);
+            paymentLinkRequest.put("callback_method","get");
+
+            PaymentLink payment = razorpayClient.paymentLink.create(paymentLinkRequest);
+
+            String paymentId = payment.get("id");
+            String paymentUrl = payment.get("short_url");
+
+            PaymentLinkResponse response = new PaymentLinkResponse();
+            response.setPaymentLinkId(paymentId);
+            response.setPaymentLink(paymentUrl);
+            return response;
+        } catch (Exception e) {
+            throw new RazorpayException(e.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "payments",allEntries = true),
+            @CacheEvict(cacheNames = "studentFee",key = "#studentFeeId"),
+            @CacheEvict(cacheNames = "studentFees",allEntries = true),
+            @CacheEvict(cacheNames = "studentsFees",allEntries = true),
+            @CacheEvict(cacheNames = "studentsFee",allEntries = true),
+            @CacheEvict(cacheNames = "feeStructure",allEntries = true),
+            @CacheEvict(cacheNames = "feeStructureAllStudents",allEntries = true),
+            @CacheEvict(cacheNames = "feeStructurePaidStudents",allEntries = true),
+            @CacheEvict(cacheNames = "feeStructureUnpaidStudents",allEntries = true),
+            @CacheEvict(cacheNames = "studentpaidfee",allEntries = true),
+            @CacheEvict(cacheNames = "studentunpaidfee",allEntries = true),
+            @CacheEvict(cacheNames = "studentFeeOverview",allEntries = true),
+    })
+    public String redirect(String paymentId, Long studentFeeId) {
+        try{
+            StudentFee studentFee = studentFeeRepository.findById(studentFeeId).orElseThrow(()->
+                    new IllegalArgumentException("No fee found"));
+
+            if(studentFee.getFeePayment()!=null){
+                return "";
+            }
+
+            FeePayment feePayment = new FeePayment();
+
+            RazorpayClient razorpayClient = new RazorpayClient(apiKey,apiSecret);
+            Payment payment =  razorpayClient.payments.fetch(paymentId);
+
+            if(payment.get("status").equals("captured")){
+                String date = LocalDate.now()
+                        .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+                String receiptNo = "REC-"+date+"-"+studentFeeId;
+
+                JSONObject acquirerData =
+                        payment.get("acquirer_data");
+                String bankTransactionId = null;
+                if(acquirerData.has("bank_transaction_id")){
+                    bankTransactionId = acquirerData.getString("bank_transaction_id");
+                }
+
+                feePayment.setAmount(studentFee.getFeeStructure().getAmount());
+//                feePayment.setPaymentMode();
+                feePayment.setReceiptNumber(receiptNo);
+                feePayment.setTransactionId(bankTransactionId);
+                feePayment.setPaymentDataAndTime(LocalDateTime.now());
+                feePayment.setCreatedAt(LocalDateTime.now());
+
+                FeePayment savedFeePayment = feePaymentRepository.save(feePayment);
+
+                studentFee.setStatus(StudentFeeStatus.PAID);
+                studentFee.setFeePayment(savedFeePayment);
+                studentFee.setUpdatedAt(LocalDateTime.now());
+
+               studentFeeRepository.save(studentFee);
+            }
+            return "Payment successfully";
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
