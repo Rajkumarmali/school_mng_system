@@ -142,7 +142,8 @@ public class FeeServiceImp implements FeeServices {
     @PreAuthorize("hasRole('ACCOUNTANT')")
     @Caching(
             evict = {
-                    @CacheEvict(cacheNames = "feeStructures",allEntries = true)
+                    @CacheEvict(cacheNames = "feeStructures",allEntries = true),
+                    @CacheEvict(cacheNames = "feeOverviews",allEntries = true),
             }
     )
     public String createFeeStructure(Long collegeId, FeeStructureRequest dto) {
@@ -275,7 +276,8 @@ public class FeeServiceImp implements FeeServices {
     @PreAuthorize("hasRole('ACCOUNTANT')")
     @Caching(evict = {
             @CacheEvict(cacheNames = "feeStructures",allEntries = true),
-            @CacheEvict(cacheNames = "feeStructure",key = "#feeStructureId")
+            @CacheEvict(cacheNames = "feeStructure",key = "#feeStructureId"),
+            @CacheEvict(cacheNames = "feeOverviews",allEntries = true),
     })
     public String updateFeeStructure(Long feeStructureId, FeeStructureRequest dto) {
         FeeStructure feeStructure = feeStructureRepository.findById(feeStructureId).orElseThrow(()->
@@ -672,6 +674,7 @@ public class FeeServiceImp implements FeeServices {
             @CacheEvict(cacheNames = "feeStructureAllStudents",allEntries = true),
             @CacheEvict(cacheNames = "feeStructurePaidStudents",allEntries = true),
             @CacheEvict(cacheNames = "feeStructureUnpaidStudents",allEntries = true),
+            @CacheEvict(cacheNames = "feeOverviews",allEntries = true),
     })
     public String payFeeByCash(Long studentFeeId) {
 
@@ -700,6 +703,37 @@ public class FeeServiceImp implements FeeServices {
         studentFeeRepository.save(studentFee);
 
         return "Fee pay successfully";
+    }
+
+    @Override
+    @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
+    @Cacheable(cacheNames = "feeOverviews",key = "'feeOverview'")
+    public FeeOverviewResponse getFeeOverview() {
+       List<StudentFee> studentFee = studentFeeRepository.findAll();
+
+       Double totalFee = studentFee.stream()
+               .map(StudentFee::getFeeStructure)
+               .mapToDouble(FeeStructure::getAmount)
+               .sum();
+
+       Double totalPaidFee = studentFee.stream()
+               .filter(sf->sf.getStatus()==StudentFeeStatus.PAID)
+               .map(StudentFee::getFeeStructure)
+               .mapToDouble(FeeStructure::getAmount)
+               .sum();
+
+       Double totalPendingFee = studentFee.stream()
+               .filter(sf->sf.getStatus()==StudentFeeStatus.PENDING)
+               .map(StudentFee::getFeeStructure)
+               .mapToDouble(FeeStructure::getAmount)
+               .sum();
+
+       FeeOverviewResponse response = new FeeOverviewResponse();
+       response.setTotalFee(totalFee);
+       response.setTotalPaidFee(totalPaidFee);
+       response.setTotalPendingFee(totalPendingFee);
+
+        return response;
     }
 
 }

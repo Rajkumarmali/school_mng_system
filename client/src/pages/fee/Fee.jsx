@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './Fee.css'
 import { useSearchParams } from 'react-router-dom'
 import FeeType from './FeeType';
 import FeeStructure from './FeeStructure';
 import Students from './Students';
 import Payments from './Payment';
+import { useDispatch, useSelector } from 'react-redux';
+import { getFeeOverview } from '../../state/fee/Action';
 
 
 
@@ -12,6 +14,16 @@ const Fee = () => {
 
     const [searchParams, setSearchParams] = useSearchParams();
     const activeTab = searchParams.get("tab") || "fee"
+
+    const dispatch = useDispatch()
+    const fee = useSelector((state) => state.fee)
+
+    const processPercent = ((fee?.feeOverview?.totalPaidFee / fee?.feeOverview?.totalFee) * 100).toFixed(2);
+
+    useEffect(() => {
+        dispatch(getFeeOverview())
+    }, [dispatch])
+
 
     return (
         <div className='fee-container'>
@@ -74,7 +86,30 @@ const Fee = () => {
                                     <Payments />
                                     :
                                     <div>
-                                        Dashboard
+                                        <div className="stats-container">
+                                            <div className="stat-card">
+                                                <i className="bi bi-wallet2"></i>
+                                                <h3>{fee?.feeOverview?.totalFee}</h3>
+                                                <span>Total Collection Amount</span>
+                                            </div>
+                                            <div className="stat-card">
+                                                <i className="bi bi-cash-coin"></i>
+                                                <h3>{fee?.feeOverview?.totalPaidFee}</h3>
+                                                <span>Total Collected Amount</span>
+                                            </div>
+                                            <div className="stat-card">
+                                                <i className="bi bi-hourglass-split"></i>
+                                                <h3>{fee?.feeOverview?.totalPendingFee}</h3>
+                                                <span>Total Pending Amount</span>
+                                            </div>
+                                            <div className="stat-card">
+                                                <h5>{processPercent}%</h5>
+                                                <span>Payment Progress</span>
+                                                <div className="progress" role="progressbar" aria-label="Success example" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+                                                    <div className="progress-bar bg-success" style={{ width: `${processPercent}%` }}></div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                 }
             </div>

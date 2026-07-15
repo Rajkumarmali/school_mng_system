@@ -163,4 +163,10 @@ public class FeeController {
          return new ResponseEntity<>(res,HttpStatus.OK);
     }
 
+    @GetMapping("/get-feeoverview")
+    public ResponseEntity<FeeOverviewResponse> getFeeOverview(){
+        FeeOverviewResponse res = feeServices.getFeeOverview();
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
 }

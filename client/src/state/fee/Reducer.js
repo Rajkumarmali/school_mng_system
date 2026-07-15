@@ -2,6 +2,9 @@ import {
     CREATE_FEE_STRUCTURE_FAILER, CREATE_FEE_STRUCTURE_REQUEST, CREATE_FEE_STRUCTURE_SUCCESS, CREATE_FEE_TYPE_FAILER,
     CREATE_FEE_TYPE_REQUEST, CREATE_FEE_TYPE_SUCCESS, DELETE_FEE_STRUCTURE_FAILER, DELETE_FEE_STRUCTURE_REQUEST,
     DELETE_FEE_STRUCTURE_SUCCESS, DELETE_FEE_TYPE_FAILER, DELETE_FEE_TYPE_REQUEST, DELETE_FEE_TYPE_SUCCESS,
+    GET_FEE_OVERVIEW_FAILER,
+    GET_FEE_OVERVIEW_REQUEST,
+    GET_FEE_OVERVIEW_SUCCESS,
     GET_FEE_STRUCTURE_BYID_FAILER, GET_FEE_STRUCTURE_BYID_REQUEST, GET_FEE_STRUCTURE_BYID_SUCCESS, GET_FEE_STRUCTURE_FAILER,
     GET_FEE_STRUCTURE_REQUEST, GET_FEE_STRUCTURE_SUCCESS, GET_FEE_STUDENT_BYID_FAILER, GET_FEE_STUDENT_BYID_REQUEST,
     GET_FEE_STUDENT_BYID_SUCCESS, GET_FEE_STUDENT_FAILER, GET_FEE_STUDENT_REQUEST, GET_FEE_STUDENT_SUCCESS,
@@ -34,6 +37,7 @@ const initialState = {
     payment: null,
     paidFeeStudents: [],
     unpaidFeeStudents: [],
+    feeOverview: null,
 }
 
 export const feeReducer = (state = initialState, action) => {
@@ -58,6 +62,7 @@ export const feeReducer = (state = initialState, action) => {
         case GET_STUDENTS_FEES_REQUEST:
         case GET_STUDENT_BYID_REQUEST:
         case GET_PAYMENT_BYID_REQUEST:
+        case GET_FEE_OVERVIEW_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -167,6 +172,13 @@ export const feeReducer = (state = initialState, action) => {
                 error: null,
                 payment: action.payload
             }
+        case GET_FEE_OVERVIEW_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                error: null,
+                feeOverview: action.payload
+            }
         case CREATE_FEE_TYPE_FAILER:
         case UPDATE_FEE_TYPE_FAILER:
         case DELETE_FEE_TYPE_FAILER:
@@ -187,6 +199,7 @@ export const feeReducer = (state = initialState, action) => {
         case GET_STUDENTS_FEES_FAILER:
         case GET_STUDENT_BYID_FAILER:
         case GET_PAYMENT_BYID_FAILER:
+        case GET_FEE_OVERVIEW_FAILER:
             return {
                 ...state,
                 isLoading: false,
@@ -194,7 +207,7 @@ export const feeReducer = (state = initialState, action) => {
             }
         default:
             return {
-                state
+                ...state
             }
     }
 }
