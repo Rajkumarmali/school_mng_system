@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Navbar.css";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loogOut, resetPassword } from "../state/auth/Action";
+import { userProfile } from "../state/user/Action";
 
 const Navbar = ({ toggleSidebar }) => {
 
@@ -15,6 +16,8 @@ const Navbar = ({ toggleSidebar }) => {
 
     const navigete = useNavigate();
     const dispatch = useDispatch();
+
+    const user = useSelector((state) => state.user)
 
     const handleLogout = () => {
         dispatch(loogOut())
@@ -47,6 +50,13 @@ const Navbar = ({ toggleSidebar }) => {
         handleCloseModal();
     }
 
+    useEffect(() => {
+        dispatch(userProfile())
+
+    }, []);
+
+    console.log("..........", user?.user)
+
     return (
         <div>
             <nav className="navbar navbar-expand-lg dashboard-navbar">
@@ -69,12 +79,16 @@ const Navbar = ({ toggleSidebar }) => {
                                 className="btn profile-btn dropdown-toggle"
                                 data-bs-toggle="dropdown"
                             >
-                                {/* <img
-                                src="https://i.pravatar.cc/40"
-                                alt="profile"
-                                className="profile-img"
-                            /> */}
-                                <i className="bi bi-person-circle profile-icon"></i>
+                                {
+                                    user?.user?.userImage ?
+                                        <img
+                                            src={`http://localhost:8080/${user?.user?.userImage}`}
+                                            alt="profile"
+                                            className="profile-img"
+                                        />
+                                        :
+                                        <i className="bi bi-person-circle profile-icon"></i>
+                                }
                             </button>
                             <ul className="dropdown-menu dropdown-menu-end custom-dropdown">
                                 <li>
