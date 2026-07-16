@@ -365,26 +365,23 @@ export const payFeeByRazor = (studentFeeId) => async (dispatch) => {
             },
         })
         const data = await res.json();
-        if (data?.paymentLink) {
-            window.location.href = data?.paymentLink;
-        } else {
-            alert("something error")
-        }
         dispatch({ type: PAY_FEE_BY_RAZORPAY_SUCCESS, payload: data })
+        return data;
     } catch (err) {
         dispatch({ type: PAY_FEE_BYRAZORPAY_FAILER, payload: err.message })
     }
 }
 
-export const updatePayment = (paymentData) => async (dispatch) => {
+export const verifyPayment = (paymentData) => async (dispatch) => {
     dispatch({ type: UPDATE_PAYMENT_REQUEST })
     try {
-        const res = await fetch(`${BASE_API}/fee/pay?paymentId=${paymentData.paymentId}&studentFeeId=${paymentData.studentFeeId}`, {
+        const res = await fetch(`${BASE_API}/fee/verify/payment`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + localStorage.getItem("token")
             },
+            body: JSON.stringify(paymentData)
         })
         const data = await res.json();
         dispatch({ type: UPDATE_PAYMENT_SUCCESS, payload: data })

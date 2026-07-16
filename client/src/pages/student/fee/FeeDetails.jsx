@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom';
 import './FeeDetails.css'
 import { useDispatch, useSelector } from 'react-redux';
-import { downloadFeeReceipt, getFeeStudentById, payFeeByRazor, updatePayment } from '../../../state/fee/Action';
+import { downloadFeeReceipt, getFeeStudentById, payFeeByRazor, verifyPayment } from '../../../state/fee/Action';
 
 
 const FeeDetails = () => {
@@ -12,9 +12,6 @@ const FeeDetails = () => {
     const pageNumber = Number(searchParams.get('page')) || 1
     const pageSize = Number(searchParams.get("size")) || 10;
     const studentFeeId = searchParams.get("feeId")
-    const paymentId = searchParams.get("razorpay_payment_id")
-
-    const paymentProcessed = useRef(false);
 
     const dispatch = useDispatch();
     const fee = useSelector((state) => state.fee)
@@ -28,7 +25,37 @@ const FeeDetails = () => {
     }
 
     const handlePayFee = async () => {
-        await dispatch(payFeeByRazor(studentFeeId));
+        const data = await dispatch(payFeeByRazor(studentFeeId));
+        if (!data) return;
+
+        const options = {
+            key: "rzp_test_TDR79ViucfWO8n",
+            amount: data.amount,
+            currency: data.currency,
+            order_id: data.orderId,
+
+            handler: async function (response) {
+                const payload = {
+                    paymentId: response.razorpay_payment_id,
+                    orderId: response.razorpay_order_id,
+                    signature: response.razorpay_signature,
+                    studentFeeId: data.studentFeeId,
+                }
+                console.log(response)
+
+                await dispatch(verifyPayment(payload))
+                await dispatch(getFeeStudentById(studentFeeId))
+            },
+            prefill: {
+
+            },
+            theme: {
+                color: "#3399cc",
+            },
+        }
+
+        const razor = new window.Razorpay(options)
+        razor.open();
     }
 
     const handleDownloadFeeReceipt = async () => {
@@ -38,20 +65,8 @@ const FeeDetails = () => {
     };
 
     useEffect(() => {
-        const loadData = async () => {
-            if (paymentId && !paymentProcessed.current) {
-                const payload = {
-                    paymentId,
-                    studentFeeId
-                }
-                paymentProcessed.current = true;
-                await dispatch(updatePayment(payload))
-            }
-            await dispatch(getFeeStudentById(studentFeeId))
-        }
-
-        loadData();
-    }, [dispatch, studentFeeId, tab, paymentId, setSearchParams])
+        dispatch(getFeeStudentById(studentFeeId))
+    }, [dispatch, studentFeeId])
 
 
     return (

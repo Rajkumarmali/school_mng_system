@@ -7,10 +7,7 @@ import com.example.UniversityManagementSystem.entity.type.FeeStructureStatus;
 import com.example.UniversityManagementSystem.entity.type.StudentFeeStatus;
 import com.example.UniversityManagementSystem.repository.*;
 import com.example.UniversityManagementSystem.services.FeeServices;
-import com.razorpay.Payment;
-import com.razorpay.PaymentLink;
-import com.razorpay.RazorpayClient;
-import com.razorpay.RazorpayException;
+import com.razorpay.*;
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.Rectangle;
@@ -1022,28 +1019,34 @@ public class FeeServiceImp implements FeeServices {
     @Override
     @Transactional
     @PreAuthorize("hasRole('STUDENT')")
-    public PaymentLinkResponse payFeeByRazorPay(Long studentFeeId) throws RazorpayException {
+    public OrderResponse payFeeByRazorPay(Long studentFeeId) throws RazorpayException {
         try{
 
             StudentFee studentFee = studentFeeRepository.findById(studentFeeId).orElseThrow(()->
                     new IllegalArgumentException("Student fee not found"));
 
             RazorpayClient razorpayClient = new RazorpayClient(apiKey,apiSecret);
-            JSONObject paymentLinkRequest = new JSONObject();
-            paymentLinkRequest.put("amount",studentFee.getFeeStructure().getAmount()*100);
-            paymentLinkRequest.put("currency","INR");
+            JSONObject orderRequest = new JSONObject();
 
-            paymentLinkRequest.put("callback_url","http://localhost:3000/student/fee?tab=pending-fee&feeId="+studentFeeId);
-            paymentLinkRequest.put("callback_method","get");
+            orderRequest.put("amount",studentFee.getFeeStructure().getAmount()*100);
+            orderRequest.put("currency","INR");
 
-            PaymentLink payment = razorpayClient.paymentLink.create(paymentLinkRequest);
+            String date = LocalDate.now()
+                    .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+            String receiptNo = "REC-"+date+"-"+studentFeeId;
 
-            String paymentId = payment.get("id");
-            String paymentUrl = payment.get("short_url");
+            orderRequest.put("receipt", receiptNo);
+            orderRequest.put("payment_capture", 1);
 
-            PaymentLinkResponse response = new PaymentLinkResponse();
-            response.setPaymentLinkId(paymentId);
-            response.setPaymentLink(paymentUrl);
+            Order order = razorpayClient.orders.create(orderRequest);
+
+            OrderResponse response = new OrderResponse();
+            response.setOrderId(order.get("id"));
+            response.setAmount(order.get("amount"));
+            response.setCurrency(order.get("currency"));
+            response.setStudentFeeId(studentFeeId);
+
+
             return response;
         } catch (Exception e) {
             throw new RazorpayException(e.getMessage());
@@ -1054,7 +1057,7 @@ public class FeeServiceImp implements FeeServices {
     @Transactional
     @Caching(evict = {
             @CacheEvict(cacheNames = "payments",allEntries = true),
-            @CacheEvict(cacheNames = "studentFee",key = "#studentFeeId"),
+            @CacheEvict(cacheNames = "studentFee",key = "#dto.studentFeeId"),
             @CacheEvict(cacheNames = "studentFees",allEntries = true),
             @CacheEvict(cacheNames = "studentsFees",allEntries = true),
             @CacheEvict(cacheNames = "studentsFee",allEntries = true),
@@ -1065,25 +1068,35 @@ public class FeeServiceImp implements FeeServices {
             @CacheEvict(cacheNames = "studentpaidfee",allEntries = true),
             @CacheEvict(cacheNames = "studentunpaidfee",allEntries = true),
             @CacheEvict(cacheNames = "studentFeeOverview",allEntries = true),
+            @CacheEvict(cacheNames = "feeOverviews",allEntries = true),
     })
-    public String redirect(String paymentId, Long studentFeeId) {
+    public String verifyPayment(PaymentVerifyRequest dto) {
         try{
-            StudentFee studentFee = studentFeeRepository.findById(studentFeeId).orElseThrow(()->
+            StudentFee studentFee = studentFeeRepository.findById(dto.getStudentFeeId()).orElseThrow(()->
                     new IllegalArgumentException("No fee found"));
 
             if(studentFee.getFeePayment()!=null){
                 return "";
             }
 
+            JSONObject attributes = new JSONObject();
+            attributes.put("razorpay_order_id", dto.getOrderId());
+            attributes.put("razorpay_payment_id", dto.getPaymentId());
+            attributes.put("razorpay_signature", dto.getSignature());
+
+            boolean verify = Utils.verifyPaymentSignature(attributes,apiSecret);
+            if(!verify){
+                throw  new RuntimeException("Invalid Payment signature");
+            }
+
             FeePayment feePayment = new FeePayment();
 
             RazorpayClient razorpayClient = new RazorpayClient(apiKey,apiSecret);
-            Payment payment =  razorpayClient.payments.fetch(paymentId);
-
+            Payment payment =  razorpayClient.payments.fetch(dto.getPaymentId());
             if(payment.get("status").equals("captured")){
                 String date = LocalDate.now()
                         .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-                String receiptNo = "REC-"+date+"-"+studentFeeId;
+                String receiptNo = "REC-"+date+"-"+dto.getStudentFeeId();
 
                 JSONObject acquirerData =
                         payment.get("acquirer_data");
@@ -1098,15 +1111,12 @@ public class FeeServiceImp implements FeeServices {
                 feePayment.setTransactionId(bankTransactionId);
                 feePayment.setPaymentDataAndTime(LocalDateTime.now());
                 feePayment.setCreatedAt(LocalDateTime.now());
-
-
                 FeePayment savedFeePayment = feePaymentRepository.save(feePayment);
 
                 studentFee.setStatus(StudentFeeStatus.PAID);
                 studentFee.setFeePayment(savedFeePayment);
                 studentFee.setUpdatedAt(LocalDateTime.now());
-
-               studentFeeRepository.save(studentFee);
+                studentFeeRepository.save(studentFee);
             }
             return "Payment successfully";
         } catch (Exception e) {

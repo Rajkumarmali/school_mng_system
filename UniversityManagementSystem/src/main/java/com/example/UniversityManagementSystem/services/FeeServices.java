@@ -33,6 +33,6 @@ public interface FeeServices {
     Page<StudentFeeResponse> getPaidStudentFeeByStudent(Long userId,int pageNumber,int pageSize);
     Page<StudentFeeResponse> getUnpaidStudentFeeByStudent(Long userId,int pageNumber,int pageSize);
     StudentResponse getFeeOverviewForStudent(Long userId);
-    PaymentLinkResponse payFeeByRazorPay(Long studentFeeId) throws RazorpayException;
-    String redirect(String paymentId,Long studentFeeId);
+    OrderResponse payFeeByRazorPay(Long studentFeeId) throws RazorpayException;
+    String verifyPayment(PaymentVerifyRequest dto);
 }
