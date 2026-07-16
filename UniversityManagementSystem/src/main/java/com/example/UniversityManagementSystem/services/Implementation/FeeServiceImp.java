@@ -4,7 +4,6 @@ import com.example.UniversityManagementSystem.dto.fee.*;
 import com.example.UniversityManagementSystem.entity.*;
 import com.example.UniversityManagementSystem.entity.Class;
 import com.example.UniversityManagementSystem.entity.type.FeeStructureStatus;
-import com.example.UniversityManagementSystem.entity.type.PaymentMode;
 import com.example.UniversityManagementSystem.entity.type.StudentFeeStatus;
 import com.example.UniversityManagementSystem.repository.*;
 import com.example.UniversityManagementSystem.services.FeeServices;
@@ -715,7 +714,7 @@ public class FeeServiceImp implements FeeServices {
 
         FeePayment feePayment = new FeePayment();
         feePayment.setAmount(studentFee.getFeeStructure().getAmount());
-        feePayment.setPaymentMode(PaymentMode.CASH);
+        feePayment.setPaymentMode("CASH");
         feePayment.setReceiptNumber(receiptNo);
         feePayment.setPaymentDataAndTime(LocalDateTime.now());
         feePayment.setCreatedAt(LocalDateTime.now());
@@ -806,7 +805,7 @@ public class FeeServiceImp implements FeeServices {
         if (studentFee.getFeePayment() != null &&
                 studentFee.getFeePayment().getPaymentMode() != null) {
             addRow(receiptTable,"Payment Mode",
-                    studentFee.getFeePayment().getPaymentMode().name());
+                    studentFee.getFeePayment().getPaymentMode());
         }
 
         document.add(receiptTable);
@@ -1094,11 +1093,12 @@ public class FeeServiceImp implements FeeServices {
                 }
 
                 feePayment.setAmount(studentFee.getFeeStructure().getAmount());
-//                feePayment.setPaymentMode();
+                feePayment.setPaymentMode(payment.get("method").toString().toUpperCase());
                 feePayment.setReceiptNumber(receiptNo);
                 feePayment.setTransactionId(bankTransactionId);
                 feePayment.setPaymentDataAndTime(LocalDateTime.now());
                 feePayment.setCreatedAt(LocalDateTime.now());
+
 
                 FeePayment savedFeePayment = feePaymentRepository.save(feePayment);
 

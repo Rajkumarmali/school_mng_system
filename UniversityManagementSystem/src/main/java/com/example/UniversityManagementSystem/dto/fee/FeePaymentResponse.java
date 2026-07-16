@@ -1,6 +1,5 @@
 package com.example.UniversityManagementSystem.dto.fee;
 
-import com.example.UniversityManagementSystem.entity.type.PaymentMode;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -8,7 +7,7 @@ import java.time.LocalDateTime;
 public class FeePaymentResponse implements Serializable {
     private Long id;
     private Double amount;
-    private PaymentMode paymentMode;
+    private String paymentMode;
     private String transactionId;
     private LocalDateTime paymentDataAndTime;
     private String receiptNumber;
@@ -16,7 +15,7 @@ public class FeePaymentResponse implements Serializable {
     public FeePaymentResponse() {
     }
 
-    public FeePaymentResponse(Long id, Double amount, PaymentMode paymentMode, String transactionId,
+    public FeePaymentResponse(Long id, Double amount, String paymentMode, String transactionId,
                               LocalDateTime paymentDataAndTime, String receiptNumber) {
         this.id = id;
         this.amount = amount;
@@ -42,11 +41,11 @@ public class FeePaymentResponse implements Serializable {
         this.amount = amount;
     }
 
-    public PaymentMode getPaymentMode() {
+    public String getPaymentMode() {
         return paymentMode;
     }
 
-    public void setPaymentMode(PaymentMode paymentMode) {
+    public void setPaymentMode(String paymentMode) {
         this.paymentMode = paymentMode;
     }
 
