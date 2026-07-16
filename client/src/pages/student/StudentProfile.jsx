@@ -89,6 +89,7 @@ const StudentProfile = () => {
         setIsEditParentModal(false);
         setIsEditImageModal(false);
         setIsEditDepartmentModal(true);
+        handleSetData();
     }
 
     const handlePersonChange = (e) => {
@@ -122,6 +123,10 @@ const StudentProfile = () => {
     }
     const handleUpdate = async () => {
         if (isEditDepartmentModal) {
+            if (!departmentCode) {
+                alert("enter department code")
+                return;
+            }
             await dispatch(updateStudent(studentId, { departmentCode }))
         }
         else if (isEditImageModal) {
@@ -147,6 +152,7 @@ const StudentProfile = () => {
     }
 
     const handleSetData = () => {
+        setDepartmentCode(student?.student?.departmentCode)
         setStudentData({
             firstName: student?.student?.firstName || '',
             lastName: student?.student?.lastName || '',

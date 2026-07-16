@@ -16,6 +16,7 @@ import DepartmentDetails from '../pages/department/DepartmentDetails';
 import Classes from '../pages/classes/Classes';
 import ClassDetails from '../pages/classes/ClassDetails';
 import Fee from '../pages/fee/Fee';
+import StudentsFee from '../pages/student/fee/StudentsFee';
 
 
 const Layout = () => {
@@ -36,6 +37,7 @@ const Layout = () => {
                         <Route path='users' element={<Users />} />
                         <Route path='/student' element={<Student />} />
                         <Route path='/student/profile' element={<StudentProfile />} />
+                        <Route path='student/fee' element={<StudentsFee />} />
                         <Route path='teacher' element={<Teacher />} />
                         <Route path='teacher/profile' element={<TeacherProfile />} />
                         <Route path='department' element={<Department />} />
