@@ -1,6 +1,8 @@
 package com.example.UniversityManagementSystem.dto.address;
 
-public class AddressResponse {
+import java.io.Serializable;
+
+public class AddressResponse implements Serializable {
     private String address;
     private String city;
     private String district;

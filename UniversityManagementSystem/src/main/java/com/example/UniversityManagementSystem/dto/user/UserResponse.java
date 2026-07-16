@@ -4,9 +4,10 @@ import com.example.UniversityManagementSystem.dto.student.StudentResponse;
 import com.example.UniversityManagementSystem.dto.teacher.TeacherResponse;
 import com.example.UniversityManagementSystem.entity.Student;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class UserResponse {
+public class UserResponse implements Serializable {
     private Long id;
     private String email;
     private String userName;

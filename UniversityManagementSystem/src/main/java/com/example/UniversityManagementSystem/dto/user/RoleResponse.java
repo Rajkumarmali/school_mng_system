@@ -1,6 +1,8 @@
 package com.example.UniversityManagementSystem.dto.user;
 
-public class RoleResponse {
+import java.io.Serializable;
+
+public class RoleResponse implements Serializable {
     private Long id;
     private String name;
 

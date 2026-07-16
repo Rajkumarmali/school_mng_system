@@ -24,7 +24,6 @@ const Login = () => {
     const handleLogin = (e) => {
         e.preventDefault();
         dispatch(login(loginData))
-        console.log(loginData)
     }
 
     return (
