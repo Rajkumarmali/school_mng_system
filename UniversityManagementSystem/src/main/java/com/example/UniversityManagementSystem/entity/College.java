@@ -40,12 +40,15 @@ public class College {
     @OneToMany(mappedBy = "college")
     private List<Department> departments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "college")
+    private List<FeeType> feeTypes=new ArrayList<>();
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public College(Long id, String name, String shortName, String collegeCode, String email, String phoneNumber,
                    University university, Address address, List<User> users, List<Roles> roles,
-                   List<Teacher> teachers, List<Student> students,List<Department> departments, LocalDateTime createdAt,
+                   List<Teacher> teachers,List<FeeType> feeTypes, List<Student> students,List<Department> departments, LocalDateTime createdAt,
                    LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
@@ -60,6 +63,7 @@ public class College {
         this.teachers = teachers;
         this.students = students;
         this.departments =departments;
+        this.feeTypes=feeTypes;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -185,5 +189,13 @@ public class College {
 
     public void setDepartments(List<Department> departments) {
         this.departments = departments;
+    }
+
+    public List<FeeType> getFeeTypes() {
+        return feeTypes;
+    }
+
+    public void setFeeTypes(List<FeeType> feeTypes) {
+        this.feeTypes = feeTypes;
     }
 }
