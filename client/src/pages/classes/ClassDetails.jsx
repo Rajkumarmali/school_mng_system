@@ -112,6 +112,9 @@ const ClassDetails = () => {
                             <div className="class-details-info">
                                 <div className="class-details-contact">
                                     <div>
+                                        <span><strong>Code : </strong> {clas?.class?.classCode}</span>
+                                    </div>
+                                    <div>
                                         <span><strong>Name : </strong> {clas?.class?.name}</span>
                                     </div>
                                     <div>

@@ -30,7 +30,15 @@
 //                "departments",
 //                "classes",
 //                "class",
-//                "classStudents"
+//                "classStudents",
+//                "feeType",
+//                "feeTypes",
+//                "feeStructure",
+//                "feeStructures",
+//                "feeStudents",
+//                "feePaidStudents",
+//                "feeUnpaidStudents",
+//                "studentFee"
 //        );
 //    }
 //}

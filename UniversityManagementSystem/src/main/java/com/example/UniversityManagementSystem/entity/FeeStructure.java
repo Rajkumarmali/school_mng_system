@@ -15,7 +15,10 @@ public class FeeStructure {
 
     private Double amount;
     private String academicYear;
-    private LocalDateTime dueData;
+    private LocalDateTime dueDate;
+
+    @ManyToOne
+    private College college;
 
     @ManyToOne
     private Department department;
@@ -40,14 +43,14 @@ public class FeeStructure {
     public FeeStructure() {
     }
 
-    public FeeStructure(Long id, Double amount, String academicYear, LocalDateTime dueData, Department department,
+    public FeeStructure(Long id, Double amount, String academicYear, LocalDateTime dueDate, Department department,
                         String description, FeeType feeType, FeeStructureStatus status, Class aClass,
                         List<StudentFee> studentFees, LocalDateTime createdAt,
                         LocalDateTime updatedAt) {
         this.id = id;
         this.amount = amount;
         this.academicYear = academicYear;
-        this.dueData = dueData;
+        this.dueDate = dueDate;
         this.department = department;
         Description = description;
         this.feeType = feeType;
@@ -82,28 +85,12 @@ public class FeeStructure {
         this.academicYear = academicYear;
     }
 
-    public LocalDateTime getDueData() {
-        return dueData;
-    }
-
-    public void setDueData(LocalDateTime dueData) {
-        this.dueData = dueData;
-    }
-
     public Department getDepartment() {
         return department;
     }
 
     public void setDepartment(Department department) {
         this.department = department;
-    }
-
-    public String getDescription() {
-        return Description;
-    }
-
-    public void setDescription(String description) {
-        Description = description;
     }
 
     public FeeType getFeeType() {
@@ -152,5 +139,37 @@ public class FeeStructure {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public void setDescription(String description) {
+        Description = description;
+    }
+
+    public College getCollege() {
+        return college;
+    }
+
+    public void setCollege(College college) {
+        this.college = college;
+    }
+
+    public Class getAClass() {
+        return aClass;
+    }
+
+    public void setAClass(Class aClass) {
+        this.aClass = aClass;
+    }
+
+    public LocalDateTime getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDateTime dueDate) {
+        this.dueDate = dueDate;
     }
 }
