@@ -1,6 +1,5 @@
 package com.example.UniversityManagementSystem.entity;
 
-import com.example.UniversityManagementSystem.entity.type.PaymentMode;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -11,9 +10,7 @@ public class FeePayment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Double amount;
-
-    @Enumerated(EnumType.STRING)
-    private PaymentMode paymentMode;
+    private String paymentMode;
     private String transactionId;
     private LocalDateTime paymentDataAndTime;
     private String receiptNumber;
@@ -27,7 +24,7 @@ public class FeePayment {
     public FeePayment() {
     }
 
-    public FeePayment(Long id, Double amount, PaymentMode paymentMode, String transactionId,
+    public FeePayment(Long id, Double amount, String paymentMode, String transactionId,
                       LocalDateTime paymentDataAndTime, String receiptNumber, StudentFee studentFee,
                       LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
@@ -57,11 +54,11 @@ public class FeePayment {
         this.amount = amount;
     }
 
-    public PaymentMode getPaymentMode() {
+    public String getPaymentMode() {
         return paymentMode;
     }
 
-    public void setPaymentMode(PaymentMode paymentMode) {
+    public void setPaymentMode(String paymentMode) {
         this.paymentMode = paymentMode;
     }
 
