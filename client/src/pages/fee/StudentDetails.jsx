@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom';
 import './StudentDetails.css'
 import { useDispatch, useSelector } from 'react-redux';
-import { getFeeStudentById, getStudentById, getStudentsFees, payFeeByCash } from '../../state/fee/Action';
+import { downloadFeeReceipt, getFeeStudentById, getStudentById, getStudentsFees, payFeeByCash } from '../../state/fee/Action';
 import { jwtDecode } from 'jwt-decode';
 
 const StudentDetails = () => {
@@ -107,6 +107,12 @@ const StudentDetails = () => {
         await dispatch(getStudentById(studentId));
         await dispatch(getStudentsFees(studentId, pagination.pageNumber, pagination.pageSize))
     }
+
+    const handleDownloadFeeReceipt = async (studentFeeId) => {
+        const pdfBlob = await dispatch(downloadFeeReceipt(studentFeeId));
+        const url = window.URL.createObjectURL(pdfBlob);
+        window.open(url, "_blank");
+    };
 
     useEffect(() => {
         dispatch(getStudentById(studentId));
@@ -315,7 +321,9 @@ const StudentDetails = () => {
                             <div>
                                 {
                                     fee?.feeStudent?.feePaymentResponse ?
-                                        <button className="print-btn">
+                                        <button className="print-btn"
+                                            onClick={() => handleDownloadFeeReceipt(fee?.feeStudent?.id)}
+                                        >
                                             <i class="bi bi-printer-fill"></i>
                                         </button>
                                         :

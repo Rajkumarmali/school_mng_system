@@ -3,11 +3,15 @@ package com.example.UniversityManagementSystem.controller;
 import com.example.UniversityManagementSystem.config.JwtProvider;
 import com.example.UniversityManagementSystem.dto.fee.*;
 import com.example.UniversityManagementSystem.services.FeeServices;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 @RestController
@@ -161,6 +165,25 @@ public class FeeController {
                                                                                @RequestParam(defaultValue = "10") int pageSize){
          Page<StudentFeeResponse> res = feeServices.getStudentFeeByStudentI(id,pageNumber,pageSize);
          return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/get-feeoverview")
+    public ResponseEntity<FeeOverviewResponse> getFeeOverview(){
+        FeeOverviewResponse res = feeServices.getFeeOverview();
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/get/fee/receipt/{studentFeeId}")
+    public ResponseEntity<InputStreamResource> downloadFeeReceipt(@PathVariable Long studentFeeId){
+        ByteArrayInputStream pdf = feeServices.generateReceipt(studentFeeId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=receipt.pdf");
+
+        return  ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(new InputStreamResource(pdf));
     }
 
     @GetMapping("/get-studentspaidfee")

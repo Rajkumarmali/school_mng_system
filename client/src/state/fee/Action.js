@@ -8,18 +8,22 @@ import {
     GET_FEE_TYPE_BYID_FAILER, GET_FEE_TYPE_BYID_REQUEST, GET_FEE_TYPE_BYID_SUCCESS, GET_FEE_TYPE_FAILER, GET_FEE_TYPE_REQUEST,
     GET_FEE_TYPE_SUCCESS, GET_PAID_FEE_STUDENT_FAILER, GET_PAID_FEE_STUDENT_REQUEST, GET_PAID_FEE_STUDENT_SUCCESS,
     GET_PAYMENT_BYID_FAILER,
-    GET_PAYMENT_BYID_REQUEST,
-    GET_PAYMENT_BYID_SUCCESS,
-    GET_PAYMENT_FAILER, GET_PAYMENT_REQUEST, GET_PAYMENT_SUCCESS, GET_STUDENT_BYID_FAILER, GET_STUDENT_BYID_REQUEST,
+    GET_PAYMENT_BYID_REQUEST, GET_PAYMENT_BYID_SUCCESS,
+    GET_PAYMENT_FAILER, GET_PAYMENT_REQUEST, GET_PAYMENT_SUCCESS, GET_STUDENT_BYID_FAILER, GET_STUDENT_BYID_REQUEST, GET_STUDENTS_FEES_FAILER,
+    GET_STUDENTS_FEES_REQUEST, GET_STUDENTS_FEES_SUCCESS, GET_UNPAID_FEE_STUDENT_FAILER, GET_UNPAID_FEE_STUDENT_REQUEST,
+    GET_UNPAID_FEE_STUDENT_SUCCESS, PAY_FEE_BY_CASH_FAILER, PAY_FEE_BY_CASH_REQUEST, PAY_FEE_BY_CASH_SUCCESS, UPDATE_FEE_STRUCTURE_FAILER,
     GET_STUDENT_BYID_SUCCESS, GET_STUDENT_FAILER, GET_STUDENT_REQUEST, GET_STUDENT_SUCCESS,
-    GET_STUDENTS_FEES_FAILER, GET_STUDENTS_FEES_REQUEST, GET_STUDENTS_FEES_SUCCESS,
-    GET_UNPAID_FEE_STUDENT_FAILER, GET_UNPAID_FEE_STUDENT_REQUEST, GET_UNPAID_FEE_STUDENT_SUCCESS, PAY_FEE_BY_CASH_FAILER,
-    PAY_FEE_BY_CASH_REQUEST, PAY_FEE_BY_CASH_SUCCESS, PAY_FEE_BY_RAZORPAY_REQUEST, PAY_FEE_BY_RAZORPAY_SUCCESS, PAY_FEE_BYRAZORPAY_FAILER, UPDATE_FEE_STRUCTURE_FAILER,
+    PAY_FEE_BY_RAZORPAY_REQUEST, PAY_FEE_BY_RAZORPAY_SUCCESS, PAY_FEE_BYRAZORPAY_FAILER,
     UPDATE_FEE_STRUCTURE_REQUEST, UPDATE_FEE_STRUCTURE_SUCCESS, UPDATE_FEE_TYPE_FAILER, UPDATE_FEE_TYPE_REQUEST,
     UPDATE_FEE_TYPE_SUCCESS,
     UPDATE_PAYMENT_FAILER,
     UPDATE_PAYMENT_REQUEST,
-    UPDATE_PAYMENT_SUCCESS
+    UPDATE_PAYMENT_SUCCESS,
+    GET_FEE_OVERVIEW_REQUEST,
+    GET_FEE_OVERVIEW_SUCCESS,
+    GET_FEE_OVERVIEW_FAILER,
+    DOWNLOAD_FEE_RECEIPT_REQUEST,
+    DOWNLOAD_FEE_RECEIPT_FAILER
 } from "./ActionType";
 
 const BASE_API = process.env.REACT_APP_BASE_URL;
@@ -403,5 +407,39 @@ export const getStudentsFees = (studentId, pageNumber, pageSize) => async (dispa
         dispatch({ type: GET_STUDENTS_FEES_SUCCESS, payload: data })
     } catch (err) {
         dispatch({ type: GET_STUDENTS_FEES_FAILER, payload: err.message })
+    }
+}
+
+export const getFeeOverview = () => async (dispatch) => {
+    dispatch({ type: GET_FEE_OVERVIEW_REQUEST })
+    try {
+        const res = await fetch(`${BASE_API}/fee/get-feeoverview`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+        })
+        const data = await res.json();
+        dispatch({ type: GET_FEE_OVERVIEW_SUCCESS, payload: data })
+    } catch (err) {
+        dispatch({ type: GET_FEE_OVERVIEW_FAILER, payload: err.message })
+    }
+}
+
+export const downloadFeeReceipt = (studentFeeId) => async (dispatch) => {
+    dispatch({ type: DOWNLOAD_FEE_RECEIPT_REQUEST })
+    try {
+        const res = await fetch(`${BASE_API}/fee/get/fee/receipt/${studentFeeId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+        })
+        const blob = res.blob();
+        return blob;
+    } catch (err) {
+        dispatch({ type: DOWNLOAD_FEE_RECEIPT_FAILER, payload: err.message })
     }
 }

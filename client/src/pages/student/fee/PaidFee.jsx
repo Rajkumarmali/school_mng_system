@@ -3,6 +3,7 @@ import './PaidFee.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom';
 import { getStudentPaidFee } from '../../../state/student/Action';
+import FeeDetails from './FeeDetails';
 
 const PaidFee = () => {
 
@@ -13,6 +14,7 @@ const PaidFee = () => {
     const tab = searchParams.get("tab")
     const pageNumber = Number(searchParams.get('page')) || 1
     const pageSize = Number(searchParams.get("size")) || 10;
+    const studentFeeId = searchParams.get("feeId")
 
     const totalPages = student?.studentPaidFees?.totalPages || 0
     const getPageNumbers = () => {
@@ -78,6 +80,15 @@ const PaidFee = () => {
         })
     }
 
+    const handleViewDetails = (studentFeeId) => {
+        setSearchParams({
+            tab,
+            page: pageNumber,
+            size: pageSize,
+            feeId: studentFeeId
+        })
+    }
+
 
     useEffect(() => {
         dispatch(getStudentPaidFee(pageNumber, pageSize))
@@ -86,102 +97,119 @@ const PaidFee = () => {
 
     return (
         <div>
-            <table className="table student-fee-table">
-                <thead>
-                    <tr>
-                        <th>S.No</th>
-                        <th>Fee Type</th>
-                        <th>Academic Year</th>
-                        <th>Amount</th>
-                        <th>Payment Mode</th>
-                        <th>Receipt No.</th>
-                        <th>Payment Date</th>
-                        <th>Status</th>
-                        <th className="text-center">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        student?.studentPaidFees?.content?.length > 0 ?
-                            student?.studentPaidFees?.content?.map((fee, index) =>
+            {
+                studentFeeId ?
+                    <div>
+                        <FeeDetails />
+                    </div>
+                    :
+                    <div>
+                        <table className="table student-fee-table">
+                            <thead>
                                 <tr>
-                                    <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                    <td>{fee.feeTypename}</td>
-                                    <td>{fee.academicYear}</td>
-                                    <td>{fee.amount}</td>
-                                    <td>{fee.feePaymentResponse.paymentMode}</td>
-                                    <td>{fee.feePaymentResponse.receiptNumber}</td>
-                                    <td>
-                                        {
-                                            fee.feePaymentResponse.paymentDataAndTime ?
-                                                new Date(fee.feePaymentResponse.paymentDataAndTime).toLocaleDateString("en-GB").replace(/\//g, "-")
-                                                : "-"
-                                        }
-                                    </td>
-                                    <td>{fee.status}</td>
-                                    <td>-</td>
+                                    <th>S.No</th>
+                                    <th>Fee Type</th>
+                                    <th>Academic Year</th>
+                                    <th>Amount</th>
+                                    <th>Payment Mode</th>
+                                    <th>Receipt No.</th>
+                                    <th>Payment Date</th>
+                                    <th>Status</th>
+                                    <th className="text-center">Action</th>
                                 </tr>
-                            )
-                            :
-                            <tr>
-                                <td colSpan="10" className="text-center">
-                                    No Fee Found
-                                </td>
-                            </tr>
-                    }
-                </tbody>
-            </table>
-            <div className="pagination-container">
-                <div className="pagination-info">
-                    Total :
-                    <strong> {student?.studentPaidFees?.totalElements || 0}</strong>
-                </div>
-                <div className="page-size-selector">
-                    <label>Show :</label>
-                    <select
-                        value={pageSize}
-                        onChange={handleChangePageSize}
-                    >
-                        <option value={10}>10</option>
-                        <option value={50}>50</option>
-                        <option value={100}>100</option>
-                    </select>
-                </div>
-                <ul className="custom-pagination">
-                    <li>
-                        <button
-                            onClick={handleGetPerviousPageData}
-                            disabled={pageNumber === 1}
-                        >
-                            &laquo;
-                        </button>
-                    </li>
-                    {getPageNumbers().map((page, index) =>
-                        page === "..." ? (
-                            <li key={index} className="dots">
-                                ...
-                            </li>
-                        ) : (
-                            <li key={index}>
-                                <button
-                                    className={pageNumber === page ? "active-page" : ""}
-                                    onClick={() => handleGetPageNumberData(page)}
+                            </thead>
+                            <tbody>
+                                {
+                                    student?.studentPaidFees?.content?.length > 0 ?
+                                        student?.studentPaidFees?.content?.map((fee, index) =>
+                                            <tr>
+                                                <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                <td>{fee.feeTypename}</td>
+                                                <td>{fee.academicYear}</td>
+                                                <td>{fee.amount}</td>
+                                                <td>{fee.feePaymentResponse.paymentMode}</td>
+                                                <td>{fee.feePaymentResponse.receiptNumber}</td>
+                                                <td>
+                                                    {
+                                                        fee.feePaymentResponse.paymentDataAndTime ?
+                                                            new Date(fee.feePaymentResponse.paymentDataAndTime).toLocaleDateString("en-GB").replace(/\//g, "-")
+                                                            : "-"
+                                                    }
+                                                </td>
+                                                <td>{fee.status}</td>
+                                                <td className='text-center'>
+                                                    <button
+                                                        className="btn btn-sm custom-reset-btn me-2"
+                                                        onClick={() => handleViewDetails(fee.id)}
+                                                    >
+                                                        <i class="bi bi-eye"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        )
+                                        :
+                                        <tr>
+                                            <td colSpan="10" className="text-center">
+                                                No Fee Found
+                                            </td>
+                                        </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <div className="pagination-container">
+                            <div className="pagination-info">
+                                Total :
+                                <strong> {student?.studentPaidFees?.totalElements || 0}</strong>
+                            </div>
+                            <div className="page-size-selector">
+                                <label>Show :</label>
+                                <select
+                                    value={pageSize}
+                                    onChange={handleChangePageSize}
                                 >
-                                    {page}
-                                </button>
-                            </li>
-                        )
-                    )}
-                    <li>
-                        <button
-                            onClick={handleGetNextPageData}
-                            disabled={pageNumber === totalPages}
-                        >
-                            &raquo;
-                        </button>
-                    </li>
-                </ul>
-            </div>
+                                    <option value={10}>10</option>
+                                    <option value={50}>50</option>
+                                    <option value={100}>100</option>
+                                </select>
+                            </div>
+                            <ul className="custom-pagination">
+                                <li>
+                                    <button
+                                        onClick={handleGetPerviousPageData}
+                                        disabled={pageNumber === 1}
+                                    >
+                                        &laquo;
+                                    </button>
+                                </li>
+                                {getPageNumbers().map((page, index) =>
+                                    page === "..." ? (
+                                        <li key={index} className="dots">
+                                            ...
+                                        </li>
+                                    ) : (
+                                        <li key={index}>
+                                            <button
+                                                className={pageNumber === page ? "active-page" : ""}
+                                                onClick={() => handleGetPageNumberData(page)}
+                                            >
+                                                {page}
+                                            </button>
+                                        </li>
+                                    )
+                                )}
+                                <li>
+                                    <button
+                                        onClick={handleGetNextPageData}
+                                        disabled={pageNumber === totalPages}
+                                    >
+                                        &raquo;
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+            }
+
         </div>
     )
 }

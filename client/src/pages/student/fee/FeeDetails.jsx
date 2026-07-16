@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom';
 import './FeeDetails.css'
 import { useDispatch, useSelector } from 'react-redux';
-import { getFeeStudentById, payFeeByRazor, updatePayment } from '../../../state/fee/Action';
+import { downloadFeeReceipt, getFeeStudentById, payFeeByRazor, updatePayment } from '../../../state/fee/Action';
 
 
 const FeeDetails = () => {
@@ -30,6 +30,12 @@ const FeeDetails = () => {
     const handlePayFee = async () => {
         await dispatch(payFeeByRazor(studentFeeId));
     }
+
+    const handleDownloadFeeReceipt = async () => {
+        const pdfBlob = await dispatch(downloadFeeReceipt(studentFeeId));
+        const url = window.URL.createObjectURL(pdfBlob);
+        window.open(url, "_blank");
+    };
 
     useEffect(() => {
         const loadData = async () => {
@@ -74,7 +80,9 @@ const FeeDetails = () => {
                                     Pay Fee
                                 </button>
                                 :
-                                <button className="print-btn">
+                                <button className="print-btn"
+                                    onClick={handleDownloadFeeReceipt}
+                                >
                                     <i class="bi bi-printer-fill"></i>
                                 </button>
                         }
