@@ -1,11 +1,10 @@
 package com.example.UniversityManagementSystem.dto.department;
 
-import com.example.UniversityManagementSystem.entity.type.Cast;
 import com.example.UniversityManagementSystem.entity.type.Gender;
+import java.io.Serializable;
 
-import java.time.LocalDate;
 
-public class DepartmentTeacherResponse {
+public class DepartmentTeacherResponse implements Serializable {
     private Long id;
     private String firstName;
     private String lastName;

@@ -117,7 +117,7 @@ public class DepartmentServicesImp implements DepartmentServices {
           res.setCode(dep.getCode());
 
           if(dep.getHodTeacher()!=null){
-              res.setHodName(dep.getHodTeacher().getFirstName()+dep.getHodTeacher().getLastName());
+              res.setHodName(dep.getHodTeacher().getFirstName()+" "+dep.getHodTeacher().getLastName());
               res.setHodEmail(dep.getHodTeacher().getEmail());
               res.setHodPhoneNumber(dep.getHodTeacher().getPhoneNumber());
           }
@@ -233,6 +233,8 @@ public class DepartmentServicesImp implements DepartmentServices {
             }
             res.setId(clas.getId());
             res.setName(clas.getName());
+            res.setClassCode(clas.getClassCode());
+            res.setClassStatus(clas.getClassStatus());
             res.setSemester(clas.getSemester());
             res.setAcademicYear(clas.getAcedamicYear());
             return res;

@@ -1,6 +1,8 @@
 package com.example.UniversityManagementSystem.dto.department;
 
-public class DepartmentResponse {
+import java.io.Serializable;
+
+public class DepartmentResponse implements Serializable {
     private Long id;
     private String name;
     private String description;

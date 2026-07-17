@@ -2,8 +2,10 @@ package com.example.UniversityManagementSystem.dto.department;
 
 import com.example.UniversityManagementSystem.entity.type.Gender;
 
+import java.io.Serializable;
 
-public class DepartmentStudentsResponse {
+
+public class DepartmentStudentsResponse implements Serializable {
     private Long id;
     private String firstName;
     private String lastName;
