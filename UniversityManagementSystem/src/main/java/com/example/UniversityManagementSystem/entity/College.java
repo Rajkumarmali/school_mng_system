@@ -46,6 +46,9 @@ public class College {
     @OneToMany(mappedBy = "college")
     private List<FeeStructure> feeStructures =new ArrayList<>();
 
+    @OneToMany(mappedBy = "college")
+    private List<Course> courses = new ArrayList<>();
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -209,5 +212,13 @@ public class College {
 
     public void setFeeStructures(List<FeeStructure> feeStructures) {
         this.feeStructures = feeStructures;
+    }
+
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
     }
 }
