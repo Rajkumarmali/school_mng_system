@@ -16,6 +16,9 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String enrollmentNumber;
+    private String rollNumber;
+
     private String firstName;
     private String lastName;
     private String email;
@@ -244,4 +247,19 @@ public class Student {
         this.studentFees = studentFees;
     }
 
+    public String getEnrollmentNumber() {
+        return enrollmentNumber;
+    }
+
+    public void setEnrollmentNumber(String enrollmentNumber) {
+        this.enrollmentNumber = enrollmentNumber;
+    }
+
+    public String getRollNumber() {
+        return rollNumber;
+    }
+
+    public void setRollNumber(String rollNumber) {
+        this.rollNumber = rollNumber;
+    }
 }
