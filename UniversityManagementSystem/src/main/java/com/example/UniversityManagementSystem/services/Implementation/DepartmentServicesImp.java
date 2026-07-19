@@ -1,11 +1,8 @@
 package com.example.UniversityManagementSystem.services.Implementation;
 
 import com.example.UniversityManagementSystem.dto.department.*;
+import com.example.UniversityManagementSystem.entity.*;
 import com.example.UniversityManagementSystem.entity.Class;
-import com.example.UniversityManagementSystem.entity.College;
-import com.example.UniversityManagementSystem.entity.Department;
-import com.example.UniversityManagementSystem.entity.Student;
-import com.example.UniversityManagementSystem.entity.Teacher;
 import com.example.UniversityManagementSystem.repository.*;
 import com.example.UniversityManagementSystem.services.DepartmentServices;
 import jakarta.transaction.Transactional;
@@ -27,17 +24,22 @@ public class DepartmentServicesImp implements DepartmentServices {
     private final DepartmentRepository departmentRepository;
     private final CollegeRepository collegeRepository;
     private final TeacherRepository teacherRepository;
+    private final StudentRepository studentRepository;
+    private final ClassRepository classRepository;
+    private final CourseRepository courseRepository;
 
     public DepartmentServicesImp(DepartmentRepository departmentRepository,
                                  CollegeRepository collegeRepository,
                                  TeacherRepository teacherRepository,
                                  StudentRepository studentRepository,
-                                 ClassRepository classRepository) {
+                                 ClassRepository classRepository,
+                                 CourseRepository courseRepository) {
         this.departmentRepository = departmentRepository;
         this.collegeRepository = collegeRepository;
         this.teacherRepository = teacherRepository;
         this.studentRepository = studentRepository;
         this.classRepository = classRepository;
+        this.courseRepository = courseRepository;
     }
 
 
@@ -54,6 +56,12 @@ public class DepartmentServicesImp implements DepartmentServices {
                 throw new IllegalArgumentException("College not found");
             });
         }
+
+        Course course  = courseRepository.findByCourseCode(dto.getCourseCode());
+        if(course==null){
+            return  "Course not found";
+        }
+
         String code="";
         if(college!=null){
             code=college.getShortName().toUpperCase()+"_";
@@ -71,12 +79,14 @@ public class DepartmentServicesImp implements DepartmentServices {
         if(dto.getHodTeacherEmailOrEmplId()!=null){
            teacher=teacherRepository.findByEmailOrEmployeeId(dto.getHodTeacherEmailOrEmplId(),dto.getHodTeacherEmailOrEmplId());
         }
+
         Department department = new Department();
         department.setName(dto.getName());
         department.setDescription(dto.getDescription());
         department.setCode(code);
         department.setCollege(college);
         department.setHodTeacher(teacher);
+        department.setCourse(course);
         department.setCreatedAt(LocalDateTime.now());
         departmentRepository.save(department);
         return "create department successfully";
@@ -115,6 +125,7 @@ public class DepartmentServicesImp implements DepartmentServices {
           res.setId(dep.getId());
           res.setName(dep.getName());
           res.setCode(dep.getCode());
+          res.setCourseCode(dep.getCourse().getCourseCode());
 
           if(dep.getHodTeacher()!=null){
               res.setHodName(dep.getHodTeacher().getFirstName()+" "+dep.getHodTeacher().getLastName());
@@ -202,6 +213,7 @@ public class DepartmentServicesImp implements DepartmentServices {
         Page<DepartmentStudentsResponse> responses = students.map(student -> {
             DepartmentStudentsResponse res = new DepartmentStudentsResponse();
             res.setId(student.getId());
+            res.setRollNumber(student.getRollNumber());
             res.setFirstName(student.getFirstName());
             res.setLastName(student.getLastName());
             res.setEmail(student.getEmail());
@@ -245,8 +257,6 @@ public class DepartmentServicesImp implements DepartmentServices {
     private static final Set<String> IGNORE_WORDS = Set.of(
             "of", "and", "the", "for", "in", "on"
     );
-    private final StudentRepository studentRepository;
-    private final ClassRepository classRepository;
 
     private String generateDepartmentCode(String departmentName) {
         StringBuilder code = new StringBuilder();
