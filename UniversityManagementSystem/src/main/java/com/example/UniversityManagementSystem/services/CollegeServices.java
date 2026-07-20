@@ -2,6 +2,7 @@ package com.example.UniversityManagementSystem.services;
 
 import com.example.UniversityManagementSystem.dto.college.CollegeRequest;
 import com.example.UniversityManagementSystem.dto.college.CollegeResponse;
+import com.example.UniversityManagementSystem.dto.college.CollegeStudentResponse;
 import com.example.UniversityManagementSystem.entity.College;
 import org.springframework.data.domain.Page;
 
@@ -13,4 +14,8 @@ public interface CollegeServices {
     Page<CollegeResponse> getAllCollege(int pageNumber,int pageSize);
     CollegeResponse getCollegeById(Long id);
     String deleteCollege(Long id);
+    Page<CollegeStudentResponse> getCollegeStudent(Long collegeId,int pageNumber,int pageSize);
+    Page<CollegeStudentResponse> getCollegeAdmission(Long collegeId,int pageNumber,int pageSize);
+    CollegeStudentResponse getStudentById(Long studentId);
+    String generateEnrollmentNumberAndRollNumber(Long studentId);
 }

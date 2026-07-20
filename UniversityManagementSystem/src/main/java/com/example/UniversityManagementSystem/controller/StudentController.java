@@ -87,6 +87,13 @@ public class StudentController {
         return new ResponseEntity<>(res,HttpStatus.CREATED);
     }
 
+    @PostMapping("/update/documentstatus/{documentId}")
+    public ResponseEntity<String> updateDocumentStatus(@PathVariable Long documentId,
+                                                       @RequestBody String status){
+        String res = studentServices.updateDocumentStatus(documentId,status);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
     @DeleteMapping("/delete/document/{documentId}")
     public ResponseEntity<String> deleteDocument(@PathVariable Long documentId){
         String res = studentServices.deleteDocument(documentId);

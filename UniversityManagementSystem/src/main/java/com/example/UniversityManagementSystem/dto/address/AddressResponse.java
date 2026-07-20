@@ -3,6 +3,7 @@ package com.example.UniversityManagementSystem.dto.address;
 import java.io.Serializable;
 
 public class AddressResponse implements Serializable {
+    private Long id;
     private String address;
     private String city;
     private String district;
@@ -69,5 +70,13 @@ public class AddressResponse implements Serializable {
 
     public void setPincode(String pincode) {
         this.pincode = pincode;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

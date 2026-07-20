@@ -3,18 +3,16 @@ package com.example.UniversityManagementSystem.services.Implementation;
 import com.example.UniversityManagementSystem.dto.address.AddressResponse;
 import com.example.UniversityManagementSystem.dto.college.CollegeRequest;
 import com.example.UniversityManagementSystem.dto.college.CollegeResponse;
+import com.example.UniversityManagementSystem.dto.college.CollegeStudentResponse;
+import com.example.UniversityManagementSystem.dto.parent.ParentResponse;
 import com.example.UniversityManagementSystem.entity.*;
 import com.example.UniversityManagementSystem.entity.type.RolesName;
-import com.example.UniversityManagementSystem.repository.RolesRepository;
-import com.example.UniversityManagementSystem.repository.CollegeRepository;
-import com.example.UniversityManagementSystem.repository.UniversityRepository;
-import com.example.UniversityManagementSystem.repository.UserRepository;
+import com.example.UniversityManagementSystem.repository.*;
 import com.example.UniversityManagementSystem.services.AddressService;
 import com.example.UniversityManagementSystem.services.AuthService;
 import com.example.UniversityManagementSystem.services.CollegeServices;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
@@ -23,9 +21,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+
 
 @Service
 public class CollegeServicesImp implements CollegeServices {
@@ -36,15 +34,18 @@ public class CollegeServicesImp implements CollegeServices {
     private final UniversityRepository universityRepository;
     private final AddressService addressService;
     private final UserRepository userRepository;
+    private final StudentRepository studentRepository;
 
     public CollegeServicesImp(CollegeRepository collegeRepository, AuthService authService, RolesRepository rolesRepository, UniversityRepository universityRepository, AddressService addressService,
-                              UserRepository userRepository) {
+                              UserRepository userRepository,
+                              StudentRepository studentRepository) {
         this.collegeRepository = collegeRepository;
         this.authService = authService;
         this.rolesRepository = rolesRepository;
         this.universityRepository = universityRepository;
         this.addressService = addressService;
         this.userRepository = userRepository;
+        this.studentRepository = studentRepository;
     }
 
 
@@ -174,12 +175,25 @@ public class CollegeServicesImp implements CollegeServices {
         addressResponse.setCountry(address.getCountry());
         addressResponse.setPincode(address.getPincode());
 
+        Integer totalStudent = college.getStudents()
+                .stream()
+                .filter(sf->sf.getRollNumber()!=null)
+                .toList().size();
+
+        Integer totalFaculty = college.getTeachers().size();
+        Integer totalDepartment = college.getDepartments().size();
+        Integer totalCourse = college.getCourses().size();
+
         response.setId(college.getId());
         response.setName(college.getName());
         response.setShortName(college.getShortName());
         response.setCollegeCode(college.getCollegeCode());
         response.setEmail(college.getEmail());
         response.setPhoneNumber(college.getPhoneNumber());
+        response.setTotalStudent(totalStudent);
+        response.setTotalFaculty(totalFaculty);
+        response.setTotalDepartment(totalDepartment);
+        response.setTotalCourse(totalCourse);
         response.setAddressResponse(addressResponse);
 
         return response;
@@ -197,6 +211,131 @@ public class CollegeServicesImp implements CollegeServices {
         );
         collegeRepository.delete(college);
         return "College delete successfully";
+    }
+
+    @Override
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @Cacheable(cacheNames = "collegeStudents",key = "{#collegeId,#pageNumber,#pageSize}")
+    public Page<CollegeStudentResponse> getCollegeStudent(Long collegeId, int pageNumber, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Page<Student> students = studentRepository.findByCollegeIdAndRollNumberNotNull(collegeId,pageable);
+
+        Page<CollegeStudentResponse> response = students.map(stu->{
+            CollegeStudentResponse res = new CollegeStudentResponse();
+            res.setId(stu.getId());
+            res.setName(stu.getFirstName()+" "+stu.getLastName());
+            res.setEmail(stu.getEmail());
+            res.setPhoneNumber(stu.getPhoneNumber());
+            res.setGender(stu.getGender());
+            if(stu.getDepartment()!=null)
+             res.setCourse(stu.getDepartment().getCourse().getCourseCode());
+            res.setEnrollmentNumber(stu.getEnrollmentNumber());
+            res.setRollNumber(stu.getRollNumber());
+            return res;
+        });
+
+
+        return response;
+    }
+
+    @Override
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @Cacheable(cacheNames = "collegeAdmission",key = "{#collegeId,#pageNumber,#pageSize}")
+    public Page<CollegeStudentResponse> getCollegeAdmission(Long collegeId, int pageNumber, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Page<Student> students = studentRepository.findByCollegeIdAndRollNumberNull(collegeId,pageable);
+
+        Page<CollegeStudentResponse> response = students.map(stu->{
+            CollegeStudentResponse res = new CollegeStudentResponse();
+            res.setId(stu.getId());
+            res.setName(stu.getFirstName()+" "+stu.getLastName());
+            res.setEmail(stu.getEmail());
+            res.setPhoneNumber(stu.getPhoneNumber());
+            res.setGender(stu.getGender());
+            if(stu.getDepartment()!=null)
+                res.setCourse(stu.getDepartment().getCourse().getCourseCode());
+            return res;
+        });
+        return response;
+    }
+
+
+    @Override
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @Cacheable(cacheNames = "collegeStudent",key = "#studentId")
+    public CollegeStudentResponse getStudentById(Long studentId) {
+
+        Student student = studentRepository.findById(studentId).orElseThrow(()->
+                new IllegalArgumentException("Student not found"));
+
+        Address address = student.getAddress();
+        Parent parent = student.getParent();
+
+        CollegeStudentResponse response = new CollegeStudentResponse();
+        AddressResponse addressResponse = new AddressResponse();
+        ParentResponse parentResponse = new ParentResponse();
+
+        addressResponse.setId(address.getId());
+        addressResponse.setAddress(address.getAddress());
+        addressResponse.setCity(address.getCity());
+        addressResponse.setDistrict(address.getDistrict());
+        addressResponse.setState(address.getState());
+        addressResponse.setCountry(address.getCountry());
+        addressResponse.setPincode(address.getPincode());
+
+        parentResponse.setId(parent.getId());
+        parentResponse.setFatherName(parent.getFatherName());
+        parentResponse.setFatherNumber(parent.getFatherNumber());
+        parentResponse.setFatherOccupation(parent.getFatherOccupation());
+        parentResponse.setMotherName(parent.getMotherName());
+        parentResponse.setMotherNumber(parent.getMotherNumber());
+        parentResponse.setMotherOccupation(parent.getMotherOccupation());
+
+        response.setId(student.getId());
+        response.setName(student.getFirstName()+" "+student.getLastName());
+        response.setEnrollmentNumber(student.getEnrollmentNumber());
+        response.setRollNumber(student.getRollNumber());
+        response.setEmail(student.getEmail());
+        response.setPhoneNumber(student.getPhoneNumber());
+        response.setDob(student.getDob());
+        response.setGender(student.getGender());
+        response.setCast(student.getCast());
+        response.setAadhaarNumber(student.getAadhaarNumber());
+        response.setImage(student.getImage());
+        if(student.getDepartment()!=null) {
+            response.setDepartment(student.getDepartment().getName() + " (" + student.getDepartment().getCode() + " )");
+            response.setCourse(student.getDepartment().getCourse().getName()+" ("+student.getDepartment().getCourse().getCourseCode()+" )");
+        }
+        response.setAddressResponse(addressResponse);
+        response.setParentResponse(parentResponse);
+
+        return response;
+    }
+
+    @Override
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "collegeStudent",key = "#studentId"),
+            @CacheEvict(cacheNames = "collegeStudents",allEntries = true),
+            @CacheEvict(cacheNames = "collegeAdmission",allEntries = true),
+            @CacheEvict(cacheNames = "college",allEntries = true),
+    })
+    public String generateEnrollmentNumberAndRollNumber(Long studentId) {
+
+        Student student = studentRepository.findById(studentId).orElseThrow(()->
+                new IllegalArgumentException("Student not found"));
+
+        String year = String.valueOf(LocalDate.now().getYear());
+        String enrollmentNumber = year+"MDSU"+studentId;
+        String rollNumber = year+studentId;
+
+        student.setEnrollmentNumber(enrollmentNumber);
+        student.setRollNumber(rollNumber);
+        studentRepository.save(student);
+
+        return "EnrollmentNumber and rollNumber generate successfully";
     }
 
 }
