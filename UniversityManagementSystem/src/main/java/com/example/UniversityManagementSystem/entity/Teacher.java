@@ -54,6 +54,9 @@ public class Teacher {
     @OneToMany(mappedBy = "classTeacher")
     private List<Class> classTeacher=new ArrayList<>();
 
+    @OneToMany(mappedBy = "teacher")
+    private List<TeacherDocument> teacherDocuments = new ArrayList<>();
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -254,5 +257,13 @@ public class Teacher {
 
     public void setClassTeacher(List<Class> classTeacher) {
         this.classTeacher = classTeacher;
+    }
+
+    public List<TeacherDocument> getTeacherDocuments() {
+        return teacherDocuments;
+    }
+
+    public void setTeacherDocuments(List<TeacherDocument> teacherDocuments) {
+        this.teacherDocuments = teacherDocuments;
     }
 }
