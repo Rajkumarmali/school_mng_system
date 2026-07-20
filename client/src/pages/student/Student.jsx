@@ -3,7 +3,8 @@ import './Student.css'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { createStudent, deleteStudent, getAllStudent } from '../../state/student/Action';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
+import StudentProfile from './StudentProfile';
 
 const Student = () => {
 
@@ -15,6 +16,7 @@ const Student = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const pageNumber = Number(searchParams.get('page')) || 1
     const pageSize = Number(searchParams.get("size")) || 10;
+    const studentId = searchParams.get("studentId")
 
     const [studentData, setStudentData] = useState({
         firstName: "",
@@ -44,16 +46,16 @@ const Student = () => {
         }
     })
 
-    const navigate = useNavigate();
-
     const handleDelete = async (studentId) => {
         await dispatch(deleteStudent(studentId))
         await dispatch(getAllStudent(pageNumber, pageSize));
     }
 
     const handleViewProfile = (studentId) => {
-        navigate('/student/profile', {
-            state: { studentId }
+        setSearchParams({
+            page: pageNumber,
+            size: pageSize,
+            studentId
         })
     }
 
@@ -193,122 +195,133 @@ const Student = () => {
 
     return (
         <div className='students-container'>
-            <div className="students-header">
-                <div>
-                    <h2>Students Management</h2>
-                </div>
-                <button className="add-students-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    <i className="bi bi-plus-circle me-2"></i>
-                    Add New Student
-                </button>
-            </div>
-            <div className="students-card">
-                <table className="table students-table">
-                    <thead>
-                        <tr>
-                            <th>S.No</th>
-                            <th>Registration No.</th>
-                            <th>Department Code</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Phone Number</th>
-                            <th>Email</th>
-                            <th>Gender</th>
-                            <th className='text-center'>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            student?.students?.content?.length > 0 ?
-                                (
-                                    student?.students?.content?.map((student, index) =>
-                                        <tr kay={student.id}>
-                                            <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                            <td>{student.registrationNumber}</td>
-                                            <td>{student.departmentCode}</td>
-                                            <td>{student.firstName}</td>
-                                            <td>{student.lastName}</td>
-                                            <td>{student.phoneNumber}</td>
-                                            <td>{student.email}</td>
-                                            <td>{student.gender}</td>
-                                            <td className='text-center'>
-                                                <button
-                                                    className="btn btn-sm custom-reset-btn me-2"
-                                                    onClick={() => handleViewProfile(student.id)}
-                                                >
-                                                    <i class="bi bi-eye"></i>
-                                                </button>
-                                                <button
-                                                    className="btn btn-sm custom-reset-btn me-2"
-                                                    onClick={() => handleDelete(student.id)}
-                                                >
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    )
-                                )
-                                : (
+            {
+                studentId ?
+                    <div>
+                        <StudentProfile />
+                    </div>
+                    :
+                    <div>
+                        <div className="students-header">
+                            <div>
+                                <h2>Students Management</h2>
+                            </div>
+                            <button className="add-students-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                <i className="bi bi-plus-circle me-2"></i>
+                                Add New Student
+                            </button>
+                        </div>
+                        <div className="students-card">
+                            <table className="table students-table">
+                                <thead>
                                     <tr>
-                                        <td colSpan="8" className="text-center">
-                                            No Student Found
-                                        </td>
+                                        <th>S.No</th>
+                                        <th>Roll No.</th>
+                                        <th>Registration No.</th>
+                                        <th>Department</th>
+                                        <th>Name</th>
+                                        <th>Phone Number</th>
+                                        <th>Email</th>
+                                        <th>Gender</th>
+                                        <th className='text-center'>Action</th>
                                     </tr>
-                                )
-                        }
-                    </tbody>
-                </table>
-                <div className="pagination-container">
-                    <div className="pagination-info">
-                        Total : <strong>{student?.students?.totalElements || 0}</strong>
-                    </div>
-                    <div className="page-size-selector">
-                        <label>Show :</label>
-                        <select
-                            value={pageSize}
-                            onChange={handleChangePageSize}
-                        >
-                            <option value={10}>10</option>
-                            <option value={50}>50</option>
-                            <option value={100}>100</option>
-                        </select>
-                    </div>
-                    <ul className="custom-pagination">
-                        <li>
-                            <button
-                                onClick={handleGetPerviousPageData}
-                                disabled={pageNumber === 1}
-                            >
-                                &laquo;
-                            </button>
-                        </li>
-                        {getPageNumbers().map((page, index) =>
-                            page === "..." ? (
-                                <li key={index} className="dots">
-                                    ...
-                                </li>
-                            ) : (
-                                <li key={index}>
-                                    <button
-                                        className={pageNumber === page ? "active-page" : ""}
-                                        onClick={() => handleGetPageNumberData(page)}
+                                </thead>
+                                <tbody>
+                                    {
+                                        student?.students?.content?.length > 0 ?
+                                            (
+                                                student?.students?.content?.map((student, index) =>
+                                                    <tr kay={student.id}>
+                                                        <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                        <td>{student.rollNumber}</td>
+                                                        <td>{student.registrationNumber}</td>
+                                                        <td>{student.departmentCode}</td>
+                                                        <td>{student.firstName} {student.lastName}</td>
+                                                        <td>{student.phoneNumber}</td>
+                                                        <td>{student.email}</td>
+                                                        <td>{student.gender}</td>
+                                                        <td className='text-center'>
+                                                            <button
+                                                                className="btn btn-sm custom-reset-btn me-2"
+                                                                onClick={() => handleViewProfile(student.id)}
+                                                            >
+                                                                <i class="bi bi-eye"></i>
+                                                            </button>
+                                                            <button
+                                                                className="btn btn-sm custom-reset-btn me-2"
+                                                                onClick={() => handleDelete(student.id)}
+                                                            >
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            )
+                                            : (
+                                                <tr>
+                                                    <td colSpan="8" className="text-center">
+                                                        No Student Found
+                                                    </td>
+                                                </tr>
+                                            )
+                                    }
+                                </tbody>
+                            </table>
+                            <div className="pagination-container">
+                                <div className="pagination-info">
+                                    Total : <strong>{student?.students?.totalElements || 0}</strong>
+                                </div>
+                                <div className="page-size-selector">
+                                    <label>Show :</label>
+                                    <select
+                                        value={pageSize}
+                                        onChange={handleChangePageSize}
                                     >
-                                        {page}
-                                    </button>
-                                </li>
-                            )
-                        )}
-                        <li>
-                            <button
-                                onClick={handleGetNextPageData}
-                                disabled={pageNumber === totalPages}
-                            >
-                                &raquo;
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+                                        <option value={10}>10</option>
+                                        <option value={50}>50</option>
+                                        <option value={100}>100</option>
+                                    </select>
+                                </div>
+                                <ul className="custom-pagination">
+                                    <li>
+                                        <button
+                                            onClick={handleGetPerviousPageData}
+                                            disabled={pageNumber === 1}
+                                        >
+                                            &laquo;
+                                        </button>
+                                    </li>
+                                    {getPageNumbers().map((page, index) =>
+                                        page === "..." ? (
+                                            <li key={index} className="dots">
+                                                ...
+                                            </li>
+                                        ) : (
+                                            <li key={index}>
+                                                <button
+                                                    className={pageNumber === page ? "active-page" : ""}
+                                                    onClick={() => handleGetPageNumberData(page)}
+                                                >
+                                                    {page}
+                                                </button>
+                                            </li>
+                                        )
+                                    )}
+                                    <li>
+                                        <button
+                                            onClick={handleGetNextPageData}
+                                            disabled={pageNumber === totalPages}
+                                        >
+                                            &raquo;
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+            }
+
+
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-xl">
                     <div class="modal-content custom-modal">

@@ -53,7 +53,7 @@ const Navbar = ({ toggleSidebar }) => {
     useEffect(() => {
         dispatch(userProfile())
 
-    }, []);
+    }, [dispatch]);
 
     console.log("..........", user?.user)
 
