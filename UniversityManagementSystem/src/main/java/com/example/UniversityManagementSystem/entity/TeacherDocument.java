@@ -1,5 +1,6 @@
 package com.example.UniversityManagementSystem.entity;
 
+import com.example.UniversityManagementSystem.entity.type.DocumentStatus;
 import com.example.UniversityManagementSystem.entity.type.DocumentType;
 import jakarta.persistence.*;
 
@@ -18,7 +19,10 @@ public class TeacherDocument {
     private String fileName;
     private String filePath;
     private Long fileSize;
-    private Boolean verified;
+
+    @Enumerated(EnumType.STRING)
+    private DocumentStatus status;
+
 
     @ManyToOne
     private Teacher teacher;
@@ -77,14 +81,6 @@ public class TeacherDocument {
         this.fileSize = fileSize;
     }
 
-    public Boolean getVerified() {
-        return verified;
-    }
-
-    public void setVerified(Boolean verified) {
-        this.verified = verified;
-    }
-
     public Teacher getTeacher() {
         return teacher;
     }
@@ -107,5 +103,13 @@ public class TeacherDocument {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public DocumentStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(DocumentStatus status) {
+        this.status = status;
     }
 }
