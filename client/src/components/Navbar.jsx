@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loogOut, resetPassword } from "../state/auth/Action";
 import { userProfile } from "../state/user/Action";
+import { getNotificationCount } from "../state/notification/Action";
 
 const Navbar = ({ toggleSidebar }) => {
 
@@ -18,6 +19,7 @@ const Navbar = ({ toggleSidebar }) => {
     const dispatch = useDispatch();
 
     const user = useSelector((state) => state.user)
+    const notificationCount = useSelector((state) => state.notification.notificationCount)
 
     const handleLogout = () => {
         dispatch(loogOut())
@@ -50,12 +52,16 @@ const Navbar = ({ toggleSidebar }) => {
         handleCloseModal();
     }
 
+    const handleViewNotification = () => {
+        navigete('/notification')
+    }
+
     useEffect(() => {
         dispatch(userProfile())
+        dispatch(getNotificationCount())
+    }, [dispatch]);
 
-    }, []);
 
-    console.log("..........", user?.user)
 
     return (
         <div>
@@ -71,8 +77,14 @@ const Navbar = ({ toggleSidebar }) => {
                         Home
                     </h5>
                     <div className="ms-auto d-flex align-items-center gap-3">
-                        <button className="icon-btn">
-                            <i className="bi bi-bell"></i>
+                        <button className="icon-btn"
+                            onClick={handleViewNotification}>
+                            <i className="bi bi-bell-fill"></i>
+                            {notificationCount > 0 && (
+                                <span className="notification-badge">
+                                    {notificationCount > 99 ? "99+" : notificationCount}
+                                </span>
+                            )}
                         </button>
                         <div className="dropdown">
                             <button
