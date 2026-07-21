@@ -49,9 +49,6 @@ public class College {
     @OneToMany(mappedBy = "college")
     private List<Course> courses = new ArrayList<>();
 
-    @OneToMany(mappedBy = "college")
-    private List<Notification> notifications = new ArrayList<>();
-
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -225,11 +222,4 @@ public class College {
         this.courses = courses;
     }
 
-    public List<Notification> getNotifications() {
-        return notifications;
-    }
-
-    public void setNotifications(List<Notification> notifications) {
-        this.notifications = notifications;
-    }
 }

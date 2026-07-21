@@ -36,6 +36,9 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY)
     private University university;
 
+    @OneToMany(mappedBy = "user")
+    private List<Notification> notifications = new ArrayList<>();
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -153,5 +156,13 @@ public class User {
 
     public void setUserProfile(String userProfile) {
         this.userProfile = userProfile;
+    }
+
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
     }
 }

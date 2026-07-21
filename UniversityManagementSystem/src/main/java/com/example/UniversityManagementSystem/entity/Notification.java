@@ -14,13 +14,7 @@ public class Notification {
     private Boolean isRead;
 
     @ManyToOne
-    private College college;
-
-    @ManyToOne
-    private Student student;
-
-    @ManyToOne
-    private Teacher teacher;
+    private User user;
 
     private LocalDateTime createdAt;
 
@@ -51,30 +45,6 @@ public class Notification {
         this.message = message;
     }
 
-    public College getCollege() {
-        return college;
-    }
-
-    public void setCollege(College college) {
-        this.college = college;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
-    public Teacher getTeacher() {
-        return teacher;
-    }
-
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -89,5 +59,13 @@ public class Notification {
 
     public void setIsRead(Boolean read) {
         isRead = read;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
