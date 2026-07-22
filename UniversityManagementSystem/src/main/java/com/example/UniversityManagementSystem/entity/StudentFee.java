@@ -14,6 +14,8 @@ public class StudentFee {
     @Enumerated(EnumType.STRING)
     private StudentFeeStatus status;
 
+    private Double amount;
+
     @ManyToOne
     private FeeStructure feeStructure;
 
@@ -94,5 +96,13 @@ public class StudentFee {
 
     public void setFeePayment(FeePayment feePayment) {
         this.feePayment = feePayment;
+    }
+
+    public Double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
     }
 }

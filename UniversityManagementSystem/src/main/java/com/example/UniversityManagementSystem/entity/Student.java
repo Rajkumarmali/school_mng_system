@@ -59,6 +59,9 @@ public class Student {
     @OneToMany(mappedBy = "student")
     private List<StudentDocument> studentDocument = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "students")
+    private List<Scholarship> scholarships = new ArrayList<>() ;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -274,4 +277,11 @@ public class Student {
         this.studentDocument = studentDocument;
     }
 
+    public List<Scholarship> getScholarships() {
+        return scholarships;
+    }
+
+    public void setScholarships(List<Scholarship> scholarships) {
+        this.scholarships = scholarships;
+    }
 }
