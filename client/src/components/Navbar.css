@@ -159,3 +159,39 @@
     background: rgba(255,255,255,0.1);
     color: white;
 }
+.icon-btn {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    border: none;
+    cursor: pointer;
+    font-size: 22px;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -4px;
+    right: -2px;
+
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+
+    background: #ff3b30;
+    color: #fff;
+
+    border-radius: 50px;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    line-height: 1;
+}

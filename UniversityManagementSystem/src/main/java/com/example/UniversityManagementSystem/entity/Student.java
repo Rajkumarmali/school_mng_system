@@ -273,4 +273,5 @@ public class Student {
     public void setStudentDocument(List<StudentDocument> studentDocument) {
         this.studentDocument = studentDocument;
     }
+
 }

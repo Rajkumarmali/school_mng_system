@@ -4,6 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { generateStudentEnrollmentAndRollnumber, getCollegeStudentById } from '../../../state/college/Action';
 import { getDocumentById, getDocuments, updateStudentDocumentStatus } from '../../../state/student/Action';
+import { createNotification } from '../../../state/notification/Action';
 
 const StudentDetails = () => {
 
@@ -20,7 +21,13 @@ const StudentDetails = () => {
     const student = useSelector((state) => state.student)
 
     const [isViewModel, setIsViewModel] = useState(false);
-    const [viewDocument, setViewDocument] = useState(null)
+    const [viewDocument, setViewDocument] = useState(null);
+
+    const [notificationData, setNotificationData] = useState({
+        title: "",
+        message: "",
+        userEmail: college?.college?.email,
+    })
 
     const isImage = /\.(jpg|jpeg|png|gif|webp)$/i.test(viewDocument?.filePath);
 
@@ -65,7 +72,32 @@ const StudentDetails = () => {
         setIsViewModel(true)
     }
 
-    const handleUpdateDocumentStatus = async (documentId, status) => {
+    const handleChangeNotification = (e) => {
+        const { name, value } = e.target
+        setNotificationData({
+            ...notificationData,
+            [name]: value
+        })
+    }
+
+    const handleSendNotification = async () => {
+        const payload = {
+            ...notificationData,
+            message: `Student ${college?.collegeStudent?.name}: ${notificationData.message}`,
+        };
+        await dispatch(createNotification(payload))
+    }
+
+    const handleUpdateDocumentStatus = async (documentId, documentType, status) => {
+        if (status === "REJECTED") {
+            const payload = {
+                title: "Student Document Rejected",
+                message: `${documentType} submitted by student ${college?.collegeStudent?.name} has been rejected. Please instruct the student to upload a valid document for verification.`,
+                userEmail: college?.college?.email
+            }
+            console.log(payload)
+            await dispatch(createNotification(payload))
+        }
         await dispatch(updateStudentDocumentStatus(documentId, status));
         await dispatch(getDocuments(studentId));
     }
@@ -92,6 +124,18 @@ const StudentDetails = () => {
                         onClick={handleViewDocuments}
                     >
                         Document
+                    </button>
+                    <button
+                        className="college-student-detail-btn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#notificationModal"
+                        onClick={() => setNotificationData({
+                            title: "",
+                            message: "",
+                            userEmail: college?.college?.email,
+                        })}
+                    >
+                        Send Notification
                     </button>
                     {
                         !college?.collegeStudent?.enrollmentNumber &&
@@ -169,6 +213,7 @@ const StudentDetails = () => {
                                                                 onClick={() =>
                                                                     handleUpdateDocumentStatus(
                                                                         document.id,
+                                                                        "",
                                                                         "VERIFIED"
                                                                     )
                                                                 }
@@ -184,6 +229,7 @@ const StudentDetails = () => {
                                                                 onClick={() =>
                                                                     handleUpdateDocumentStatus(
                                                                         document.id,
+                                                                        document.documentType,
                                                                         "REJECTED"
                                                                     )
                                                                 }
@@ -289,6 +335,48 @@ const StudentDetails = () => {
                     </div>
             }
 
+            <div className="modal fade" id="notificationModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered">
+                    <div className="modal-content custom-modal">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="exampleModalLabel">
+                                Add notification
+                            </h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="">
+                                <div>
+                                    <label>Title</label>
+                                    <input type="text"
+                                        className="modal-input"
+                                        name='title'
+                                        value={notificationData.title}
+                                        onChange={handleChangeNotification} />
+                                </div>
+                                <div>
+                                    <label>Message</label>
+                                    <input type="text"
+                                        className="modal-input"
+                                        name='message'
+                                        value={notificationData.message}
+                                        onChange={handleChangeNotification}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="modal-footer ">
+                            <button type="button" className="college-modal-btn" data-bs-dismiss="modal">Close</button>
+                            <button type="button" className="college-modal-btn"
+                                data-bs-dismiss="modal" onClick={handleSendNotification}
+                            >
+                                Send
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div className="modal fade" id="viewDocumentModal" tabIndex="-1">
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
@@ -297,7 +385,6 @@ const StudentDetails = () => {
                             <h5 className="modal-title">
                                 {viewDocument?.documentName}
                             </h5>
-
                             <button
                                 className="btn-close"
                                 data-bs-dismiss="modal"

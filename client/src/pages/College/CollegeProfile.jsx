@@ -100,27 +100,27 @@ const CollegeProfile = () => {
 
     return (
         <div className="college-profile">
-            <nav class="college-nav-card navbar-expand-lg ">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-3">
-                    <li class="nav-item">
+            <nav className="college-nav-card navbar-expand-lg ">
+                <ul className="navbar-nav me-auto mb-2 mb-lg-0 gap-3">
+                    <li className="nav-item">
                         <button
-                            class="nav-link"
+                            className="nav-link"
                             onClick={() => setSearchParams({ collegeId, tab: "overview" })}
                         >
                             Overview
                         </button>
                     </li>
-                    <li class="nav-item">
+                    <li className="nav-item">
                         <button
-                            class="nav-link"
+                            className="nav-link"
                             onClick={() => setSearchParams({ collegeId, tab: "student" })}
                         >
                             Students
                         </button>
                     </li>
-                    <li class="nav-item">
+                    <li className="nav-item">
                         <button
-                            class="nav-link"
+                            className="nav-link"
                             onClick={() => setSearchParams({ collegeId, tab: "admission" })}
                         >
                             Admissions
@@ -221,16 +221,16 @@ const CollegeProfile = () => {
                 }
             </div>
 
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-xl">
-                    <div class="modal-content custom-modal">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">
+            <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered modal-xl">
+                    <div className="modal-content custom-modal">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="exampleModalLabel">
                                 {isEditModal ? "Edit College Details" : "Edit Address "}
                             </h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">
+                        <div className="modal-body">
                             {
                                 isEditModal ?
                                     <div className="form-grid">
@@ -329,7 +329,7 @@ const CollegeProfile = () => {
                                     </div>
                             }
                         </div>
-                        <div class="modal-footer ">
+                        <div className="modal-footer ">
                             <button type="button" className="college-modal-btn" data-bs-dismiss="modal">Close</button>
                             <button type="button" className="college-modal-btn"
                                 data-bs-dismiss="modal" onClick={handleUpdate}
