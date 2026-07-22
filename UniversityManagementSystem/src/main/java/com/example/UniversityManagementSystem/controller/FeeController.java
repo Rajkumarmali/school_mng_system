@@ -168,8 +168,9 @@ public class FeeController {
     }
 
     @GetMapping("/get-feeoverview")
-    public ResponseEntity<FeeOverviewResponse> getFeeOverview(){
-        FeeOverviewResponse res = feeServices.getFeeOverview();
+    public ResponseEntity<FeeOverviewResponse> getFeeOverview(@RequestHeader("Authorization") String jwt){
+        Long userId = jwtProvider.getUserIdFromToken(jwt);
+        FeeOverviewResponse res = feeServices.getFeeOverview(userId);
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
 

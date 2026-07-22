@@ -46,6 +46,7 @@ public class FeeServiceImp implements FeeServices {
     private final StudentFeeRepository studentFeeRepository;
     private final StudentRepository studentRepository;
     private final FeePaymentRepository feePaymentRepository;
+    private final UserRepository userRepository;
 
     public FeeServiceImp(CollegeRepository collegeRepository,
                          FeeTypeRepository feeTypeRepository,
@@ -54,7 +55,8 @@ public class FeeServiceImp implements FeeServices {
                          FeeStructureRepository feeStructureRepository,
                          StudentFeeRepository studentFeeRepository,
                          StudentRepository studentRepository,
-                         FeePaymentRepository feePaymentRepository) {
+                         FeePaymentRepository feePaymentRepository,
+                         UserRepository userRepository) {
         this.collegeRepository = collegeRepository;
         this.feeTypeRepository = feeTypeRepository;
         this.classRepository = classRepository;
@@ -63,6 +65,7 @@ public class FeeServiceImp implements FeeServices {
         this.studentFeeRepository = studentFeeRepository;
         this.studentRepository = studentRepository;
         this.feePaymentRepository = feePaymentRepository;
+        this.userRepository = userRepository;
     }
 
     @Value("${razorpay.api.key}")
@@ -727,9 +730,14 @@ public class FeeServiceImp implements FeeServices {
 
     @Override
     @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
-    @Cacheable(cacheNames = "feeOverviews",key = "'feeOverview'")
-    public FeeOverviewResponse getFeeOverview() {
-       List<StudentFee> studentFee = studentFeeRepository.findAll();
+    @Cacheable(cacheNames = "feeOverviews",key = "#userId")
+    public FeeOverviewResponse getFeeOverview(Long userId) {
+
+       User user = userRepository.findById(userId).orElseThrow(()->
+               new IllegalArgumentException("User not found"));
+       College college = user.getCollege();
+
+       List<StudentFee> studentFee = studentFeeRepository.findByFeeStructureCollege(college);
 
        Double totalFee = studentFee.stream()
                .map(StudentFee::getFeeStructure)
