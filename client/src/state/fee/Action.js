@@ -23,7 +23,10 @@ import {
     GET_FEE_OVERVIEW_SUCCESS,
     GET_FEE_OVERVIEW_FAILER,
     DOWNLOAD_FEE_RECEIPT_REQUEST,
-    DOWNLOAD_FEE_RECEIPT_FAILER
+    DOWNLOAD_FEE_RECEIPT_FAILER,
+    ASSIGN_FEE_STRUCTURE_TOSTUDENT_REQUEST,
+    ASSIGN_FEE_STRUCTURE_TOSTUDENT_FAILER,
+    ASSIGN_FEE_STRUCTURE_TOSTUDENT_SUCCESS
 } from "./ActionType";
 
 const BASE_API = process.env.REACT_APP_BASE_URL;
@@ -129,6 +132,24 @@ export const createFeeStructure = (feeStructureData) => async (dispatch) => {
         dispatch({ type: CREATE_FEE_STRUCTURE_SUCCESS, payload: data });
     } catch (err) {
         dispatch({ type: CREATE_FEE_STRUCTURE_FAILER, payload: err.message })
+    }
+}
+
+export const assignFeeStructureToStudent = (feeStructureId, students) => async (dispatch) => {
+    dispatch({ type: ASSIGN_FEE_STRUCTURE_TOSTUDENT_REQUEST })
+    try {
+        const res = await fetch(`${BASE_API}/fee/assigntostudent/${feeStructureId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify(students)
+        })
+        const data = await res.json();
+        dispatch({ type: ASSIGN_FEE_STRUCTURE_TOSTUDENT_SUCCESS, payload: data })
+    } catch (err) {
+        dispatch({ type: ASSIGN_FEE_STRUCTURE_TOSTUDENT_FAILER, payload: err.message })
     }
 }
 

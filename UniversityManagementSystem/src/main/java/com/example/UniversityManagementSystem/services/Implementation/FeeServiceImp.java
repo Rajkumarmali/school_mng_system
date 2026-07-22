@@ -23,6 +23,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -73,6 +74,40 @@ public class FeeServiceImp implements FeeServices {
 
     @Value("${razorpay.api.secret}")
     String apiSecret;
+
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "feeStructures",allEntries = true),
+                    @CacheEvict(cacheNames = "feeOverviews",allEntries = true),
+                    @CacheEvict(cacheNames = "feeStructure",allEntries = true),
+                    @CacheEvict(cacheNames = "feeStructureAllStudents",allEntries = true),
+                    @CacheEvict(cacheNames = "feeStructurePaidStudents",allEntries = true),
+                    @CacheEvict(cacheNames = "feeStructureUnpaidStudents",allEntries = true),
+                    @CacheEvict(cacheNames = "studentFees",allEntries = true),
+            }
+    )
+    private void assignToAllClassStudent(String classCode,FeeStructure feeStructure){
+        Class clas = classRepository.findByClassCode(classCode);
+        if(clas==null){
+            throw new IllegalArgumentException("Class not found");
+        }
+        feeStructure.setAClass(clas);
+
+        List<Student> students = clas.getStudents();
+
+        List<StudentFee> studentFees = new ArrayList<>();
+
+        for(Student student:students){
+            StudentFee studentFee = new StudentFee();
+            studentFee.setStatus(StudentFeeStatus.PENDING);
+            studentFee.setFeeStructure(feeStructure);
+            studentFee.setStudent(student);
+            studentFee.setCreatedAt(LocalDateTime.now());
+            studentFees.add(studentFee);
+        }
+        studentFeeRepository.saveAll(studentFees);
+        feeStructureRepository.save(feeStructure);
+    }
 
     @Transactional
     @PreAuthorize("hasRole('ACCOUNTANT')")
@@ -160,22 +195,11 @@ public class FeeServiceImp implements FeeServices {
     @Override
     @Transactional
     @PreAuthorize("hasRole('ACCOUNTANT')")
-    @Caching(
-            evict = {
-                    @CacheEvict(cacheNames = "feeStructures",allEntries = true),
-                    @CacheEvict(cacheNames = "feeOverviews",allEntries = true),
-            }
-    )
     public String createFeeStructure(Long collegeId, FeeStructureRequest dto) {
         College college = null;
         if(collegeId!=null){
             college = collegeRepository.findById(collegeId).orElseThrow(()->
                     new IllegalArgumentException("College not found"));
-        }
-
-        Class clas = classRepository.findByClassCode(dto.getClassCode());
-        if(clas==null){
-            throw new IllegalArgumentException("Class not found");
         }
 
         Department department = departmentRepository.findByCode(dto.getDepartmentCode());
@@ -188,30 +212,58 @@ public class FeeServiceImp implements FeeServices {
         feeStructure.setAcademicYear(dto.getAcademicYear());
         feeStructure.setDescription(dto.getDescription());
         feeStructure.setCollege(college);
-        feeStructure.setAClass(clas);
         feeStructure.setDepartment(department);
         feeStructure.setFeeType(feeType);
         feeStructure.setStatus(FeeStructureStatus.ACTIVE);
         feeStructure.setDueDate(dto.getDueDate());
         feeStructure.setCreatedAt(LocalDateTime.now());
-
         FeeStructure savedFeeStructure= feeStructureRepository.save(feeStructure);
-        List<Student> students = clas.getStudents();
 
-        List<StudentFee> studentFees = new ArrayList<>();
-
-        for(Student student:students){
-            StudentFee studentFee = new StudentFee();
-            studentFee.setStatus(StudentFeeStatus.PENDING);
-            studentFee.setFeeStructure(savedFeeStructure);
-            studentFee.setStudent(student);
-            studentFee.setCreatedAt(LocalDateTime.now());
-            studentFees.add(studentFee);
+        if(dto.getFeeAssignmentType()==FeeAssignmentType.ALL_CLASS_STUDENTS){
+            assignToAllClassStudent(dto.getClassCode(),savedFeeStructure);
         }
 
-        studentFeeRepository.saveAll(studentFees);
-
         return "Fee Structure create successfully";
+    }
+
+    @Override
+    @PreAuthorize("hasAnyRole('ACCOUNTANT')")
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "feeStructures",allEntries = true),
+                    @CacheEvict(cacheNames = "feeOverviews",allEntries = true),
+                    @CacheEvict(cacheNames = "feeStructure",allEntries = true),
+                    @CacheEvict(cacheNames = "feeStructureAllStudents",allEntries = true),
+                    @CacheEvict(cacheNames = "feeStructurePaidStudents",allEntries = true),
+                    @CacheEvict(cacheNames = "feeStructureUnpaidStudents",allEntries = true),
+                    @CacheEvict(cacheNames = "studentFees",allEntries = true),
+            }
+    )
+    public String assignFeeStructureToStudent(Long feeStructureId, List<FeeStudentRequest> dto) {
+        FeeStructure feeStructure = feeStructureRepository.findById(feeStructureId).orElseThrow(()->
+                new IllegalArgumentException("Fee Structure not found"));
+        List<StudentFee> studentFees = new ArrayList<>();
+
+        for(FeeStudentRequest s:dto){
+            StudentFee fee= new StudentFee();
+            Student student = studentRepository.findByRegistrationNumber(s.getRegistrationNumber());
+            if(student==null){
+               continue;
+            }
+
+            boolean isExits = studentFeeRepository.existsByStudentIdAndFeeStructureId(student.getId(),feeStructureId);
+            if(isExits){
+                continue;
+            }
+
+            fee.setStudent(student);
+            fee.setStatus(StudentFeeStatus.PENDING);
+            fee.setFeeStructure(feeStructure);
+            fee.setCreatedAt(LocalDateTime.now());
+            studentFees.add(fee);
+        }
+        studentFeeRepository.saveAll(studentFees);
+        return "Fee structure assign to students";
     }
 
     @Override
@@ -219,7 +271,7 @@ public class FeeServiceImp implements FeeServices {
     @Cacheable(cacheNames = "feeStructures",key = "{#collegeId,#pageNumber,#pageSize}")
     public Page<FeeStructureResponse> getAllFeeStructure(Long collegeId, int pageNumber, int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Pageable pageable = PageRequest.of(pageNumber,pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<FeeStructure> feeStructures = feeStructureRepository.findByCollegeId(collegeId,pageable);
         Page<FeeStructureResponse> responses = feeStructures.map(fee->{
            FeeStructureResponse res = new FeeStructureResponse();
@@ -481,7 +533,8 @@ public class FeeServiceImp implements FeeServices {
     @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
     @Cacheable(cacheNames = "studentsFees",key = "{#studentId,#pageNumber,#pageSize}")
     public Page<StudentFeeResponse> getStudentFeeByStudentI(Long studentId,int pageNumber,int pageSize) {
-        Pageable pageable= PageRequest.of(pageNumber,pageSize);
+
+        Pageable pageable= PageRequest.of(pageNumber,pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<StudentFee> studentFees = studentFeeRepository.findByStudentId(studentId,pageable);
         Page<StudentFeeResponse> responses = studentFees.map(stufee->{
 
@@ -492,7 +545,8 @@ public class FeeServiceImp implements FeeServices {
             res.setFeeTypename(stufee.getFeeStructure().getFeeType().getName());
             res.setAmount(stufee.getFeeStructure().getAmount());
             res.setAcademicYear(stufee.getFeeStructure().getAcademicYear());
-            res.setClassCode(stufee.getFeeStructure().getAClass().getClassCode());
+            if(stufee.getFeeStructure().getAClass()!=null)
+             res.setClassCode(stufee.getFeeStructure().getAClass().getClassCode());
             res.setStatus(stufee.getStatus());
             res.setDueDate(stufee.getFeeStructure().getDueDate());
 
@@ -927,7 +981,7 @@ public class FeeServiceImp implements FeeServices {
     @Cacheable(cacheNames = "studentpaidfee",key = "{#userId,#pageNumber,#pageSize}")
     public Page<StudentFeeResponse> getPaidStudentFeeByStudent(Long userId, int pageNumber, int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Pageable pageable = PageRequest.of(pageNumber,pageSize,Sort.by(Sort.Direction.DESC, "createdAt"));
 
         Student student = studentRepository.findByUserId(userId);
 
@@ -951,9 +1005,10 @@ public class FeeServiceImp implements FeeServices {
             res.setStatus(stufee.getStatus());
             res.setAcademicYear(stufee.getFeeStructure().getAcademicYear());
             res.setDueDate(stufee.getFeeStructure().getDueDate());
-            res.setClassName(stufee.getFeeStructure().getAClass().getName());
-            res.setClassCode(stufee.getFeeStructure().getAClass().getClassCode());
-
+            if(stufee.getFeeStructure().getAClass()!=null) {
+                res.setClassName(stufee.getFeeStructure().getAClass().getName());
+                res.setClassCode(stufee.getFeeStructure().getAClass().getClassCode());
+            }
             res.setFeePaymentResponse(feePaymentResponse);
 
             return res;
@@ -982,9 +1037,10 @@ public class FeeServiceImp implements FeeServices {
             res.setStatus(stufee.getStatus());
             res.setAcademicYear(stufee.getFeeStructure().getAcademicYear());
             res.setDueDate(stufee.getFeeStructure().getDueDate());
-            res.setClassName(stufee.getFeeStructure().getAClass().getName());
-            res.setClassCode(stufee.getFeeStructure().getAClass().getClassCode());
-
+            if(stufee.getFeeStructure().getAClass()!=null) {
+                res.setClassName(stufee.getFeeStructure().getAClass().getName());
+                res.setClassCode(stufee.getFeeStructure().getAClass().getClassCode());
+            }
             return res;
         });
 

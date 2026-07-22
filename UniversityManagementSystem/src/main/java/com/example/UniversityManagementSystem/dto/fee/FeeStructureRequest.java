@@ -13,6 +13,8 @@ public class FeeStructureRequest {
     private FeeStructureStatus feeStructureStatus;
     private LocalDateTime dueDate;
     private Long feeTypeId;
+    private FeeAssignmentType feeAssignmentType;
+
 
     public FeeStructureRequest() {
     }
@@ -91,6 +93,14 @@ public class FeeStructureRequest {
 
     public void setDueDate(LocalDateTime dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public FeeAssignmentType getFeeAssignmentType() {
+        return feeAssignmentType;
+    }
+
+    public void setFeeAssignmentType(FeeAssignmentType feeAssignmentType) {
+        this.feeAssignmentType = feeAssignmentType;
     }
 }
 

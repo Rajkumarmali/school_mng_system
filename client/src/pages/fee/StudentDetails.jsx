@@ -171,33 +171,33 @@ const StudentDetails = () => {
                                 <span>Department : </span>
                             </div>
                             <div>
-                                <i className="bi bi-envelope-fill"></i>
+                                <i className="bi bi-person-fill me-2"></i>
                                 <span>Father Name :  {fee?.student?.fatherName}</span>
                             </div>
                             <div>
-                                <i className="bi bi-envelope-fill"></i>
+                                <i className="bi bi-telephone-fill me-2"></i>
                                 <span>Father Number :  {fee?.student?.fatherNumber}</span>
                             </div>
                             <div>
-                                <i className="bi bi-envelope-fill"></i>
+                                <i className="bi bi-person-heart me-2"></i>
                                 <span>Mother Name :  {fee?.student?.motherName}</span>
                             </div>
                             <div>
-                                <i className="bi bi-mortarboard-fill"></i>
+                                <i className="bi bi-telephone-fill me-2"></i>
                                 <span>Mother Number :  {fee?.student?.motherNumber}</span>
                             </div>
                         </div>
                         <div className="student-profile-contact">
                             <div>
-                                <i className="bi bi-envelope-fill"></i>
+                                <i className="bi bi-wallet2 me-2"></i>
                                 <span>Total Fee :  {fee?.student?.totalFee}</span>
                             </div>
                             <div>
-                                <i className="bi bi-envelope-fill"></i>
+                                <i className="bi bi-cash-coin me-2"></i>
                                 <span>Paid Fee:  {fee?.student?.totalPaidFee}</span>
                             </div>
                             <div>
-                                <i className="bi bi-envelope-fill"></i>
+                                <i className="bi bi-hourglass-split me-2"></i>
                                 <span>Pending Fee :  {fee?.student?.totalPendingFee}</span>
                             </div>
                         </div>

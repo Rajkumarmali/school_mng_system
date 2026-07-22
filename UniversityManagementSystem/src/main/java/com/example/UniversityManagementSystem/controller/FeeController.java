@@ -66,6 +66,13 @@ public class FeeController {
         return new ResponseEntity<>(res,HttpStatus.CREATED);
     }
 
+    @PostMapping("/assigntostudent/{feeStructureId}")
+    public ResponseEntity<String> assignFeeStructureToStudents(@PathVariable Long feeStructureId,
+                                                               @RequestBody List<FeeStudentRequest> dto){
+        String res = feeServices.assignFeeStructureToStudent(feeStructureId,dto);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
     @GetMapping("/get-all-feestructure")
     public ResponseEntity<Page<FeeStructureResponse>> getAllFeeStructure(@RequestHeader("Authorization") String jwt,
                                                                          @RequestParam(defaultValue = "0") int pageNumber,

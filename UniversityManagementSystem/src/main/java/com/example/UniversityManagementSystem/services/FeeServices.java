@@ -14,6 +14,7 @@ public interface FeeServices {
     String updateFeeType(Long feeTypeId,FeeTypeRequest dto);
     String deleteFeeType(Long feeTypeId);
     String createFeeStructure(Long collegeId, FeeStructureRequest dto);
+    String assignFeeStructureToStudent(Long feeStructureId,List<FeeStudentRequest> dto);
     Page<FeeStructureResponse> getAllFeeStructure(Long collegeId,int pageNumber,int pageSize);
     FeeStructureResponse getFeeStructureById(Long feeStructureId);
     String updateFeeStructure(Long feeStructureId,FeeStructureRequest dto);

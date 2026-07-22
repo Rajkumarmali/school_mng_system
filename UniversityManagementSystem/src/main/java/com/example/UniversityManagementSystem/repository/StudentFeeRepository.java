@@ -22,4 +22,6 @@ public interface StudentFeeRepository extends JpaRepository<StudentFee, Long> { 
     Page<StudentFee> findByStudentAndStatus(Student student, StudentFeeStatus studentFeeStatus, Pageable pageable);
 
     List<StudentFee> findByFeeStructureCollege(College college);
+
+    boolean existsByStudentIdAndFeeStructureId(Long studentId, Long feeStructureId);
 }

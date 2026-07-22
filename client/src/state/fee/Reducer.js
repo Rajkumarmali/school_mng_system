@@ -1,4 +1,7 @@
 import {
+    ASSIGN_FEE_STRUCTURE_TOSTUDENT_FAILER,
+    ASSIGN_FEE_STRUCTURE_TOSTUDENT_REQUEST,
+    ASSIGN_FEE_STRUCTURE_TOSTUDENT_SUCCESS,
     CREATE_FEE_STRUCTURE_FAILER, CREATE_FEE_STRUCTURE_REQUEST, CREATE_FEE_STRUCTURE_SUCCESS, CREATE_FEE_TYPE_FAILER,
     CREATE_FEE_TYPE_REQUEST, CREATE_FEE_TYPE_SUCCESS, DELETE_FEE_STRUCTURE_FAILER, DELETE_FEE_STRUCTURE_REQUEST,
     DELETE_FEE_STRUCTURE_SUCCESS, DELETE_FEE_TYPE_FAILER, DELETE_FEE_TYPE_REQUEST, DELETE_FEE_TYPE_SUCCESS,
@@ -63,6 +66,7 @@ export const feeReducer = (state = initialState, action) => {
         case GET_STUDENT_BYID_REQUEST:
         case GET_PAYMENT_BYID_REQUEST:
         case GET_FEE_OVERVIEW_REQUEST:
+        case ASSIGN_FEE_STRUCTURE_TOSTUDENT_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -75,6 +79,7 @@ export const feeReducer = (state = initialState, action) => {
         case UPDATE_FEE_STRUCTURE_SUCCESS:
         case DELETE_FEE_STRUCTURE_SUCCESS:
         case PAY_FEE_BY_CASH_SUCCESS:
+        case ASSIGN_FEE_STRUCTURE_TOSTUDENT_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
@@ -200,6 +205,7 @@ export const feeReducer = (state = initialState, action) => {
         case GET_STUDENT_BYID_FAILER:
         case GET_PAYMENT_BYID_FAILER:
         case GET_FEE_OVERVIEW_FAILER:
+        case ASSIGN_FEE_STRUCTURE_TOSTUDENT_FAILER:
             return {
                 ...state,
                 isLoading: false,
