@@ -16,6 +16,9 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String enrollmentNumber;
+    private String rollNumber;
+
     private String firstName;
     private String lastName;
     private String email;
@@ -52,6 +55,12 @@ public class Student {
 
     @OneToMany(mappedBy = "student")
     private List<StudentFee> studentFees=new ArrayList<>();
+
+    @OneToMany(mappedBy = "student")
+    private List<StudentDocument> studentDocument = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "students")
+    private List<Scholarship> scholarships = new ArrayList<>() ;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -244,4 +253,35 @@ public class Student {
         this.studentFees = studentFees;
     }
 
+    public String getEnrollmentNumber() {
+        return enrollmentNumber;
+    }
+
+    public void setEnrollmentNumber(String enrollmentNumber) {
+        this.enrollmentNumber = enrollmentNumber;
+    }
+
+    public String getRollNumber() {
+        return rollNumber;
+    }
+
+    public void setRollNumber(String rollNumber) {
+        this.rollNumber = rollNumber;
+    }
+
+    public List<StudentDocument> getStudentDocument() {
+        return studentDocument;
+    }
+
+    public void setStudentDocument(List<StudentDocument> studentDocument) {
+        this.studentDocument = studentDocument;
+    }
+
+    public List<Scholarship> getScholarships() {
+        return scholarships;
+    }
+
+    public void setScholarships(List<Scholarship> scholarships) {
+        this.scholarships = scholarships;
+    }
 }
