@@ -10,6 +10,7 @@ import { classReducer } from './class/Reducer'
 import { feeReducer } from './fee/Reducer'
 import { courseReducer } from './course/Reducer'
 import { notificationReducer } from './notification/Reducer'
+import { scholarshipReducer } from './scholarship/Reducer'
 
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -21,7 +22,8 @@ const rootReducer = combineReducers({
     class: classReducer,
     fee: feeReducer,
     course: courseReducer,
-    notification: notificationReducer
+    notification: notificationReducer,
+    scholarship: scholarshipReducer
 })
 
 export const store = legacy_createStore(rootReducer, applyMiddleware(thunk))

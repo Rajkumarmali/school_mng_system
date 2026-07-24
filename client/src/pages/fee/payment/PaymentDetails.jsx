@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
-import { downloadFeeReceipt, getPaymentById } from '../../state/fee/Action';
+import { downloadFeeReceipt, getPaymentById } from '../../../state/fee/Action';
 import './PaymentDetails.css'
 
 const PaymentDetails = () => {
@@ -82,19 +82,19 @@ const PaymentDetails = () => {
                                 <span>Department : </span>
                             </div>
                             <div>
-                                <i className="bi bi-envelope-fill"></i>
+                                <i className="bi bi-person-fill me-2"></i>
                                 <span>Father Name :  {fee?.payment?.studentResponse?.fatherName}</span>
                             </div>
                             <div>
-                                <i className="bi bi-envelope-fill"></i>
+                                <i className="bi bi-telephone-fill me-2"></i>
                                 <span>Father Number :  {fee?.payment?.studentResponse?.fatherNumber}</span>
                             </div>
                             <div>
-                                <i className="bi bi-envelope-fill"></i>
+                                <i className="bi bi-person-heart me-2"></i>
                                 <span>Mother Name :   {fee?.payment?.studentResponse?.motherName}</span>
                             </div>
                             <div>
-                                <i className="bi bi-mortarboard-fill"></i>
+                                <i className="bi bi-telephone-fill me-2"></i>
                                 <span>Mother Number :   {fee?.payment?.studentResponse?.motherNumber}</span>
                             </div>
                         </div>

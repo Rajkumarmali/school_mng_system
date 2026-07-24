@@ -14,6 +14,7 @@ public interface FeeServices {
     String updateFeeType(Long feeTypeId,FeeTypeRequest dto);
     String deleteFeeType(Long feeTypeId);
     String createFeeStructure(Long collegeId, FeeStructureRequest dto);
+    String assignFeeStructureToStudent(Long feeStructureId,List<FeeStudentRequest> dto);
     Page<FeeStructureResponse> getAllFeeStructure(Long collegeId,int pageNumber,int pageSize);
     FeeStructureResponse getFeeStructureById(Long feeStructureId);
     String updateFeeStructure(Long feeStructureId,FeeStructureRequest dto);
@@ -22,13 +23,13 @@ public interface FeeServices {
     Page<StudentFeeResponse> getAllPaidStudent(Long feeStructureId, int pageNumber, int pageSize);
     Page<StudentFeeResponse> getAllUnPaidStudent(Long feeStructureId, int pageNumber, int pageSize);
     StudentFeeResponse getStudentFeeById(Long studentFeeId);
-    Page<StudentFeeResponse> getStudentFeeByStudentI(Long studentId,int pageNumber, int pageSize);
+    Page<StudentFeeResponse> getStudentFeeByStudentId(Long studentId, int pageNumber, int pageSize);
     Page<StudentResponse> getStudents(Long collegeId,int pageNumber,int pageSize);
     StudentResponse getStudentById(Long studentId);
     Page<StudentFeeResponse> getPayments(Long collegeId,int pageNumber,int pageSize);
     StudentFeeResponse getPaymentById(Long paymentId);
     String payFeeByCash(Long studentFeeId);
-    FeeOverviewResponse getFeeOverview();
+    FeeOverviewResponse getFeeOverview(Long userId);
     ByteArrayInputStream generateReceipt(Long studentFeeId);
     Page<StudentFeeResponse> getPaidStudentFeeByStudent(Long userId,int pageNumber,int pageSize);
     Page<StudentFeeResponse> getUnpaidStudentFeeByStudent(Long userId,int pageNumber,int pageSize);

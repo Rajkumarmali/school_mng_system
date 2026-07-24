@@ -2,10 +2,18 @@ import React, { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import './FeeStructureDetatils.css'
 import { useDispatch, useSelector } from 'react-redux';
-import { getFeeStructureById, updateFeeStructure } from '../../state/fee/Action';
-import FeeStudents from './FeeStudents';
+import { assignFeeStructureToStudent, getFeeStructureById, updateFeeStructure } from '../../../state/fee/Action';
+import FeeStudents from './student/FeeStudents';
+import { jwtDecode } from 'jwt-decode';
+
 
 const FeeStructureDetails = () => {
+
+    const token = localStorage.getItem("token")
+    const decoded = jwtDecode(token)
+    const roles = decoded.roles;
+    const isAccountant = roles.includes("ACCOUNTANT")
+
     const [searchParams, setSearchParams] = useSearchParams();
     const tab = searchParams.get("tab")
     const feeStructureId = searchParams.get("id");
@@ -21,6 +29,16 @@ const FeeStructureDetails = () => {
         feeStructureStatus: "",
         dueDate: "",
     })
+
+    const [feeStructureStudentData, setFeeStructureStudentData] = useState([
+        {
+            firstName: "",
+            lastName: "",
+            email: "",
+            registrationNumber: "",
+            phoneNumber: ""
+        }
+    ])
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -67,6 +85,50 @@ const FeeStructureDetails = () => {
         })
     }
 
+
+    const handleAddFeeStructureStudentChange = (index, e) => {
+        const { name, value } = e.target;
+        const updateStudent = [...feeStructureStudentData];
+        updateStudent[index] = {
+            ...updateStudent[index],
+            [name]: value
+        }
+        setFeeStructureStudentData(updateStudent)
+    }
+
+    const handleAddFeeStructureStudentRow = () => {
+        setFeeStructureStudentData([
+            ...feeStructureStudentData,
+            {
+                firstName: "",
+                lastName: "",
+                email: "",
+                registrationNumber: "",
+                phoneNumber: ""
+            }
+        ])
+    }
+
+    const handleRemoveFeeStructureStudent = (index) => {
+        if (feeStructureStudentData.length === 1) return;
+        const updatedStudents = feeStructureStudentData.filter((_, i) => i !== index);
+        setFeeStructureStudentData(updatedStudents);
+    }
+
+    const saveAddFeeStructureStudentData = async () => {
+        await dispatch(assignFeeStructureToStudent(feeStructureId, feeStructureStudentData));
+        await dispatch(getFeeStructureById(feeStructureId))
+        setFeeStructureStudentData([
+            {
+                firstName: "",
+                lastName: "",
+                email: "",
+                registrationNumber: "",
+                phoneNumber: ""
+            }
+        ])
+    }
+
     useEffect(() => {
         dispatch(getFeeStructureById(feeStructureId))
     }, [dispatch, feeStructureId]);
@@ -78,7 +140,18 @@ const FeeStructureDetails = () => {
                     <div>
                         <div className="fee-structure-detail-header">
                             <div>
-                                <h2>Fee Structure Details</h2>
+                                {
+                                    isAccountant &&
+                                    <button
+                                        className="back-fee-structure-detail-btn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#studentModal"
+                                    >
+                                        <i className="bi bi-plus-circle me-2"></i>
+                                        Add Student
+                                    </button>
+                                }
+
                             </div>
 
                             <button
@@ -110,6 +183,10 @@ const FeeStructureDetails = () => {
                                     <i className="bi bi-info-circle-fill"></i>
                                     <span> <strong>Status :  </strong>{fee?.feeStructure?.status}</span>
                                 </div>
+                                <div>
+                                    <i className="bi bi-info-circle-fill"></i>
+                                    <span> <strong>Apply Scholarship :  </strong>{fee?.feeStructure?.applyScholarship ? "Yes" : "No"}</span>
+                                </div>
                             </div>
                             <div className="fee-structure-details-contact">
                                 <div>
@@ -120,14 +197,14 @@ const FeeStructureDetails = () => {
                                     <i className="bi bi-mortarboard-fill"></i>
                                     <span>
                                         <strong>Class : </strong>
-                                        {fee?.feeStructure?.className} ({fee?.feeStructure?.classCode})
+                                        {fee?.feeStructure?.className ? `${fee?.feeStructure?.className} (${fee?.feeStructure?.classCode})` : ""}
                                     </span>
                                 </div>
                                 <div>
                                     <i className="bi bi-diagram-3-fill"></i>
                                     <span>
                                         <strong>Department : </strong>
-                                        {fee?.feeStructure?.departmentName} ({fee?.feeStructure?.departmentCode})
+                                        {fee?.feeStructure?.departmentName ? `${fee?.feeStructure?.departmentName} (${fee?.feeStructure?.departmentCode})` : ''}
                                     </span>
                                 </div>
                                 <div>
@@ -199,6 +276,123 @@ const FeeStructureDetails = () => {
                         <FeeStudents />
                     </div>
             }
+
+            <div class="modal fade" id="studentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-xl">
+                    <div class="modal-content custom-modal">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">
+                                Add Students
+                            </h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <table className="table class-student-modal-table">
+                                <thead>
+                                    <tr>
+                                        <th>SNo.</th>
+                                        <th>Registration Number</th>
+                                        <th>Frist Name</th>
+                                        <th>Last Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        feeStructureStudentData.map((student, index) =>
+                                            <tr key={index}>
+                                                <td>{index + 1}</td>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        className="modal-input"
+                                                        name="registrationNumber"
+                                                        value={student.registrationNumber}
+                                                        onChange={(e) => handleAddFeeStructureStudentChange(index, e)}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        className="modal-input"
+                                                        name="firstName"
+                                                        value={student.firstName}
+                                                        onChange={(e) => handleAddFeeStructureStudentChange(index, e)}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        className="modal-input"
+                                                        name="lastName"
+                                                        value={student.lastName}
+                                                        onChange={(e) => handleAddFeeStructureStudentChange(index, e)}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="email"
+                                                        className="modal-input"
+                                                        name="email"
+                                                        value={student.email}
+                                                        onChange={(e) => handleAddFeeStructureStudentChange(index, e)}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        className="modal-input"
+                                                        name="phoneNumber"
+                                                        value={student.phoneNumber}
+                                                        onChange={(e) => handleAddFeeStructureStudentChange(index, e)}
+                                                    />
+                                                </td>
+                                                <td className='text-center'>
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-sm custom-action-btn me-2"
+                                                        disabled={feeStructureStudentData.length === 1}
+                                                        onClick={() => handleRemoveFeeStructureStudent(index)}
+                                                    >
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        )
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer d-flex justify-content-between">
+                            <button
+                                type="button"
+                                className="departments-modal-btn"
+                                onClick={handleAddFeeStructureStudentRow}
+                            >
+                                + Add Another Student
+                            </button>
+                            <div>
+                                <button
+                                    type="button"
+                                    class="departments-modal-btn"
+                                    data-bs-dismiss="modal"
+                                >
+                                    Close
+                                </button>
+                                <button
+                                    onClick={saveAddFeeStructureStudentData}
+                                    type="button"
+                                    class="departments-modal-btn" data-bs-dismiss="modal"
+                                >
+                                    Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="modal fade" id="editFeeStructureModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-xl">

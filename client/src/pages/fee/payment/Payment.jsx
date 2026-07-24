@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
-import { getPayments } from '../../state/fee/Action';
+import { getPayments } from '../../../state/fee/Action';
 import './Payments.css'
 import PaymentDetails from './PaymentDetails';
 
