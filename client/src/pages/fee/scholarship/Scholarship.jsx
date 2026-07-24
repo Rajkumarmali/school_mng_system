@@ -191,7 +191,7 @@ const Scholarship = () => {
                                         :
                                         <tr>
                                             <td colSpan="10" className="text-center">
-                                                No Fee Structure Found
+                                                No Scholarship Found
                                             </td>
                                         </tr>
                                 }

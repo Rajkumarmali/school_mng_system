@@ -50,7 +50,7 @@ const Sidebar = () => {
 
                         <li>
                             <Link to="/users" className="menu-item">
-                                <i class="bi bi-people-fill me-2"></i>
+                                <i className="bi bi-people-fill me-2"></i>
                                 Users
                             </Link>
                         </li>

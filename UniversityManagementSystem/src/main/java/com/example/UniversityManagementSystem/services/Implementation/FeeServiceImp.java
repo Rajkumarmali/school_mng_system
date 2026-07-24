@@ -1,6 +1,7 @@
 package com.example.UniversityManagementSystem.services.Implementation;
 
 import com.example.UniversityManagementSystem.dto.fee.*;
+import com.example.UniversityManagementSystem.dto.notification.NotificationRequest;
 import com.example.UniversityManagementSystem.entity.*;
 import com.example.UniversityManagementSystem.entity.Class;
 import com.example.UniversityManagementSystem.entity.type.FeeStructureStatus;
@@ -8,6 +9,7 @@ import com.example.UniversityManagementSystem.entity.type.ScholarshipStatus;
 import com.example.UniversityManagementSystem.entity.type.StudentFeeStatus;
 import com.example.UniversityManagementSystem.repository.*;
 import com.example.UniversityManagementSystem.services.FeeServices;
+import com.example.UniversityManagementSystem.services.NotificationService;
 import com.razorpay.*;
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
@@ -49,6 +51,7 @@ public class FeeServiceImp implements FeeServices {
     private final StudentRepository studentRepository;
     private final FeePaymentRepository feePaymentRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     public FeeServiceImp(CollegeRepository collegeRepository,
                          FeeTypeRepository feeTypeRepository,
@@ -58,7 +61,7 @@ public class FeeServiceImp implements FeeServices {
                          StudentFeeRepository studentFeeRepository,
                          StudentRepository studentRepository,
                          FeePaymentRepository feePaymentRepository,
-                         UserRepository userRepository) {
+                         UserRepository userRepository, NotificationService notificationService) {
         this.collegeRepository = collegeRepository;
         this.feeTypeRepository = feeTypeRepository;
         this.classRepository = classRepository;
@@ -68,6 +71,7 @@ public class FeeServiceImp implements FeeServices {
         this.studentRepository = studentRepository;
         this.feePaymentRepository = feePaymentRepository;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 
     @Value("${razorpay.api.key}")
@@ -100,6 +104,7 @@ public class FeeServiceImp implements FeeServices {
 
         for(Student student:students){
             StudentFee studentFee = new StudentFee();
+
             Double amount = feeStructure.getAmount();
             if(feeStructure.getApplyScholarship()){
                 double totalScholarship = student.getScholarships().stream()
@@ -108,7 +113,22 @@ public class FeeServiceImp implements FeeServices {
                         .sum();
                 totalScholarship= Math.min(totalScholarship,100.0);
                 amount = amount*(100.0-totalScholarship)/100.0;
+                amount = Math.round(amount * 100.0) / 100.0;
             }
+
+            NotificationRequest notificationRequest = new NotificationRequest();
+            String message = "Dear "+student.getFirstName()+",\n\n"
+                    +"A new fee has been assigned to your account.\n\n"
+                    + "Fee Type : "+feeStructure.getFeeType().getName()+"\n"
+                    +"Amount : "+String.format("%.2f", amount)+"\n"
+                    +"Academic Year : "+feeStructure.getAcademicYear()+"\n"
+                    +"Due Date : "+feeStructure.getDueDate().toLocalDate()
+                    +"\n\nPlease pay the fee before the due date to avoid any late charges.";
+            notificationRequest.setTitle("New Fee Assigned");
+            notificationRequest.setMessage(message);
+            notificationRequest.setUserEmail(student.getEmail());
+            notificationService.createNotification(notificationRequest);
+
             studentFee.setStatus(StudentFeeStatus.PENDING);
             studentFee.setFeeStructure(feeStructure);
             studentFee.setStudent(student);
@@ -260,6 +280,8 @@ public class FeeServiceImp implements FeeServices {
                     @CacheEvict(cacheNames = "feeStructurePaidStudents",allEntries = true),
                     @CacheEvict(cacheNames = "feeStructureUnpaidStudents",allEntries = true),
                     @CacheEvict(cacheNames = "studentFees",allEntries = true),
+                    @CacheEvict(cacheNames = "studentunpaidfee",allEntries = true),
+                    @CacheEvict(cacheNames = "studentFeeOverview",allEntries = true),
             }
     )
     public String assignFeeStructureToStudent(Long feeStructureId, List<FeeStudentRequest> dto) {
@@ -286,7 +308,23 @@ public class FeeServiceImp implements FeeServices {
                        .sum();
                totalScholarship = Math.min(totalScholarship,100.0);
                amount = amount*(100.0-totalScholarship)/100.0;
+                amount = Math.round(amount * 100.0) / 100.0;
             }
+
+            NotificationRequest notificationRequest = new NotificationRequest();
+            String message = "Dear "+student.getFirstName()+",\n\n"
+                    +"A new fee has been assigned to your account.\n\n"
+                    + "Fee Type : "+feeStructure.getFeeType().getName()+"\n"
+                    +"Amount : "+String.format("%.2f", amount)+"\n"
+                    +"Academic Year : "+feeStructure.getAcademicYear()+"\n"
+                    +"Due Date : "+feeStructure.getDueDate().toLocalDate()
+                    +"\n\nPlease pay the fee before the due date to avoid any late charges.";
+
+            notificationRequest.setTitle("New Fee Assigned");
+            notificationRequest.setMessage(message);
+            notificationRequest.setUserEmail(student.getEmail());
+            notificationService.createNotification(notificationRequest);
+
             fee.setStudent(student);
             fee.setAmount(amount);
             fee.setStatus(StudentFeeStatus.PENDING);
@@ -1172,6 +1210,7 @@ public class FeeServiceImp implements FeeServices {
             @CacheEvict(cacheNames = "studentunpaidfee",allEntries = true),
             @CacheEvict(cacheNames = "studentFeeOverview",allEntries = true),
             @CacheEvict(cacheNames = "feeOverviews",allEntries = true),
+            @CacheEvict(cacheNames = "studentFee",allEntries = true),
     })
     public String verifyPayment(PaymentVerifyRequest dto) {
         try{
