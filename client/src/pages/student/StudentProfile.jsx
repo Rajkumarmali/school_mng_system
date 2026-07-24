@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import './StudentProfile.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { getStudentById, updateStudent, updateStudentImage } from '../../state/student/Action'
+import Document from './Document'
 
 
 const StudentProfile = () => {
 
-    const location = useLocation()
-    const studentId = location.state?.studentId
+    const [searchParams, setSearchParams] = useSearchParams();
+    const studentId = searchParams.get("studentId")
+    const tab = searchParams.get("tab")
 
     const student = useSelector((state) => state.student)
     const dispatch = useDispatch();
@@ -186,127 +188,169 @@ const StudentProfile = () => {
     useEffect(() => {
         dispatch(getStudentById(studentId))
     }, [dispatch, studentId]);
-    return (
-        <div className='student-profile'>
-            <div className="student-card">
-                <div className="student-profile-header">
-                    <div>
-                        <div className="student-profile-avatar">
-                            {
-                                student?.student?.image ?
-                                    <img src={`http://localhost:8080/${student?.student?.image}`} alt=""
-                                        className='student-image' />
-                                    : <i className="bi bi-person-fill"></i>
-                            }
-                        </div>
-                        <div>
-                            <button
-                                className="student-edit-image-btn"
-                                data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                onClick={handleEditImage}
-                            >
-                                <i className="bi bi-camera-fill me-2"></i>
-                                Edit Image
-                            </button>
-                        </div>
-                    </div>
 
-                    <div className="student-profile-info">
-                        <div className="student-profile-contact">
-                            <div>
-                                <i className="bi bi-card-text"></i>
-                                <span>Registration Number : {student?.student?.registrationNumber}</span>
+    return (
+        <div>
+            <nav class="student-nav-card navbar-expand-lg ">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-3">
+                    <li class="nav-item">
+                        <button
+                            class="nav-link"
+                            onClick={() => setSearchParams({ studentId, tab: "overview" })}
+                        >
+                            Overview
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button
+                            class="nav-link"
+                            onClick={() => setSearchParams({ studentId, tab: "document" })}
+                        >
+                            Document
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+
+            <div className="student-card">
+                {
+                    tab === "document" ?
+                        <div>
+                            <Document />
+                        </div>
+                        :
+                        <div>
+                            <div className="student-profile-header">
+                                <div>
+                                    <div className="student-profile-avatar">
+                                        {
+                                            student?.student?.image ?
+                                                <img src={`http://localhost:8080/${student?.student?.image}`} alt=""
+                                                    className='student-image' />
+                                                : <i className="bi bi-person-fill"></i>
+                                        }
+                                    </div>
+                                    <div>
+                                        <button
+                                            className="student-edit-image-btn"
+                                            data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                            onClick={handleEditImage}
+                                        >
+                                            <i className="bi bi-camera-fill me-2"></i>
+                                            Edit Image
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="student-profile-info">
+                                    <div className="student-profile-contact">
+                                        <div>
+                                            <i className="bi bi-card-text"></i>
+                                            <span>Registration Number : {student?.student?.registrationNumber}</span>
+                                        </div>
+                                        <div>
+                                            <i className="bi bi-envelope-fill"></i>
+                                            <span>Email : {student?.student?.email}</span>
+                                        </div>
+                                        <div>
+                                            <i className="bi bi-person-fill"></i>
+                                            <span>Username : {student?.student?.username}</span>
+                                        </div>
+                                        <div>
+                                            <i className="bi bi-diagram-3-fill"></i>
+                                            <span>Department : {student?.student?.departmentName}
+                                                {" "}
+                                                {student?.student?.departmentName &&
+                                                    <>({student?.student?.departmentCode})</>
+                                                }
+                                            </span>
+                                            <button className="edit-icon-btn"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#exampleModal"
+                                                onClick={handleEditDepartment}
+                                            >
+                                                <i className="bi bi-pencil-square"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="student-profile-contact">
+                                        <div>
+                                            <i className="bi bi-person-vcard-fill me-2"></i>
+                                            <span>EnrollmentNo. : {student?.student?.enrollmentNumber}</span>
+                                        </div>
+                                        <div>
+                                            <i className="bi bi-upc-scan me-2"></i>
+                                            <span>Roll No. : {student?.student?.rollNumber}</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <i className="bi bi-envelope-fill"></i>
-                                <span>Email : {student?.student?.email}</span>
-                            </div>
-                            <div>
-                                <i className="bi bi-person-fill"></i>
-                                <span>Username : {student?.student?.username}</span>
-                            </div>
-                            <div>
-                                <i className="bi bi-diagram-3-fill"></i>
-                                <span>Department : {student?.student?.departmentName}
-                                    {" "}
-                                    {student?.student?.departmentName &&
-                                        <>({student?.student?.departmentCode})</>
-                                    }
-                                </span>
-                                <button className="edit-icon-btn"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#exampleModal"
-                                    onClick={handleEditDepartment}
-                                >
-                                    <i className="bi bi-pencil-square"></i>
-                                </button>
+                            <div className="student-profile-body">
+                                <div className="simple-section">
+                                    <div className="info-line">
+                                        <h5>Personal Information : </h5>
+                                        <div className="profile-actions">
+                                            <button
+                                                onClick={handleEditPerson}
+                                                className="student-edit-btn" data-bs-toggle="modal"
+                                                data-bs-target="#exampleModal"
+                                            >
+                                                <i className="bi bi-person-fill-gear me-2"></i>
+                                                Edit Person
+                                            </button>
+                                            <button
+                                                onClick={handleEditParent}
+                                                className="student-edit-btn"
+                                                data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                            >
+                                                <i className="bi bi-people-fill me-2"></i>
+                                                Edit Parent
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="info-line">
+                                        <span><strong>First Name :</strong> {student?.student?.firstName}</span>
+                                        <span><strong>Last Name :</strong> {student?.student?.lastName}</span>
+                                        <span><strong>Father Name :</strong> {student?.student?.parentResponse?.fatherName}</span>
+                                        <span><strong>Mother Name :</strong> {student?.student?.parentResponse?.motherName}</span>
+                                        <span><strong>Mobile Number :</strong> {student?.student?.phoneNumber}</span>
+                                        <span><strong>Email :</strong> {student?.student?.email}</span>
+                                        <span><strong>Gender :</strong> {student?.student?.gender}</span>
+                                        <span><strong>Cast :</strong> {student?.student?.cast}</span>
+                                        <span><strong>Aadhar :</strong> {student?.student?.aadharNumber}</span>
+                                        <span><strong>DOB :</strong> {student?.student?.dob}</span>
+                                        <span><strong>Father Number :</strong> {student?.student?.parentResponse?.fatherNumber}</span>
+                                        <span><strong>Mother Number :</strong> {student?.student?.parentResponse?.motherNumber}</span>
+                                        <span><strong>Father Occupation :</strong> {student?.student?.parentResponse?.fatherOccupation}</span>
+                                        <span><strong>Mother Occupation :</strong> {student?.student?.parentResponse?.motherOccupation}</span>
+                                    </div>
+                                </div>
+                                <div className="simple-section">
+                                    <div className="info-line">
+                                        <h5>Address Information : </h5>
+                                        <div className="profile-actions">
+                                            <button
+                                                onClick={handleEditAddress}
+                                                className="student-edit-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                <i className="bi bi-house-door-fill me-2"></i>
+                                                Edit Address
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="info-line">
+                                        <span><strong>Address :</strong> {student?.student?.addressResponse?.address}</span>
+                                        <span><strong>City :</strong> {student?.student?.addressResponse?.city}</span>
+                                        <span><strong>District :</strong> {student?.student?.addressResponse?.district}</span>
+                                        <span><strong>State :</strong> {student?.student?.addressResponse?.state}</span>
+                                        <span><strong>Country :</strong> {student?.student?.addressResponse?.country}</span>
+                                        <span><strong>Pincode :</strong> {student?.student?.addressResponse?.pincode}</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div className="student-profile-body">
-                    <div className="simple-section">
-                        <div className="info-line">
-                            <h5>Personal Information : </h5>
-                            <div className="profile-actions">
-                                <button
-                                    onClick={handleEditPerson}
-                                    className="student-edit-btn" data-bs-toggle="modal"
-                                    data-bs-target="#exampleModal"
-                                >
-                                    <i className="bi bi-person-fill-gear me-2"></i>
-                                    Edit Person
-                                </button>
-                                <button
-                                    onClick={handleEditParent}
-                                    className="student-edit-btn"
-                                    data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                >
-                                    <i className="bi bi-people-fill me-2"></i>
-                                    Edit Parent
-                                </button>
-                            </div>
-                        </div>
-                        <div className="info-line">
-                            <span><strong>First Name :</strong> {student?.student?.firstName}</span>
-                            <span><strong>Last Name :</strong> {student?.student?.lastName}</span>
-                            <span><strong>Father Name :</strong> {student?.student?.parentResponse?.fatherName}</span>
-                            <span><strong>Mother Name :</strong> {student?.student?.parentResponse?.motherName}</span>
-                            <span><strong>Mobile Number :</strong> {student?.student?.phoneNumber}</span>
-                            <span><strong>Email :</strong> {student?.student?.email}</span>
-                            <span><strong>Gender :</strong> {student?.student?.gender}</span>
-                            <span><strong>Cast :</strong> {student?.student?.cast}</span>
-                            <span><strong>Aadhar :</strong> {student?.student?.aadharNumber}</span>
-                            <span><strong>DOB :</strong> {student?.student?.dob}</span>
-                            <span><strong>Father Number :</strong> {student?.student?.parentResponse?.fatherNumber}</span>
-                            <span><strong>Mother Number :</strong> {student?.student?.parentResponse?.motherNumber}</span>
-                            <span><strong>Father Occupation :</strong> {student?.student?.parentResponse?.fatherOccupation}</span>
-                            <span><strong>Mother Occupation :</strong> {student?.student?.parentResponse?.motherOccupation}</span>
-                        </div>
-                    </div>
-                    <div className="simple-section">
-                        <div className="info-line">
-                            <h5>Address Information : </h5>
-                            <div className="profile-actions">
-                                <button
-                                    onClick={handleEditAddress}
-                                    className="student-edit-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                    <i className="bi bi-house-door-fill me-2"></i>
-                                    Edit Address
-                                </button>
-                            </div>
-                        </div>
-                        <div className="info-line">
-                            <span><strong>Address :</strong> {student?.student?.addressResponse?.address}</span>
-                            <span><strong>City :</strong> {student?.student?.addressResponse?.city}</span>
-                            <span><strong>District :</strong> {student?.student?.addressResponse?.district}</span>
-                            <span><strong>State :</strong> {student?.student?.addressResponse?.state}</span>
-                            <span><strong>Country :</strong> {student?.student?.addressResponse?.country}</span>
-                            <span><strong>Pincode :</strong> {student?.student?.addressResponse?.pincode}</span>
-                        </div>
-                    </div>
-                </div>
+                }
             </div>
+
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-xl">
                     <div class="modal-content custom-modal">

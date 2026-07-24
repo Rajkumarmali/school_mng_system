@@ -1,6 +1,8 @@
 package com.example.UniversityManagementSystem.controller;
 
 import com.example.UniversityManagementSystem.config.JwtProvider;
+import com.example.UniversityManagementSystem.dto.student.DocumentRequest;
+import com.example.UniversityManagementSystem.dto.student.DocumentResponse;
 import com.example.UniversityManagementSystem.dto.student.StudentRequest;
 import com.example.UniversityManagementSystem.dto.student.StudentResponse;
 import com.example.UniversityManagementSystem.services.StudentServices;
@@ -67,5 +69,39 @@ public class StudentController {
                                               @RequestPart("image") MultipartFile image){
          String res = studentServices.UpdateImage(id,image);
          return new ResponseEntity<String>(res,HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/upload/document/{studentId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadDocument(@PathVariable Long studentId,
+                                                 @RequestPart("document") DocumentRequest dto,
+                                                 @RequestPart("file") MultipartFile file){
+        String res = studentServices.uploadDocument(studentId,dto,file);
+        return new ResponseEntity<>(res,HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = "/update/document/{documentId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> updateDocument(@PathVariable Long documentId,
+                                                 @RequestPart("document") DocumentRequest dto,
+                                                 @RequestPart("file") MultipartFile file){
+        String res = studentServices.updateDocument(documentId,dto,file);
+        return new ResponseEntity<>(res,HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/delete/document/{documentId}")
+    public ResponseEntity<String> deleteDocument(@PathVariable Long documentId){
+        String res = studentServices.deleteDocument(documentId);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/get/alldocuments/{studentId}")
+    public ResponseEntity<List<DocumentResponse>> getAllDocumentByStudentId(@PathVariable Long studentId){
+        List<DocumentResponse> res = studentServices.getStudentDocument(studentId);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/get/documents/{documentId}")
+    public ResponseEntity<DocumentResponse> getDocumentById(@PathVariable Long documentId){
+      DocumentResponse res = studentServices.getStudentDocumentById(documentId);
+        return new ResponseEntity<>(res,HttpStatus.OK);
     }
 }

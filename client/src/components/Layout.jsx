@@ -6,7 +6,6 @@ import Dashboard from '../pages/Dashboard';
 import UserProfile from '../pages/user/UserProfile';
 import Users from '../pages/user/Users';
 import Student from '../pages/student/Student';
-import StudentProfile from '../pages/student/StudentProfile'
 import Teacher from '../pages/Teacher/Teacher';
 import TeacherProfile from '../pages/Teacher/TeacherProfile';
 import College from '../pages/College/College';
@@ -38,7 +37,6 @@ const Layout = () => {
                         <Route path='user-profile' element={<UserProfile />} />
                         <Route path='users' element={<Users />} />
                         <Route path='/student' element={<Student />} />
-                        <Route path='/student/profile' element={<StudentProfile />} />
                         <Route path='student/fee' element={<StudentsFee />} />
                         <Route path='teacher' element={<Teacher />} />
                         <Route path='teacher/profile' element={<TeacherProfile />} />
