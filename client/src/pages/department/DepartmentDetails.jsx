@@ -50,8 +50,8 @@ const DepartmentDetails = () => {
 
     return (
         <div className="department-container">
-            <nav class="department-nav-card navbar navbar-expand-lg ">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <nav class="department-nav-card navbar-expand-lg ">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-3">
                     <li class="nav-item">
                         <button
                             class="nav-link"
