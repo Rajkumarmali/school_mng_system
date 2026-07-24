@@ -23,7 +23,7 @@ public interface FeeServices {
     Page<StudentFeeResponse> getAllPaidStudent(Long feeStructureId, int pageNumber, int pageSize);
     Page<StudentFeeResponse> getAllUnPaidStudent(Long feeStructureId, int pageNumber, int pageSize);
     StudentFeeResponse getStudentFeeById(Long studentFeeId);
-    Page<StudentFeeResponse> getStudentFeeByStudentI(Long studentId,int pageNumber, int pageSize);
+    Page<StudentFeeResponse> getStudentFeeByStudentId(Long studentId, int pageNumber, int pageSize);
     Page<StudentResponse> getStudents(Long collegeId,int pageNumber,int pageSize);
     StudentResponse getStudentById(Long studentId);
     Page<StudentFeeResponse> getPayments(Long collegeId,int pageNumber,int pageSize);

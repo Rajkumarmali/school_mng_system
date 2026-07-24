@@ -2,8 +2,8 @@ import React, { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import './FeeStudents.css'
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllFeeStudent, getAllPaidFeeStudent, getAllUnpaidFeeStudent } from '../../state/fee/Action';
 import FeeStudentDetails from './FeeStudentDetails';
+import { getAllFeeStudent, getAllPaidFeeStudent, getAllUnpaidFeeStudent } from '../../../../state/fee/Action';
 
 const FeeStudents = () => {
 

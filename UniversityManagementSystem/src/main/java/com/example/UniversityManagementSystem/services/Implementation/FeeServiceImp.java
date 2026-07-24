@@ -4,6 +4,7 @@ import com.example.UniversityManagementSystem.dto.fee.*;
 import com.example.UniversityManagementSystem.entity.*;
 import com.example.UniversityManagementSystem.entity.Class;
 import com.example.UniversityManagementSystem.entity.type.FeeStructureStatus;
+import com.example.UniversityManagementSystem.entity.type.ScholarshipStatus;
 import com.example.UniversityManagementSystem.entity.type.StudentFeeStatus;
 import com.example.UniversityManagementSystem.repository.*;
 import com.example.UniversityManagementSystem.services.FeeServices;
@@ -99,9 +100,19 @@ public class FeeServiceImp implements FeeServices {
 
         for(Student student:students){
             StudentFee studentFee = new StudentFee();
+            Double amount = feeStructure.getAmount();
+            if(feeStructure.getApplyScholarship()){
+                double totalScholarship = student.getScholarships().stream()
+                        .filter(sch->sch.getStatus()==ScholarshipStatus.ACTIVE)
+                        .mapToDouble(Scholarship::getScholarshipPercent)
+                        .sum();
+                totalScholarship= Math.min(totalScholarship,100.0);
+                amount = amount*(100.0-totalScholarship)/100.0;
+            }
             studentFee.setStatus(StudentFeeStatus.PENDING);
             studentFee.setFeeStructure(feeStructure);
             studentFee.setStudent(student);
+            studentFee.setAmount(amount);
             studentFee.setCreatedAt(LocalDateTime.now());
             studentFees.add(studentFee);
         }
@@ -195,6 +206,17 @@ public class FeeServiceImp implements FeeServices {
     @Override
     @Transactional
     @PreAuthorize("hasRole('ACCOUNTANT')")
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "feeStructures",allEntries = true),
+                    @CacheEvict(cacheNames = "feeOverviews",allEntries = true),
+                    @CacheEvict(cacheNames = "feeStructure",allEntries = true),
+                    @CacheEvict(cacheNames = "feeStructureAllStudents",allEntries = true),
+                    @CacheEvict(cacheNames = "feeStructurePaidStudents",allEntries = true),
+                    @CacheEvict(cacheNames = "feeStructureUnpaidStudents",allEntries = true),
+                    @CacheEvict(cacheNames = "studentFees",allEntries = true),
+            }
+    )
     public String createFeeStructure(Long collegeId, FeeStructureRequest dto) {
         College college = null;
         if(collegeId!=null){
@@ -215,6 +237,7 @@ public class FeeServiceImp implements FeeServices {
         feeStructure.setDepartment(department);
         feeStructure.setFeeType(feeType);
         feeStructure.setStatus(FeeStructureStatus.ACTIVE);
+        feeStructure.setApplyScholarship(dto.getApplyScholarship());
         feeStructure.setDueDate(dto.getDueDate());
         feeStructure.setCreatedAt(LocalDateTime.now());
         FeeStructure savedFeeStructure= feeStructureRepository.save(feeStructure);
@@ -255,8 +278,17 @@ public class FeeServiceImp implements FeeServices {
             if(isExits){
                 continue;
             }
-
+            double amount = feeStructure.getAmount();
+            if(feeStructure.getApplyScholarship()){
+               double totalScholarship = student.getScholarships().stream()
+                       .filter(sch->sch.getStatus()==ScholarshipStatus.ACTIVE)
+                       .mapToDouble(Scholarship::getScholarshipPercent)
+                       .sum();
+               totalScholarship = Math.min(totalScholarship,100.0);
+               amount = amount*(100.0-totalScholarship)/100.0;
+            }
             fee.setStudent(student);
+            fee.setAmount(amount);
             fee.setStatus(StudentFeeStatus.PENDING);
             fee.setFeeStructure(feeStructure);
             fee.setCreatedAt(LocalDateTime.now());
@@ -281,6 +313,7 @@ public class FeeServiceImp implements FeeServices {
            res.setStatus(fee.getStatus());
            res.setAcademicYear(fee.getAcademicYear());
            res.setDescription(fee.getDescription());
+           res.setApplyScholarship(fee.getApplyScholarship());
            if(fee.getFeeType()!=null)
                res.setFeeTypeName(fee.getFeeType().getName());
            if(fee.getAClass()!=null)
@@ -308,6 +341,7 @@ public class FeeServiceImp implements FeeServices {
         response.setStatus(feeStructure.getStatus());
         response.setAcademicYear(feeStructure.getAcademicYear());
         response.setDescription(feeStructure.getDescription());
+        response.setApplyScholarship(feeStructure.getApplyScholarship());
         if(feeStructure.getFeeType()!=null)
             response.setFeeTypeName(feeStructure.getFeeType().getName());
         if(feeStructure.getAClass()!=null) {
@@ -330,9 +364,19 @@ public class FeeServiceImp implements FeeServices {
         Integer totalUnPaidStudent = (int) studentFees.stream()
                 .filter(sf->sf.getStatus()==StudentFeeStatus.PENDING)
                 .count();
-        Double totalCollectAmount = totalStudent*feeStructure.getAmount();
-        Double totalCollectedAmount = totalPaidStudent*feeStructure.getAmount();
-        Double totalPendingAmount = totalUnPaidStudent*feeStructure.getAmount();
+
+        Double totalCollectAmount = feeStructure.getStudentFees().stream()
+                .mapToDouble(StudentFee::getAmount)
+                .sum();
+
+        Double totalCollectedAmount = feeStructure.getStudentFees().stream()
+                .filter(sf->sf.getStatus()==StudentFeeStatus.PAID)
+                .mapToDouble(StudentFee::getAmount)
+                .sum();
+        Double totalPendingAmount = feeStructure.getStudentFees().stream()
+                .filter(sf->sf.getStatus()==StudentFeeStatus.PENDING)
+                .mapToDouble(StudentFee::getAmount)
+                .sum();
 
         response.setTotalCollectionAmount(totalCollectAmount);
         response.setTotalCollectedAmount(totalCollectedAmount);
@@ -403,7 +447,7 @@ public class FeeServiceImp implements FeeServices {
            studentResponse.setRegistrationNumber(student.getRegistrationNumber());
 
            res.setId(studentFee.getId());
-           res.setAmount(feeStructure.getAmount());
+           res.setAmount(studentFee.getAmount());
            res.setStatus(studentFee.getStatus());
 
            res.setStudentResponse(studentResponse);
@@ -436,7 +480,7 @@ public class FeeServiceImp implements FeeServices {
             studentResponse.setRegistrationNumber(student.getRegistrationNumber());
 
             res.setId(studentFee.getId());
-            res.setAmount(feeStructure.getAmount());
+            res.setAmount(studentFee.getAmount());
             res.setStatus(studentFee.getStatus());
             res.setStatus(studentFee.getStatus());
 
@@ -470,7 +514,7 @@ public class FeeServiceImp implements FeeServices {
             studentResponse.setRegistrationNumber(student.getRegistrationNumber());
 
             res.setId(studentFee.getId());
-            res.setAmount(feeStructure.getAmount());
+            res.setAmount(studentFee.getAmount());
             res.setStatus(studentFee.getStatus());
             res.setStatus(studentFee.getStatus());
             res.setStudentResponse(studentResponse);
@@ -499,7 +543,7 @@ public class FeeServiceImp implements FeeServices {
 
         response.setId(studentFee.getId());
         response.setFeeTypename(studentFee.getFeeStructure().getFeeType().getName());
-        response.setAmount(studentFee.getFeeStructure().getAmount());
+        response.setAmount(studentFee.getAmount());
         response.setStatus(studentFee.getStatus());
         response.setAcademicYear(studentFee.getFeeStructure().getAcademicYear());
         if(studentFee.getFeeStructure().getAClass()!=null){
@@ -532,7 +576,7 @@ public class FeeServiceImp implements FeeServices {
     @Override
     @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
     @Cacheable(cacheNames = "studentsFees",key = "{#studentId,#pageNumber,#pageSize}")
-    public Page<StudentFeeResponse> getStudentFeeByStudentI(Long studentId,int pageNumber,int pageSize) {
+    public Page<StudentFeeResponse> getStudentFeeByStudentId(Long studentId,int pageNumber,int pageSize) {
 
         Pageable pageable= PageRequest.of(pageNumber,pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<StudentFee> studentFees = studentFeeRepository.findByStudentId(studentId,pageable);
@@ -543,7 +587,7 @@ public class FeeServiceImp implements FeeServices {
 
             res.setId(stufee.getId());
             res.setFeeTypename(stufee.getFeeStructure().getFeeType().getName());
-            res.setAmount(stufee.getFeeStructure().getAmount());
+            res.setAmount(stufee.getAmount());
             res.setAcademicYear(stufee.getFeeStructure().getAcademicYear());
             if(stufee.getFeeStructure().getAClass()!=null)
              res.setClassCode(stufee.getFeeStructure().getAClass().getClassCode());
@@ -574,20 +618,17 @@ public class FeeServiceImp implements FeeServices {
            List<StudentFee> studentFees = stu.getStudentFees();
 
            Double totalFee=studentFees.stream()
-                           .map(StudentFee::getFeeStructure)
-                                   .mapToDouble(FeeStructure::getAmount)
+                                   .mapToDouble(StudentFee::getAmount)
                                            .sum();
 
-           Double totalPaidFee = studentFees.stream().
-                   filter(sf->sf.getStatus()==StudentFeeStatus.PAID)
-                           .map(StudentFee::getFeeStructure)
-                                   .mapToDouble(FeeStructure::getAmount)
+           Double totalPaidFee = studentFees.stream()
+                   .filter(sf->sf.getStatus()==StudentFeeStatus.PAID)
+                                   .mapToDouble(StudentFee::getAmount)
                                            .sum();
 
            double totalPendingFee = studentFees.stream()
                            .filter(sf->sf.getStatus()==StudentFeeStatus.PENDING)
-                                   .map(StudentFee::getFeeStructure)
-                                           .mapToDouble(FeeStructure::getAmount)
+                                           .mapToDouble(StudentFee::getAmount)
                                                    .sum();
 
            res.setId(stu.getId());
@@ -614,20 +655,22 @@ public class FeeServiceImp implements FeeServices {
 
         Double totalFee = student.getStudentFees()
                 .stream()
-                .map(StudentFee::getFeeStructure)
-                .mapToDouble(FeeStructure::getAmount)
+                .mapToDouble(StudentFee::getAmount)
                 .sum();
 
         Double totalPaidFee = student.getStudentFees().stream()
                 .filter(sf->sf.getStatus()==StudentFeeStatus.PAID)
-                .map(StudentFee::getFeeStructure)
-                .mapToDouble(FeeStructure::getAmount)
+                .mapToDouble(StudentFee::getAmount)
                 .sum();
 
         Double totalPendingFee = student.getStudentFees().stream()
                 .filter(sf->sf.getStatus()==StudentFeeStatus.PENDING)
-                .map(StudentFee::getFeeStructure)
-                .mapToDouble(FeeStructure::getAmount)
+                .mapToDouble(StudentFee::getAmount)
+                .sum();
+
+        Double totalScholarship = student.getScholarships().stream()
+                .filter(sch->sch.getStatus()== ScholarshipStatus.ACTIVE)
+                .mapToDouble(Scholarship::getScholarshipPercent)
                 .sum();
 
         StudentResponse response = new StudentResponse();
@@ -647,6 +690,7 @@ public class FeeServiceImp implements FeeServices {
         response.setTotalFee(totalFee);
         response.setTotalPaidFee(totalPaidFee);
         response.setTotalPendingFee(totalPendingFee);
+        response.setTotalScholarship(totalScholarship);
 
         return response;
     }
@@ -655,7 +699,7 @@ public class FeeServiceImp implements FeeServices {
     @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
     @Cacheable(cacheNames = "payments",key = "{#collegeId,#pageNumber,#pageSize}")
     public Page<StudentFeeResponse> getPayments(Long collegeId, int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Pageable pageable = PageRequest.of(pageNumber,pageSize,Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<FeePayment> feePayments = feePaymentRepository.findByStudentFeeFeeStructureCollegeId(collegeId,pageable);
 
         Page<StudentFeeResponse> responses = feePayments.map(payment->{
@@ -735,7 +779,6 @@ public class FeeServiceImp implements FeeServices {
         return response;
     }
 
-
     @Override
     @Transactional
     @PreAuthorize("hasAnyRole('ACCOUNTANT')")
@@ -752,6 +795,8 @@ public class FeeServiceImp implements FeeServices {
             @CacheEvict(cacheNames = "studentpaidfee",allEntries = true),
             @CacheEvict(cacheNames = "studentunpaidfee",allEntries = true),
             @CacheEvict(cacheNames = "studentFeeOverview",allEntries = true),
+            @CacheEvict(cacheNames = "feeOverviews",allEntries = true),
+            @CacheEvict(cacheNames = "studentFee",allEntries = true),
     })
     public String payFeeByCash(Long studentFeeId) {
 
@@ -767,7 +812,7 @@ public class FeeServiceImp implements FeeServices {
         String receiptNo = "REC-"+date+"-"+studentFeeId;
 
         FeePayment feePayment = new FeePayment();
-        feePayment.setAmount(studentFee.getFeeStructure().getAmount());
+        feePayment.setAmount(studentFee.getAmount());
         feePayment.setPaymentMode("CASH");
         feePayment.setReceiptNumber(receiptNo);
         feePayment.setPaymentDataAndTime(LocalDateTime.now());
@@ -794,20 +839,17 @@ public class FeeServiceImp implements FeeServices {
        List<StudentFee> studentFee = studentFeeRepository.findByFeeStructureCollege(college);
 
        Double totalFee = studentFee.stream()
-               .map(StudentFee::getFeeStructure)
-               .mapToDouble(FeeStructure::getAmount)
+               .mapToDouble(StudentFee::getAmount)
                .sum();
 
        Double totalPaidFee = studentFee.stream()
                .filter(sf->sf.getStatus()==StudentFeeStatus.PAID)
-               .map(StudentFee::getFeeStructure)
-               .mapToDouble(FeeStructure::getAmount)
+               .mapToDouble(StudentFee::getAmount)
                .sum();
 
        Double totalPendingFee = studentFee.stream()
                .filter(sf->sf.getStatus()==StudentFeeStatus.PENDING)
-               .map(StudentFee::getFeeStructure)
-               .mapToDouble(FeeStructure::getAmount)
+               .mapToDouble(StudentFee::getAmount)
                .sum();
 
        FeeOverviewResponse response = new FeeOverviewResponse();
@@ -919,7 +961,7 @@ public class FeeServiceImp implements FeeServices {
                 studentFee.getFeeStructure().getAcademicYear());
 
         addRow(feeTable,"Amount",
-                "₹ " + studentFee.getFeeStructure().getAmount());
+                "₹ " + studentFee.getAmount());
 
         addRow(feeTable,"Status",
                 studentFee.getStatus().name());
@@ -1001,7 +1043,7 @@ public class FeeServiceImp implements FeeServices {
 
             res.setId(stufee.getId());
             res.setFeeTypename(stufee.getFeeStructure().getFeeType().getName());
-            res.setAmount(stufee.getFeeStructure().getAmount());
+            res.setAmount(stufee.getAmount());
             res.setStatus(stufee.getStatus());
             res.setAcademicYear(stufee.getFeeStructure().getAcademicYear());
             res.setDueDate(stufee.getFeeStructure().getDueDate());
@@ -1033,7 +1075,7 @@ public class FeeServiceImp implements FeeServices {
 
             res.setId(stufee.getId());
             res.setFeeTypename(stufee.getFeeStructure().getFeeType().getName());
-            res.setAmount(stufee.getFeeStructure().getAmount());
+            res.setAmount(stufee.getAmount());
             res.setStatus(stufee.getStatus());
             res.setAcademicYear(stufee.getFeeStructure().getAcademicYear());
             res.setDueDate(stufee.getFeeStructure().getDueDate());
@@ -1056,20 +1098,17 @@ public class FeeServiceImp implements FeeServices {
         List<StudentFee> studentFee = student.getStudentFees();
 
         Double totalFee = studentFee.stream()
-                .map(StudentFee::getFeeStructure)
-                .mapToDouble(FeeStructure::getAmount)
+                .mapToDouble(StudentFee::getAmount)
                 .sum();
 
        Double totalPaidFee = studentFee.stream()
                .filter(sf->sf.getStatus()==StudentFeeStatus.PAID)
-               .map(StudentFee::getFeeStructure)
-               .mapToDouble(FeeStructure::getAmount)
+               .mapToDouble(StudentFee::getAmount)
                .sum();
 
        Double totalPendingFee = studentFee.stream()
                .filter(sf->sf.getStatus()==StudentFeeStatus.PENDING)
-               .map(StudentFee::getFeeStructure)
-               .mapToDouble(FeeStructure::getAmount)
+               .mapToDouble(StudentFee::getAmount)
                .sum();
 
         StudentResponse response = new StudentResponse();
@@ -1092,7 +1131,7 @@ public class FeeServiceImp implements FeeServices {
             RazorpayClient razorpayClient = new RazorpayClient(apiKey,apiSecret);
             JSONObject orderRequest = new JSONObject();
 
-            orderRequest.put("amount",studentFee.getFeeStructure().getAmount()*100);
+            orderRequest.put("amount",studentFee.getAmount()*100);
             orderRequest.put("currency","INR");
 
             String date = LocalDate.now()
@@ -1169,7 +1208,7 @@ public class FeeServiceImp implements FeeServices {
                     bankTransactionId = acquirerData.getString("bank_transaction_id");
                 }
 
-                feePayment.setAmount(studentFee.getFeeStructure().getAmount());
+                feePayment.setAmount(studentFee.getAmount());
                 feePayment.setPaymentMode(payment.get("method").toString().toUpperCase());
                 feePayment.setReceiptNumber(receiptNo);
                 feePayment.setTransactionId(bankTransactionId);

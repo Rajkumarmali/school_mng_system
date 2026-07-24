@@ -2,8 +2,9 @@ import React, { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom';
 import './FeeStudentDetails.css'
 import { useDispatch, useSelector } from 'react-redux';
-import { downloadFeeReceipt, getFeeStudentById, payFeeByCash } from '../../state/fee/Action';
+import { downloadFeeReceipt, getFeeStudentById, payFeeByCash } from '../../../../state/fee/Action';
 import { jwtDecode } from 'jwt-decode';
+
 
 
 const FeeStudentDetails = () => {

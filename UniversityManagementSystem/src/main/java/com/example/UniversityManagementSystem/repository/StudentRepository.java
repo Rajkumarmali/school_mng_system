@@ -2,6 +2,7 @@ package com.example.UniversityManagementSystem.repository;
 
 import com.example.UniversityManagementSystem.entity.Class;
 import com.example.UniversityManagementSystem.entity.Department;
+import com.example.UniversityManagementSystem.entity.Scholarship;
 import com.example.UniversityManagementSystem.entity.Student;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,4 +19,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Page<Student> findByClasses(Class clas, Pageable pageable);
 
     Student findByUserId(Long userId);
+
+    Page<Student> findByScholarships(Scholarship scholarship, Pageable pageable);
 }

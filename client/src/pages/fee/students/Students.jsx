@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import './Students.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom';
-import { getStudents } from '../../state/fee/Action';
+import { getStudents } from '../../../state/fee/Action';
 import StudentDetails from './StudentDetails';
 
 const Students = () => {

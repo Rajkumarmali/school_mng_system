@@ -22,6 +22,7 @@ public class StudentResponse implements Serializable {
     private Double totalFee;
     private Double totalPaidFee;
     private Double totalPendingFee;
+    private Double totalScholarship;
 
 
     public StudentResponse() {
@@ -184,5 +185,13 @@ public class StudentResponse implements Serializable {
 
     public void setDepartmentCode(String departmentCode) {
         this.departmentCode = departmentCode;
+    }
+
+    public Double getTotalScholarship() {
+        return totalScholarship;
+    }
+
+    public void setTotalScholarship(Double totalScholarship) {
+        this.totalScholarship = totalScholarship;
     }
 }

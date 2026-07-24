@@ -14,6 +14,7 @@ public class FeeStructureRequest {
     private LocalDateTime dueDate;
     private Long feeTypeId;
     private FeeAssignmentType feeAssignmentType;
+    private Boolean applyScholarship=false;
 
 
     public FeeStructureRequest() {
@@ -101,6 +102,14 @@ public class FeeStructureRequest {
 
     public void setFeeAssignmentType(FeeAssignmentType feeAssignmentType) {
         this.feeAssignmentType = feeAssignmentType;
+    }
+
+    public Boolean getApplyScholarship() {
+        return applyScholarship;
+    }
+
+    public void setApplyScholarship(Boolean applyScholarship) {
+        this.applyScholarship = applyScholarship;
     }
 }
 

@@ -23,6 +23,7 @@ public class FeeStructureResponse implements Serializable {
     private Integer totalStudent;
     private Integer totalPaidStudent;
     private Integer totalUnPaidStudent;
+    private Boolean applyScholarship;
 
     public FeeStructureResponse() {
     }
@@ -182,5 +183,13 @@ public class FeeStructureResponse implements Serializable {
 
     public void setStatus(FeeStructureStatus status) {
         this.status = status;
+    }
+
+    public Boolean getApplyScholarship() {
+        return applyScholarship;
+    }
+
+    public void setApplyScholarship(Boolean applyScholarship) {
+        this.applyScholarship = applyScholarship;
     }
 }

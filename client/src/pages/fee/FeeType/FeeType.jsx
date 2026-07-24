@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react'
 import './FeeType.css'
 import { jwtDecode } from 'jwt-decode'
 import { useDispatch, useSelector } from 'react-redux'
-import { createFeeType, deleteFeeType, getAllFeeType, getFeeTypeById, updateFeeType } from '../../state/fee/Action'
+import { createFeeType, deleteFeeType, getAllFeeType, getFeeTypeById, updateFeeType } from '../../../state/fee/Action'
+
+
 
 const FeeType = () => {
 

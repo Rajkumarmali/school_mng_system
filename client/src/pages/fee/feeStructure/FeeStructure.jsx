@@ -3,7 +3,7 @@ import './FeeStructure.css'
 import { jwtDecode } from 'jwt-decode'
 import { useSearchParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { createFeeStructure, deleteFeeStructure, getAllFeeStructure, getAllFeeType } from '../../state/fee/Action'
+import { createFeeStructure, deleteFeeStructure, getAllFeeStructure, getAllFeeType } from '../../../state/fee/Action'
 import FeeStructureDetails from './FeeStructureDetails'
 
 const FeeStructure = () => {
@@ -30,7 +30,8 @@ const FeeStructure = () => {
         departmentCode: "",
         dueDate: "",
         feeTypeId: 0,
-        feeAssignmentType: "ADD_STUDENTS"
+        feeAssignmentType: "ADD_STUDENTS",
+        applyScholarship: false,
     })
 
     const handleChange = (e) => {
@@ -188,6 +189,7 @@ const FeeStructure = () => {
                                     <th>Amount</th>
                                     <th>DueDate</th>
                                     <th>Status</th>
+                                    <th>Scholarship</th>
                                     <th className='text-center'>Action</th>
                                 </tr>
                             </thead>
@@ -207,6 +209,7 @@ const FeeStructure = () => {
                                                     new Date(fee.dueDate).toLocaleDateString("en-GB").replace(/\//g, "-")
                                                 }</td>
                                                 <td>{fee.status}</td>
+                                                <td>{fee.applyScholarship ? "Yes" : "No"}</td>
                                                 <td className='text-center'>
                                                     <button
                                                         className="btn btn-sm custom-reset-btn me-2"
@@ -392,6 +395,18 @@ const FeeStructure = () => {
                                     >
                                         <option value="ADD_STUDENTS">Individual Student</option>
                                         <option value="ALL_CLASS_STUDENTS"> All Students of a class</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Appply Scholarship</label>
+                                    <select
+                                        className="modal-input"
+                                        name='applyScholarship'
+                                        value={feeStructureData.applyScholarship}
+                                        onChange={handleChange}
+                                    >
+                                        <option value="false">No</option>
+                                        <option value="true">Yes</option>
                                     </select>
                                 </div>
                             </div>

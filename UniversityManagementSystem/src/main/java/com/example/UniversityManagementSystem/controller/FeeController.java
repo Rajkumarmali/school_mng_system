@@ -170,7 +170,7 @@ public class FeeController {
     public ResponseEntity<Page<StudentFeeResponse>> getStudentFeeByStudentId(@PathVariable Long id,
                                                                                @RequestParam(defaultValue = "0") int pageNumber,
                                                                                @RequestParam(defaultValue = "10") int pageSize){
-         Page<StudentFeeResponse> res = feeServices.getStudentFeeByStudentI(id,pageNumber,pageSize);
+         Page<StudentFeeResponse> res = feeServices.getStudentFeeByStudentId(id,pageNumber,pageSize);
          return new ResponseEntity<>(res,HttpStatus.OK);
     }
 

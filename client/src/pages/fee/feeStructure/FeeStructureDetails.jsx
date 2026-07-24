@@ -2,10 +2,18 @@ import React, { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import './FeeStructureDetatils.css'
 import { useDispatch, useSelector } from 'react-redux';
-import { assignFeeStructureToStudent, getFeeStructureById, updateFeeStructure } from '../../state/fee/Action';
-import FeeStudents from './FeeStudents';
+import { assignFeeStructureToStudent, getFeeStructureById, updateFeeStructure } from '../../../state/fee/Action';
+import FeeStudents from './student/FeeStudents';
+import { jwtDecode } from 'jwt-decode';
+
 
 const FeeStructureDetails = () => {
+
+    const token = localStorage.getItem("token")
+    const decoded = jwtDecode(token)
+    const roles = decoded.roles;
+    const isAccountant = roles.includes("ACCOUNTANT")
+
     const [searchParams, setSearchParams] = useSearchParams();
     const tab = searchParams.get("tab")
     const feeStructureId = searchParams.get("id");
@@ -132,14 +140,18 @@ const FeeStructureDetails = () => {
                     <div>
                         <div className="fee-structure-detail-header">
                             <div>
-                                <button
-                                    className="back-fee-structure-detail-btn"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#studentModal"
-                                >
-                                    <i className="bi bi-plus-circle me-2"></i>
-                                    Add Student
-                                </button>
+                                {
+                                    isAccountant &&
+                                    <button
+                                        className="back-fee-structure-detail-btn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#studentModal"
+                                    >
+                                        <i className="bi bi-plus-circle me-2"></i>
+                                        Add Student
+                                    </button>
+                                }
+
                             </div>
 
                             <button
@@ -170,6 +182,10 @@ const FeeStructureDetails = () => {
                                 <div>
                                     <i className="bi bi-info-circle-fill"></i>
                                     <span> <strong>Status :  </strong>{fee?.feeStructure?.status}</span>
+                                </div>
+                                <div>
+                                    <i className="bi bi-info-circle-fill"></i>
+                                    <span> <strong>Apply Scholarship :  </strong>{fee?.feeStructure?.applyScholarship ? "Yes" : "No"}</span>
                                 </div>
                             </div>
                             <div className="fee-structure-details-contact">
