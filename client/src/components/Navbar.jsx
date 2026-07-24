@@ -88,7 +88,7 @@ const Navbar = ({ toggleSidebar }) => {
                         </button>
                         <div className="dropdown">
                             <button
-                                className="btn profile-btn dropdown-toggle"
+                                className="btn profile-btn"
                                 data-bs-toggle="dropdown"
                             >
                                 {

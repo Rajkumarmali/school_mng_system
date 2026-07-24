@@ -1,4 +1,4 @@
-.departments-container {
+.course-container {
     margin-left: 200px;
     padding: 70px 25px;
     background: linear-gradient(
@@ -6,21 +6,22 @@
         #3ea0d3,
         #3c58c9
     );
-    min-height: 100vh; 
+    min-height: 100vh;
 }
-.departments-header {
+
+.course-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
 
-.departments-header h2 {
+.course-header h2 {
     margin: 0;
     font-weight: 700;
 }
 
-.add-departments-btn {
+.add-course-btn {
     background: transparent;
     color: white;
     border: 1px solid white;
@@ -29,39 +30,40 @@
     font-weight: 600;
     transition: 0.3s;
 }
-.add-departments-btn:hover {
+.add-course-btn:hover {
     background: transparent;
     color: #3c58c9;
 }
 
-.departments-card {
+.course-card {
     background: rgba(255, 255, 255, 0.08);
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 15px;
+    padding: 20px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
-.departments-table {
+.course-table {
     margin-bottom: 0;
 }
 
-.departments-table thead {
+.course-table thead {
   background: transparent !important;
 }
 
-.departments-table th {
+.course-table th {
     background: transparent !important;
     font-weight: 600;
     color: #495057;
     padding: 14px;
 }
 
-.departments-table td {
+.course-table td {
     background: transparent !important;
     vertical-align: middle;
     padding: 14px;
 }
+
 .pagination-container {
     display: flex;
     justify-content: space-between;
@@ -128,56 +130,8 @@
     font-size: 24px;
     padding: 0 5px;
 }
-.custom-modal {
-    background: linear-gradient(
-        180deg,
-        #3ea0d3,
-        #3c58c9
-    ); 
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    border-radius:15px !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    color: white;
-}
 
-.form-section-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: #3c58c9;
-    margin-bottom: 15px;
-    border-bottom: 2px solid #e5e7eb;
-    padding-bottom: 8px;
-}
-.modal-input {
-    width: 100%;
-    background: transparent;
-    padding: 10px 5px;
-    color: white;
-    outline: none;
-}
-
-.modal-input::placeholder {
-    color: rgba(255,255,255,0.8);
-}
-
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-}
-
-.form-grid label {
-    font-weight: 500;
-    margin-bottom: 6px;
-    display: block;
-}
-
-.form-control,
-.form-select {
-    height: 45px;
-}
-
-.departments-modal-btn {
+.course-modal-btn {
     background: transparent;
     border: 1px solid rgba(255,255,255,0.5);
     margin: 5px;
@@ -186,7 +140,7 @@
     border-radius: 8px;
 }
 
-.departments-modal-btn:hover {
+.course-modal-btn:hover {
    background: transparent;
     color: white;
 }

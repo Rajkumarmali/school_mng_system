@@ -1,32 +1,20 @@
-package com.example.UniversityManagementSystem.dto.department;
+package com.example.UniversityManagementSystem.dto.course;
 
 import com.example.UniversityManagementSystem.entity.type.Gender;
 
 import java.io.Serializable;
 
 
-public class DepartmentStudentsResponse implements Serializable {
+public class CourseStudentResponse implements Serializable {
     private Long id;
     private String rollNumber;
-    private String firstName;
-    private String lastName;
+    private String name;
     private String email;
     private String registrationNumber;
     private String phoneNumber;
     private Gender gender;
 
-    public DepartmentStudentsResponse() {
-    }
-
-    public DepartmentStudentsResponse(Long id, String firstName, String lastName, String email,
-                                      String registrationNumber, String phoneNumber, Gender gender) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.registrationNumber = registrationNumber;
-        this.phoneNumber = phoneNumber;
-        this.gender = gender;
+    public CourseStudentResponse() {
     }
 
     public Long getId() {
@@ -35,22 +23,6 @@ public class DepartmentStudentsResponse implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public String getEmail() {
@@ -91,5 +63,13 @@ public class DepartmentStudentsResponse implements Serializable {
 
     public void setRollNumber(String rollNumber) {
         this.rollNumber = rollNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

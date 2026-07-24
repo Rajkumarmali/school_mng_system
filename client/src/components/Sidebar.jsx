@@ -36,6 +36,12 @@ const Sidebar = () => {
                     isAdmin &&
                     <>
                         <li>
+                            <Link to="/course" className="menu-item">
+                                <i className="bi bi-journal-bookmark-fill me-2"></i>
+                                Course
+                            </Link>
+                        </li>
+                        <li>
                             <Link to="/teacher" className="menu-item">
                                 <i className="bi bi-person-workspace me-2"></i>
                                 Teachers

@@ -16,6 +16,7 @@ public class FeeStructure {
     private Double amount;
     private String academicYear;
     private LocalDateTime dueDate;
+    private Boolean applyScholarship;
 
     @ManyToOne
     private College college;
@@ -171,5 +172,13 @@ public class FeeStructure {
 
     public void setDueDate(LocalDateTime dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public Boolean getApplyScholarship() {
+        return applyScholarship;
+    }
+
+    public void setApplyScholarship(Boolean applyScholarship) {
+        this.applyScholarship = applyScholarship;
     }
 }

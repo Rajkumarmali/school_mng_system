@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
+    Page<Student> findByCollegeId(Long collegeId, Pageable pageable);
 
     Page<Student> findByDepartment(Department department, Pageable pageable);
 
@@ -22,5 +23,5 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     Page<Student> findByCollegeIdAndRollNumberNull(Long collegeId, Pageable pageable);
 
-    Page<Student> findByCollegeId(Long collegeId, Pageable pageable);
+    Page<Student> findByDepartmentCourseId(Long courseId, Pageable pageable);
 }
