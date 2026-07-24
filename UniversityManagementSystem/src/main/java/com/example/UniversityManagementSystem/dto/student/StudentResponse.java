@@ -1,8 +1,6 @@
 package com.example.UniversityManagementSystem.dto.student;
 
-import com.example.UniversityManagementSystem.dto.address.AddressRequest;
 import com.example.UniversityManagementSystem.dto.address.AddressResponse;
-import com.example.UniversityManagementSystem.dto.parent.ParentRequest;
 import com.example.UniversityManagementSystem.dto.parent.ParentResponse;
 import com.example.UniversityManagementSystem.entity.type.Cast;
 import com.example.UniversityManagementSystem.entity.type.Gender;
@@ -12,6 +10,8 @@ import java.time.LocalDate;
 
 public class StudentResponse implements Serializable {
     private Long id;
+    private String rollNumber;
+    private String enrollmentNumber;
     private String firstName;
     private String lastName;
     private String email;
@@ -178,6 +178,22 @@ public class StudentResponse implements Serializable {
 
     public void setDepartmentName(String departmentName) {
         this.departmentName = departmentName;
+    }
+
+    public String getRollNumber() {
+        return rollNumber;
+    }
+
+    public void setRollNumber(String rollNumber) {
+        this.rollNumber = rollNumber;
+    }
+
+    public String getEnrollmentNumber() {
+        return enrollmentNumber;
+    }
+
+    public void setEnrollmentNumber(String enrollmentNumber) {
+        this.enrollmentNumber = enrollmentNumber;
     }
 }
 

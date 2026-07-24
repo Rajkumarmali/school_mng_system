@@ -16,7 +16,8 @@ const Department = () => {
     const [departmentData, setDepartmentData] = useState({
         name: "",
         description: "",
-        hodTeacherEmailOrEmplId: ""
+        hodTeacherEmailOrEmplId: "",
+        courseCode: ""
     })
 
     const clearData = () => {
@@ -127,13 +128,14 @@ const Department = () => {
                     Add New Department
                 </button>
             </div>
-            <div className="students-card">
+            <div className="departments-card">
                 <table className="table departments-table">
                     <thead>
                         <tr>
                             <th>S.No</th>
-                            <th>DepartmentName</th>
                             <th>Code</th>
+                            <th>Name</th>
+                            <th>Course</th>
                             <th>Hod Name</th>
                             <th>Hod Email</th>
                             <th>Hod Phone</th>
@@ -146,8 +148,9 @@ const Department = () => {
                                 department?.departments?.content?.map((department, index) =>
                                     <tr key={department.id}>
                                         <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                        <td>{department.name}</td>
                                         <td>{department.code}</td>
+                                        <td>{department.name}</td>
+                                        <td>{department.courseCode}</td>
                                         <td>{department.hodName}</td>
                                         <td>{department.hodEmail}</td>
                                         <td>{department.hodPhoneNumber}</td>
@@ -260,6 +263,15 @@ const Department = () => {
                                         className="modal-input"
                                         name='hodTeacherEmailOrEmplId'
                                         value={departmentData.hodTeacherEmailOrEmplId}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Course Code</label>
+                                    <input type="text"
+                                        className="modal-input"
+                                        name='courseCode'
+                                        value={departmentData.courseCode}
                                         onChange={handleChange}
                                     />
                                 </div>

@@ -1,10 +1,16 @@
 package com.example.UniversityManagementSystem.dto.department;
 
-public class DepartmentClassResponse {
+import com.example.UniversityManagementSystem.entity.type.ClassStatus;
+
+import java.io.Serializable;
+
+public class DepartmentClassResponse implements Serializable {
     private Long id;
     private String name;
     private String academicYear;
     private String semester;
+    private String classCode;
+    private ClassStatus classStatus;
     private String classTeacherName;
     private String classTeacherEmail;
     private String classTeacherPhoneNumber;
@@ -12,11 +18,13 @@ public class DepartmentClassResponse {
     public DepartmentClassResponse() {
     }
 
-    public DepartmentClassResponse(Long id, String name, String academicYear, String semester, String classTeacherName, String classTeacherEmail, String classTeacherPhoneNumber) {
+    public DepartmentClassResponse(Long id, String name, String academicYear, String semester, String classCode, ClassStatus classStatus, String classTeacherName, String classTeacherEmail, String classTeacherPhoneNumber) {
         this.id = id;
         this.name = name;
         this.academicYear = academicYear;
         this.semester = semester;
+        this.classCode = classCode;
+        this.classStatus = classStatus;
         this.classTeacherName = classTeacherName;
         this.classTeacherEmail = classTeacherEmail;
         this.classTeacherPhoneNumber = classTeacherPhoneNumber;
@@ -76,5 +84,21 @@ public class DepartmentClassResponse {
 
     public void setClassTeacherPhoneNumber(String classTeacherPhoneNumber) {
         this.classTeacherPhoneNumber = classTeacherPhoneNumber;
+    }
+
+    public String getClassCode() {
+        return classCode;
+    }
+
+    public void setClassCode(String classCode) {
+        this.classCode = classCode;
+    }
+
+    public ClassStatus getClassStatus() {
+        return classStatus;
+    }
+
+    public void setClassStatus(ClassStatus classStatus) {
+        this.classStatus = classStatus;
     }
 }

@@ -2,6 +2,8 @@ package com.example.UniversityManagementSystem.services.Implementation;
 
 import com.example.UniversityManagementSystem.dto.address.AddressResponse;
 import com.example.UniversityManagementSystem.dto.parent.ParentResponse;
+import com.example.UniversityManagementSystem.dto.student.DocumentRequest;
+import com.example.UniversityManagementSystem.dto.student.DocumentResponse;
 import com.example.UniversityManagementSystem.dto.student.StudentRequest;
 import com.example.UniversityManagementSystem.dto.student.StudentResponse;
 import com.example.UniversityManagementSystem.entity.*;
@@ -10,20 +12,22 @@ import com.example.UniversityManagementSystem.entity.College;
 import com.example.UniversityManagementSystem.entity.Parent;
 import com.example.UniversityManagementSystem.entity.Student;
 import com.example.UniversityManagementSystem.entity.University;
-import com.example.UniversityManagementSystem.repository.CollegeRepository;
-import com.example.UniversityManagementSystem.repository.DepartmentRepository;
-import com.example.UniversityManagementSystem.repository.StudentRepository;
-import com.example.UniversityManagementSystem.repository.UniversityRepository;
+import com.example.UniversityManagementSystem.entity.type.DocumentStatus;
+import com.example.UniversityManagementSystem.repository.*;
 import com.example.UniversityManagementSystem.services.AddressService;
 import com.example.UniversityManagementSystem.services.AuthService;
 import com.example.UniversityManagementSystem.services.ParentServices;
 import com.example.UniversityManagementSystem.services.StudentServices;
 import jakarta.transaction.Transactional;
+
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -46,11 +50,13 @@ public class StudentServicesImp implements StudentServices {
     private final ParentServices parentServices;
     private final UniversityRepository universityRepository;
     private final DepartmentRepository departmentRepository;
+    private final StudentDocumentRepository studentDocumentRepository;
 
 
     public StudentServicesImp(StudentRepository studentRepository, CollegeRepository collegeRepository, AuthService authService, AddressService addressService, ParentServices parentServices,
                               UniversityRepository universityRepository,
-                              DepartmentRepository departmentRepository) {
+                              DepartmentRepository departmentRepository,
+                              StudentDocumentRepository studentDocumentRepository) {
         this.studentRepository = studentRepository;
         this.collegeRepository = collegeRepository;
         this.authService = authService;
@@ -58,6 +64,7 @@ public class StudentServicesImp implements StudentServices {
         this.parentServices = parentServices;
         this.universityRepository = universityRepository;
         this.departmentRepository = departmentRepository;
+        this.studentDocumentRepository = studentDocumentRepository;
     }
 
     @Transactional
@@ -163,6 +170,7 @@ public class StudentServicesImp implements StudentServices {
             parentResponse.setMotherNumber(parent.getMotherNumber());
             parentResponse.setMotherOccupation(parent.getMotherOccupation());
 
+            studentResponse.setRollNumber(student.getRollNumber());
             studentResponse.setId(student.getId());
             studentResponse.setFirstName(student.getFirstName());
             studentResponse.setLastName(student.getLastName());
@@ -211,6 +219,8 @@ public class StudentServicesImp implements StudentServices {
         parentResponse.setMotherNumber(parent.getMotherNumber());
         parentResponse.setMotherOccupation(parent.getMotherOccupation());
 
+        studentResponse.setRollNumber(student.getRollNumber());
+        studentResponse.setEnrollmentNumber(student.getEnrollmentNumber());
         studentResponse.setId(student.getId());
         studentResponse.setFirstName(student.getFirstName());
         studentResponse.setLastName(student.getLastName());
@@ -312,6 +322,159 @@ public class StudentServicesImp implements StudentServices {
         } catch (Exception ex){
             throw new RuntimeException(ex);
         }
+    }
+
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "studentDocuments",allEntries = true),
+    })
+    public String uploadDocument(Long studentId, DocumentRequest dto, MultipartFile file) {
+        try{
+            Student student = studentRepository.findById(studentId).orElseThrow(()->
+                    new IllegalArgumentException("Student not found"));
+
+            String uploadDir = "upload/student/document/"+studentId;
+            File folder  = new File(uploadDir);
+            if(!folder.exists()){
+                folder.mkdirs();
+            }
+
+            String fileName = UUID.randomUUID()+"_"+file.getOriginalFilename();
+            Path path = Paths.get(uploadDir,fileName);
+            Files.copy(
+                    file.getInputStream(),
+                    path,
+                    StandardCopyOption.REPLACE_EXISTING);
+
+            StudentDocument studentDocument = new StudentDocument();
+            studentDocument.setDocumentName(dto.getDocumentName());
+            studentDocument.setFileName(fileName);
+            studentDocument.setDocumentType(dto.getDocumentType());
+            studentDocument.setFilePath(path.toString());
+            studentDocument.setFileSize(file.getSize());
+            studentDocument.setStatus(DocumentStatus.PENDING);
+            studentDocument.setStudent(student);
+            studentDocument.setCreatedAt(LocalDateTime.now());
+            studentDocumentRepository.save(studentDocument);
+
+            return "Document upload successfully";
+        } catch (IOException e){
+            throw new RuntimeException("Failed to upload document",e);
+        }
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "studentDocuments",allEntries = true),
+            @CacheEvict(cacheNames = "studentDocument",key = "#documentId"),
+    })
+    public String updateDocument(Long documentId, DocumentRequest dto, MultipartFile file) {
+        try{
+              StudentDocument studentDocument = studentDocumentRepository.findById(documentId).orElseThrow(()->
+                      new IllegalArgumentException("Document not found"));
+
+              if (file!=null){
+                  Path oldPath=Paths.get(studentDocument.getFilePath());
+                  if(Files.exists(oldPath)){
+                      Files.delete(oldPath);
+                  }
+                  String uploadDir = "upload/student/document/"+studentDocument.getStudent().getId();
+                  File folder = new File(uploadDir);
+                  if(!folder.exists()){
+                      folder.mkdirs();
+                  }
+                  String fileName = UUID.randomUUID()+"_"+file.getOriginalFilename();
+                  Path newPath  = Paths.get(uploadDir,fileName);
+                  Files.copy(file.getInputStream(),
+                          newPath,
+                          StandardCopyOption.REPLACE_EXISTING);
+                  studentDocument.setFileName(fileName);
+                  studentDocument.setFilePath(newPath.toString());
+                  studentDocument.setFileSize(file.getSize());
+              }
+              studentDocument.setStatus(DocumentStatus.PENDING);
+              studentDocument.setDocumentType(dto.getDocumentType());
+              studentDocument.setDocumentName(dto.getDocumentName());
+              studentDocument.setUpdatedAt(LocalDateTime.now());
+              studentDocumentRepository.save(studentDocument);
+
+              return  "Update document successfully";
+        }  catch (Exception e){
+            throw new RuntimeException("Failed to update document",e);
+        }
+    }
+
+    @Override
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "studentDocuments",allEntries = true),
+            @CacheEvict(cacheNames = "studentDocument",key = "#documentId"),
+    })
+    public String updateDocumentStatus(Long documentId, String status) {
+        StudentDocument document = studentDocumentRepository.findById(documentId).orElseThrow(()->
+                new IllegalArgumentException("Document not found"));
+       System.out.println(status);
+        document.setStatus(DocumentStatus.valueOf(status));
+        studentDocumentRepository.save(document);
+        return "Status update successfully";
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "studentDocuments",allEntries = true),
+            @CacheEvict(cacheNames = "studentDocument",key = "#documentId"),
+    })
+    public String deleteDocument(Long documentId) {
+        StudentDocument studentDocument = studentDocumentRepository.findById(documentId).orElseThrow(()->
+                new IllegalArgumentException("Document not found"));
+        try{
+            Path path = Paths.get(studentDocument.getFilePath());
+            if(Files.exists(path)){
+                Files.delete(path);
+            }
+            studentDocumentRepository.delete(studentDocument);
+            return "Delete successfully";
+        } catch (Exception e){
+            throw new RuntimeException("Failed to upload document",e);
+        }
+    }
+
+    @Override
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @Cacheable(cacheNames = "studentDocuments",key = "#studentId")
+    public List<DocumentResponse> getStudentDocument(Long studentId) {
+        List<StudentDocument> documents = studentDocumentRepository.findByStudentId(studentId);
+        List<DocumentResponse> responses  = documents.stream().map(document->{
+            DocumentResponse res = new DocumentResponse();
+             res.setId(document.getId());
+             res.setDocumentName(document.getDocumentName());
+             res.setDocumentType(document.getDocumentType());
+             res.setStatus(document.getStatus());
+            return res;
+        }).toList();
+        return responses;
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    @Cacheable(cacheNames = "studentDocument",key = "#documentId")
+    public DocumentResponse getStudentDocumentById(Long documentId) {
+        StudentDocument document = studentDocumentRepository.findById(documentId).orElseThrow(()->
+                new IllegalArgumentException("Document not found"));
+
+        DocumentResponse response = new DocumentResponse();
+        response.setId(document.getId());
+        response.setDocumentName(document.getDocumentName());
+        response.setDocumentType(document.getDocumentType());
+        response.setStatus(document.getStatus());
+        response.setFilePath(document.getFilePath());
+        return response;
     }
 
 }

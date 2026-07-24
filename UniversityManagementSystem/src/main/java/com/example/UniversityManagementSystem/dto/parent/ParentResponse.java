@@ -3,6 +3,7 @@ package com.example.UniversityManagementSystem.dto.parent;
 import java.io.Serializable;
 
 public class ParentResponse implements Serializable {
+    private Long id;
     private String fatherName;
     private String fatherNumber;
     private String fatherOccupation;
@@ -70,5 +71,13 @@ public class ParentResponse implements Serializable {
 
     public void setMotherOccupation(String motherOccupation) {
         this.motherOccupation = motherOccupation;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

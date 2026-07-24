@@ -8,6 +8,7 @@ import { collegeReducer } from './college/Reducer'
 import { departmentReducer } from './department/Reducer'
 import { classReducer } from './class/Reducer'
 import { feeReducer } from './fee/Reducer'
+import { courseReducer } from './course/Reducer'
 import { notificationReducer } from './notification/Reducer'
 import { scholarshipReducer } from './scholarship/Reducer'
 
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
     department: departmentReducer,
     class: classReducer,
     fee: feeReducer,
+    course: courseReducer,
     notification: notificationReducer,
     scholarship: scholarshipReducer
 })

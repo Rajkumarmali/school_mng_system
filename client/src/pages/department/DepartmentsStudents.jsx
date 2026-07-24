@@ -93,6 +93,7 @@ const DepartmentsStudents = ({ departmentId }) => {
                 <thead>
                     <tr>
                         <th>S No.</th>
+                        <th>Roll No.</th>
                         <th>Registration Number</th>
                         <th>Name</th>
                         <th>Email</th>
@@ -106,6 +107,7 @@ const DepartmentsStudents = ({ departmentId }) => {
                             department?.departmentsStudents?.content?.map((student, index) =>
                                 <tr key={student.id}>
                                     <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                    <td>{student.rollNumber}</td>
                                     <td>{student.registrationNumber}</td>
                                     <td>{student.firstName}{" "}{student.lastName}</td>
                                     <td>{student.email}</td>

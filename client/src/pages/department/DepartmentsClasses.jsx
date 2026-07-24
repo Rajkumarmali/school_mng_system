@@ -95,9 +95,11 @@ const DepartmentsClasses = ({ departmentId }) => {
                 <thead>
                     <tr>
                         <th>S No.</th>
+                        <th>Code</th>
                         <th>Name </th>
                         <th>Academic Year</th>
                         <th>Semester</th>
+                        <th>Status</th>
                         <th>Class Teacher</th>
                         <th>Class Teacher Email</th>
                         <th>Class Teacher Phone</th>
@@ -109,9 +111,11 @@ const DepartmentsClasses = ({ departmentId }) => {
                             department?.departmentsClasses?.content?.map((clas, index) =>
                                 <tr key={clas.id}>
                                     <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                    <td>{clas.classCode}</td>
                                     <td>{clas.name}</td>
                                     <td>{clas.academicYear}</td>
                                     <td>{clas.semester}</td>
+                                    <td>{clas.classStatus}</td>
                                     <td>{clas.classTeacherName}</td>
                                     <td>{clas.classTeacherEmail}</td>
                                     <td>{clas.classTeacherPhoneNumber}</td>

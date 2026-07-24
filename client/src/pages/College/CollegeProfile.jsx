@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import './CollegeProfile.css'
 import { useDispatch, useSelector } from 'react-redux';
 import { getCollegeById, updateCollege } from '../../state/college/Action';
+import Student from './student/Student';
 
 const CollegeProfile = () => {
 
-    const location = useLocation();
-    const collegeId = location.state?.collegeId;
-
     const dispatch = useDispatch();
     const college = useSelector((state) => state.college);
+
+    const [searchParams, setSearchParams] = useSearchParams();
+    const activeTab = searchParams.get("tab") || "overview"
+    const collegeId = searchParams.get("collegeId")
 
     const [isEditModal, setIsEditModal] = useState(false);
     const [isEditAddressModal, setIsEditAddressModal] = useState(false);
@@ -98,88 +100,137 @@ const CollegeProfile = () => {
 
     return (
         <div className="college-profile">
-            <div className="college-card">
-                <div className="college-header">
-                    <div className="college-logo">
-                        <i className="bi bi-building"></i>
-                    </div>
-                    <div>
-                        <h2>{college.college?.name}({college.college?.shortName})</h2>
-                        <p>College Code : {college.college?.collegeCode}</p>
-                        <p>Email : {college?.college?.email}</p>
-                        <div className="section-header">
-                            <p>Phone : {college?.college?.phoneNumber}</p>
-                            <button className="edit-icon-btn"
-                                data-bs-toggle="modal"
-                                data-bs-target="#exampleModal"
-                                onClick={handleEdit}
-                            >
-                                <i className="bi bi-pencil-square"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div className="stats-container">
-                    <div className="stat-card">
-                        <i className="bi bi-mortarboard-fill"></i>
-                        <h3>1000</h3>
-                        <span>Total Students</span>
-                    </div>
-                    <div className="stat-card">
-                        <i className="bi bi-person-workspace"></i>
-                        <h3>1000</h3>
-                        <span>Total Teachers</span>
-                    </div>
-                </div>
-
-                <div className="college-info">
-                    <div className="section-header">
-                        <h4>Address : </h4>
-                        <button className="edit-icon-btn"
-                            data-bs-toggle="modal"
-                            data-bs-target="#exampleModal"
-                            onClick={handleEditAddress}>
-                            <i className="bi bi-pencil-square"></i>
+            <nav className="college-nav-card navbar-expand-lg ">
+                <ul className="navbar-nav me-auto mb-2 mb-lg-0 gap-3">
+                    <li className="nav-item">
+                        <button
+                            className="nav-link"
+                            onClick={() => setSearchParams({ collegeId, tab: "overview" })}
+                        >
+                            Overview
                         </button>
-                    </div>
+                    </li>
+                    <li className="nav-item">
+                        <button
+                            className="nav-link"
+                            onClick={() => setSearchParams({ collegeId, tab: "student" })}
+                        >
+                            Students
+                        </button>
+                    </li>
+                    <li className="nav-item">
+                        <button
+                            className="nav-link"
+                            onClick={() => setSearchParams({ collegeId, tab: "admission" })}
+                        >
+                            Admissions
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+            <div className="college-card">
+                {
 
-                    <div className="info-grid">
+                    (activeTab === 'student' || activeTab === "admission") ?
                         <div>
-                            <strong>Address :</strong> {college?.college?.addressResponse?.address}
+                            <Student />
+                        </div>
+                        :
+                        <div>
+                            <div className="college-header">
+                                <div className="college-logo">
+                                    <i className="bi bi-building"></i>
+                                </div>
+                                <div>
+                                    <h2>{college.college?.name}({college.college?.shortName})</h2>
+                                    <p>College Code : {college.college?.collegeCode}</p>
+                                    <p>Email : {college?.college?.email}</p>
+                                    <div className="section-header">
+                                        <p>Phone : {college?.college?.phoneNumber}</p>
+                                        <button className="edit-icon-btn"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#exampleModal"
+                                            onClick={handleEdit}
+                                        >
+                                            <i className="bi bi-pencil-square"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="stats-container">
+                                <div className="stat-card">
+                                    <i className="bi bi-mortarboard-fill"></i>
+                                    <h3>{college?.college?.totalStudent}</h3>
+                                    <span>Total Students</span>
+                                </div>
+                                <div className="stat-card">
+                                    <i className="bi bi-person-workspace"></i>
+                                    <h3>{college?.college?.totalFaculty}</h3>
+                                    <span>Faculty</span>
+                                </div>
+                                <div className="stat-card">
+                                    <i className="bi bi-diagram-3-fill"></i>
+                                    <h3>{college?.college?.totalDepartment}</h3>
+                                    <span>Department</span>
+                                </div>
+                                <div className="stat-card">
+                                    <i className="bi bi-journal-bookmark-fill"></i>
+                                    <h3>{college?.college?.totalCourse}</h3>
+                                    <span>Courses</span>
+                                </div>
+                            </div>
+
+                            <div className="college-info">
+                                <div className="section-header">
+                                    <h4>Address : </h4>
+                                    <button className="edit-icon-btn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal"
+                                        onClick={handleEditAddress}>
+                                        <i className="bi bi-pencil-square"></i>
+                                    </button>
+                                </div>
+                                <div className="info-grid">
+                                    <div>
+                                        <strong>Address :</strong> {college?.college?.addressResponse?.address}
+                                    </div>
+
+                                    <div>
+                                        <strong>City :</strong>{college?.college?.addressResponse?.city}
+                                    </div>
+
+                                    <div>
+                                        <strong>District :</strong>{college?.college?.addressResponse?.district}
+                                    </div>
+
+                                    <div>
+                                        <strong>State :</strong>{college?.college?.addressResponse?.state}
+                                    </div>
+
+                                    <div>
+                                        <strong>Country :</strong> {college?.college?.addressResponse?.country}
+                                    </div>
+
+                                    <div>
+                                        <strong>Pincode :</strong> {college?.college?.addressResponse?.pincode}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div>
-                            <strong>City :</strong>{college?.college?.addressResponse?.city}
-                        </div>
-
-                        <div>
-                            <strong>District :</strong>{college?.college?.addressResponse?.district}
-                        </div>
-
-                        <div>
-                            <strong>State :</strong>{college?.college?.addressResponse?.state}
-                        </div>
-
-                        <div>
-                            <strong>Country :</strong> {college?.college?.addressResponse?.country}
-                        </div>
-
-                        <div>
-                            <strong>Pincode :</strong> {college?.college?.addressResponse?.pincode}
-                        </div>
-                    </div>
-                </div>
+                }
             </div>
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-xl">
-                    <div class="modal-content custom-modal">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">
+
+            <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered modal-xl">
+                    <div className="modal-content custom-modal">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="exampleModalLabel">
                                 {isEditModal ? "Edit College Details" : "Edit Address "}
                             </h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">
+                        <div className="modal-body">
                             {
                                 isEditModal ?
                                     <div className="form-grid">
@@ -278,7 +329,7 @@ const CollegeProfile = () => {
                                     </div>
                             }
                         </div>
-                        <div class="modal-footer ">
+                        <div className="modal-footer ">
                             <button type="button" className="college-modal-btn" data-bs-dismiss="modal">Close</button>
                             <button type="button" className="college-modal-btn"
                                 data-bs-dismiss="modal" onClick={handleUpdate}
