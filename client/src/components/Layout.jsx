@@ -17,6 +17,7 @@ import ClassDetails from '../pages/classes/ClassDetails';
 import Fee from '../pages/fee/Fee';
 import StudentsFee from '../pages/student/fee/StudentsFee';
 import Course from '../pages/course/Course';
+import Notification from '../pages/notification/Notification';
 
 
 const Layout = () => {
@@ -45,6 +46,7 @@ const Layout = () => {
                         <Route path='classes/details/:classId' element={<ClassDetails />} />
                         <Route path='department/details/:departmentId' element={<DepartmentDetails />} />
                         <Route path='fee' element={<Fee />} />
+                        <Route path='notification' element={<Notification />} />
                     </Routes>
                 </div>
 
