@@ -56,6 +56,12 @@ public class Student {
     @OneToMany(mappedBy = "student")
     private List<StudentFee> studentFees=new ArrayList<>();
 
+    @OneToMany(mappedBy = "student")
+    private List<StudentDocument> studentDocument = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "students")
+    private List<Scholarship> scholarships = new ArrayList<>() ;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -261,5 +267,21 @@ public class Student {
 
     public void setRollNumber(String rollNumber) {
         this.rollNumber = rollNumber;
+    }
+
+    public List<StudentDocument> getStudentDocument() {
+        return studentDocument;
+    }
+
+    public void setStudentDocument(List<StudentDocument> studentDocument) {
+        this.studentDocument = studentDocument;
+    }
+
+    public List<Scholarship> getScholarships() {
+        return scholarships;
+    }
+
+    public void setScholarships(List<Scholarship> scholarships) {
+        this.scholarships = scholarships;
     }
 }

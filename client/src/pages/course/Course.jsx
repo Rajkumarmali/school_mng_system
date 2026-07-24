@@ -174,7 +174,7 @@ const Course = () => {
                                             :
                                             <tr>
                                                 <td colSpan="8" className="text-center">
-                                                    No Student Found
+                                                    No Course Found
                                                 </td>
                                             </tr>
                                     }

@@ -2,9 +2,12 @@ package com.example.UniversityManagementSystem.dto.department;
 
 import com.example.UniversityManagementSystem.entity.type.Gender;
 
+import java.io.Serializable;
 
-public class DepartmentStudentsResponse {
+
+public class DepartmentStudentsResponse implements Serializable {
     private Long id;
+    private String rollNumber;
     private String firstName;
     private String lastName;
     private String email;
@@ -80,5 +83,13 @@ public class DepartmentStudentsResponse {
 
     public void setGender(Gender gender) {
         this.gender = gender;
+    }
+
+    public String getRollNumber() {
+        return rollNumber;
+    }
+
+    public void setRollNumber(String rollNumber) {
+        this.rollNumber = rollNumber;
     }
 }
