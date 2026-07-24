@@ -4,6 +4,7 @@ public class DepartmentRequest {
     private String name;
     private String description;
     private String hodTeacherEmailOrEmplId;
+    private String courseCode;
 
     public DepartmentRequest() {
     }
@@ -36,5 +37,13 @@ public class DepartmentRequest {
 
     public void setHodTeacherEmailOrEmplId(String hodTeacherEmailOrEmplId) {
         this.hodTeacherEmailOrEmplId = hodTeacherEmailOrEmplId;
+    }
+
+    public String getCourseCode() {
+        return courseCode;
+    }
+
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
     }
 }

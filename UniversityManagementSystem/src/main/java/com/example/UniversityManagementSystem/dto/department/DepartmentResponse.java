@@ -1,10 +1,13 @@
 package com.example.UniversityManagementSystem.dto.department;
 
-public class DepartmentResponse {
+import java.io.Serializable;
+
+public class DepartmentResponse implements Serializable {
     private Long id;
     private String name;
     private String description;
     private String code;
+    private String courseCode;
     private String hodName;
     private String hodEmail;
     private String hodPhoneNumber;
@@ -117,5 +120,13 @@ public class DepartmentResponse {
 
     public void setTotalClass(Integer totalClass) {
         this.totalClass = totalClass;
+    }
+
+    public String getCourseCode() {
+        return courseCode;
+    }
+
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
     }
 }
