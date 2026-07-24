@@ -10,7 +10,7 @@ import {
     GET_STUDENT_DOCUMENTBYID_SUCCESS,
     GET_STUDENTS_FEEOVERVIEW_FAILER, GET_STUDENTS_FEEOVERVIEW_REQUEST, GET_STUDENTS_FEEOVERVIEW_SUCCESS,
     GET_STUDENTS_PAIDFEE_FAILER, GET_STUDENTS_PAIDFEE_REQUEST, GET_STUDENTS_PAIDFEE_SUCCESS, GET_STUDENTS_UNPAIDFEE_FAILER, GET_STUDENTS_UNPAIDFEE_REQUEST,
-    GET_STUDENTS_UNPAIDFEE_SUCCESS, UPDATE_STUDENT_DOCUMENT_FAILER, UPDATE_STUDENT_DOCUMENT_REQUEST, UPDATE_STUDENT_DOCUMENT_SUCCESS, UPDATE_STUDENT_FAILER, UPDATE_STUDENT_IMAGE_FAILER, UPDATE_STUDENT_IMAGE_REQUEST,
+    GET_STUDENTS_UNPAIDFEE_SUCCESS, UPDATE_STUDENT_DOCUMENT_FAILER, UPDATE_STUDENT_DOCUMENT_REQUEST, UPDATE_STUDENT_DOCUMENT_STATUS_FAILER, UPDATE_STUDENT_DOCUMENT_STATUS_REQUEST, UPDATE_STUDENT_DOCUMENT_STATUS_SUCCESS, UPDATE_STUDENT_DOCUMENT_SUCCESS, UPDATE_STUDENT_FAILER, UPDATE_STUDENT_IMAGE_FAILER, UPDATE_STUDENT_IMAGE_REQUEST,
     UPDATE_STUDENT_IMAGE_SUCCESS, UPDATE_STUDENT_REQUEST, UPDATE_STUDENT_SUCCESS,
     UPLOAD_STUDENT_DOCUMENT_FAILER,
     UPLOAD_STUDENT_DOCUMENT_REQUEST,
@@ -230,6 +230,24 @@ export const updateStudentDocument = (documentId, documentData, file) => async (
         dispatch({ type: UPDATE_STUDENT_DOCUMENT_SUCCESS, payload: data })
     } catch (err) {
         dispatch({ type: UPDATE_STUDENT_DOCUMENT_FAILER, payload: err.message })
+    }
+}
+
+export const updateStudentDocumentStatus = (documentId, status) => async (dispatch) => {
+    dispatch({ type: UPDATE_STUDENT_DOCUMENT_STATUS_REQUEST })
+    try {
+        const res = await fetch(`${BASE_API}/student/update/documentstatus/${documentId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: status,
+        })
+        const data = await res.json();
+        dispatch({ type: UPDATE_STUDENT_DOCUMENT_STATUS_SUCCESS, payload: data })
+    } catch (err) {
+        dispatch({ type: UPDATE_STUDENT_DOCUMENT_STATUS_FAILER, payload: err.message })
     }
 }
 

@@ -1,15 +1,19 @@
 package com.example.UniversityManagementSystem.dto.college;
 
-import com.example.UniversityManagementSystem.dto.address.AddressRequest;
 import com.example.UniversityManagementSystem.dto.address.AddressResponse;
+import java.io.Serializable;
 
-public class CollegeResponse {
+public class CollegeResponse implements Serializable {
     private Long id;
     private String name;
     private String shortName;
     private String email;
     private String phoneNumber;
     private String collegeCode;
+    private Integer totalStudent;
+    private Integer totalFaculty;
+    private Integer totalDepartment;
+    private Integer totalCourse;
     private AddressResponse addressResponse;
 
     public CollegeResponse(Long id, String name, String shortName, String email, String phoneNumber, String collegeCode,
@@ -80,5 +84,37 @@ public class CollegeResponse {
 
     public void setCollegeCode(String collegeCode) {
         this.collegeCode = collegeCode;
+    }
+
+    public Integer getTotalStudent() {
+        return totalStudent;
+    }
+
+    public void setTotalStudent(Integer totalStudent) {
+        this.totalStudent = totalStudent;
+    }
+
+    public Integer getTotalFaculty() {
+        return totalFaculty;
+    }
+
+    public void setTotalFaculty(Integer totalFaculty) {
+        this.totalFaculty = totalFaculty;
+    }
+
+    public Integer getTotalDepartment() {
+        return totalDepartment;
+    }
+
+    public void setTotalDepartment(Integer totalDepartment) {
+        this.totalDepartment = totalDepartment;
+    }
+
+    public Integer getTotalCourse() {
+        return totalCourse;
+    }
+
+    public void setTotalCourse(Integer totalCourse) {
+        this.totalCourse = totalCourse;
     }
 }

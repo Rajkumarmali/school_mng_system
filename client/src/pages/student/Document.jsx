@@ -6,7 +6,7 @@ import { deleteDocument, getDocumentById, getDocuments, updateStudentDocument, u
 
 const Document = () => {
 
-    const [searchParams, setSearchParms] = useSearchParams();
+    const [searchParams,] = useSearchParams();
     const studentId = searchParams.get("studentId")
 
     const fileInputRef = useRef(null);
@@ -65,7 +65,6 @@ const Document = () => {
     const handleViewDocument = async (documentId) => {
         await dispatch(getDocumentById(documentId));
         setIsViewModel(true)
-
     }
 
     useEffect(() => {
@@ -126,7 +125,24 @@ const Document = () => {
                                         <td>{document.documentType}</td>
                                         <td>{document.documentName}</td>
                                         <td>
-                                            {document.status}
+                                            {document.status === "VERIFIED" && (
+                                                <span className="badge bg-success">
+                                                    <i className="bi bi-check-circle-fill me-1"></i>
+                                                    Verified
+                                                </span>
+                                            )}
+                                            {document.status === "PENDING" && (
+                                                <span className="badge bg-warning text-dark">
+                                                    <i className="bi bi-hourglass-split me-1"></i>
+                                                    Pending
+                                                </span>
+                                            )}
+                                            {document.status === "REJECTED" && (
+                                                <span className="badge bg-danger">
+                                                    <i className="bi bi-x-circle-fill me-1"></i>
+                                                    Rejected
+                                                </span>
+                                            )}
                                         </td>
                                         <td className='text-center'>
                                             <button

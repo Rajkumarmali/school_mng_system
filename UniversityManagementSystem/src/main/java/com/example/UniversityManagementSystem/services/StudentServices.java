@@ -18,6 +18,7 @@ public interface StudentServices {
     String UpdateImage(Long studentId,MultipartFile image);
     String uploadDocument(Long studentId, DocumentRequest dto,MultipartFile file);
     String updateDocument(Long documentId,DocumentRequest dto,MultipartFile file);
+    String updateDocumentStatus(Long documentId,String status);
     String deleteDocument(Long documentId);
     List<DocumentResponse> getStudentDocument(Long studentId);
     DocumentResponse getStudentDocumentById(Long documentId);

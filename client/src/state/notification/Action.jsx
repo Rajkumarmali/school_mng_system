@@ -4,7 +4,7 @@ const BASE_API = process.env.REACT_APP_BASE_URL + "/notification";
 export const createNotification = (notificationData) => async (dispatch) => {
     dispatch({ type: CREATE_NOTIFICATION_REQUEST })
     try {
-        const res = await fetch(`${BASE_API}/create/byuseremail`, {
+        const res = await fetch(`${BASE_API}/create`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

@@ -4,6 +4,7 @@ package com.example.UniversityManagementSystem.controller;
 import com.example.UniversityManagementSystem.config.JwtProvider;
 import com.example.UniversityManagementSystem.dto.college.CollegeRequest;
 import com.example.UniversityManagementSystem.dto.college.CollegeResponse;
+import com.example.UniversityManagementSystem.dto.college.CollegeStudentResponse;
 import com.example.UniversityManagementSystem.entity.College;
 import com.example.UniversityManagementSystem.services.CollegeServices;
 import org.springframework.data.domain.Page;
@@ -57,4 +58,31 @@ public class CollegeController {
         return new ResponseEntity<String>(res,HttpStatus.OK);
     }
 
+    @GetMapping("get/college/students/{collegeId}")
+    public ResponseEntity<Page<CollegeStudentResponse>> getCollegesStudents(@PathVariable Long collegeId,
+                                                                            @RequestParam(defaultValue = "0") int pageNumber,
+                                                                            @RequestParam(defaultValue = "10") int pageSize){
+        Page<CollegeStudentResponse> res = collegeServices.getCollegeStudent(collegeId,pageNumber,pageSize);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("get/college/admission/{collegeId}")
+    public ResponseEntity<Page<CollegeStudentResponse>> getCollegeAdmission(@PathVariable Long collegeId,
+                                                                            @RequestParam(defaultValue = "0") int pageNumber,
+                                                                            @RequestParam(defaultValue = "10") int pageSize){
+        Page<CollegeStudentResponse> res = collegeServices.getCollegeAdmission(collegeId,pageNumber,pageSize);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/get/studentbyid/{studentId}")
+    public ResponseEntity<CollegeStudentResponse> getCollegeStudentById(@PathVariable Long studentId){
+        CollegeStudentResponse res = collegeServices.getStudentById(studentId);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @PostMapping("/generate/enrollmentandroll/{studentId}")
+    public ResponseEntity<String> generateEnrollmentAndRollNumber(@PathVariable Long studentId){
+        String res = collegeServices.generateEnrollmentNumberAndRollNumber(studentId);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
 }

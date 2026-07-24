@@ -396,7 +396,7 @@ public class StudentServicesImp implements StudentServices {
                   studentDocument.setFilePath(newPath.toString());
                   studentDocument.setFileSize(file.getSize());
               }
-
+              studentDocument.setStatus(DocumentStatus.PENDING);
               studentDocument.setDocumentType(dto.getDocumentType());
               studentDocument.setDocumentName(dto.getDocumentName());
               studentDocument.setUpdatedAt(LocalDateTime.now());
@@ -406,6 +406,21 @@ public class StudentServicesImp implements StudentServices {
         }  catch (Exception e){
             throw new RuntimeException("Failed to update document",e);
         }
+    }
+
+    @Override
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "studentDocuments",allEntries = true),
+            @CacheEvict(cacheNames = "studentDocument",key = "#documentId"),
+    })
+    public String updateDocumentStatus(Long documentId, String status) {
+        StudentDocument document = studentDocumentRepository.findById(documentId).orElseThrow(()->
+                new IllegalArgumentException("Document not found"));
+       System.out.println(status);
+        document.setStatus(DocumentStatus.valueOf(status));
+        studentDocumentRepository.save(document);
+        return "Status update successfully";
     }
 
     @Override
@@ -431,7 +446,7 @@ public class StudentServicesImp implements StudentServices {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @Cacheable(cacheNames = "studentDocuments",key = "#studentId")
     public List<DocumentResponse> getStudentDocument(Long studentId) {
         List<StudentDocument> documents = studentDocumentRepository.findByStudentId(studentId);
