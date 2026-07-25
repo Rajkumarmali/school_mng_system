@@ -2,6 +2,7 @@ package com.example.UniversityManagementSystem.entity;
 
 import com.example.UniversityManagementSystem.entity.type.Cast;
 import com.example.UniversityManagementSystem.entity.type.Gender;
+import com.example.UniversityManagementSystem.entity.type.SubjectType;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -61,6 +62,14 @@ public class Student {
 
     @ManyToMany(mappedBy = "students")
     private List<Scholarship> scholarships = new ArrayList<>() ;
+
+    @ManyToMany
+    @JoinTable(
+            name = "student_subject",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name="subject_id")
+    )
+    private List<Subject> subjects = new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -283,5 +292,13 @@ public class Student {
 
     public void setScholarships(List<Scholarship> scholarships) {
         this.scholarships = scholarships;
+    }
+
+    public List<Subject> getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(List<Subject> subjects) {
+        this.subjects = subjects;
     }
 }
