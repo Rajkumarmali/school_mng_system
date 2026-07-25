@@ -47,10 +47,15 @@ public class College {
     private List<FeeStructure> feeStructures =new ArrayList<>();
 
     @OneToMany(mappedBy = "college")
-    private List<Course> courses = new ArrayList<>();
-
-    @OneToMany(mappedBy = "college")
     private List<Scholarship> scholarships = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "college_course",
+            joinColumns = @JoinColumn(name = "college_id"),
+            inverseJoinColumns = @JoinColumn(name = "course_id")
+    )
+    private List<Course> courses = new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -217,19 +222,19 @@ public class College {
         this.feeStructures = feeStructures;
     }
 
-    public List<Course> getCourses() {
-        return courses;
-    }
-
-    public void setCourses(List<Course> courses) {
-        this.courses = courses;
-    }
-
     public List<Scholarship> getScholarships() {
         return scholarships;
     }
 
     public void setScholarships(List<Scholarship> scholarships) {
         this.scholarships = scholarships;
+    }
+
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
     }
 }

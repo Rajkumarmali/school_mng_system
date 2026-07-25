@@ -6,6 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
-    Page<Course> findByCollegeId(Long collegeId, Pageable pageable);
+//    Page<Course> findByCollegeId(Long collegeId, Pageable pageable);
     Course findByCourseCode(String courseCode);
 }
