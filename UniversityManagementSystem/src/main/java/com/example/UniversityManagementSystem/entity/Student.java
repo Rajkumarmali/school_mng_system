@@ -63,13 +63,8 @@ public class Student {
     @ManyToMany(mappedBy = "students")
     private List<Scholarship> scholarships = new ArrayList<>() ;
 
-    @ManyToMany
-    @JoinTable(
-            name = "student_subject",
-            joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name="subject_id")
-    )
-    private List<Subject> subjects = new ArrayList<>();
+    @OneToMany(mappedBy = "student")
+    private List<StudentSubject> studentSubjects = new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -294,11 +289,11 @@ public class Student {
         this.scholarships = scholarships;
     }
 
-    public List<Subject> getSubjects() {
-        return subjects;
+    public List<StudentSubject> getStudentSubjects() {
+        return studentSubjects;
     }
 
-    public void setSubjects(List<Subject> subjects) {
-        this.subjects = subjects;
+    public void setStudentSubjects(List<StudentSubject> studentSubjects) {
+        this.studentSubjects = studentSubjects;
     }
 }
