@@ -4,10 +4,10 @@ import com.example.UniversityManagementSystem.dto.course.CourseDepartmentRespons
 import com.example.UniversityManagementSystem.dto.course.CourseRequest;
 import com.example.UniversityManagementSystem.dto.course.CourseResponse;
 import com.example.UniversityManagementSystem.dto.course.CourseStudentResponse;
-import com.example.UniversityManagementSystem.entity.College;
 import com.example.UniversityManagementSystem.entity.Course;
 import com.example.UniversityManagementSystem.entity.Department;
 import com.example.UniversityManagementSystem.entity.Student;
+import com.example.UniversityManagementSystem.entity.type.CourseDurationType;
 import com.example.UniversityManagementSystem.repository.CollegeRepository;
 import com.example.UniversityManagementSystem.repository.CourseRepository;
 import com.example.UniversityManagementSystem.repository.DepartmentRepository;
@@ -45,25 +45,13 @@ public class CourseServiceImp implements CourseService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     @Caching(evict = {
             @CacheEvict(cacheNames = "courses",allEntries = true)
     })
-    public String createCourse(Long collegeId, CourseRequest dto) {
-        College college = null;
-        if(collegeId!=null){
-            college = collegeRepository.findById(collegeId).orElseThrow(()->
-                    new IllegalArgumentException("College not found"));
-        }
+    public String createCourse(CourseRequest dto) {
 
-        String courseCode = "";
-        if(college!=null){
-            courseCode=college.getShortName()+"-";
-        } else{
-            courseCode="MDSU-";
-        }
-
-        courseCode+=dto.getShortName();
+        String courseCode = dto.getShortName();
 
         Course course = new Course();
         course.setName(dto.getName());
@@ -71,9 +59,10 @@ public class CourseServiceImp implements CourseService {
         course.setCourseCode(courseCode);
         course.setDuration(dto.getDuration());
         course.setCourseDurationType(dto.getCourseDurationType());
-        course.setTotalSemester(dto.getTotalSemester());
+        if(dto.getCourseDurationType()== CourseDurationType.SEMESTER){
+           course.setTotalSemester(Math.round(dto.getDuration()*2));
+        }
         course.setDescription(dto.getDescription());
-//        course.setCollege(college);
         course.setCreatedAt(LocalDateTime.now());
         courseRepository.save(course);
 
@@ -82,7 +71,7 @@ public class CourseServiceImp implements CourseService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     @Caching(evict = {
             @CacheEvict(cacheNames = "courses",allEntries = true),
             @CacheEvict(cacheNames = "course",key = "#courseId")
@@ -91,22 +80,19 @@ public class CourseServiceImp implements CourseService {
        Course course = courseRepository.findById(courseId).orElseThrow(()->
               new IllegalArgumentException("Course not found"));
 
-       College college = null;
 
-        String courseCode = "";
-        if(college!=null){
-            courseCode=college.getShortName()+"-";
-        } else{
-            courseCode="MDSU-";
-        }
-        courseCode+=dto.getShortName();
+        String courseCode = dto.getShortName();
 
         course.setName(dto.getName());
         course.setShortName(dto.getShortName());
         course.setCourseCode(courseCode);
         course.setDuration(dto.getDuration());
         course.setCourseDurationType(dto.getCourseDurationType());
-        course.setTotalSemester(dto.getTotalSemester());
+        if(dto.getCourseDurationType()== CourseDurationType.SEMESTER){
+            course.setTotalSemester(Math.round(dto.getDuration()*2));
+        } else{
+            course.setTotalSemester(null);
+        }
         course.setDescription(dto.getDescription());
         course.setUpdatedAt(LocalDateTime.now());
         courseRepository.save(course);
@@ -115,13 +101,13 @@ public class CourseServiceImp implements CourseService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
-    @Cacheable(cacheNames = "courses",key = "{#collegeId,#pageNumber,#pageSize}")
-    public Page<CourseResponse> getAllCourse(Long collegeId,int pageNumber, int pageSize) {
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @Cacheable(cacheNames = "courses",key = "{#pageNumber,#pageSize}")
+    public Page<CourseResponse> getAllCourse(int pageNumber, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
-//        Page<Course> courses = courseRepository.findByCollegeId(collegeId,pageable);
-        Page<Course> courses=null;
+        Page<Course> courses = courseRepository.findAll(pageable);
+
         Page<CourseResponse> responses = courses.map(course -> {
            CourseResponse res = new CourseResponse();
            res.setId(course.getId());
@@ -132,6 +118,29 @@ public class CourseServiceImp implements CourseService {
            return  res;
         });
 
+        return responses;
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    @Cacheable(cacheNames = "collegeCourses",key = "{#collegeId,#pageNumber,#pageSize}")
+    public Page<CourseResponse> getCourseByCollege(Long collegeId, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Page<Course> courses = null;
+        if(collegeId==null){
+           courses = courseRepository.findAll(pageable);
+        } else{
+            courses = courseRepository.findByColleges_Id(collegeId,pageable);
+        }
+        Page<CourseResponse> responses = courses.map(course -> {
+           CourseResponse res = new CourseResponse();
+            res.setId(course.getId());
+            res.setShortName(course.getShortName());
+            res.setCourseCode(course.getCourseCode());
+            res.setDuration(course.getDuration());
+            res.setCourseDurationType(course.getCourseDurationType());
+            return  res;
+        });
         return responses;
     }
 

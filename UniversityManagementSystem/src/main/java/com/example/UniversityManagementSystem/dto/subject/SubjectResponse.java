@@ -5,7 +5,7 @@ import com.example.UniversityManagementSystem.entity.type.SubjectType;
 import java.io.Serializable;
 
 public class SubjectResponse implements Serializable {
-    private Long Id;
+    private Long id;
     private String code;
     private String name;
     private String shortName;
@@ -21,11 +21,11 @@ public class SubjectResponse implements Serializable {
     }
 
     public Long getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Long id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getCode() {

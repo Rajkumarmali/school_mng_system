@@ -90,6 +90,7 @@ public class SubjectServiceImp implements SubjectService {
         subject.setCredit(dto.getCredit());
         subject.setMaxMarks(dto.getMaxMarks());
         subject.setPassingMarks(dto.getPassingMarks());
+        subject.setCode(code);
         subject.setUpdatedAt(LocalDateTime.now());
 
         subjectRepository.save(subject);
