@@ -9,6 +9,12 @@ import Subject from './subject/Subject';
 
 const CourseDetails = () => {
 
+
+    // const token = localStorage.getItem("token")
+    // const decoded = jwtDecode(token)
+    // const roles = decoded.roles;
+    // const isSuperAdmin = roles.includes("SUPER_ADMIN")
+
     const [searchParams, setSearchParams] = useSearchParams();
     const courseId = searchParams.get("courseId")
     const activeTab = searchParams.get("tab")
@@ -143,7 +149,7 @@ const CourseDetails = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="stats-container">
+                                    {/* <div className="stats-container">
                                         <div className="stat-card">
                                             <i className="bi bi-bank me-2"></i>
                                             <h3>{course?.course?.totalDepartment}</h3>
@@ -161,7 +167,7 @@ const CourseDetails = () => {
                                             <h3>{course?.course?.totalStudent}</h3>
                                             <span>Total Students</span>
                                         </div>
-                                    </div>
+                                    </div> */}
                                 </div>
 
                 }

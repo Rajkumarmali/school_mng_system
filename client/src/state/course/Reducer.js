@@ -1,4 +1,4 @@
-import { CREATE_COURSE_FAILER, CREATE_COURSE_REQUEST, CREATE_COURSE_SUCCESS, GET_ALL_COURSE_FAILER, GET_ALL_COURSE_REQUEST, GET_ALL_COURSE_SUCCESS, GET_COURSE_BY_COLLEGE_FAILER, GET_COURSE_BY_COLLEGE_REQUEST, GET_COURSE_BY_COLLEGE_SUCCESS, GET_COURSE_BYID_FAILER, GET_COURSE_BYID_REQUEST, GET_COURSE_BYID_SUCCESS, GET_COURSE_DEPARTMENT_FAILER, GET_COURSE_DEPARTMENT_REQUEST, GET_COURSE_DEPARTMENT_SUCCESS, GET_COURSE_STUDENT_FAILER, GET_COURSE_STUDENT_REQUEST, GET_COURSE_STUDENT_SUCCESS, UPDATE_COURSE_FAILER, UPDATE_COURSE_REQUEST, UPDATE_COURSE_SUCCESS } from "./ActionType"
+import { CREATE_COURSE_FAILER, CREATE_COURSE_REQUEST, CREATE_COURSE_SUCCESS, GET_ALL_COURSE_FAILER, GET_ALL_COURSE_REQUEST, GET_ALL_COURSE_SUCCESS, GET_COURSE_BY_COLLEGE_FAILER, GET_COURSE_BY_COLLEGE_REQUEST, GET_COURSE_BY_COLLEGE_SUCCESS, GET_COURSE_BYID_FAILER, GET_COURSE_BYID_REQUEST, GET_COURSE_BYID_SUCCESS, GET_COURSE_DEPARTMENT_FAILER, GET_COURSE_DEPARTMENT_FOR_COLLEGE_FAILER, GET_COURSE_DEPARTMENT_FOR_COLLEGE_REQUEST, GET_COURSE_DEPARTMENT_FOR_COLLEGE_SUCCESS, GET_COURSE_DEPARTMENT_REQUEST, GET_COURSE_DEPARTMENT_SUCCESS, GET_COURSE_STUDENT_FAILER, GET_COURSE_STUDENT_FOR_COLLEGE_FAILER, GET_COURSE_STUDENT_FOR_COLLEGE_REQUEST, GET_COURSE_STUDENT_FOR_COLLEGE_SUCCESS, GET_COURSE_STUDENT_REQUEST, GET_COURSE_STUDENT_SUCCESS, UPDATE_COURSE_FAILER, UPDATE_COURSE_REQUEST, UPDATE_COURSE_SUCCESS } from "./ActionType"
 
 const initialState = {
     isLoading: false,
@@ -6,7 +6,9 @@ const initialState = {
     courses: [],
     course: null,
     courseDepartments: [],
+    courseDepartmentsForCollege: [],
     courseStudents: [],
+    courseStudentsForCollege: [],
     collegeCourses: []
 }
 
@@ -19,6 +21,8 @@ export const courseReducer = (state = initialState, action) => {
         case GET_COURSE_DEPARTMENT_REQUEST:
         case GET_COURSE_STUDENT_REQUEST:
         case GET_COURSE_BY_COLLEGE_REQUEST:
+        case GET_COURSE_DEPARTMENT_FOR_COLLEGE_REQUEST:
+        case GET_COURSE_STUDENT_FOR_COLLEGE_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -66,6 +70,20 @@ export const courseReducer = (state = initialState, action) => {
                 error: null,
                 collegeCourses: action.payload
             }
+        case GET_COURSE_DEPARTMENT_FOR_COLLEGE_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                error: null,
+                courseDepartmentsForCollege: action.payload
+            }
+        case GET_COURSE_STUDENT_FOR_COLLEGE_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                error: null,
+                courseStudentsForCollege: action.payload
+            }
         case CREATE_COURSE_FAILER:
         case UPDATE_COURSE_FAILER:
         case GET_ALL_COURSE_FAILER:
@@ -73,6 +91,8 @@ export const courseReducer = (state = initialState, action) => {
         case GET_COURSE_DEPARTMENT_FAILER:
         case GET_COURSE_STUDENT_FAILER:
         case GET_COURSE_BY_COLLEGE_FAILER:
+        case GET_COURSE_DEPARTMENT_FOR_COLLEGE_FAILER:
+        case GET_COURSE_STUDENT_FOR_COLLEGE_FAILER:
             return {
                 ...state,
                 isLoading: false,

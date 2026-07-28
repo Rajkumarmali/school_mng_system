@@ -46,9 +46,17 @@ public class CourseController {
     @GetMapping("/get/bycollege")
     public ResponseEntity<Page<CourseResponse>> getByCollege(@RequestHeader("Authorization") String jwt,
                                                               @RequestParam(defaultValue = "0") int pageNumber,
-                                                             @RequestParam(defaultValue = "10") int pageSize){
+                                                              @RequestParam(defaultValue = "10") int pageSize){
 
         Long collegeId = jwtProvider.getCollegeIdFromToken(jwt);
+        Page<CourseResponse> res = courseService.getCourseByCollege(collegeId,pageNumber,pageSize);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping("/get/by/collegeid/{collegeId}")
+    public ResponseEntity<Page<CourseResponse>> getByCollegeId(@PathVariable Long collegeId,
+                                                             @RequestParam(defaultValue = "0") int pageNumber,
+                                                             @RequestParam(defaultValue = "10") int pageSize){
         Page<CourseResponse> res = courseService.getCourseByCollege(collegeId,pageNumber,pageSize);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
@@ -67,11 +75,31 @@ public class CourseController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
+    @GetMapping("/get/college/department/{courseId}")
+    public ResponseEntity<Page<CourseDepartmentResponse>> getAllCollegeDepartmentByCourseId(@RequestHeader("Authorization") String jwt,
+                                                                                            @PathVariable Long courseId,
+                                                                                            @RequestParam(defaultValue = "0") int pageNumber,
+                                                                                            @RequestParam(defaultValue = "10") int pageSize){
+        Long collegeId = jwtProvider.getCollegeIdFromToken(jwt);
+        Page<CourseDepartmentResponse> res = courseService.getDepartmentsByCourseIdAndCollegeId(courseId,collegeId,pageNumber,pageSize);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
     @GetMapping("/get/all/student/{courseId}")
     public ResponseEntity<Page<CourseStudentResponse>> getAllStudentByCourseId(@PathVariable Long courseId,
                                                                                @RequestParam(defaultValue = "0") int pageNumber,
                                                                                @RequestParam(defaultValue = "10") int pageSize){
         Page<CourseStudentResponse> res = courseService.getStudentByCourseId(courseId,pageNumber,pageSize);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping("/get/college/student/{courseId}")
+    public ResponseEntity<Page<CourseStudentResponse>> getAllCollegeStudentByCourseId(@RequestHeader("Authorization") String jwt,
+                                                                                      @PathVariable Long courseId,
+                                                                               @RequestParam(defaultValue = "0") int pageNumber,
+                                                                               @RequestParam(defaultValue = "10") int pageSize){
+        Long collegeId = jwtProvider.getCollegeIdFromToken(jwt);
+        Page<CourseStudentResponse> res = courseService.getStudentByCourseIdAndCollegeId(courseId,collegeId,pageNumber,pageSize);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }

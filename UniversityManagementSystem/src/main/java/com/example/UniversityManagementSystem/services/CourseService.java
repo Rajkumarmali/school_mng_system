@@ -13,5 +13,7 @@ public interface CourseService {
     Page<CourseResponse> getCourseByCollege(Long collegeId, int pageNumber, int pageSize);
     CourseResponse getCourseById(Long courseId);
     Page<CourseDepartmentResponse> getDepartmentsByCourseId(Long courseId,int pageNumber,int pageSize);
+    Page<CourseDepartmentResponse> getDepartmentsByCourseIdAndCollegeId(Long courseId,Long collegeId,int pageNumber,int pageSize);
     Page<CourseStudentResponse> getStudentByCourseId(Long courseId,int pageNumber,int pageSize);
+    Page<CourseStudentResponse> getStudentByCourseIdAndCollegeId(Long courseId,Long collegeId,int pageNumber,int pageSize);
 }

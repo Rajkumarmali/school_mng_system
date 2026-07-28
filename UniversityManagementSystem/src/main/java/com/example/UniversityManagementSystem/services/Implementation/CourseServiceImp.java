@@ -115,6 +115,7 @@ public class CourseServiceImp implements CourseService {
            res.setCourseCode(course.getCourseCode());
            res.setDuration(course.getDuration());
            res.setCourseDurationType(course.getCourseDurationType());
+           res.setTotalCollege(course.getColleges().size());
            return  res;
         });
 
@@ -171,7 +172,7 @@ public class CourseServiceImp implements CourseService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     @Cacheable(cacheNames = "courseDepartment",key = "{#courseId,#pageNumber,#pageSize}")
     public Page<CourseDepartmentResponse> getDepartmentsByCourseId(Long courseId, int pageNumber, int pageSize) {
 
@@ -183,6 +184,8 @@ public class CourseServiceImp implements CourseService {
            res.setId(dep.getId());
            res.setCode(dep.getCode());
            res.setName(dep.getName());
+           if(dep.getCollege()!=null)
+            res.setCollegeName(dep.getCollege().getShortName());
            res.setHodName(dep.getHodTeacher().getFirstName()+" "+dep.getHodTeacher().getLastName());
            res.setHodEmail(dep.getHodTeacher().getEmail());
            res.setHodPhoneNumber(dep.getHodTeacher().getPhoneNumber());
@@ -194,6 +197,27 @@ public class CourseServiceImp implements CourseService {
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
+    @Cacheable(cacheNames = "collegeCourseDepartment",key = "{#courseId,#collegeId,#pageNumber,#pageSize}")
+    public Page<CourseDepartmentResponse> getDepartmentsByCourseIdAndCollegeId(Long courseId, Long collegeId, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Page<Department> departments = departmentRepository.findByCourseIdAndCollegeId(courseId,collegeId,pageable);
+
+        Page<CourseDepartmentResponse> responses = departments.map(dep->{
+            CourseDepartmentResponse res = new CourseDepartmentResponse();
+            res.setId(dep.getId());
+            res.setCode(dep.getCode());
+            res.setName(dep.getName());
+            res.setHodName(dep.getHodTeacher().getFirstName()+" "+dep.getHodTeacher().getLastName());
+            res.setHodEmail(dep.getHodTeacher().getEmail());
+            res.setHodPhoneNumber(dep.getHodTeacher().getPhoneNumber());
+            return res;
+        });
+
+        return responses;
+    }
+
+    @Override
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     @Cacheable(cacheNames = "courseStudent",key = "{#courseId,#pageNumber,#pageSize}")
     public Page<CourseStudentResponse> getStudentByCourseId(Long courseId, int pageNumber, int pageSize) {
 
@@ -204,12 +228,36 @@ public class CourseServiceImp implements CourseService {
            CourseStudentResponse res = new CourseStudentResponse();
            res.setId(stu.getId());
            res.setRollNumber(stu.getRollNumber());
-           res.setRegistrationNumber(stu.getRegistrationNumber());
            res.setName(stu.getFirstName()+" "+stu.getLastName());
            res.setEmail(stu.getEmail());
            res.setPhoneNumber(stu.getPhoneNumber());
            res.setGender(stu.getGender());
+           if(stu.getCollege()!=null)
+            res.setCollegeName(stu.getCollege().getShortName());
            return res;
+        });
+
+        return responses;
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    @Cacheable(cacheNames = "collegeCourseStudent",key = "{#courseId,#collegeId,#pageNumber,#pageSize}")
+    public Page<CourseStudentResponse> getStudentByCourseIdAndCollegeId(Long courseId, Long collegeId, int pageNumber, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Page<Student> students = studentRepository.findByDepartmentCourseIdAndCollegeId(courseId,collegeId,pageable);
+
+        Page<CourseStudentResponse> responses = students.map(stu->{
+            CourseStudentResponse res = new CourseStudentResponse();
+            res.setId(stu.getId());
+            res.setRollNumber(stu.getRollNumber());
+            res.setRegistrationNumber(stu.getRegistrationNumber());
+            res.setName(stu.getFirstName()+" "+stu.getLastName());
+            res.setEmail(stu.getEmail());
+            res.setPhoneNumber(stu.getPhoneNumber());
+            res.setGender(stu.getGender());
+            return res;
         });
 
         return responses;
