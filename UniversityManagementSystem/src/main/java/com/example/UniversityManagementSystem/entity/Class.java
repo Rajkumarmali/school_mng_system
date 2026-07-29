@@ -39,6 +39,9 @@ public class Class {
     @OneToMany(mappedBy = "aClass")
     private List<FeeStructure> feeStructure= new ArrayList<>();
 
+    @OneToMany(mappedBy = "aClass")
+    private List<ClassSubject> classSubjects = new ArrayList<>();
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -156,5 +159,13 @@ public class Class {
 
     public void setClassCode(String classCode) {
         this.classCode = classCode;
+    }
+
+    public List<ClassSubject> getClassSubjects() {
+        return classSubjects;
+    }
+
+    public void setClassSubjects(List<ClassSubject> classSubjects) {
+        this.classSubjects = classSubjects;
     }
 }

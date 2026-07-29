@@ -30,6 +30,9 @@ public class Subject {
     @OneToMany(mappedBy = "subject")
     private List<StudentSubject> studentSubjects = new ArrayList<>();
 
+    @OneToMany(mappedBy = "subject")
+    private List<ClassSubject> classSubjects = new ArrayList<>();
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -154,5 +157,13 @@ public class Subject {
 
     public void setStudentSubjects(List<StudentSubject> studentSubjects) {
         this.studentSubjects = studentSubjects;
+    }
+
+    public List<ClassSubject> getClassSubjects() {
+        return classSubjects;
+    }
+
+    public void setClassSubjects(List<ClassSubject> classSubjects) {
+        this.classSubjects = classSubjects;
     }
 }
