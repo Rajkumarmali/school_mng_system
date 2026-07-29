@@ -19,6 +19,8 @@ public class Subject {
     private String description;
     private Integer semester;
     private Integer year;
+
+    @Enumerated(EnumType.STRING)
     private SubjectType subjectType;
     private Integer credit;
     private Integer maxMarks;

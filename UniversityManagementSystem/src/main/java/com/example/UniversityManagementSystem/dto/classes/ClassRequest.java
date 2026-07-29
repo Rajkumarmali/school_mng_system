@@ -1,23 +1,23 @@
 package com.example.UniversityManagementSystem.dto.classes;
 
-import com.example.UniversityManagementSystem.entity.type.ClassStatus;
+import com.example.UniversityManagementSystem.entity.type.SectionStatus;
 
 public class ClassRequest {
     private String name;
     private String academicYear;
     private String semester;
     private String employeeEmailOrEmployeeId;
-    private ClassStatus classStatus;
+    private SectionStatus sectionStatus;
 
     public ClassRequest() {
     }
 
-    public ClassRequest(String name, String academicYear, String semester, String employeeEmailOrEmployeeId, ClassStatus classStatus) {
+    public ClassRequest(String name, String academicYear, String semester, String employeeEmailOrEmployeeId, SectionStatus sectionStatus) {
         this.name = name;
         this.academicYear = academicYear;
         this.semester = semester;
         this.employeeEmailOrEmployeeId = employeeEmailOrEmployeeId;
-        this.classStatus = classStatus;
+        this.sectionStatus = sectionStatus;
     }
 
     public String getName() {
@@ -52,11 +52,11 @@ public class ClassRequest {
         this.employeeEmailOrEmployeeId = employeeEmailOrEmployeeId;
     }
 
-    public ClassStatus getClassStatus() {
-        return classStatus;
+    public SectionStatus getClassStatus() {
+        return sectionStatus;
     }
 
-    public void setClassStatus(ClassStatus classStatus) {
-        this.classStatus = classStatus;
+    public void setClassStatus(SectionStatus sectionStatus) {
+        this.sectionStatus = sectionStatus;
     }
 }

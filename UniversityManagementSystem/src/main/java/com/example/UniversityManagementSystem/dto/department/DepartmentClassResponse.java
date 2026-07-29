@@ -1,6 +1,6 @@
 package com.example.UniversityManagementSystem.dto.department;
 
-import com.example.UniversityManagementSystem.entity.type.ClassStatus;
+import com.example.UniversityManagementSystem.entity.type.SectionStatus;
 
 import java.io.Serializable;
 
@@ -10,7 +10,7 @@ public class DepartmentClassResponse implements Serializable {
     private String academicYear;
     private String semester;
     private String classCode;
-    private ClassStatus classStatus;
+    private SectionStatus sectionStatus;
     private String classTeacherName;
     private String classTeacherEmail;
     private String classTeacherPhoneNumber;
@@ -18,13 +18,13 @@ public class DepartmentClassResponse implements Serializable {
     public DepartmentClassResponse() {
     }
 
-    public DepartmentClassResponse(Long id, String name, String academicYear, String semester, String classCode, ClassStatus classStatus, String classTeacherName, String classTeacherEmail, String classTeacherPhoneNumber) {
+    public DepartmentClassResponse(Long id, String name, String academicYear, String semester, String classCode, SectionStatus sectionStatus, String classTeacherName, String classTeacherEmail, String classTeacherPhoneNumber) {
         this.id = id;
         this.name = name;
         this.academicYear = academicYear;
         this.semester = semester;
         this.classCode = classCode;
-        this.classStatus = classStatus;
+        this.sectionStatus = sectionStatus;
         this.classTeacherName = classTeacherName;
         this.classTeacherEmail = classTeacherEmail;
         this.classTeacherPhoneNumber = classTeacherPhoneNumber;
@@ -94,11 +94,11 @@ public class DepartmentClassResponse implements Serializable {
         this.classCode = classCode;
     }
 
-    public ClassStatus getClassStatus() {
-        return classStatus;
+    public SectionStatus getClassStatus() {
+        return sectionStatus;
     }
 
-    public void setClassStatus(ClassStatus classStatus) {
-        this.classStatus = classStatus;
+    public void setClassStatus(SectionStatus sectionStatus) {
+        this.sectionStatus = sectionStatus;
     }
 }

@@ -11,7 +11,7 @@ public class ClassSubject {
     private Long id;
 
     @ManyToOne
-    private Class aClass;
+    private Section aSection;
 
     @ManyToOne
     private Subject subject;
@@ -33,12 +33,12 @@ public class ClassSubject {
         this.id = id;
     }
 
-    public Class getAClass() {
-        return aClass;
+    public Section getAClass() {
+        return aSection;
     }
 
-    public void setAClass(Class aClass) {
-        this.aClass = aClass;
+    public void setAClass(Section aSection) {
+        this.aSection = aSection;
     }
 
     public Subject getSubject() {

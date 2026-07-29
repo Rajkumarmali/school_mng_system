@@ -52,7 +52,7 @@ public class Teacher {
     private Department department;
 
     @OneToMany(mappedBy = "classTeacher")
-    private List<Class> classTeacher=new ArrayList<>();
+    private List<Section> sectionTeacher =new ArrayList<>();
 
     @OneToMany(mappedBy = "teacher")
     private List<TeacherDocument> teacherDocuments = new ArrayList<>();
@@ -66,7 +66,7 @@ public class Teacher {
     public Teacher(Long id, String firstName, String lastName, String email, String phoneNumber,
                    LocalDate dob, String image, Gender gender, Cast cast, String aadharNumber,
                    String panNumber, String employeeId, Address address, User user, College college,
-                   Parent parent, Department departmentHod,List<Class> classTeacher, Department department, LocalDateTime createdAt,
+                   Parent parent, Department departmentHod, List<Section> sectionTeacher, Department department, LocalDateTime createdAt,
                    LocalDateTime updatedAt) {
         this.id = id;
         this.firstName = firstName;
@@ -86,7 +86,7 @@ public class Teacher {
         this.parent = parent;
         this.departmentHod = departmentHod;
         this.department = department;
-        this.classTeacher = classTeacher;
+        this.sectionTeacher = sectionTeacher;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -254,12 +254,12 @@ public class Teacher {
         this.departmentHod = departmentHod;
     }
 
-    public List<Class> getClassTeacher() {
-        return classTeacher;
+    public List<Section> getClassTeacher() {
+        return sectionTeacher;
     }
 
-    public void setClassTeacher(List<Class> classTeacher) {
-        this.classTeacher = classTeacher;
+    public void setClassTeacher(List<Section> sectionTeacher) {
+        this.sectionTeacher = sectionTeacher;
     }
 
     public List<TeacherDocument> getTeacherDocuments() {
