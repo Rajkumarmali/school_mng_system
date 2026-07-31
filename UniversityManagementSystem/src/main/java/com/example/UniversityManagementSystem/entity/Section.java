@@ -25,6 +25,9 @@ public class Section {
     @ManyToOne
     private Department department;
 
+    @OneToMany(mappedBy = "section")
+    private List<SectionSubject> sectionSubjects = new ArrayList<>();
+
     @ManyToOne
     private Teacher classTeacher;
 
@@ -147,5 +150,13 @@ public class Section {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public List<SectionSubject> getSectionSubjects() {
+        return sectionSubjects;
+    }
+
+    public void setSectionSubjects(List<SectionSubject> sectionSubjects) {
+        this.sectionSubjects = sectionSubjects;
     }
 }

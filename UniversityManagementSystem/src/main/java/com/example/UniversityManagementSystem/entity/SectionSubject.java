@@ -3,15 +3,17 @@ package com.example.UniversityManagementSystem.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-public class ClassSubject {
+public class SectionSubject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    private Section aSection;
+    private Section section;
 
     @ManyToOne
     private Subject subject;
@@ -19,10 +21,13 @@ public class ClassSubject {
     @ManyToOne
     private Teacher teacher;
 
+    @OneToMany(mappedBy = "sectionSubject")
+    private List<StudentSubject> studentSubjects = new ArrayList<>();
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public ClassSubject() {
+    public SectionSubject() {
     }
 
     public Long getId() {
@@ -33,12 +38,12 @@ public class ClassSubject {
         this.id = id;
     }
 
-    public Section getAClass() {
-        return aSection;
+    public Section getSection() {
+        return section;
     }
 
-    public void setAClass(Section aSection) {
-        this.aSection = aSection;
+    public void setSection(Section section) {
+        this.section = section;
     }
 
     public Subject getSubject() {
@@ -71,5 +76,13 @@ public class ClassSubject {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public List<StudentSubject> getStudentSubjects() {
+        return studentSubjects;
+    }
+
+    public void setStudentSubjects(List<StudentSubject> studentSubjects) {
+        this.studentSubjects = studentSubjects;
     }
 }

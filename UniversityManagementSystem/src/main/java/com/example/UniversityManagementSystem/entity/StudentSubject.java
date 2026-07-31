@@ -10,13 +10,11 @@ public class StudentSubject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String academicYear;
-
-    @ManyToOne
-    private Subject subject;
-
     @ManyToOne
     private Student student;
+
+    @ManyToOne
+    private SectionSubject sectionSubject;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -32,28 +30,20 @@ public class StudentSubject {
         this.id = id;
     }
 
-    public String getAcademicYear() {
-        return academicYear;
-    }
-
-    public void setAcademicYear(String academicYear) {
-        this.academicYear = academicYear;
-    }
-
-    public Subject getSubject() {
-        return subject;
-    }
-
-    public void setSubject(Subject subject) {
-        this.subject = subject;
-    }
-
     public Student getStudent() {
         return student;
     }
 
     public void setStudent(Student student) {
         this.student = student;
+    }
+
+    public SectionSubject getSectionSubject() {
+        return sectionSubject;
+    }
+
+    public void setSectionSubject(SectionSubject sectionSubject) {
+        this.sectionSubject = sectionSubject;
     }
 
     public LocalDateTime getCreatedAt() {

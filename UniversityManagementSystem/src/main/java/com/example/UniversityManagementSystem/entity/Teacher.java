@@ -58,7 +58,7 @@ public class Teacher {
     private List<TeacherDocument> teacherDocuments = new ArrayList<>();
 
     @OneToMany(mappedBy = "teacher")
-    private List<ClassSubject> classSubjects;
+    private List<SectionSubject> sectionSubjects;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -270,11 +270,11 @@ public class Teacher {
         this.teacherDocuments = teacherDocuments;
     }
 
-    public List<ClassSubject> getClassSubjects() {
-        return classSubjects;
+    public List<SectionSubject> getClassSubjects() {
+        return sectionSubjects;
     }
 
-    public void setClassSubjects(List<ClassSubject> classSubjects) {
-        this.classSubjects = classSubjects;
+    public void setClassSubjects(List<SectionSubject> sectionSubjects) {
+        this.sectionSubjects = sectionSubjects;
     }
 }
