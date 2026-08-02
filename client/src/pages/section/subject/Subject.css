@@ -1,0 +1,41 @@
+.section-subject-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.add-subject-btn {
+    background: transparent;
+    color: white;
+    border: 1px solid white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+.add-subject-btn:hover {
+    background: transparent;
+    color: #3c58c9;
+}
+
+.section-subject-table {
+    margin-bottom: 0;
+}
+
+.section-subject-table thead {
+  background: transparent !important;
+}
+
+.section-subject-table th {
+    background: transparent !important;
+    font-weight: 600;
+    color: #495057;
+    padding: 14px;
+}
+
+.section-subject-table td {
+    background: transparent !important;
+    vertical-align: middle;
+    padding: 14px;
+}

@@ -1,35 +1,23 @@
-package com.example.UniversityManagementSystem.dto.classes;
+package com.example.UniversityManagementSystem.dto.section;
 
 import com.example.UniversityManagementSystem.entity.type.SectionStatus;
 
 import java.io.Serializable;
 
-public class ClassResponse implements Serializable {
+public class SectionResponse implements Serializable {
     private Long id;
     private String name;
     private String academicYear;
-    private String semester;
+    private Integer semester;
+    private Integer year;
     private String departmentName;
     private String departmentCode;
-    private String classCode;
+    private String code;
     private ClassTeacherResponse classTeacherResponse;
     private SectionStatus sectionStatus;
     private Integer totalStudents;
 
-    public ClassResponse() {
-    }
-
-    public ClassResponse(Long id, String name, String academicYear, String semester, String departmentName, String departmentCode, String classCode, ClassTeacherResponse classTeacherResponse, SectionStatus sectionStatus, Integer totalStudents) {
-        this.id = id;
-        this.name = name;
-        this.academicYear = academicYear;
-        this.semester = semester;
-        this.departmentName = departmentName;
-        this.departmentCode = departmentCode;
-        this.classCode = classCode;
-        this.classTeacherResponse = classTeacherResponse;
-        this.sectionStatus = sectionStatus;
-        this.totalStudents = totalStudents;
+    public SectionResponse() {
     }
 
     public Long getId() {
@@ -56,20 +44,20 @@ public class ClassResponse implements Serializable {
         this.academicYear = academicYear;
     }
 
-    public String getSemester() {
+    public Integer getSemester() {
         return semester;
     }
 
-    public void setSemester(String semester) {
+    public void setSemester(Integer semester) {
         this.semester = semester;
     }
 
-    public String getDepartmentCode() {
-        return departmentCode;
+    public Integer getYear() {
+        return year;
     }
 
-    public void setDepartmentCode(String departmentCode) {
-        this.departmentCode = departmentCode;
+    public void setYear(Integer year) {
+        this.year = year;
     }
 
     public String getDepartmentName() {
@@ -80,6 +68,22 @@ public class ClassResponse implements Serializable {
         this.departmentName = departmentName;
     }
 
+    public String getDepartmentCode() {
+        return departmentCode;
+    }
+
+    public void setDepartmentCode(String departmentCode) {
+        this.departmentCode = departmentCode;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     public ClassTeacherResponse getClassTeacherResponse() {
         return classTeacherResponse;
     }
@@ -88,11 +92,11 @@ public class ClassResponse implements Serializable {
         this.classTeacherResponse = classTeacherResponse;
     }
 
-    public SectionStatus getClassStatus() {
+    public SectionStatus getSectionStatus() {
         return sectionStatus;
     }
 
-    public void setClassStatus(SectionStatus sectionStatus) {
+    public void setSectionStatus(SectionStatus sectionStatus) {
         this.sectionStatus = sectionStatus;
     }
 
@@ -102,13 +106,5 @@ public class ClassResponse implements Serializable {
 
     public void setTotalStudents(Integer totalStudents) {
         this.totalStudents = totalStudents;
-    }
-
-    public String getClassCode() {
-        return classCode;
-    }
-
-    public void setClassCode(String classCode) {
-        this.classCode = classCode;
     }
 }

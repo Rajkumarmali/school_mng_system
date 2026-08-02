@@ -1,26 +1,31 @@
 import React, { useEffect, useState } from 'react'
-import './ClassStudents.css'
+import './Student.css'
 import { jwtDecode } from 'jwt-decode'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
-import { addStudentInClass, deleteStudentFromClass, getStudentsFromClass } from '../../state/class/Action'
+import { addStudentInSectionSubject, getAllStudentFromSectionSubject } from '../../../../state/section/Action'
 
-const ClassStudents = ({ classId }) => {
+const Student = () => {
 
     const token = localStorage.getItem("token")
     const decoded = jwtDecode(token)
     const roles = decoded.roles;
     const isHod = roles.includes("HOD")
 
-    const dispatch = useDispatch()
-    const clas = useSelector((state) => state.class)
+    const dispatch = useDispatch();
+    const section = useSelector((state) => state.section)
 
     const [searchParams, setSearchParams] = useSearchParams();
-    const tab = searchParams.get("tab") || "student"
-    const pageNumber = Number(searchParams.get("page")) || 1;
-    const pageSize = Number(searchParams.get("size")) || 10;
+    const sectionId = searchParams.get("sectionId")
+    const tab = searchParams.get("tab")
+    const page = Number(searchParams.get("page"));
+    const size = Number(searchParams.get("size"));
+    const sectionSubjectId = searchParams.get("sectionSubjectId")
+    const action = searchParams.get("action")
+    const pageNumber = Number(searchParams.get("pageNumber")) || 1;
+    const pageSize = Number(searchParams.get("pageSize")) || 10;
 
-    const [classStudentData, setClassStudentData] = useState([
+    const [sectionSubjectStudentData, setSectionSubjectStudentData] = useState([
         {
             firstName: "",
             lastName: "",
@@ -30,7 +35,8 @@ const ClassStudents = ({ classId }) => {
         }
     ])
 
-    const totalPages = clas?.classStudents?.totalPages || 0;
+
+    const totalPages = section?.sectionSubjectStudents?.totalPages || 0;
     const getPageNumbers = () => {
         const pages = [];
 
@@ -65,63 +71,69 @@ const ClassStudents = ({ classId }) => {
     const handleChangePageSize = (e) => {
         const pageSize = e.target.value
         setSearchParams({
+            sectionId,
             tab,
-            page: 1,
-            size: pageSize
+            page,
+            size,
+            sectionSubjectId,
+            action,
+            pageNumber: 1,
+            pageSize
         })
     }
 
     const handleGetPerviousPageData = () => {
         setSearchParams({
+            sectionId,
             tab,
-            page: pageNumber - 1,
-            size: pageSize
+            page,
+            size,
+            sectionSubjectId,
+            action,
+            pageNumber: pageNumber - 1,
+            pageSize: pageSize
         })
     }
 
     const handleGetNextPageData = () => {
         setSearchParams({
+            sectionId,
             tab,
-            page: pageNumber + 1,
-            size: pageSize
+            page,
+            size,
+            sectionSubjectId,
+            action,
+            pageNumber: pageNumber + 1,
+            pageSize: pageSize,
         })
     }
 
     const handleGetPageNumberData = (pageNumber) => {
         setSearchParams({
+            sectionId,
             tab,
-            page: pageNumber,
-            size: pageSize
+            page,
+            size,
+            sectionSubjectId,
+            action,
+            pageNumber: pageNumber,
+            pageSize: pageSize
         })
     }
 
-    const saveAddClassStudentData = async () => {
-        await dispatch(addStudentInClass(classId, classStudentData));
-        await dispatch(getStudentsFromClass(classId, pageNumber, pageSize))
-        setClassStudentData([
-            {
-                firstName: "",
-                lastName: "",
-                email: "",
-                registrationNumber: "",
-                phoneNumber: ""
-            }
-        ])
-    }
-
-    const handleAddClassStudentChange = (index, e) => {
+    const handleAddSectionSubjectStudentChange = (index, e) => {
         const { name, value } = e.target;
-        const updateStudent = [...classStudentData];
+        const updateStudent = [...sectionSubjectStudentData];
         updateStudent[index] = {
             ...updateStudent[index],
             [name]: value
         }
-        setClassStudentData(updateStudent)
+        setSectionSubjectStudentData(updateStudent)
     }
 
-    const handleAddClassStudentRow = () => {
-        setClassStudentData([
-            ...classStudentData,
+    const handleAddSectionSubjectStudentRow = () => {
+        setSectionSubjectStudentData([
+            ...sectionSubjectStudentData,
             {
                 firstName: "",
                 lastName: "",
@@ -132,133 +144,124 @@ const ClassStudents = ({ classId }) => {
         ])
     }
 
-    const handleRemoveClassStudent = (index) => {
-        if (classStudentData.length === 1) return;
-        const updatedStudents = classStudentData.filter((_, i) => i !== index);
-        setClassStudentData(updatedStudents);
+    const handleRemoveSectionSubjectStudent = (index) => {
+        if (sectionSubjectStudentData.length === 1) return;
+        const updatedStudents = sectionSubjectStudentData.filter((_, i) => i !== index);
+        setSectionSubjectStudentData(updatedStudents);
     }
 
-    const handleDeleteStudentFromClass = async (studentId) => {
-        await dispatch(deleteStudentFromClass(classId, studentId))
-        await dispatch(getStudentsFromClass(classId, pageNumber, pageSize))
+    const saveAddSectionSubjectStudentData = async () => {
+        await dispatch(addStudentInSectionSubject(sectionSubjectId, sectionSubjectStudentData))
+        await dispatch(getAllStudentFromSectionSubject(sectionSubjectId, pageNumber, pageSize))
     }
 
     useEffect(() => {
-        dispatch(getStudentsFromClass(classId, pageNumber, pageSize))
-    }, [dispatch, classId, pageNumber, pageSize]);
+        dispatch(getAllStudentFromSectionSubject(sectionSubjectId, pageNumber, pageSize))
+    }, [dispatch, sectionSubjectId, pageNumber, pageSize]);
+
 
     return (
         <div>
-            <div className="class-student-header">
-                <div>
-                    <h2>Students</h2>
-                </div>
-                {
-                    isHod &&
-                    <button
-                        className="add-class-student-btn" data-bs-toggle="modal"
-                        data-bs-target="#studentModal"
-                    >
-                        <i className="bi bi-plus-circle me-2"></i>
-                        Add Students
-                    </button>
-                }
-            </div>
-            <table className="table class-student-table">
-                <thead>
-                    <tr>
-                        <th>S No.</th>
-                        <th>Registration Number</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
+            <div>
+                <div className="section-subject-student-detail-header">
+                    <div className="d-flex gap-3">
                         {
                             isHod &&
-                            <td>Action</td>
+                            <button
+                                className="section-subject-student-detail-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#studentModal"
+                            >
+                                <i className="bi bi-person-plus-fill me-2"></i>
+                                Add Students
+                            </button>
                         }
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        clas?.classStudents?.content?.length > 0 ?
-                            clas?.classStudents?.content?.map((student, index) =>
+
+                    </div>
+                </div>
+                <table className="table section-subject-student-table">
+                    <thead>
+                        <tr>
+                            <th>S No.</th>
+                            <th>Roll No.</th>
+                            <th>Registration No.</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            section?.sectionSubjectStudents?.content?.length > 0 ?
+                                section?.sectionSubjectStudents?.content?.map((stu, index) =>
+                                    <tr>
+                                        <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                        <td>{stu?.rollNumber}</td>
+                                        <td>{stu.registrationNumber}</td>
+                                        <td>{stu.firstName} {stu.lastName}</td>
+                                        <td>{stu.email}</td>
+                                        <td>{stu.phoneNumber}</td>
+                                    </tr>
+                                )
+                                :
                                 <tr>
-                                    <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                    <td>{student.registrationNumber}</td>
-                                    <td>{student.firstName}{" "}{student.lastName}</td>
-                                    <td>{student.email}</td>
-                                    <td>{student.phoneNumber}</td>
-                                    {
-                                        isHod &&
-                                        <td className='text-center'>
-                                            <button
-                                                onClick={() => handleDeleteStudentFromClass(student.id)}
-                                                className="btn btn-sm custom-action-btn me-2"
-                                            >
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </td>
-                                    }
+                                    <td colSpan="9" className="text-center">
+                                        No Student Found
+                                    </td>
                                 </tr>
+                        }
+                    </tbody>
+                </table>
+                <div className="pagination-container">
+                    <div className="pagination-info">
+                        Total : <strong>{section?.sectionSubjectStudents?.totalElements || 0}</strong>
+                    </div>
+                    <div className="page-size-selector">
+                        <label>Show :</label>
+                        <select
+                            value={pageSize}
+                            onChange={handleChangePageSize}
+                        >
+                            <option value={10}>10</option>
+                            <option value={50}>50</option>
+                            <option value={100}>100</option>
+                        </select>
+                    </div>
+                    <ul className="custom-pagination">
+                        <li>
+                            <button
+                                onClick={handleGetPerviousPageData}
+                                disabled={pageNumber === 1}
+                            >
+                                &laquo;
+                            </button>
+                        </li>
+                        {getPageNumbers().map((page, index) =>
+                            page === "..." ? (
+                                <li key={index} className="dots">
+                                    ...
+                                </li>
+                            ) : (
+                                <li key={index}>
+                                    <button
+                                        className={pageNumber === page ? "active-page" : ""}
+                                        onClick={() => handleGetPageNumberData(page)}
+                                    >
+                                        {page}
+                                    </button>
+                                </li>
                             )
-                            :
-                            <tr>
-                                <td colSpan="9" className="text-center">
-                                    No Student Found
-                                </td>
-                            </tr>
-                    }
-                </tbody>
-            </table>
-            <div className="pagination-container">
-                <div className="pagination-info">
-                    Total : <strong>{clas?.classStudents?.totalElements || 0}</strong>
+                        )}
+                        <li>
+                            <button
+                                onClick={handleGetNextPageData}
+                                disabled={pageNumber === totalPages}
+                            >
+                                &raquo;
+                            </button>
+                        </li>
+                    </ul>
                 </div>
-                <div className="page-size-selector">
-                    <label>Show :</label>
-                    <select
-                        value={pageSize}
-                        onChange={handleChangePageSize}
-                    >
-                        <option value={10}>10</option>
-                        <option value={50}>50</option>
-                        <option value={100}>100</option>
-                    </select>
-                </div>
-                <ul className="custom-pagination">
-                    <li>
-                        <button
-                            onClick={handleGetPerviousPageData}
-                            disabled={pageNumber === 1}
-                        >
-                            &laquo;
-                        </button>
-                    </li>
-                    {getPageNumbers().map((page, index) =>
-                        page === "..." ? (
-                            <li key={index} className="dots">
-                                ...
-                            </li>
-                        ) : (
-                            <li key={index}>
-                                <button
-                                    className={pageNumber === page ? "active-page" : ""}
-                                    onClick={() => handleGetPageNumberData(page)}
-                                >
-                                    {page}
-                                </button>
-                            </li>
-                        )
-                    )}
-                    <li>
-                        <button
-                            onClick={handleGetNextPageData}
-                            disabled={pageNumber === totalPages}
-                        >
-                            &raquo;
-                        </button>
-                    </li>
-                </ul>
             </div>
 
             <div class="modal fade" id="studentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -285,7 +288,7 @@ const ClassStudents = ({ classId }) => {
                                 </thead>
                                 <tbody>
                                     {
-                                        classStudentData.map((student, index) =>
+                                        sectionSubjectStudentData.map((student, index) =>
                                             <tr key={index}>
                                                 <td>{index + 1}</td>
                                                 <td>
@@ -294,7 +297,7 @@ const ClassStudents = ({ classId }) => {
                                                         className="modal-input"
                                                         name="registrationNumber"
                                                         value={student.registrationNumber}
-                                                        onChange={(e) => handleAddClassStudentChange(index, e)}
+                                                        onChange={(e) => handleAddSectionSubjectStudentChange(index, e)}
                                                     />
                                                 </td>
                                                 <td>
@@ -303,7 +306,7 @@ const ClassStudents = ({ classId }) => {
                                                         className="modal-input"
                                                         name="firstName"
                                                         value={student.firstName}
-                                                        onChange={(e) => handleAddClassStudentChange(index, e)}
+                                                        onChange={(e) => handleAddSectionSubjectStudentChange(index, e)}
                                                     />
                                                 </td>
                                                 <td>
@@ -312,7 +315,7 @@ const ClassStudents = ({ classId }) => {
                                                         className="modal-input"
                                                         name="lastName"
                                                         value={student.lastName}
-                                                        onChange={(e) => handleAddClassStudentChange(index, e)}
+                                                        onChange={(e) => handleAddSectionSubjectStudentChange(index, e)}
                                                     />
                                                 </td>
                                                 <td>
@@ -321,7 +324,7 @@ const ClassStudents = ({ classId }) => {
                                                         className="modal-input"
                                                         name="email"
                                                         value={student.email}
-                                                        onChange={(e) => handleAddClassStudentChange(index, e)}
+                                                        onChange={(e) => handleAddSectionSubjectStudentChange(index, e)}
                                                     />
                                                 </td>
                                                 <td>
@@ -330,15 +333,15 @@ const ClassStudents = ({ classId }) => {
                                                         className="modal-input"
                                                         name="phoneNumber"
                                                         value={student.phoneNumber}
-                                                        onChange={(e) => handleAddClassStudentChange(index, e)}
+                                                        onChange={(e) => handleAddSectionSubjectStudentChange(index, e)}
                                                     />
                                                 </td>
                                                 <td className='text-center'>
                                                     <button
                                                         type="button"
                                                         className="btn btn-sm custom-action-btn me-2"
-                                                        disabled={classStudentData.length === 1}
-                                                        onClick={() => handleRemoveClassStudent(index)}
+                                                        disabled={sectionSubjectStudentData.length === 1}
+                                                        onClick={() => handleRemoveSectionSubjectStudent(index)}
                                                     >
                                                         <i class="bi bi-trash"></i>
                                                     </button>
@@ -353,7 +356,7 @@ const ClassStudents = ({ classId }) => {
                             <button
                                 type="button"
                                 className="departments-modal-btn"
-                                onClick={handleAddClassStudentRow}
+                                onClick={handleAddSectionSubjectStudentRow}
                             >
                                 + Add Another Student
                             </button>
@@ -366,7 +369,7 @@ const ClassStudents = ({ classId }) => {
                                     Close
                                 </button>
                                 <button
-                                    onClick={saveAddClassStudentData}
+                                    onClick={saveAddSectionSubjectStudentData}
                                     type="button"
                                     class="departments-modal-btn" data-bs-dismiss="modal"
                                 >
@@ -377,8 +380,9 @@ const ClassStudents = ({ classId }) => {
                     </div>
                 </div>
             </div>
+
         </div>
     )
 }
 
-export default ClassStudents
+export default Student
