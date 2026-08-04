@@ -1,50 +1,31 @@
-package com.example.UniversityManagementSystem.entity;
+package com.example.UniversityManagementSystem.dto.subject;
 
 import com.example.UniversityManagementSystem.entity.type.SubjectType;
-import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 
-@Entity
-public class Subject {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class SubjectResponse implements Serializable {
+    private Long Id;
     private String code;
     private String name;
     private String shortName;
     private String description;
     private Integer semester;
     private Integer year;
-
-    @Enumerated(EnumType.STRING)
     private SubjectType subjectType;
-
     private Integer credit;
     private Integer maxMarks;
     private Integer passingMarks;
 
-    @ManyToOne
-    private Course course;
-
-    @OneToMany(mappedBy = "subject")
-    private List<SectionSubject> sectionSubjects = new ArrayList<>();
-
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-
-    public Subject() {
+    public SubjectResponse() {
     }
 
     public Long getId() {
-        return id;
+        return Id;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        Id = id;
     }
 
     public String getCode() {
@@ -125,37 +106,5 @@ public class Subject {
 
     public void setPassingMarks(Integer passingMarks) {
         this.passingMarks = passingMarks;
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
-    }
-
-    public List<SectionSubject> getSectionSubjects() {
-        return sectionSubjects;
-    }
-
-    public void setSectionSubjects(List<SectionSubject> sectionSubjects) {
-        this.sectionSubjects = sectionSubjects;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }
