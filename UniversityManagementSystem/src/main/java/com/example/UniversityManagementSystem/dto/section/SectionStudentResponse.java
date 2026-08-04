@@ -1,17 +1,18 @@
-package com.example.UniversityManagementSystem.dto.classes;
+package com.example.UniversityManagementSystem.dto.section;
 
 import java.io.Serializable;
 
-public class ClassStudentResponse implements Serializable {
+public class SectionStudentResponse implements Serializable {
     private Long id;
+    private String rollNumber;
     private String firstName;
     private String lastName;
     private String email;
     private String registrationNumber;
     private String phoneNumber;
 
-    public ClassStudentResponse(Long id, String firstName, String lastName, String email, String registrationNumber,
-                                String phoneNumber) {
+    public SectionStudentResponse(Long id, String firstName, String lastName, String email, String registrationNumber,
+                                  String phoneNumber) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -20,7 +21,7 @@ public class ClassStudentResponse implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
-    public ClassStudentResponse() {
+    public SectionStudentResponse() {
     }
 
     public String getFirstName() {
@@ -69,5 +70,13 @@ public class ClassStudentResponse implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getRollNumber() {
+        return rollNumber;
+    }
+
+    public void setRollNumber(String rollNumber) {
+        this.rollNumber = rollNumber;
     }
 }

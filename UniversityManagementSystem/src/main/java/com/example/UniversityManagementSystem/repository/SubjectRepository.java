@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SubjectRepository extends JpaRepository<Subject, Long> {
     Page<Subject> findByCourseId(Long courseId, Pageable pageable);
+
+    Subject findByCode(String subjectCode);
 }

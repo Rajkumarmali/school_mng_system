@@ -1,4 +1,4 @@
-.class-container {
+.section-container {
     margin-left: 200px;
     padding: 70px 25px;
     background: linear-gradient(
@@ -9,7 +9,7 @@
     min-height: 100vh;
 }
 
-.class-nav-card{
+.section-nav-card{
     background: rgba(255, 255, 255, 0.08);
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.3);
@@ -17,21 +17,21 @@
     margin-bottom: 10px;
 }
 
-.class-card {
+.section-card {
     background: rgba(255, 255, 255, 0.08);
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
-.class-details-header {
+.section-details-header {
     display: flex;
     align-items: center;
     gap: 30px;
     padding: 30px;
 }
 
-.class-details-avatar {
+.section-details-avatar {
     width: 140px;
     height: 140px;
     border-radius: 4px;
@@ -43,17 +43,25 @@
     color: #3c58c9;
 }
 
-.class-details-info {
+.section-details-info {
     flex: 1;
 }
-.class-details-contact {
+.section-details-contact {
     margin-top: 25px;
 }
-.class-details-contact div {
+.section-details-contact div {
     margin-bottom: 10px;
     display: flex;
     align-items: center;
     gap: 12px;
+}
+
+.section-student-card{
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    padding: 20px
 }
 
 .edit-icon-btn {
@@ -180,7 +188,7 @@
     font-weight: 500;
 }
 
-.class-modal-btn {
+.section-modal-btn {
     background: transparent;
     border: 1px solid rgba(255,255,255,0.5);
     margin: 5px;
@@ -189,7 +197,7 @@
     border-radius: 8px;
 }
 
-.class-modal-btn:hover {
+.section-modal-btn:hover {
    background: transparent;
     color: white;
 }

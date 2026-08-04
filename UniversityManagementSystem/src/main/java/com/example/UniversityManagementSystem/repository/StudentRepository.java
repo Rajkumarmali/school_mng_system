@@ -17,8 +17,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     Student findByRegistrationNumber(String registrationNumber);
 
-    Page<Student> findByClasses(Section clas, Pageable pageable);
-
     Student findByUserId(Long userId);
 
     Page<Student> findByScholarships(Scholarship scholarship, Pageable pageable);
@@ -28,6 +26,8 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Page<Student> findByCollegeIdAndRollNumberNull(Long collegeId, Pageable pageable);
 
     Page<Student> findByDepartmentCourseId(Long courseId, Pageable pageable);
+
+    Page<Student> findBySections(Section section, Pageable pageable);
 
     Page<Student> findByDepartmentCourseIdAndCollegeId(Long collegeId, Long collegeId1, Pageable pageable);
 }

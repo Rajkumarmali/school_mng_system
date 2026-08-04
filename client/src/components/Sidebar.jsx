@@ -72,9 +72,9 @@ const Sidebar = () => {
                     (isHod || isAdmin) &&
                     <>
                         <li>
-                            <Link to="/classes" className="menu-item">
-                                <i className="bi bi-book-fill me-2"></i>
-                                Classes
+                            <Link to="/sections" className="menu-item">
+                                <i className="bi bi-grid-3x3-gap-fill me-2"></i>
+                                Section
                             </Link>
                         </li>
                     </>

@@ -1,17 +1,17 @@
-package com.example.UniversityManagementSystem.dto.classes;
+package com.example.UniversityManagementSystem.dto.section;
 
-public class ClassStudentRequest {
+public class SectionStudentRequest {
     private String firstName;
     private String lastName;
     private String email;
     private String registrationNumber;
     private String phoneNumber;
 
-    public ClassStudentRequest() {
+    public SectionStudentRequest() {
     }
 
-    public ClassStudentRequest(String firstName, String lastName, String email, String registrationNumber,
-                               String phoneNumber) {
+    public SectionStudentRequest(String firstName, String lastName, String email, String registrationNumber,
+                                 String phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
