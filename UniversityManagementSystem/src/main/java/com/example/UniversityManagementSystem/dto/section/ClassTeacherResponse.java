@@ -1,4 +1,4 @@
-package com.example.UniversityManagementSystem.dto.classes;
+package com.example.UniversityManagementSystem.dto.section;
 
 import java.io.Serializable;
 

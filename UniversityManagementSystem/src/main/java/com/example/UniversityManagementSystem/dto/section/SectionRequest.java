@@ -1,23 +1,16 @@
-package com.example.UniversityManagementSystem.dto.classes;
+package com.example.UniversityManagementSystem.dto.section;
 
 import com.example.UniversityManagementSystem.entity.type.SectionStatus;
 
-public class ClassRequest {
+public class SectionRequest {
     private String name;
     private String academicYear;
-    private String semester;
+    private Integer semester;
+    private Integer year;
     private String employeeEmailOrEmployeeId;
     private SectionStatus sectionStatus;
 
-    public ClassRequest() {
-    }
-
-    public ClassRequest(String name, String academicYear, String semester, String employeeEmailOrEmployeeId, SectionStatus sectionStatus) {
-        this.name = name;
-        this.academicYear = academicYear;
-        this.semester = semester;
-        this.employeeEmailOrEmployeeId = employeeEmailOrEmployeeId;
-        this.sectionStatus = sectionStatus;
+    public SectionRequest() {
     }
 
     public String getName() {
@@ -36,11 +29,11 @@ public class ClassRequest {
         this.academicYear = academicYear;
     }
 
-    public String getSemester() {
+    public Integer getSemester() {
         return semester;
     }
 
-    public void setSemester(String semester) {
+    public void setSemester(Integer semester) {
         this.semester = semester;
     }
 
@@ -52,11 +45,19 @@ public class ClassRequest {
         this.employeeEmailOrEmployeeId = employeeEmailOrEmployeeId;
     }
 
-    public SectionStatus getClassStatus() {
+    public SectionStatus getSectionStatus() {
         return sectionStatus;
     }
 
-    public void setClassStatus(SectionStatus sectionStatus) {
+    public void setSectionStatus(SectionStatus sectionStatus) {
         this.sectionStatus = sectionStatus;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
     }
 }

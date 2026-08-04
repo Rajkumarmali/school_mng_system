@@ -1,99 +1,110 @@
 import React, { useEffect, useState } from 'react'
-import './ClassDetails.css'
-import { useParams, useSearchParams } from 'react-router-dom'
+import './SectionDetails.css'
+import { useSearchParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { getClassById, updateClass } from '../../state/class/Action'
 import { jwtDecode } from 'jwt-decode'
-import ClassStudents from './ClassStudents'
+import { getSectionById, updateSection } from '../../state/section/Action'
+import Students from './student/Students';
+import Subject from './subject/Subject'
 
-const ClassDetails = () => {
+
+
+const SectionDetails = () => {
 
     const token = localStorage.getItem("token")
     const decoded = jwtDecode(token)
     const roles = decoded.roles;
     const isHod = roles.includes("HOD")
 
-    const { classId } = useParams();
-
     const [searchParams, setSearchParams] = useSearchParams();
+    const sectionId = searchParams.get("sectionId")
     const activeTab = searchParams.get("tab") || "info"
 
     const dispatch = useDispatch()
-    const clas = useSelector((state) => state.class)
+    const section = useSelector((state) => state.section)
 
-    const [isEditClassModal, setIsEditClassModal] = useState(false);
+    const [isEditSectionModal, setIsEditSectionModal] = useState(false);
     const [isEditClassTeacherModal, setIssEditClassTeacherModal] = useState(false);
 
-    const [classData, setClassData] = useState({
+    const [sectionData, setSectionData] = useState({
         name: "",
         academicYear: "",
         semester: "",
-        classStatus: ""
+        year: "",
+        sectionStatus: ""
     })
 
     const [classTeacherEmailOrEmpId, setClassTeacherEmailOrEmpId] = useState();
 
     const handleEditClass = () => {
-        setIsEditClassModal(true);
+        setIsEditSectionModal(true);
         setIssEditClassTeacherModal(false);
-        handleSetClassData();
+        handleSetSectionData();
     }
 
     const handleEditClassTeacher = () => {
-        setIsEditClassModal(false);
+        setIsEditSectionModal(false);
         setIssEditClassTeacherModal(true);
         setClassTeacherEmailOrEmpId(
-            clas?.class?.classTeacherResponse?.employeeId || ""
+            section?.section?.classTeacherResponse?.employeeId || ""
         );
     }
 
-    const handleSetClassData = () => {
-        setClassData({
-            name: clas?.class?.name || "",
-            academicYear: clas?.class.academicYear || "",
-            semester: clas?.class?.semester || "",
-            classStatus: clas?.class?.classStatus || "ACTIVE"
+    const handleSetSectionData = () => {
+        setSectionData({
+            name: section?.section?.name || "",
+            academicYear: section?.section?.academicYear || "",
+            year: section?.section?.year || "",
+            semester: section?.section?.semester || "",
+            sectionStatus: section?.section?.sectionStatus || "ACTIVE"
         })
     }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setClassData({
-            ...classData,
+        setSectionData({
+            ...sectionData,
             [name]: value
         })
     }
 
     const handleSave = async () => {
-        if (isEditClassModal) {
-            await dispatch(updateClass(classId, classData))
+        if (isEditSectionModal) {
+            await dispatch(updateSection(sectionId, sectionData))
         } else {
-            console.log("...")
-            await dispatch(updateClass(classId, { employeeEmailOrEmployeeId: classTeacherEmailOrEmpId }))
+            await dispatch(updateSection(sectionId, { employeeEmailOrEmployeeId: classTeacherEmailOrEmpId }))
         }
-        await dispatch(getClassById(classId))
+        await dispatch(getSectionById(sectionId))
     }
 
     useEffect(() => {
-        dispatch(getClassById(classId))
-    }, [dispatch, classId])
+        dispatch(getSectionById(sectionId))
+    }, [dispatch, sectionId])
 
     return (
-        <div className='class-container'>
-            <nav class="class-nav-card navbar navbar-expand-lg ">
+        <div>
+            <nav class="section-nav-card navbar navbar-expand-lg ">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <button
                             class="nav-link"
-                            onClick={() => setSearchParams({ tab: "info" })}
+                            onClick={() => setSearchParams({ sectionId, tab: "info" })}
                         >
-                            Class Info
+                            Overview
                         </button>
                     </li>
                     <li class="nav-item">
                         <button
                             class="nav-link"
-                            onClick={() => { setSearchParams({ tab: "student" }) }}
+                            onClick={() => { setSearchParams({ sectionId, tab: "subject" }) }}
+                        >
+                            Subject
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button
+                            class="nav-link"
+                            onClick={() => { setSearchParams({ sectionId, tab: "student" }) }}
                         >
                             Student
                         </button>
@@ -102,37 +113,43 @@ const ClassDetails = () => {
             </nav>
             {
                 activeTab === "info" ?
-                    <div className="class-card">
-                        <div className="class-details-header">
+                    <div className="section-card">
+                        <div className="section-details-header">
                             <div>
-                                <div className="class-details-avatar">
+                                <div className="section-details-avatar">
                                     <i className="bi bi-easel2-fill"></i>
                                 </div>
                             </div>
-                            <div className="class-details-info">
-                                <div className="class-details-contact">
+                            <div className="section-details-info">
+                                <div className="section-details-contact">
                                     <div>
-                                        <span><strong>Code : </strong> {clas?.class?.classCode}</span>
+                                        <span><strong>Code : </strong> {section?.section?.code}</span>
                                     </div>
                                     <div>
-                                        <span><strong>Name : </strong> {clas?.class?.name}</span>
+                                        <span><strong>Name : </strong> {section?.section?.name}</span>
                                     </div>
                                     <div>
-                                        <span> <strong>Academic Year : </strong>{clas?.class?.academicYear} </span>
+                                        <span> <strong>Academic Year : </strong>{section?.section?.academicYear} </span>
                                     </div>
                                     <div>
-                                        <span> <strong>Semester : </strong>{clas?.class?.semester} </span>
+                                        <span> <strong>Year : </strong>{section?.section?.year} Year</span>
+                                    </div>
+                                    {
+                                        section?.section?.semester &&
+                                        <div>
+                                            <span> <strong>Semester : </strong>{section?.section?.semester} Sem</span>
+                                        </div>
+                                    }
+                                    <div>
+                                        <span> <strong>Status : </strong>{section?.section?.sectionStatus} </span>
                                     </div>
                                     <div>
-                                        <span> <strong>Status : </strong>{clas?.class?.classStatus} </span>
-                                    </div>
-                                    <div>
-                                        <span> <strong>Department : </strong>{clas?.class?.departmentName} ({clas?.class?.departmentCode})</span>
+                                        <span> <strong>Department : </strong>{section?.section?.departmentName} ({section?.section?.departmentCode})</span>
                                         {
                                             isHod &&
                                             <button className="edit-icon-btn"
                                                 data-bs-toggle="modal"
-                                                data-bs-target="#classModal"
+                                                data-bs-target="#editSectionModal"
                                                 onClick={handleEditClass}
                                             >
                                                 <i className="bi bi-pencil-square"></i>
@@ -142,24 +159,24 @@ const ClassDetails = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="class-details-info">
-                                <div className="class-details-contact">
+                            <div className="section-details-info">
+                                <div className="section-details-contact">
                                     <div>
-                                        <span><strong>Class Teacher Name : </strong> {clas?.class?.classTeacherResponse?.name}</span>
+                                        <span><strong>Class Teacher Name : </strong> {section?.section?.classTeacherResponse?.name}</span>
                                     </div>
                                     <div>
-                                        <span> <strong>EmployeeId  : </strong>{clas?.class?.classTeacherResponse?.employeeId} </span>
+                                        <span> <strong>EmployeeId  : </strong>{section?.section?.classTeacherResponse?.employeeId} </span>
                                     </div>
                                     <div>
-                                        <span> <strong>Email : </strong>{clas?.class?.classTeacherResponse?.email} </span>
+                                        <span> <strong>Email : </strong>{section?.section?.classTeacherResponse?.email} </span>
                                     </div>
                                     <div>
-                                        <span> <strong>Phone Number : </strong>{clas?.class?.classTeacherResponse?.phoneNumber} </span>
+                                        <span> <strong>Phone Number : </strong>{section?.section?.classTeacherResponse?.phoneNumber} </span>
                                         {
                                             isHod &&
                                             <button className="edit-icon-btn"
                                                 data-bs-toggle="modal"
-                                                data-bs-target="#classModal"
+                                                data-bs-target="#editSectionModal"
                                                 onClick={handleEditClassTeacher}
                                             >
                                                 <i className="bi bi-pencil-square"></i>
@@ -172,48 +189,62 @@ const ClassDetails = () => {
                         <div className="stats-container">
                             <div className="stat-card">
                                 <i className="bi bi-mortarboard-fill"></i>
-                                <h3>{clas?.class?.totalStudents}</h3>
+                                <h3>{section?.section?.totalStudents}</h3>
                                 <span>Total Students</span>
                             </div>
                         </div>
                     </div>
                     :
-                    <div className="class-student-card">
-                        <ClassStudents classId={classId} />
-                    </div>
+                    activeTab === "subject" ?
+                        <div className="section-student-card">
+                            <Subject />
+                        </div>
+                        :
+                        <div className="section-student-card">
+                            <Students />
+                        </div>
             }
 
-            <div class="modal fade" id="classModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="editSectionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-xl">
                     <div class="modal-content custom-modal">
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="exampleModalLabel">
                                 {
                                     isEditClassTeacherModal ? "Edit Class Teacher"
-                                        : "Edit Class"
+                                        : "Edit Section"
                                 }
                             </h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             {
-                                isEditClassModal ?
+                                isEditSectionModal ?
                                     <div className="form-grid">
                                         <div>
-                                            <label>Class Name</label>
+                                            <label>Section Name</label>
                                             <input type="text"
                                                 className="modal-input"
                                                 name="name"
-                                                value={classData.name}
+                                                value={sectionData.name}
+                                                onChange={handleChange}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label>Year</label>
+                                            <input type="number"
+                                                className="modal-input"
+                                                name="year"
+                                                value={sectionData.year}
                                                 onChange={handleChange}
                                             />
                                         </div>
                                         <div>
                                             <label>Semester</label>
-                                            <input type="text"
+                                            <input type="number"
                                                 className="modal-input"
                                                 name="semester"
-                                                value={classData.semester}
+                                                value={sectionData.semester}
                                                 onChange={handleChange}
                                             />
                                         </div>
@@ -222,21 +253,21 @@ const ClassDetails = () => {
                                             <input type="text"
                                                 className="modal-input"
                                                 name='academicYear'
-                                                value={classData.academicYear}
+                                                value={sectionData.academicYear}
                                                 onChange={handleChange}
                                             />
                                         </div>
                                         <div className="status-group">
-                                            <label className="status-title">Class Status</label>
+                                            <label className="status-title">Section Status</label>
                                             <div className="status-options">
                                                 <div className="form-check">
                                                     <input
                                                         className="form-check-input"
                                                         type="radio"
-                                                        name="classStatus"
+                                                        name="sectionStatus"
                                                         id="active"
                                                         value="ACTIVE"
-                                                        checked={classData.classStatus === "ACTIVE"}
+                                                        checked={sectionData.sectionStatus === "ACTIVE"}
                                                         onChange={handleChange}
                                                     />
                                                     <label className="form-check-label" htmlFor="active">
@@ -247,10 +278,10 @@ const ClassDetails = () => {
                                                     <input
                                                         className="form-check-input"
                                                         type="radio"
-                                                        name="classStatus"
+                                                        name="sectionStatus"
                                                         id="completed"
                                                         value="COMPLETED"
-                                                        checked={classData.classStatus === "COMPLETED"}
+                                                        checked={sectionData.sectionStatus === "COMPLETED"}
                                                         onChange={handleChange}
                                                     />
                                                     <label className="form-check-label" htmlFor="completed">
@@ -276,7 +307,7 @@ const ClassDetails = () => {
 
                         </div>
                         <div class="modal-footer">
-                            <button onClick={setClassData} type="button"
+                            <button onClick={setSectionData} type="button"
                                 class="departments-modal-btn"
                                 data-bs-dismiss="modal"
                             >
@@ -295,4 +326,4 @@ const ClassDetails = () => {
     )
 }
 
-export default ClassDetails
+export default SectionDetails

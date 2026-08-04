@@ -1,4 +1,4 @@
-.classes-container {
+.sections-container {
     margin-left: 200px;
     padding: 70px 25px;
     background: linear-gradient(
@@ -9,19 +9,19 @@
     min-height: 100vh;
 }
 
-.classes-header {
+.sections-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
 
-.classes-header h2 {
+.sections-header h2 {
     margin: 0;
     font-weight: 700;
 }
 
-.add-class-btn {
+.add-section-btn {
     background: transparent;
     color: white;
     border: 1px solid white;
@@ -31,12 +31,12 @@
     transition: 0.3s;
 }
 
-.add-class-btn:hover {
+.add-section-btn:hover {
     background: transparent;
     color: #3c58c9;
 }
 
-.classes-card {
+.sections-card {
     background: rgba(255, 255, 255, 0.08);
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.3);
@@ -44,22 +44,22 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
-.classes-table {
+.sections-table {
     margin-bottom: 0;
 }
 
-.classes-table thead {
+.sections-table thead {
   background: transparent !important;
 }
 
-.classes-table th {
+.sections-table th {
     background: transparent !important;
     font-weight: 600;
     color: #495057;
     padding: 14px;
 }
 
-.classes-table td {
+.sections-table td {
     background: transparent !important;
     vertical-align: middle;
     padding: 14px;

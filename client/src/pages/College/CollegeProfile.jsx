@@ -4,6 +4,7 @@ import './CollegeProfile.css'
 import { useDispatch, useSelector } from 'react-redux';
 import { getCollegeById, updateCollege } from '../../state/college/Action';
 import Student from './student/Student';
+import Course from './course/Course';
 
 const CollegeProfile = () => {
 
@@ -113,6 +114,14 @@ const CollegeProfile = () => {
                     <li className="nav-item">
                         <button
                             className="nav-link"
+                            onClick={() => setSearchParams({ collegeId, tab: "course" })}
+                        >
+                            Course
+                        </button>
+                    </li>
+                    <li className="nav-item">
+                        <button
+                            className="nav-link"
                             onClick={() => setSearchParams({ collegeId, tab: "student" })}
                         >
                             Students
@@ -136,87 +145,92 @@ const CollegeProfile = () => {
                             <Student />
                         </div>
                         :
-                        <div>
-                            <div className="college-header">
-                                <div className="college-logo">
-                                    <i className="bi bi-building"></i>
+                        activeTab === "course" ?
+                            <div>
+                                <Course />
+                            </div>
+                            :
+                            <div>
+                                <div className="college-header">
+                                    <div className="college-logo">
+                                        <i className="bi bi-building"></i>
+                                    </div>
+                                    <div>
+                                        <h2>{college.college?.name}({college.college?.shortName})</h2>
+                                        <p>College Code : {college.college?.collegeCode}</p>
+                                        <p>Email : {college?.college?.email}</p>
+                                        <div className="section-header">
+                                            <p>Phone : {college?.college?.phoneNumber}</p>
+                                            <button className="edit-icon-btn"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#exampleModal"
+                                                onClick={handleEdit}
+                                            >
+                                                <i className="bi bi-pencil-square"></i>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h2>{college.college?.name}({college.college?.shortName})</h2>
-                                    <p>College Code : {college.college?.collegeCode}</p>
-                                    <p>Email : {college?.college?.email}</p>
+                                <div className="stats-container">
+                                    <div className="stat-card">
+                                        <i className="bi bi-mortarboard-fill"></i>
+                                        <h3>{college?.college?.totalStudent}</h3>
+                                        <span>Total Students</span>
+                                    </div>
+                                    <div className="stat-card">
+                                        <i className="bi bi-person-workspace"></i>
+                                        <h3>{college?.college?.totalFaculty}</h3>
+                                        <span>Faculty</span>
+                                    </div>
+                                    <div className="stat-card">
+                                        <i className="bi bi-diagram-3-fill"></i>
+                                        <h3>{college?.college?.totalDepartment}</h3>
+                                        <span>Department</span>
+                                    </div>
+                                    <div className="stat-card">
+                                        <i className="bi bi-journal-bookmark-fill"></i>
+                                        <h3>{college?.college?.totalCourse}</h3>
+                                        <span>Courses</span>
+                                    </div>
+                                </div>
+
+                                <div className="college-info">
                                     <div className="section-header">
-                                        <p>Phone : {college?.college?.phoneNumber}</p>
+                                        <h4>Address : </h4>
                                         <button className="edit-icon-btn"
                                             data-bs-toggle="modal"
                                             data-bs-target="#exampleModal"
-                                            onClick={handleEdit}
-                                        >
+                                            onClick={handleEditAddress}>
                                             <i className="bi bi-pencil-square"></i>
                                         </button>
                                     </div>
-                                </div>
-                            </div>
-                            <div className="stats-container">
-                                <div className="stat-card">
-                                    <i className="bi bi-mortarboard-fill"></i>
-                                    <h3>{college?.college?.totalStudent}</h3>
-                                    <span>Total Students</span>
-                                </div>
-                                <div className="stat-card">
-                                    <i className="bi bi-person-workspace"></i>
-                                    <h3>{college?.college?.totalFaculty}</h3>
-                                    <span>Faculty</span>
-                                </div>
-                                <div className="stat-card">
-                                    <i className="bi bi-diagram-3-fill"></i>
-                                    <h3>{college?.college?.totalDepartment}</h3>
-                                    <span>Department</span>
-                                </div>
-                                <div className="stat-card">
-                                    <i className="bi bi-journal-bookmark-fill"></i>
-                                    <h3>{college?.college?.totalCourse}</h3>
-                                    <span>Courses</span>
-                                </div>
-                            </div>
+                                    <div className="info-grid">
+                                        <div>
+                                            <strong>Address :</strong> {college?.college?.addressResponse?.address}
+                                        </div>
 
-                            <div className="college-info">
-                                <div className="section-header">
-                                    <h4>Address : </h4>
-                                    <button className="edit-icon-btn"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#exampleModal"
-                                        onClick={handleEditAddress}>
-                                        <i className="bi bi-pencil-square"></i>
-                                    </button>
-                                </div>
-                                <div className="info-grid">
-                                    <div>
-                                        <strong>Address :</strong> {college?.college?.addressResponse?.address}
-                                    </div>
+                                        <div>
+                                            <strong>City :</strong>{college?.college?.addressResponse?.city}
+                                        </div>
 
-                                    <div>
-                                        <strong>City :</strong>{college?.college?.addressResponse?.city}
-                                    </div>
+                                        <div>
+                                            <strong>District :</strong>{college?.college?.addressResponse?.district}
+                                        </div>
 
-                                    <div>
-                                        <strong>District :</strong>{college?.college?.addressResponse?.district}
-                                    </div>
+                                        <div>
+                                            <strong>State :</strong>{college?.college?.addressResponse?.state}
+                                        </div>
 
-                                    <div>
-                                        <strong>State :</strong>{college?.college?.addressResponse?.state}
-                                    </div>
+                                        <div>
+                                            <strong>Country :</strong> {college?.college?.addressResponse?.country}
+                                        </div>
 
-                                    <div>
-                                        <strong>Country :</strong> {college?.college?.addressResponse?.country}
-                                    </div>
-
-                                    <div>
-                                        <strong>Pincode :</strong> {college?.college?.addressResponse?.pincode}
+                                        <div>
+                                            <strong>Pincode :</strong> {college?.college?.addressResponse?.pincode}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
                 }
             </div>

@@ -5,8 +5,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getCourseById, updateCourse } from '../../state/course/Action';
 import Department from './department/Department';
 import Student from './student/Student';
+import Subject from './subject/Subject';
 
 const CourseDetails = () => {
+
+
+    // const token = localStorage.getItem("token")
+    // const decoded = jwtDecode(token)
+    // const roles = decoded.roles;
+    // const isSuperAdmin = roles.includes("SUPER_ADMIN")
 
     const [searchParams, setSearchParams] = useSearchParams();
     const courseId = searchParams.get("courseId")
@@ -20,7 +27,6 @@ const CourseDetails = () => {
         shortName: "",
         duration: "",
         courseDurationType: "YEAR",
-        totalSemester: "",
         description: ""
     })
 
@@ -30,7 +36,6 @@ const CourseDetails = () => {
             shortName: course?.course?.shortName || "",
             duration: course?.course?.duration || "",
             courseDurationType: course?.course?.courseDurationType || "YEAR",
-            totalSemester: course?.course?.totalSemester || "",
             description: course?.course?.description || ""
         })
     }
@@ -80,6 +85,14 @@ const CourseDetails = () => {
                             Student
                         </button>
                     </li>
+                    <li className="nav-item">
+                        <button
+                            className="nav-link"
+                            onClick={() => setSearchParams({ courseId, tab: "subject" })}
+                        >
+                            Subject
+                        </button>
+                    </li>
                 </ul>
             </nav>
             <div className="fee-card">
@@ -94,57 +107,68 @@ const CourseDetails = () => {
                                 <Department />
                             </div>
                             :
-                            <div>
-                                <div className="course-details-info">
-                                    <div className="course-details-contact">
-                                        <div>
-                                            <i className="bi bi-upc-scan me-2"></i>
-                                            <span> <strong>Code :  </strong>{course?.course?.courseCode}</span>
-                                        </div>
-                                        <div>
-                                            <i className="bi bi-journal-bookmark-fill me-2"></i>
-                                            <span> <strong>Name:  </strong>{course?.course?.name} ({course?.course?.shortName})</span>
-                                        </div>
-                                        <div>
-                                            <i className="bi bi-calendar-range-fill me-2"></i>
-                                            <span> <strong>Duration Type:  </strong>{course?.course?.courseDurationType} </span>
-                                        </div>
-                                        <div>
-                                            <i className="bi bi-clock-history me-2"></i>
-                                            <span> <strong>Duration :  </strong>{course?.course?.duration} Year</span>
-                                        </div>
-                                        <div>
-                                            <i className="bi bi-collection-fill me-2"></i>
-                                            <span> <strong>Total Semester:  </strong>{course?.course?.totalSemester} </span>
-                                        </div>
-                                        <div>
-                                            <i className="bi bi-card-text me-2"></i>
-                                            <span> <strong>Description:  </strong>{course?.course?.description} </span>
-
-                                            <button className="edit-icon-btn"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#editCourseModal"
-                                                onClick={handleSetdata}
-                                            >
-                                                <i className="bi bi-pencil-square"></i>
-                                            </button>
-                                        </div>
-                                    </div>
+                            activeTab === "subject" ?
+                                <div>
+                                    <Subject />
                                 </div>
-                                <div className="stats-container">
-                                    <div className="stat-card">
-                                        <i className="bi bi-diagram-3-fill me-2"></i>
-                                        <h3>{course?.course?.totalDepartment}</h3>
-                                        <span>Total Departments</span>
-                                    </div>
+                                :
+                                <div>
+                                    <div className="course-details-info">
+                                        <div className="course-details-contact">
+                                            <div>
+                                                <i className="bi bi-upc-scan me-2"></i>
+                                                <span> <strong>Code :  </strong>{course?.course?.courseCode}</span>
+                                            </div>
+                                            <div>
+                                                <i className="bi bi-journal-bookmark-fill me-2"></i>
+                                                <span> <strong>Name:  </strong>{course?.course?.name} ({course?.course?.shortName})</span>
+                                            </div>
+                                            <div>
+                                                <i className="bi bi-calendar-range-fill me-2"></i>
+                                                <span> <strong>Duration Type:  </strong>{course?.course?.courseDurationType} </span>
+                                            </div>
+                                            <div>
+                                                <i className="bi bi-clock-history me-2"></i>
+                                                <span> <strong>Duration :  </strong>{course?.course?.duration} Year</span>
+                                            </div>
+                                            <div>
+                                                <i className="bi bi-collection-fill me-2"></i>
+                                                <span> <strong>Total Semester:  </strong>{course?.course?.totalSemester} </span>
+                                            </div>
+                                            <div>
+                                                <i className="bi bi-card-text me-2"></i>
+                                                <span> <strong>Description:  </strong>{course?.course?.description} </span>
 
-                                    <div className="stat-card">
-                                        <i className="bi bi-mortarboard-fill me-2"></i>
-                                        <h3>{course?.course?.totalStudent}</h3>
-                                        <span>Total Students</span>
+                                                <button className="edit-icon-btn"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#editCourseModal"
+                                                    onClick={handleSetdata}
+                                                >
+                                                    <i className="bi bi-pencil-square"></i>
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
+                                    {/* <div className="stats-container">
+                                        <div className="stat-card">
+                                            <i className="bi bi-bank me-2"></i>
+                                            <h3>{course?.course?.totalDepartment}</h3>
+                                            <span>Total College</span>
+                                        </div>
+
+                                        <div className="stat-card">
+                                            <i className="bi bi-diagram-3-fill me-2"></i>
+                                            <h3>{course?.course?.totalDepartment}</h3>
+                                            <span>Total Departments</span>
+                                        </div>
+
+                                        <div className="stat-card">
+                                            <i className="bi bi-mortarboard-fill me-2"></i>
+                                            <h3>{course?.course?.totalStudent}</h3>
+                                            <span>Total Students</span>
+                                        </div>
+                                    </div> */}
                                 </div>
-                            </div>
 
                 }
             </div>
@@ -196,16 +220,6 @@ const CourseDetails = () => {
                                         <option>YEAR</option>
                                         <option>SEMESTER</option>
                                     </select>
-                                </div>
-                                <div>
-                                    <label>Total Semester</label>
-                                    <input type='number'
-                                        className="modal-input"
-                                        name='totalSemester'
-                                        value={courseData.totalSemester}
-                                        onChange={handleChange}
-                                    />
-
                                 </div>
                                 <div>
                                     <label>Description</label>

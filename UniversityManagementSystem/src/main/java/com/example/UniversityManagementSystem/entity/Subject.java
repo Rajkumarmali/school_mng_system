@@ -22,6 +22,7 @@ public class Subject {
 
     @Enumerated(EnumType.STRING)
     private SubjectType subjectType;
+
     private Integer credit;
     private Integer maxMarks;
     private Integer passingMarks;

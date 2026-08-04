@@ -1,9 +1,15 @@
 import {
+    ASSIGN_COURSE_TO_COLLEGE_FAILER,
+    ASSIGN_COURSE_TO_COLLEGE_REQUEST,
+    ASSIGN_COURSE_TO_COLLEGE_SUCCESS,
     CREATE_COLLEGE_FAILER, CREATE_COLLEGE_REQUEST, CREATE_COLLEGE_SUCCESS, DELETE_COLLEGE_FAILER, DELETE_COLLEGE_REQUEST, DELETE_COLLEGE_SUCCESS, GENERATE_STUDENT_ENROLLMENT_AND_ROLLNUM_FAILER, GENERATE_STUDENT_ENROLLMENT_AND_ROLLNUM_REQUEST, GENERATE_STUDENT_ENROLLMENT_AND_ROLLNUM_SUCCESS, GET_COLLEGE_BYID_FAILER,
     GET_COLLEGE_BYID_REQUEST, GET_COLLEGE_BYID_SUCCESS, GET_COLLEGE_FAILER, GET_COLLEGE_REQUEST, GET_COLLEGE_SUCCESS,
     GET_COLLEGES_ADMISSION_FAILER,
     GET_COLLEGES_ADMISSION_REQUEST,
     GET_COLLEGES_ADMISSION_SUCCESS,
+    GET_COLLEGES_COURSE_FAILER,
+    GET_COLLEGES_COURSE_REQUEST,
+    GET_COLLEGES_COURSE_SUCCESS,
     GET_COLLEGES_STUDENTS_FAILER,
     GET_COLLEGES_STUDENTS_REQUEST,
     GET_COLLEGES_STUDENTS_SUCCESS,
@@ -99,6 +105,41 @@ export const deleteCollege = (collegeId) => async (dispatch) => {
         dispatch({ type: DELETE_COLLEGE_SUCCESS, payload: data })
     } catch (err) {
         dispatch({ type: DELETE_COLLEGE_FAILER, payload: err.message })
+    }
+}
+
+export const assignCourseToCollege = (collegeId, courseCode) => async (dispatch) => {
+    dispatch({ type: ASSIGN_COURSE_TO_COLLEGE_REQUEST })
+    try {
+        const res = await fetch(`${BASE_API}/college/assign/course/${collegeId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: courseCode
+        })
+        const data = await res.json();
+        dispatch({ type: ASSIGN_COURSE_TO_COLLEGE_SUCCESS, payload: data })
+    } catch (err) {
+        dispatch({ type: ASSIGN_COURSE_TO_COLLEGE_FAILER, payload: err.message })
+    }
+}
+
+export const getCollegeCourse = (collegeId, pageNumber, pageSize) => async (dispatch) => {
+    dispatch({ type: GET_COLLEGES_COURSE_REQUEST })
+    try {
+        const res = await fetch(`${BASE_API}/course/get/by/collegeid/${collegeId}?pageNumber=${pageNumber - 1}&pageSize=${pageSize}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+        })
+        const data = await res.json();
+        dispatch({ type: GET_COLLEGES_COURSE_SUCCESS, payload: data })
+    } catch (err) {
+        dispatch({ type: GET_COLLEGES_COURSE_FAILER, payload: err.message })
     }
 }
 

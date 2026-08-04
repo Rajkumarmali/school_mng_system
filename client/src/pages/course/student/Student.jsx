@@ -2,9 +2,15 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import './Student.css'
-import { getStudentByCourseId } from '../../../state/course/Action';
+import { getStudentByCourseId, getStudentByCourseIdForCollege } from '../../../state/course/Action';
+import { jwtDecode } from 'jwt-decode';
 
 const Student = () => {
+
+    const token = localStorage.getItem("token")
+    const decoded = jwtDecode(token)
+    const roles = decoded.roles;
+    const isSuperAdmin = roles.includes("SUPER_ADMIN")
 
     const [searchParams, setSearchParams] = useSearchParams();
     const pageNumber = Number(searchParams.get('page')) || 1
@@ -15,7 +21,10 @@ const Student = () => {
     const dispatch = useDispatch();
     const course = useSelector((state) => state.course)
 
-    const totalPages = course?.courseStudents?.totalPages || 0;
+    const totalPages = isSuperAdmin ?
+        course?.courseStudents?.totalPages || 0
+        :
+        course?.courseStudentsForCollege?.totalPages || 0
     const getPageNumbers = () => {
         const pages = [];
 
@@ -85,8 +94,11 @@ const Student = () => {
     }
 
     useEffect(() => {
-        dispatch(getStudentByCourseId(courseId, pageNumber, pageSize))
-    }, [dispatch, pageNumber, pageSize, courseId]);
+        isSuperAdmin ?
+            dispatch(getStudentByCourseId(courseId, pageNumber, pageSize))
+            :
+            dispatch(getStudentByCourseIdForCollege(courseId, pageNumber, pageSize))
+    }, [dispatch, pageNumber, pageSize, courseId, isSuperAdmin]);
 
     return (
         <div>
@@ -96,7 +108,12 @@ const Student = () => {
                         <tr>
                             <th>S.No</th>
                             <th>Roll No.</th>
-                            <th>Registration No.</th>
+                            {
+                                isSuperAdmin ?
+                                    <th>College</th>
+                                    :
+                                    <th>Registration No.</th>
+                            }
                             <th>Name</th>
                             <th>Email</th>
                             <th>Phone Number</th>
@@ -105,30 +122,49 @@ const Student = () => {
                     </thead>
                     <tbody>
                         {
-                            course?.courseStudents?.content?.length > 0 ?
-                                course?.courseStudents?.content?.map((stu, index) =>
+                            ((isSuperAdmin && course?.courseStudents?.content?.length === 0) || (course?.courseStudentsForCollege?.content?.length === 0)) ?
+                                <tr>
+                                    <td colSpan="8" className="text-center">
+                                        No Student Found
+                                    </td>
+                                </tr>
+                                :
+                                (
+                                    isSuperAdmin ?
+                                        (course?.courseStudents?.content)
+                                        :
+                                        (course?.courseStudentsForCollege?.content)
+                                )?.map((stu, index) =>
                                     <tr>
                                         <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
                                         <td>{stu.rollNumber}</td>
-                                        <td>{stu.registrationNumber}</td>
+                                        {
+                                            isSuperAdmin ?
+                                                <td>{stu.collegeName ? stu.collegeName : "-"}</td>
+                                                :
+                                                <td>{stu.registrationNumber}</td>
+                                        }
+
                                         <td>{stu.name}</td>
                                         <td>{stu.email}</td>
                                         <td>{stu.phoneNumber}</td>
                                         <td>{stu.gender}</td>
                                     </tr>
                                 )
-                                :
-                                <tr>
-                                    <td colSpan="8" className="text-center">
-                                        No Student Found
-                                    </td>
-                                </tr>
+
                         }
                     </tbody>
                 </table>
                 <div className="pagination-container">
                     <div className="pagination-info">
-                        Total : <strong>{course?.courseStudents?.totalElements || 0}</strong>
+                        Total :
+                        {
+                            isSuperAdmin ?
+                                <strong>{course?.courseStudents?.totalElements || 0}</strong>
+                                :
+                                <strong>{course?.courseStudentsForCollege?.totalElements || 0}</strong>
+                        }
+
                     </div>
                     <div className="page-size-selector">
                         <label>Show :</label>
