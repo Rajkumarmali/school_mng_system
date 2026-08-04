@@ -31,7 +31,7 @@ public class Subject {
     private Course course;
 
     @OneToMany(mappedBy = "subject")
-    private List<StudentSubject> studentSubjects = new ArrayList<>();
+    private List<SectionSubject> sectionSubjects = new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -135,6 +135,14 @@ public class Subject {
         this.course = course;
     }
 
+    public List<SectionSubject> getSectionSubjects() {
+        return sectionSubjects;
+    }
+
+    public void setSectionSubjects(List<SectionSubject> sectionSubjects) {
+        this.sectionSubjects = sectionSubjects;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -149,13 +157,5 @@ public class Subject {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public List<StudentSubject> getStudentSubjects() {
-        return studentSubjects;
-    }
-
-    public void setStudentSubjects(List<StudentSubject> studentSubjects) {
-        this.studentSubjects = studentSubjects;
     }
 }

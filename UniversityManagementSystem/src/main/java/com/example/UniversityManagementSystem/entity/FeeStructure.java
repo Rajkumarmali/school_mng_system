@@ -33,7 +33,7 @@ public class FeeStructure {
     private FeeStructureStatus status;
 
     @ManyToOne
-    private Class aClass;
+    private Section section;
 
     @OneToMany(mappedBy = "feeStructure")
     private List<StudentFee> studentFees = new ArrayList<>();
@@ -45,7 +45,7 @@ public class FeeStructure {
     }
 
     public FeeStructure(Long id, Double amount, String academicYear, LocalDateTime dueDate, Department department,
-                        String description, FeeType feeType, FeeStructureStatus status, Class aClass,
+                        String description, FeeType feeType, FeeStructureStatus status, Section section,
                         List<StudentFee> studentFees, LocalDateTime createdAt,
                         LocalDateTime updatedAt) {
         this.id = id;
@@ -56,7 +56,7 @@ public class FeeStructure {
         Description = description;
         this.feeType = feeType;
         this.status = status;
-        this.aClass = aClass;
+        this.section = section;
         this.studentFees = studentFees;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -86,12 +86,44 @@ public class FeeStructure {
         this.academicYear = academicYear;
     }
 
+    public LocalDateTime getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDateTime dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public Boolean getApplyScholarship() {
+        return applyScholarship;
+    }
+
+    public void setApplyScholarship(Boolean applyScholarship) {
+        this.applyScholarship = applyScholarship;
+    }
+
+    public College getCollege() {
+        return college;
+    }
+
+    public void setCollege(College college) {
+        this.college = college;
+    }
+
     public Department getDepartment() {
         return department;
     }
 
     public void setDepartment(Department department) {
         this.department = department;
+    }
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public void setDescription(String description) {
+        Description = description;
     }
 
     public FeeType getFeeType() {
@@ -110,12 +142,12 @@ public class FeeStructure {
         this.status = status;
     }
 
-    public Class getaClass() {
-        return aClass;
+    public Section getSection() {
+        return section;
     }
 
-    public void setaClass(Class aClass) {
-        this.aClass = aClass;
+    public void setSection(Section section) {
+        this.section = section;
     }
 
     public List<StudentFee> getStudentFees() {
@@ -140,45 +172,5 @@ public class FeeStructure {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public String getDescription() {
-        return Description;
-    }
-
-    public void setDescription(String description) {
-        Description = description;
-    }
-
-    public College getCollege() {
-        return college;
-    }
-
-    public void setCollege(College college) {
-        this.college = college;
-    }
-
-    public Class getAClass() {
-        return aClass;
-    }
-
-    public void setAClass(Class aClass) {
-        this.aClass = aClass;
-    }
-
-    public LocalDateTime getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(LocalDateTime dueDate) {
-        this.dueDate = dueDate;
-    }
-
-    public Boolean getApplyScholarship() {
-        return applyScholarship;
-    }
-
-    public void setApplyScholarship(Boolean applyScholarship) {
-        this.applyScholarship = applyScholarship;
     }
 }

@@ -2,7 +2,6 @@ package com.example.UniversityManagementSystem.entity;
 
 import com.example.UniversityManagementSystem.entity.type.Cast;
 import com.example.UniversityManagementSystem.entity.type.Gender;
-import com.example.UniversityManagementSystem.entity.type.SubjectType;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -52,7 +51,7 @@ public class Student {
     private Department department;
 
     @ManyToMany(mappedBy = "students")
-    private List<Class> classes=new ArrayList<>();
+    private List<Section> sections =new ArrayList<>();
 
     @OneToMany(mappedBy = "student")
     private List<StudentFee> studentFees=new ArrayList<>();
@@ -71,7 +70,7 @@ public class Student {
 
     public Student(Long id, String firstName, String lastName, String email, String registrationNumber,
                    String phoneNumber, LocalDate dob, String image, Gender gender, Cast cast, String aadhaarNumber,
-                   Address address, User user, College college, Parent parent, Department department, List<Class> classes, LocalDateTime createdAt,
+                   Address address, User user, College college, Parent parent, Department department, List<Section> sections, LocalDateTime createdAt,
                    LocalDateTime updatedAt) {
         this.id = id;
         this.firstName = firstName;
@@ -89,7 +88,7 @@ public class Student {
         this.college = college;
         this.parent = parent;
         this.department = department;
-        this.classes = classes;
+        this.sections = sections;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -241,12 +240,12 @@ public class Student {
         this.updatedAt = updatedAt;
     }
 
-    public List<Class> getClasses() {
-        return classes;
+    public List<Section> getClasses() {
+        return sections;
     }
 
-    public void setClasses(List<Class> classes) {
-        this.classes = classes;
+    public void setClasses(List<Section> sections) {
+        this.sections = sections;
     }
 
     public List<StudentFee> getStudentFees() {

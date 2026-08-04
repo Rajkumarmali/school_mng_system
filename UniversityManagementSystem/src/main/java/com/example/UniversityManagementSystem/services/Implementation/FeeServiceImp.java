@@ -3,7 +3,7 @@ package com.example.UniversityManagementSystem.services.Implementation;
 import com.example.UniversityManagementSystem.dto.fee.*;
 import com.example.UniversityManagementSystem.dto.notification.NotificationRequest;
 import com.example.UniversityManagementSystem.entity.*;
-import com.example.UniversityManagementSystem.entity.Class;
+import com.example.UniversityManagementSystem.entity.Section;
 import com.example.UniversityManagementSystem.entity.type.FeeStructureStatus;
 import com.example.UniversityManagementSystem.entity.type.ScholarshipStatus;
 import com.example.UniversityManagementSystem.entity.type.StudentFeeStatus;
@@ -44,7 +44,7 @@ public class FeeServiceImp implements FeeServices {
 
     private final CollegeRepository collegeRepository;
     private final FeeTypeRepository feeTypeRepository;
-    private final ClassRepository classRepository;
+    private final SectionRepository sectionRepository;
     private final DepartmentRepository departmentRepository;
     private final FeeStructureRepository feeStructureRepository;
     private final StudentFeeRepository studentFeeRepository;
@@ -55,7 +55,7 @@ public class FeeServiceImp implements FeeServices {
 
     public FeeServiceImp(CollegeRepository collegeRepository,
                          FeeTypeRepository feeTypeRepository,
-                         ClassRepository classRepository,
+                         SectionRepository sectionRepository,
                          DepartmentRepository departmentRepository,
                          FeeStructureRepository feeStructureRepository,
                          StudentFeeRepository studentFeeRepository,
@@ -64,7 +64,7 @@ public class FeeServiceImp implements FeeServices {
                          UserRepository userRepository, NotificationService notificationService) {
         this.collegeRepository = collegeRepository;
         this.feeTypeRepository = feeTypeRepository;
-        this.classRepository = classRepository;
+        this.sectionRepository = sectionRepository;
         this.departmentRepository = departmentRepository;
         this.feeStructureRepository = feeStructureRepository;
         this.studentFeeRepository = studentFeeRepository;
@@ -92,13 +92,13 @@ public class FeeServiceImp implements FeeServices {
             }
     )
     private void assignToAllClassStudent(String classCode,FeeStructure feeStructure){
-        Class clas = classRepository.findByClassCode(classCode);
-        if(clas==null){
-            throw new IllegalArgumentException("Class not found");
+        Section section = sectionRepository.findByCode(classCode);
+        if(section==null){
+            throw new IllegalArgumentException("Section not found");
         }
-        feeStructure.setAClass(clas);
+        feeStructure.setSection(section);
 
-        List<Student> students = clas.getStudents();
+        List<Student> students = section.getStudents();
 
         List<StudentFee> studentFees = new ArrayList<>();
 
@@ -354,8 +354,8 @@ public class FeeServiceImp implements FeeServices {
            res.setApplyScholarship(fee.getApplyScholarship());
            if(fee.getFeeType()!=null)
                res.setFeeTypeName(fee.getFeeType().getName());
-           if(fee.getAClass()!=null)
-            res.setClassCode(fee.getAClass().getClassCode());
+           if(fee.getSection()!=null)
+            res.setClassCode(fee.getSection().getCode());
            if(fee.getDepartment()!=null)
             res.setDepartmentCode(fee.getDepartment().getCode());
            return res;
@@ -382,9 +382,9 @@ public class FeeServiceImp implements FeeServices {
         response.setApplyScholarship(feeStructure.getApplyScholarship());
         if(feeStructure.getFeeType()!=null)
             response.setFeeTypeName(feeStructure.getFeeType().getName());
-        if(feeStructure.getAClass()!=null) {
-            response.setClassCode(feeStructure.getAClass().getClassCode());
-            response.setClassName(feeStructure.getAClass().getName());
+        if(feeStructure.getSection()!=null) {
+            response.setClassCode(feeStructure.getSection().getCode());
+            response.setClassName(feeStructure.getSection().getName());
         }
         if(feeStructure.getDepartment()!=null){
          response.setDepartmentCode(feeStructure.getDepartment().getCode());
@@ -584,9 +584,9 @@ public class FeeServiceImp implements FeeServices {
         response.setAmount(studentFee.getAmount());
         response.setStatus(studentFee.getStatus());
         response.setAcademicYear(studentFee.getFeeStructure().getAcademicYear());
-        if(studentFee.getFeeStructure().getAClass()!=null){
-            response.setClassName(studentFee.getFeeStructure().getAClass().getName());
-            response.setClassCode(studentFee.getFeeStructure().getAClass().getClassCode());
+        if(studentFee.getFeeStructure().getSection()!=null){
+            response.setClassName(studentFee.getFeeStructure().getSection().getName());
+            response.setClassCode(studentFee.getFeeStructure().getSection().getCode());
         }
        if(studentFee.getFeeStructure().getDepartment()!=null){
            response.setDepartmentName(studentFee.getFeeStructure().getDepartment().getName());
@@ -627,8 +627,8 @@ public class FeeServiceImp implements FeeServices {
             res.setFeeTypename(stufee.getFeeStructure().getFeeType().getName());
             res.setAmount(stufee.getAmount());
             res.setAcademicYear(stufee.getFeeStructure().getAcademicYear());
-            if(stufee.getFeeStructure().getAClass()!=null)
-             res.setClassCode(stufee.getFeeStructure().getAClass().getClassCode());
+            if(stufee.getFeeStructure().getSection()!=null)
+             res.setClassCode(stufee.getFeeStructure().getSection().getCode());
             res.setStatus(stufee.getStatus());
             res.setDueDate(stufee.getFeeStructure().getDueDate());
 
@@ -802,9 +802,9 @@ public class FeeServiceImp implements FeeServices {
         response.setId(feePayment.getStudentFee().getId());
         response.setFeeTypename(feePayment.getStudentFee().getFeeStructure().getFeeType().getName());
         response.setAcademicYear(feePayment.getStudentFee().getFeeStructure().getAcademicYear());
-        if(feePayment.getStudentFee().getFeeStructure().getAClass()!=null){
-            response.setClassCode(feePayment.getStudentFee().getFeeStructure().getAClass().getClassCode());
-            response.setClassName(feePayment.getStudentFee().getFeeStructure().getAClass().getName());
+        if(feePayment.getStudentFee().getFeeStructure().getSection()!=null){
+            response.setClassCode(feePayment.getStudentFee().getFeeStructure().getSection().getCode());
+            response.setClassName(feePayment.getStudentFee().getFeeStructure().getSection().getName());
         }
         if(feePayment.getStudentFee().getFeeStructure().getDepartment()!=null){
             response.setDepartmentCode(feePayment.getStudentFee().getFeeStructure().getDepartment().getCode());
@@ -1085,9 +1085,9 @@ public class FeeServiceImp implements FeeServices {
             res.setStatus(stufee.getStatus());
             res.setAcademicYear(stufee.getFeeStructure().getAcademicYear());
             res.setDueDate(stufee.getFeeStructure().getDueDate());
-            if(stufee.getFeeStructure().getAClass()!=null) {
-                res.setClassName(stufee.getFeeStructure().getAClass().getName());
-                res.setClassCode(stufee.getFeeStructure().getAClass().getClassCode());
+            if(stufee.getFeeStructure().getSection()!=null) {
+                res.setClassName(stufee.getFeeStructure().getSection().getName());
+                res.setClassCode(stufee.getFeeStructure().getSection().getCode());
             }
             res.setFeePaymentResponse(feePaymentResponse);
 
@@ -1117,9 +1117,9 @@ public class FeeServiceImp implements FeeServices {
             res.setStatus(stufee.getStatus());
             res.setAcademicYear(stufee.getFeeStructure().getAcademicYear());
             res.setDueDate(stufee.getFeeStructure().getDueDate());
-            if(stufee.getFeeStructure().getAClass()!=null) {
-                res.setClassName(stufee.getFeeStructure().getAClass().getName());
-                res.setClassCode(stufee.getFeeStructure().getAClass().getClassCode());
+            if(stufee.getFeeStructure().getSection()!=null) {
+                res.setClassName(stufee.getFeeStructure().getSection().getName());
+                res.setClassCode(stufee.getFeeStructure().getSection().getCode());
             }
             return res;
         });

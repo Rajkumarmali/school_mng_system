@@ -1,6 +1,6 @@
 package com.example.UniversityManagementSystem.entity.type;
 
-public enum ClassStatus {
+public enum SectionStatus {
     ACTIVE,
     COMPLETED,
 }

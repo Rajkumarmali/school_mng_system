@@ -1,6 +1,6 @@
 package com.example.UniversityManagementSystem.dto.classes;
 
-import com.example.UniversityManagementSystem.entity.type.ClassStatus;
+import com.example.UniversityManagementSystem.entity.type.SectionStatus;
 
 import java.io.Serializable;
 
@@ -13,13 +13,13 @@ public class ClassResponse implements Serializable {
     private String departmentCode;
     private String classCode;
     private ClassTeacherResponse classTeacherResponse;
-    private ClassStatus classStatus;
+    private SectionStatus sectionStatus;
     private Integer totalStudents;
 
     public ClassResponse() {
     }
 
-    public ClassResponse(Long id, String name, String academicYear, String semester, String departmentName, String departmentCode, String classCode, ClassTeacherResponse classTeacherResponse, ClassStatus classStatus, Integer totalStudents) {
+    public ClassResponse(Long id, String name, String academicYear, String semester, String departmentName, String departmentCode, String classCode, ClassTeacherResponse classTeacherResponse, SectionStatus sectionStatus, Integer totalStudents) {
         this.id = id;
         this.name = name;
         this.academicYear = academicYear;
@@ -28,7 +28,7 @@ public class ClassResponse implements Serializable {
         this.departmentCode = departmentCode;
         this.classCode = classCode;
         this.classTeacherResponse = classTeacherResponse;
-        this.classStatus = classStatus;
+        this.sectionStatus = sectionStatus;
         this.totalStudents = totalStudents;
     }
 
@@ -88,12 +88,12 @@ public class ClassResponse implements Serializable {
         this.classTeacherResponse = classTeacherResponse;
     }
 
-    public ClassStatus getClassStatus() {
-        return classStatus;
+    public SectionStatus getClassStatus() {
+        return sectionStatus;
     }
 
-    public void setClassStatus(ClassStatus classStatus) {
-        this.classStatus = classStatus;
+    public void setClassStatus(SectionStatus sectionStatus) {
+        this.sectionStatus = sectionStatus;
     }
 
     public Integer getTotalStudents() {
