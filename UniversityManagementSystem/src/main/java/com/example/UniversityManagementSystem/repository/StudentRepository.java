@@ -1,6 +1,6 @@
 package com.example.UniversityManagementSystem.repository;
 
-import com.example.UniversityManagementSystem.entity.Class;
+import com.example.UniversityManagementSystem.entity.Section;
 import com.example.UniversityManagementSystem.entity.Department;
 import com.example.UniversityManagementSystem.entity.Scholarship;
 import com.example.UniversityManagementSystem.entity.Student;
@@ -16,7 +16,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     Student findByRegistrationNumber(String registrationNumber);
 
-    Page<Student> findByClasses(Class clas, Pageable pageable);
+    Page<Student> findByClasses(Section clas, Pageable pageable);
 
     Student findByUserId(Long userId);
 

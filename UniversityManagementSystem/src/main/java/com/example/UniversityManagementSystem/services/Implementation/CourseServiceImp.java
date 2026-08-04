@@ -73,7 +73,7 @@ public class CourseServiceImp implements CourseService {
         course.setCourseDurationType(dto.getCourseDurationType());
         course.setTotalSemester(dto.getTotalSemester());
         course.setDescription(dto.getDescription());
-        course.setCollege(college);
+//        course.setCollege(college);
         course.setCreatedAt(LocalDateTime.now());
         courseRepository.save(course);
 
@@ -91,7 +91,7 @@ public class CourseServiceImp implements CourseService {
        Course course = courseRepository.findById(courseId).orElseThrow(()->
               new IllegalArgumentException("Course not found"));
 
-       College college = course.getCollege();
+       College college = null;
 
         String courseCode = "";
         if(college!=null){
@@ -120,8 +120,8 @@ public class CourseServiceImp implements CourseService {
     public Page<CourseResponse> getAllCourse(Long collegeId,int pageNumber, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        Page<Course> courses = courseRepository.findByCollegeId(collegeId,pageable);
-
+//        Page<Course> courses = courseRepository.findByCollegeId(collegeId,pageable);
+        Page<Course> courses=null;
         Page<CourseResponse> responses = courses.map(course -> {
            CourseResponse res = new CourseResponse();
            res.setId(course.getId());

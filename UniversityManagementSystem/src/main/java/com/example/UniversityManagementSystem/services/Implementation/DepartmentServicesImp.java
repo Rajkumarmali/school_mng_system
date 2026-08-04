@@ -2,7 +2,7 @@ package com.example.UniversityManagementSystem.services.Implementation;
 
 import com.example.UniversityManagementSystem.dto.department.*;
 import com.example.UniversityManagementSystem.entity.*;
-import com.example.UniversityManagementSystem.entity.Class;
+import com.example.UniversityManagementSystem.entity.Section;
 import com.example.UniversityManagementSystem.repository.*;
 import com.example.UniversityManagementSystem.services.DepartmentServices;
 import jakarta.transaction.Transactional;
@@ -25,20 +25,20 @@ public class DepartmentServicesImp implements DepartmentServices {
     private final CollegeRepository collegeRepository;
     private final TeacherRepository teacherRepository;
     private final StudentRepository studentRepository;
-    private final ClassRepository classRepository;
+    private final SectionRepository sectionRepository;
     private final CourseRepository courseRepository;
 
     public DepartmentServicesImp(DepartmentRepository departmentRepository,
                                  CollegeRepository collegeRepository,
                                  TeacherRepository teacherRepository,
                                  StudentRepository studentRepository,
-                                 ClassRepository classRepository,
+                                 SectionRepository sectionRepository,
                                  CourseRepository courseRepository) {
         this.departmentRepository = departmentRepository;
         this.collegeRepository = collegeRepository;
         this.teacherRepository = teacherRepository;
         this.studentRepository = studentRepository;
-        this.classRepository = classRepository;
+        this.sectionRepository = sectionRepository;
         this.courseRepository = courseRepository;
     }
 
@@ -233,22 +233,22 @@ public class DepartmentServicesImp implements DepartmentServices {
         Department department = departmentRepository.findById(departmentId).orElseThrow(()->
                 new IllegalArgumentException("Department not found"));
 
-        Page<Class> classes = classRepository.findByDepartment(department,pageable);
+        Page<Section> sections = sectionRepository.findByDepartment(department,pageable);
 
-        Page<DepartmentClassResponse> responses = classes.map(clas->{
+        Page<DepartmentClassResponse> responses = sections.map(section->{
             DepartmentClassResponse res = new DepartmentClassResponse();
-            Teacher classTeacher = clas.getClassTeacher();
+            Teacher classTeacher = section.getClassTeacher();
             if(classTeacher!=null){
                 res.setClassTeacherName(classTeacher.getFirstName()+" "+classTeacher.getLastName());
                 res.setClassTeacherEmail(classTeacher.getEmail());
                 res.setClassTeacherPhoneNumber(classTeacher.getPhoneNumber());
             }
-            res.setId(clas.getId());
-            res.setName(clas.getName());
-            res.setClassCode(clas.getClassCode());
-            res.setClassStatus(clas.getClassStatus());
-            res.setSemester(clas.getSemester());
-            res.setAcademicYear(clas.getAcedamicYear());
+            res.setId(section.getId());
+            res.setName(section.getName());
+            res.setClassCode(section.getCode());
+            res.setClassStatus(section.getStatus());
+
+            res.setAcademicYear(section.getAcademicYear());
             return res;
         });
         return responses;

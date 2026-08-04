@@ -24,11 +24,14 @@ public class Course {
     private Integer totalSemester;
     private String description;
 
-    @ManyToOne
-    private College college;
-
     @OneToMany(mappedBy = "course")
     private List<Department> department=new ArrayList<>();
+
+    @OneToMany(mappedBy = "course")
+    private List<Subject> subjects = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "courses")
+    private List<College> colleges = new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -100,14 +103,6 @@ public class Course {
         this.description = description;
     }
 
-    public College getCollege() {
-        return college;
-    }
-
-    public void setCollege(College college) {
-        this.college = college;
-    }
-
     public List<Department> getDepartment() {
         return department;
     }
@@ -130,5 +125,21 @@ public class Course {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public List<Subject> getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(List<Subject> subjects) {
+        this.subjects = subjects;
+    }
+
+    public List<College> getColleges() {
+        return colleges;
+    }
+
+    public void setColleges(List<College> colleges) {
+        this.colleges = colleges;
     }
 }
