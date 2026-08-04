@@ -8,6 +8,7 @@ import Payments from './payment/Payment';
 import { useDispatch, useSelector } from 'react-redux';
 import { getFeeOverview } from '../../state/fee/Action';
 import Scholarship from './scholarship/Scholarship';
+import Section from './section/Section';
 
 
 
@@ -65,6 +66,14 @@ const Fee = () => {
                     <li class="nav-item">
                         <button
                             class="nav-link"
+                            onClick={() => setSearchParams({ tab: "fee-section" })}
+                        >
+                            Sections
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button
+                            class="nav-link"
                             onClick={() => setSearchParams({ tab: "fee-student" })}
                         >
                             Students
@@ -91,38 +100,41 @@ const Fee = () => {
                             activeTab === "fee-student" ?
                                 <Students />
                                 :
-                                activeTab === "fee-payment" ?
-                                    <Payments />
+                                activeTab === "fee-section" ?
+                                    <Section />
                                     :
-                                    activeTab === "fee-scholarship" ?
-                                        <Scholarship />
+                                    activeTab === "fee-payment" ?
+                                        <Payments />
                                         :
-                                        <div>
-                                            <div className="stats-container">
-                                                <div className="stat-card">
-                                                    <i className="bi bi-wallet2"></i>
-                                                    <h3>{fee?.feeOverview?.totalFee}</h3>
-                                                    <span>Total Collection Amount</span>
-                                                </div>
-                                                <div className="stat-card">
-                                                    <i className="bi bi-cash-coin"></i>
-                                                    <h3>{fee?.feeOverview?.totalPaidFee}</h3>
-                                                    <span>Total Collected Amount</span>
-                                                </div>
-                                                <div className="stat-card">
-                                                    <i className="bi bi-hourglass-split"></i>
-                                                    <h3>{fee?.feeOverview?.totalPendingFee}</h3>
-                                                    <span>Total Pending Amount</span>
-                                                </div>
-                                                <div className="stat-card">
-                                                    <h5>{processPercent}%</h5>
-                                                    <span>Payment Progress</span>
-                                                    <div className="progress" role="progressbar" aria-label="Success example" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-                                                        <div className="progress-bar bg-success" style={{ width: `${processPercent}%` }}></div>
+                                        activeTab === "fee-scholarship" ?
+                                            <Scholarship />
+                                            :
+                                            <div>
+                                                <div className="stats-container">
+                                                    <div className="stat-card">
+                                                        <i className="bi bi-wallet2"></i>
+                                                        <h3>{fee?.feeOverview?.totalFee}</h3>
+                                                        <span>Total Collection Amount</span>
+                                                    </div>
+                                                    <div className="stat-card">
+                                                        <i className="bi bi-cash-coin"></i>
+                                                        <h3>{fee?.feeOverview?.totalPaidFee}</h3>
+                                                        <span>Total Collected Amount</span>
+                                                    </div>
+                                                    <div className="stat-card">
+                                                        <i className="bi bi-hourglass-split"></i>
+                                                        <h3>{fee?.feeOverview?.totalPendingFee}</h3>
+                                                        <span>Total Pending Amount</span>
+                                                    </div>
+                                                    <div className="stat-card">
+                                                        <h5>{processPercent}%</h5>
+                                                        <span>Payment Progress</span>
+                                                        <div className="progress" role="progressbar" aria-label="Success example" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+                                                            <div className="progress-bar bg-success" style={{ width: `${processPercent}%` }}></div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
                 }
             </div>
         </div>

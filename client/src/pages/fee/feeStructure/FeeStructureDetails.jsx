@@ -196,8 +196,8 @@ const FeeStructureDetails = () => {
                                 <div>
                                     <i className="bi bi-mortarboard-fill"></i>
                                     <span>
-                                        <strong>Class : </strong>
-                                        {fee?.feeStructure?.className ? `${fee?.feeStructure?.className} (${fee?.feeStructure?.classCode})` : ""}
+                                        <strong>Section : </strong>
+                                        {fee?.feeStructure?.sectionName ? `${fee?.feeStructure?.sectionName} (${fee?.feeStructure?.sectionCode})` : ""}
                                     </span>
                                 </div>
                                 <div>

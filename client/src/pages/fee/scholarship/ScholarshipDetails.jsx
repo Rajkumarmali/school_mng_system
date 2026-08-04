@@ -234,8 +234,8 @@ const ScholarshipDetails = () => {
                                 <div>
                                     <i
                                         className={`bi ${scholarship?.scholarship?.scholarshipResponse?.status === "ACTIVE"
-                                            ? "bi-patch-check-fill text-success"
-                                            : "bi-pause-circle-fill text-danger"
+                                            ? "bi-patch-check-fill"
+                                            : "bi-pause-circle-fill"
                                             } me-2`}
                                     >
 

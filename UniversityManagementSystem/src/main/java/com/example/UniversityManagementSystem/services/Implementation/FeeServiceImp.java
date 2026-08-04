@@ -89,10 +89,11 @@ public class FeeServiceImp implements FeeServices {
                     @CacheEvict(cacheNames = "feeStructurePaidStudents",allEntries = true),
                     @CacheEvict(cacheNames = "feeStructureUnpaidStudents",allEntries = true),
                     @CacheEvict(cacheNames = "studentFees",allEntries = true),
+                    @CacheEvict(cacheNames = "feeSections",allEntries = true),
             }
     )
-    private void assignToAllClassStudent(String classCode,FeeStructure feeStructure){
-        Section section = sectionRepository.findByCode(classCode);
+    private void assignToAllSectionStudent(String sectionCode,FeeStructure feeStructure){
+        Section section = sectionRepository.findByCode(sectionCode);
         if(section==null){
             throw new IllegalArgumentException("Section not found");
         }
@@ -121,8 +122,8 @@ public class FeeServiceImp implements FeeServices {
                     +"A new fee has been assigned to your account.\n\n"
                     + "Fee Type : "+feeStructure.getFeeType().getName()+"\n"
                     +"Amount : "+String.format("%.2f", amount)+"\n"
-                    +"Academic Year : "+feeStructure.getAcademicYear()+"\n"
-                    +"Due Date : "+feeStructure.getDueDate().toLocalDate()
+                    +"Academic Year : "+ feeStructure.getAcademicYear()+"\n"
+                    +"Due Date : "+ (feeStructure.getDueDate()!=null ? feeStructure.getDueDate().toLocalDate() :"-")
                     +"\n\nPlease pay the fee before the due date to avoid any late charges.";
             notificationRequest.setTitle("New Fee Assigned");
             notificationRequest.setMessage(message);
@@ -235,6 +236,7 @@ public class FeeServiceImp implements FeeServices {
                     @CacheEvict(cacheNames = "feeStructurePaidStudents",allEntries = true),
                     @CacheEvict(cacheNames = "feeStructureUnpaidStudents",allEntries = true),
                     @CacheEvict(cacheNames = "studentFees",allEntries = true),
+                    @CacheEvict(cacheNames = "feeSections",allEntries = true),
             }
     )
     public String createFeeStructure(Long collegeId, FeeStructureRequest dto) {
@@ -262,8 +264,8 @@ public class FeeServiceImp implements FeeServices {
         feeStructure.setCreatedAt(LocalDateTime.now());
         FeeStructure savedFeeStructure= feeStructureRepository.save(feeStructure);
 
-        if(dto.getFeeAssignmentType()==FeeAssignmentType.ALL_CLASS_STUDENTS){
-            assignToAllClassStudent(dto.getClassCode(),savedFeeStructure);
+        if(dto.getFeeAssignmentType()==FeeAssignmentType.ALL_SECTION_STUDENTS){
+            assignToAllSectionStudent(dto.getSectionCode(),savedFeeStructure);
         }
 
         return "Fee Structure create successfully";
@@ -282,6 +284,7 @@ public class FeeServiceImp implements FeeServices {
                     @CacheEvict(cacheNames = "studentFees",allEntries = true),
                     @CacheEvict(cacheNames = "studentunpaidfee",allEntries = true),
                     @CacheEvict(cacheNames = "studentFeeOverview",allEntries = true),
+                    @CacheEvict(cacheNames = "feeSections",allEntries = true),
             }
     )
     public String assignFeeStructureToStudent(Long feeStructureId, List<FeeStudentRequest> dto) {
@@ -355,7 +358,7 @@ public class FeeServiceImp implements FeeServices {
            if(fee.getFeeType()!=null)
                res.setFeeTypeName(fee.getFeeType().getName());
            if(fee.getSection()!=null)
-            res.setClassCode(fee.getSection().getCode());
+            res.setSectionCode(fee.getSection().getCode());
            if(fee.getDepartment()!=null)
             res.setDepartmentCode(fee.getDepartment().getCode());
            return res;
@@ -383,8 +386,8 @@ public class FeeServiceImp implements FeeServices {
         if(feeStructure.getFeeType()!=null)
             response.setFeeTypeName(feeStructure.getFeeType().getName());
         if(feeStructure.getSection()!=null) {
-            response.setClassCode(feeStructure.getSection().getCode());
-            response.setClassName(feeStructure.getSection().getName());
+            response.setSectionCode(feeStructure.getSection().getCode());
+            response.setSectionName(feeStructure.getSection().getName());
         }
         if(feeStructure.getDepartment()!=null){
          response.setDepartmentCode(feeStructure.getDepartment().getCode());
@@ -835,6 +838,7 @@ public class FeeServiceImp implements FeeServices {
             @CacheEvict(cacheNames = "studentFeeOverview",allEntries = true),
             @CacheEvict(cacheNames = "feeOverviews",allEntries = true),
             @CacheEvict(cacheNames = "studentFee",allEntries = true),
+            @CacheEvict(cacheNames = "feeSections",allEntries = true),
     })
     public String payFeeByCash(Long studentFeeId) {
 
@@ -1211,6 +1215,7 @@ public class FeeServiceImp implements FeeServices {
             @CacheEvict(cacheNames = "studentFeeOverview",allEntries = true),
             @CacheEvict(cacheNames = "feeOverviews",allEntries = true),
             @CacheEvict(cacheNames = "studentFee",allEntries = true),
+            @CacheEvict(cacheNames = "feeSections",allEntries = true),
     })
     public String verifyPayment(PaymentVerifyRequest dto) {
         try{
@@ -1264,6 +1269,91 @@ public class FeeServiceImp implements FeeServices {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
+    @Cacheable(cacheNames = "feeSections",key = "{#collegeId,#pageNumber,#pageSize}")
+    public Page<SectionResponse> getSection(Long collegeId, int pageNumber, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNumber,pageSize,Sort.by(Sort.Direction.DESC,"createdAt"));
+        Page<Section> sections = sectionRepository.findByDepartmentCollegeId(collegeId,pageable);
+
+        Page<SectionResponse> responses = sections.map(section->{
+
+            double totalCollectedFee = 0D;
+            double totalPendingFee=0D;
+
+            List<Student> students = section.getStudents();
+            for(Student s:students){
+                for(StudentFee sf:s.getStudentFees()){
+                    if(sf.getStatus()==StudentFeeStatus.PAID)
+                        totalCollectedFee+=sf.getAmount();
+                     else
+                        totalPendingFee+=sf.getAmount();
+                }
+            }
+
+            SectionResponse res = new SectionResponse();
+            res.setId(section.getId());
+            res.setCode(section.getCode());
+            res.setAcademicYear(section.getAcademicYear());
+            res.setYear(section.getYear());
+            res.setSemester(section.getSemester());
+            res.setStatus(section.getStatus());
+            res.setCollectedFee(totalCollectedFee);
+            res.setTotalPendingFee(totalPendingFee);
+            res.setTotalStudent(students.size());
+            return res;
+        });
+
+        return responses;
+    }
+
+    @Override
+    @PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
+    @Cacheable(cacheNames = "feeSection",key = "#sectionId")
+    public SectionResponse getSectionBySectionId(Long sectionId) {
+
+        Section section = sectionRepository.findById(sectionId).orElseThrow(()->
+                new IllegalArgumentException("Section not found"));
+
+        double totalFee = 0;
+        double totalCollectedFee = 0;
+        double totalPendingFee = 0;
+
+        List<Student> students = section.getStudents();
+        for(Student s:students){
+            for(StudentFee sf:s.getStudentFees()){
+                totalFee+=sf.getAmount();
+                if(sf.getStatus()==StudentFeeStatus.PAID)
+                    totalCollectedFee+=sf.getAmount();
+                else
+                    totalPendingFee+=sf.getAmount();
+            }
+        }
+
+        SectionResponse response = new SectionResponse();
+        response.setId(section.getId());
+        response.setCode(section.getCode());
+        response.setName(section.getName());
+        response.setYear(section.getYear());
+        response.setSemester(section.getSemester());
+        response.setStatus(section.getStatus());
+        response.setAcademicYear(section.getAcademicYear());
+        response.setTotalStudent(section.getStudents().size());
+        response.setTotalFee(totalFee);
+        response.setCollectedFee(totalCollectedFee);
+        response.setTotalPendingFee(totalPendingFee);
+        if(section.getDepartment()!=null){
+            response.setDepartmentCode(section.getDepartment().getCode());
+            response.setDepartmentName(section.getDepartment().getName());
+        }
+        if(section.getDepartment().getCourse()!=null){
+            response.setCourseCode(section.getDepartment().getCourse().getCourseCode());
+            response.setCourseName(section.getDepartment().getCourse().getName());
+        }
+        return response;
     }
 
 

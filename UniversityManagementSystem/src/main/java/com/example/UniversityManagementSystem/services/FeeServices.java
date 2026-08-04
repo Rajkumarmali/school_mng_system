@@ -36,4 +36,6 @@ public interface FeeServices {
     StudentResponse getFeeOverviewForStudent(Long userId);
     OrderResponse payFeeByRazorPay(Long studentFeeId) throws RazorpayException;
     String verifyPayment(PaymentVerifyRequest dto);
+    Page<SectionResponse> getSection(Long collegeId,int pageNumber,int pageSize);
+    SectionResponse getSectionBySectionId(Long sectionId);
 }

@@ -63,7 +63,7 @@ public class ClassServiceImp implements ClassService {
 //        }
 //        clas.setCreatedAt(LocalDateTime.now());
 //        sectionRepository.save(clas);
-//        clas.setClassCode(String.format("CLS%04d", clas.getId()));
+//        clas.setSectionCode(String.format("CLS%04d", clas.getId()));
 //        sectionRepository.save(clas);
 //        return "Create class successfully";
 //    }
@@ -134,7 +134,7 @@ public class ClassServiceImp implements ClassService {
 //            res.setName(clas.getName());
 //            res.setAcademicYear(clas.getAcademicYear());
 //            res.setSemester(clas.getSemester());
-//            res.setClassCode(clas.getClassCode());
+//            res.setSectionCode(clas.getSectionCode());
 //            res.setDepartmentCode(clas.getDepartment().getCode());
 //            return res;
 //        });
@@ -165,7 +165,7 @@ public class ClassServiceImp implements ClassService {
 //            res.setName(clas.getName());
 //            res.setAcademicYear(clas.getAcademicYear());
 //            res.setSemester(clas.getSemester());
-//            res.setClassCode(clas.getClassCode());
+//            res.setSectionCode(clas.getSectionCode());
 //            res.setDepartmentCode(clas.getDepartment().getCode());
 //            return res;
 //        });
@@ -196,7 +196,7 @@ public class ClassServiceImp implements ClassService {
 //        response.setName(clas.getName());
 //        response.setAcademicYear(clas.getAcademicYear());
 //        response.setSemester(clas.getSemester());
-//        response.setClassCode(clas.getClassCode());
+//        response.setSectionCode(clas.getSectionCode());
 //        response.setDepartmentName(clas.getDepartment().getName());
 //        response.setDepartmentCode(clas.getDepartment().getCode());
 //        return response;
