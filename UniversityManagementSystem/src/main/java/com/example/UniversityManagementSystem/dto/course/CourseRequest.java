@@ -7,7 +7,6 @@ public class CourseRequest {
     private String shortName;
     private Float duration;
     private CourseDurationType courseDurationType;
-    private Integer totalSemester;
     private String description;
 
     public CourseRequest() {
@@ -43,14 +42,6 @@ public class CourseRequest {
 
     public void setCourseDurationType(CourseDurationType courseDurationType) {
         this.courseDurationType = courseDurationType;
-    }
-
-    public Integer getTotalSemester() {
-        return totalSemester;
-    }
-
-    public void setTotalSemester(Integer totalSemester) {
-        this.totalSemester = totalSemester;
     }
 
     public String getDescription() {

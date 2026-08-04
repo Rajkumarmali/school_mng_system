@@ -13,6 +13,7 @@ public class CourseResponse implements Serializable {
     private CourseDurationType courseDurationType;
     private Integer totalSemester;
     private String description;
+    private Integer totalCollege;
 
     private Integer totalDepartment;
     private Integer totalStudent;
@@ -98,5 +99,13 @@ public class CourseResponse implements Serializable {
 
     public void setTotalStudent(Integer totalStudent) {
         this.totalStudent = totalStudent;
+    }
+
+    public Integer getTotalCollege() {
+        return totalCollege;
+    }
+
+    public void setTotalCollege(Integer totalCollege) {
+        this.totalCollege = totalCollege;
     }
 }
