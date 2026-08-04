@@ -41,7 +41,7 @@ export const subjectReducer = (state = initialState, action) => {
             }
         default:
             return {
-                state
+                ...state
             }
     }
 }

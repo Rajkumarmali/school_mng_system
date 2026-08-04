@@ -9,6 +9,7 @@ public class CourseDepartmentResponse implements Serializable {
     private String hodName;
     private String hodEmail;
     private String hodPhoneNumber;
+    private String collegeName;
 
     public CourseDepartmentResponse() {
     }
@@ -59,5 +60,13 @@ public class CourseDepartmentResponse implements Serializable {
 
     public void setHodPhoneNumber(String hodPhoneNumber) {
         this.hodPhoneNumber = hodPhoneNumber;
+    }
+
+    public String getCollegeName() {
+        return collegeName;
+    }
+
+    public void setCollegeName(String collegeName) {
+        this.collegeName = collegeName;
     }
 }

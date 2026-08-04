@@ -13,6 +13,7 @@ public class CourseStudentResponse implements Serializable {
     private String registrationNumber;
     private String phoneNumber;
     private Gender gender;
+    private String collegeName;
 
     public CourseStudentResponse() {
     }
@@ -71,5 +72,13 @@ public class CourseStudentResponse implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCollegeName() {
+        return collegeName;
+    }
+
+    public void setCollegeName(String collegeName) {
+        this.collegeName = collegeName;
     }
 }
