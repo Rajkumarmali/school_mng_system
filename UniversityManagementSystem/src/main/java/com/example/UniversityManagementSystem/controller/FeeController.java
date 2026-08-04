@@ -236,4 +236,19 @@ public class FeeController {
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
 
+    @GetMapping("/get/sections")
+    public ResponseEntity<Page<SectionResponse>> getAllSections(@RequestHeader("Authorization") String jwt,
+                                                                @RequestParam(defaultValue = "0") int pageNumber,
+                                                                @RequestParam(defaultValue = "10") int pageSize){
+        Long collegeId = jwtProvider.getCollegeIdFromToken(jwt);
+        Page<SectionResponse> res = feeServices.getSection(collegeId,pageNumber,pageSize);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/get/section/byid/{sectionId}")
+    public ResponseEntity<SectionResponse> getSectionById(@PathVariable Long sectionId){
+        SectionResponse res = feeServices.getSectionBySectionId(sectionId);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
 }

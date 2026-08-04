@@ -26,7 +26,7 @@ const FeeStructure = () => {
         amount: "",
         academicYear: "",
         description: "",
-        classCode: "",
+        sectionCode: "",
         departmentCode: "",
         dueDate: "",
         feeTypeId: 0,
@@ -47,9 +47,10 @@ const FeeStructure = () => {
             amount: "",
             academicYear: "",
             description: "",
-            classCode: "",
+            sectionCode: "",
             departmentCode: "",
             dueDate: "",
+            feeAssignmentType: "ADD_STUDENTS",
             feeTypeId: fee?.feeTypes?.[0]?.id || 0
         })
     }
@@ -184,7 +185,7 @@ const FeeStructure = () => {
                                     <th>S.No</th>
                                     <th>FeeTypeName</th>
                                     <th>Department</th>
-                                    <th>Class</th>
+                                    <th>Section</th>
                                     <th>AcademicYear</th>
                                     <th>Amount</th>
                                     <th>DueDate</th>
@@ -201,7 +202,7 @@ const FeeStructure = () => {
                                                 <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
                                                 <td>{fee.feeTypeName}</td>
                                                 <td>{fee.departmentCode}</td>
-                                                <td>{fee.classCode}</td>
+                                                <td>{fee.sectionCode}</td>
                                                 <td>{fee.academicYear}</td>
                                                 <td>{fee.amount}</td>
                                                 <td> {
@@ -341,20 +342,20 @@ const FeeStructure = () => {
                                 </div>
                                 <div>
                                     <label className="d-flex align-items-center gap-2 mb-2">
-                                        <span>Class Code</span>
-                                        {(feeStructureData.feeAssignmentType === "ALL_CLASS_STUDENTS" && !feeStructureData.classCode) && (
+                                        <span>Section Code</span>
+                                        {(feeStructureData.feeAssignmentType === "ALL_SECTION_STUDENTS" && !feeStructureData.sectionCode) && (
                                             <>
                                                 <span className="text-danger ms-1">*</span>
-                                                <small className="text-muted ">Class code required</small>
+                                                <small className="text-muted ">Section code required</small>
                                             </>
 
                                         )}
                                     </label>
 
-                                    <input type="email"
+                                    <input type="text"
                                         className="modal-input"
-                                        name='classCode'
-                                        value={feeStructureData.classCode}
+                                        name='sectionCode'
+                                        value={feeStructureData.sectionCode}
                                         onChange={handleChange}
                                     />
                                 </div>
@@ -394,7 +395,7 @@ const FeeStructure = () => {
                                         onChange={handleChange}
                                     >
                                         <option value="ADD_STUDENTS">Individual Student</option>
-                                        <option value="ALL_CLASS_STUDENTS"> All Students of a class</option>
+                                        <option value="ALL_SECTION_STUDENTS"> All Students of a section</option>
                                     </select>
                                 </div>
                                 <div>

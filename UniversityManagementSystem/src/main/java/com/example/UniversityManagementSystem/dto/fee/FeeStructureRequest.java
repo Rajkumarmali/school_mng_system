@@ -8,7 +8,7 @@ public class FeeStructureRequest {
     private Double amount;
     private String academicYear;
     private String description;
-    private String classCode;
+    private String sectionCode;
     private String departmentCode;
     private FeeStructureStatus feeStructureStatus;
     private LocalDateTime dueDate;
@@ -20,11 +20,11 @@ public class FeeStructureRequest {
     public FeeStructureRequest() {
     }
 
-    public FeeStructureRequest(Double amount, String academicYear, String description, String classCode, String departmentCode, FeeStructureStatus feeStructureStatus, LocalDateTime dueDate, Long feeTypeId) {
+    public FeeStructureRequest(Double amount, String academicYear, String description, String sectionCode, String departmentCode, FeeStructureStatus feeStructureStatus, LocalDateTime dueDate, Long feeTypeId) {
         this.amount = amount;
         this.academicYear = academicYear;
         this.description = description;
-        this.classCode = classCode;
+        this.sectionCode = sectionCode;
         this.departmentCode = departmentCode;
         this.feeStructureStatus = feeStructureStatus;
         this.dueDate = dueDate;
@@ -56,12 +56,12 @@ public class FeeStructureRequest {
         this.description = description;
     }
 
-    public String getClassCode() {
-        return classCode;
+    public String getSectionCode() {
+        return sectionCode;
     }
 
-    public void setClassCode(String classCode) {
-        this.classCode = classCode;
+    public void setSectionCode(String sectionCode) {
+        this.sectionCode = sectionCode;
     }
 
     public String getDepartmentCode() {

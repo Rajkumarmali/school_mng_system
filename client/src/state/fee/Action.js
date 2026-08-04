@@ -26,7 +26,13 @@ import {
     DOWNLOAD_FEE_RECEIPT_FAILER,
     ASSIGN_FEE_STRUCTURE_TOSTUDENT_REQUEST,
     ASSIGN_FEE_STRUCTURE_TOSTUDENT_FAILER,
-    ASSIGN_FEE_STRUCTURE_TOSTUDENT_SUCCESS
+    ASSIGN_FEE_STRUCTURE_TOSTUDENT_SUCCESS,
+    GET_FEE_SECTION_FAILER,
+    GET_FEE_SECTION_REQUEST,
+    GET_FEE_SECTION_SUCCESS,
+    GET_FEE_SECTION_BYID_REQUEST,
+    GET_FEE_SECTION_BYID_SUCCESS,
+    GET_FEE_SECTION_BYID_FAILER
 } from "./ActionType";
 
 const BASE_API = process.env.REACT_APP_BASE_URL;
@@ -459,5 +465,39 @@ export const downloadFeeReceipt = (studentFeeId) => async (dispatch) => {
         return blob;
     } catch (err) {
         dispatch({ type: DOWNLOAD_FEE_RECEIPT_FAILER, payload: err.message })
+    }
+}
+
+export const getFeeSections = (pageNumber, pageSize) => async (dispatch) => {
+    dispatch({ type: GET_FEE_SECTION_REQUEST })
+    try {
+        const res = await fetch(`${BASE_API}/fee/get/sections?pageNumber=${pageNumber - 1}&pageSize=${pageSize}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        })
+        const data = await res.json();
+        dispatch({ type: GET_FEE_SECTION_SUCCESS, payload: data });
+    } catch (err) {
+        dispatch({ type: GET_FEE_SECTION_FAILER, payload: err.message })
+    }
+}
+
+export const getFeeSectionById = (sectionId) => async (dispatch) => {
+    dispatch({ type: GET_FEE_SECTION_BYID_REQUEST })
+    try {
+        const res = await fetch(`${BASE_API}/fee/get/section/byid/${sectionId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        })
+        const data = await res.json();
+        dispatch({ type: GET_FEE_SECTION_BYID_SUCCESS, payload: data });
+    } catch (err) {
+        dispatch({ type: GET_FEE_SECTION_BYID_FAILER, payload: err.message })
     }
 }
