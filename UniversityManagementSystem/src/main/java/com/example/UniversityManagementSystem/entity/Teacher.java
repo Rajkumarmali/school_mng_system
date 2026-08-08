@@ -60,36 +60,14 @@ public class Teacher {
     @OneToMany(mappedBy = "teacher")
     private List<SectionSubject> sectionSubjects;
 
+    @OneToOne
+    private BankDetails bankDetails;
+
+    @OneToMany(mappedBy = "teacher")
+    private List<TeacherAttendance> teacherAttendances = new ArrayList<>();
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    public Teacher(Long id, String firstName, String lastName, String email, String phoneNumber,
-                   LocalDate dob, String image, Gender gender, Cast cast, String aadharNumber,
-                   String panNumber, String employeeId, Address address, User user, College college,
-                   Parent parent, Department departmentHod, List<Section> sectionTeacher, Department department, LocalDateTime createdAt,
-                   LocalDateTime updatedAt) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.dob = dob;
-        this.image = image;
-        this.gender = gender;
-        this.cast = cast;
-        this.aadharNumber = aadharNumber;
-        this.panNumber = panNumber;
-        this.employeeId = employeeId;
-        this.address = address;
-        this.user = user;
-        this.college = college;
-        this.parent = parent;
-        this.departmentHod = departmentHod;
-        this.department = department;
-        this.sectionTeacher = sectionTeacher;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
 
     public Teacher() {
     }
@@ -222,12 +200,60 @@ public class Teacher {
         this.parent = parent;
     }
 
+    public Department getDepartmentHod() {
+        return departmentHod;
+    }
+
+    public void setDepartmentHod(Department departmentHod) {
+        this.departmentHod = departmentHod;
+    }
+
     public Department getDepartment() {
         return department;
     }
 
     public void setDepartment(Department department) {
         this.department = department;
+    }
+
+    public List<Section> getSectionTeacher() {
+        return sectionTeacher;
+    }
+
+    public void setSectionTeacher(List<Section> sectionTeacher) {
+        this.sectionTeacher = sectionTeacher;
+    }
+
+    public List<TeacherDocument> getTeacherDocuments() {
+        return teacherDocuments;
+    }
+
+    public void setTeacherDocuments(List<TeacherDocument> teacherDocuments) {
+        this.teacherDocuments = teacherDocuments;
+    }
+
+    public List<SectionSubject> getSectionSubjects() {
+        return sectionSubjects;
+    }
+
+    public void setSectionSubjects(List<SectionSubject> sectionSubjects) {
+        this.sectionSubjects = sectionSubjects;
+    }
+
+    public BankDetails getBankDetails() {
+        return bankDetails;
+    }
+
+    public void setBankDetails(BankDetails bankDetails) {
+        this.bankDetails = bankDetails;
+    }
+
+    public List<TeacherAttendance> getTeacherAttendances() {
+        return teacherAttendances;
+    }
+
+    public void setTeacherAttendances(List<TeacherAttendance> teacherAttendances) {
+        this.teacherAttendances = teacherAttendances;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -244,37 +270,5 @@ public class Teacher {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public Department getDepartmentHod() {
-        return departmentHod;
-    }
-
-    public void setDepartmentHod(Department departmentHod) {
-        this.departmentHod = departmentHod;
-    }
-
-    public List<Section> getClassTeacher() {
-        return sectionTeacher;
-    }
-
-    public void setClassTeacher(List<Section> sectionTeacher) {
-        this.sectionTeacher = sectionTeacher;
-    }
-
-    public List<TeacherDocument> getTeacherDocuments() {
-        return teacherDocuments;
-    }
-
-    public void setTeacherDocuments(List<TeacherDocument> teacherDocuments) {
-        this.teacherDocuments = teacherDocuments;
-    }
-
-    public List<SectionSubject> getClassSubjects() {
-        return sectionSubjects;
-    }
-
-    public void setClassSubjects(List<SectionSubject> sectionSubjects) {
-        this.sectionSubjects = sectionSubjects;
     }
 }
