@@ -35,10 +35,12 @@ public class CollegeServicesImp implements CollegeServices {
     private final AddressService addressService;
     private final UserRepository userRepository;
     private final StudentRepository studentRepository;
+    private final CourseRepository courseRepository;
 
     public CollegeServicesImp(CollegeRepository collegeRepository, AuthService authService, RolesRepository rolesRepository, UniversityRepository universityRepository, AddressService addressService,
                               UserRepository userRepository,
-                              StudentRepository studentRepository) {
+                              StudentRepository studentRepository,
+                              CourseRepository courseRepository) {
         this.collegeRepository = collegeRepository;
         this.authService = authService;
         this.rolesRepository = rolesRepository;
@@ -46,6 +48,7 @@ public class CollegeServicesImp implements CollegeServices {
         this.addressService = addressService;
         this.userRepository = userRepository;
         this.studentRepository = studentRepository;
+        this.courseRepository = courseRepository;
     }
 
 
@@ -211,6 +214,26 @@ public class CollegeServicesImp implements CollegeServices {
         );
         collegeRepository.delete(college);
         return "College delete successfully";
+    }
+
+    @Override
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "collegeCourses",allEntries = true)
+    })
+    public String assignCourseToCollege(Long collegeId, String courseCode) {
+        College college = collegeRepository.findById(collegeId).orElseThrow(()->
+                new IllegalArgumentException("College not found"));
+        Course course = courseRepository.findByCourseCode(courseCode);
+        if(course==null){
+            throw new IllegalArgumentException("Course not found");
+        }
+        if (college.getCourses().contains(course)) {
+            return "Course is already assigned to this college";
+        }
+        college.getCourses().add(course);
+        collegeRepository.save(college);
+        return "Course assigned to college successfully";
     }
 
     @Override

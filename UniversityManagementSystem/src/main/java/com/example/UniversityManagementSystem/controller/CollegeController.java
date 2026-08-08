@@ -58,6 +58,13 @@ public class CollegeController {
         return new ResponseEntity<String>(res,HttpStatus.OK);
     }
 
+    @PostMapping("/assign/course/{collegeId}")
+    public ResponseEntity<String> assignCourseToCollege(@PathVariable Long collegeId,
+                                                        @RequestBody String courseCode){
+        String res = collegeServices.assignCourseToCollege(collegeId,courseCode);
+        return new ResponseEntity<>(res,HttpStatus.CREATED);
+    }
+
     @GetMapping("get/college/students/{collegeId}")
     public ResponseEntity<Page<CollegeStudentResponse>> getCollegesStudents(@PathVariable Long collegeId,
                                                                             @RequestParam(defaultValue = "0") int pageNumber,

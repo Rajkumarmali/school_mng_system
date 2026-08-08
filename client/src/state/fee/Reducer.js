@@ -8,6 +8,12 @@ import {
     GET_FEE_OVERVIEW_FAILER,
     GET_FEE_OVERVIEW_REQUEST,
     GET_FEE_OVERVIEW_SUCCESS,
+    GET_FEE_SECTION_BYID_FAILER,
+    GET_FEE_SECTION_BYID_REQUEST,
+    GET_FEE_SECTION_BYID_SUCCESS,
+    GET_FEE_SECTION_FAILER,
+    GET_FEE_SECTION_REQUEST,
+    GET_FEE_SECTION_SUCCESS,
     GET_FEE_STRUCTURE_BYID_FAILER, GET_FEE_STRUCTURE_BYID_REQUEST, GET_FEE_STRUCTURE_BYID_SUCCESS, GET_FEE_STRUCTURE_FAILER,
     GET_FEE_STRUCTURE_REQUEST, GET_FEE_STRUCTURE_SUCCESS, GET_FEE_STUDENT_BYID_FAILER, GET_FEE_STUDENT_BYID_REQUEST,
     GET_FEE_STUDENT_BYID_SUCCESS, GET_FEE_STUDENT_FAILER, GET_FEE_STUDENT_REQUEST, GET_FEE_STUDENT_SUCCESS,
@@ -41,6 +47,8 @@ const initialState = {
     paidFeeStudents: [],
     unpaidFeeStudents: [],
     feeOverview: null,
+    feeSections: [],
+    feeSection: null,
 }
 
 export const feeReducer = (state = initialState, action) => {
@@ -67,6 +75,8 @@ export const feeReducer = (state = initialState, action) => {
         case GET_PAYMENT_BYID_REQUEST:
         case GET_FEE_OVERVIEW_REQUEST:
         case ASSIGN_FEE_STRUCTURE_TOSTUDENT_REQUEST:
+        case GET_FEE_SECTION_REQUEST:
+        case GET_FEE_SECTION_BYID_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -184,6 +194,21 @@ export const feeReducer = (state = initialState, action) => {
                 error: null,
                 feeOverview: action.payload
             }
+        case GET_FEE_SECTION_SUCCESS: {
+            return {
+                ...state,
+                isLoading: false,
+                error: null,
+                feeSections: action.payload
+            }
+        }
+        case GET_FEE_SECTION_BYID_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                error: null,
+                feeSection: action.payload
+            }
         case CREATE_FEE_TYPE_FAILER:
         case UPDATE_FEE_TYPE_FAILER:
         case DELETE_FEE_TYPE_FAILER:
@@ -206,6 +231,8 @@ export const feeReducer = (state = initialState, action) => {
         case GET_PAYMENT_BYID_FAILER:
         case GET_FEE_OVERVIEW_FAILER:
         case ASSIGN_FEE_STRUCTURE_TOSTUDENT_FAILER:
+        case GET_FEE_SECTION_FAILER:
+        case GET_FEE_SECTION_BYID_FAILER:
             return {
                 ...state,
                 isLoading: false,
