@@ -1,32 +1,19 @@
-package com.example.UniversityManagementSystem.entity;
+package com.example.UniversityManagementSystem.dto.teacher;
 
 import com.example.UniversityManagementSystem.entity.type.AccountType;
-import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
+import java.io.Serializable;
 
-@Entity
-public class BankDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class BankResponse implements Serializable {
     private Long id;
-
     private String accountHolderName;
     private String accountNumber;
     private String ifscCode;
     private String bankName;
     private String bankBranch;
-
-    @Enumerated(EnumType.STRING)
     private AccountType accountType;
 
-    @OneToOne(mappedBy = "bankDetails")
-    private Teacher teacher;
-
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-
-    public BankDetails() {
+    public BankResponse() {
     }
 
     public Long getId() {
@@ -83,29 +70,5 @@ public class BankDetails {
 
     public void setAccountType(AccountType accountType) {
         this.accountType = accountType;
-    }
-
-    public Teacher getTeacher() {
-        return teacher;
-    }
-
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }

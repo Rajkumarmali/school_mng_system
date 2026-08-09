@@ -2,6 +2,8 @@ package com.example.UniversityManagementSystem.services.Implementation;
 
 import com.example.UniversityManagementSystem.dto.address.AddressResponse;
 import com.example.UniversityManagementSystem.dto.parent.ParentResponse;
+import com.example.UniversityManagementSystem.dto.teacher.BankRequest;
+import com.example.UniversityManagementSystem.dto.teacher.BankResponse;
 import com.example.UniversityManagementSystem.dto.teacher.TeacherRequest;
 import com.example.UniversityManagementSystem.dto.teacher.TeacherResponse;
 import com.example.UniversityManagementSystem.entity.*;
@@ -9,10 +11,7 @@ import com.example.UniversityManagementSystem.entity.Address;
 import com.example.UniversityManagementSystem.entity.College;
 import com.example.UniversityManagementSystem.entity.Parent;
 import com.example.UniversityManagementSystem.entity.University;
-import com.example.UniversityManagementSystem.repository.CollegeRepository;
-import com.example.UniversityManagementSystem.repository.DepartmentRepository;
-import com.example.UniversityManagementSystem.repository.TeacherRepository;
-import com.example.UniversityManagementSystem.repository.UniversityRepository;
+import com.example.UniversityManagementSystem.repository.*;
 import com.example.UniversityManagementSystem.services.*;
 import com.example.UniversityManagementSystem.services.AddressService;
 import com.example.UniversityManagementSystem.services.ParentServices;
@@ -29,6 +28,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,10 +46,12 @@ public class TeacherServicesImp implements TeacherServices {
     private final TeacherRepository teacherRepository;
     private final UniversityRepository universityRepository;
     private final DepartmentRepository departmentRepository;
+    private final BankDetailsRepository bankDetailsRepository;
 
     public TeacherServicesImp(AuthService authService, AddressService addressService, CollegeRepository collegeRepository, ParentServices parentServices, TeacherRepository teacherRepository,
                               UniversityRepository universityRepository,
-                              DepartmentRepository departmentRepository) {
+                              DepartmentRepository departmentRepository,
+                              BankDetailsRepository bankDetailsRepository) {
         this.authService = authService;
         this.addressService = addressService;
         this.collegeRepository = collegeRepository;
@@ -57,6 +59,7 @@ public class TeacherServicesImp implements TeacherServices {
         this.teacherRepository = teacherRepository;
         this.universityRepository = universityRepository;
         this.departmentRepository = departmentRepository;
+        this.bankDetailsRepository = bankDetailsRepository;
     }
 
     @Override
@@ -109,6 +112,22 @@ public class TeacherServicesImp implements TeacherServices {
             }
         }
 
+        if(dto.getBankRequest()!=null){
+            BankRequest bankRequest = dto.getBankRequest();
+            BankDetails bankDetail = new BankDetails();
+
+            bankDetail.setAccountHolderName(bankRequest.getAccountHolderName());
+            bankDetail.setAccountNumber(bankRequest.getAccountNumber());
+            bankDetail.setIfscCode(bankRequest.getIfscCode());
+            bankDetail.setBankName(bankRequest.getBankName());
+            bankDetail.setBankBranch(bankRequest.getBankBranch());
+            bankDetail.setAccountType(bankRequest.getAccountType());
+            bankDetail.setCreatedAt(LocalDateTime.now());
+            BankDetails savedBankDetails = bankDetailsRepository.save(bankDetail);
+
+            teacher.setBankDetails(savedBankDetails);
+        }
+
         teacher.setFirstName(dto.getFirstName());
         teacher.setLastName(dto.getLastName());
         teacher.setEmail(dto.getEmail());
@@ -141,7 +160,7 @@ public class TeacherServicesImp implements TeacherServices {
     @PreAuthorize("hasRole('ADMIN')")
     public Page<TeacherResponse> getAllTeacher(Long collegeId,int pageNumber,int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Pageable pageable = PageRequest.of(pageNumber,pageSize, Sort.by(Sort.Direction.DESC,"createdAt"));
 
         Page<Teacher> teacherList = teacherRepository.findByCollegeId(collegeId,pageable);
         Page<TeacherResponse> responses = teacherList.map(teacher -> {
@@ -211,7 +230,21 @@ public class TeacherServicesImp implements TeacherServices {
             return addressService.updateAddress(teacher.getAddress().getId(),dto.getAddressRequest());
         } else if(dto.getParentRequest()!=null){
             return parentServices.updateParent(teacher.getParent().getId(),dto.getParentRequest());
-        } else{
+        } else if(dto.getBankRequest()!=null){
+            BankDetails bankDetail = teacher.getBankDetails();
+            BankRequest bankRequest = dto.getBankRequest();
+
+            bankDetail.setAccountHolderName(bankRequest.getAccountHolderName());
+            bankDetail.setAccountNumber(bankRequest.getAccountNumber());
+            bankDetail.setIfscCode(bankRequest.getIfscCode());
+            bankDetail.setBankName(bankRequest.getBankName());
+            bankDetail.setBankBranch(bankRequest.getBankBranch());
+            bankDetail.setAccountType(bankRequest.getAccountType());
+            bankDetail.setUpdatedAt(LocalDateTime.now());
+            bankDetailsRepository.save(bankDetail);
+            return "Bank details update successfully";
+        }
+        else{
             teacher.setFirstName(dto.getFirstName());
             teacher.setLastName(dto.getLastName());
             teacher.setEmail(dto.getEmail());
@@ -252,6 +285,7 @@ public class TeacherServicesImp implements TeacherServices {
         TeacherResponse teacherResponse = new TeacherResponse();
         AddressResponse addressResponse = new AddressResponse();
         ParentResponse parentResponse = new ParentResponse();
+        BankResponse bankResponse = new BankResponse();
 
         Address address = teacher.getAddress();
         Parent parent = teacher.getParent();
@@ -286,7 +320,17 @@ public class TeacherServicesImp implements TeacherServices {
         }
         teacherResponse.setAddressResponse(addressResponse);
         teacherResponse.setParentResponse(parentResponse);
-
+        if(teacher.getBankDetails()!=null){
+           BankDetails bankDetails = teacher.getBankDetails();
+           bankResponse.setId(bankDetails.getId());
+           bankResponse.setAccountHolderName(bankDetails.getAccountHolderName());
+           bankResponse.setAccountNumber(bankDetails.getAccountNumber());
+           bankResponse.setIfscCode(bankDetails.getIfscCode());
+           bankResponse.setBankName(bankDetails.getBankName());
+           bankResponse.setBankBranch(bankDetails.getBankBranch());
+           bankResponse.setAccountType(bankDetails.getAccountType());
+           teacherResponse.setBankResponse(bankResponse);
+        }
         return teacherResponse;
     }
 
