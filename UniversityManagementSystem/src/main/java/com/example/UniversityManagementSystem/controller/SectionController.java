@@ -124,10 +124,10 @@ public class SectionController {
     }
 
     @GetMapping("/get/section/subject/student/{sectionSubjectId}")
-    public ResponseEntity<Page<SectionStudentResponse>> getAllStudentFromSectionSubject(@PathVariable Long sectionSubjectId,
+    public ResponseEntity<Page<SectionSubjectResponse>> getAllStudentFromSectionSubject(@PathVariable Long sectionSubjectId,
                                                                                         @RequestParam(defaultValue = "0") int pageNumber,
                                                                                         @RequestParam(defaultValue = "10") int pageSize){
-        Page<SectionStudentResponse> res = sectionService.getAllStudentFromSectionSubject(sectionSubjectId,pageNumber,pageSize);
+        Page<SectionSubjectResponse> res = sectionService.getAllStudentFromSectionSubject(sectionSubjectId,pageNumber,pageSize);
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
 }

@@ -6,6 +6,9 @@ import com.example.UniversityManagementSystem.entity.type.SectionStatus;
 import com.example.UniversityManagementSystem.repository.*;
 import com.example.UniversityManagementSystem.services.SectionService;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -29,6 +32,9 @@ public class SectionServiceImp implements SectionService {
     private final SubjectRepository subjectRepository;
     private final SectionSubjectRepository sectionSubjectRepository;
     private final StudentSubjectRepository studentSubjectRepository;
+
+    private final Logger logger = LoggerFactory.getLogger(SectionServiceImp.class);
+    private final ModelMapper modelMapper = new ModelMapper();
 
     public SectionServiceImp(SectionRepository sectionRepository, TeacherRepository teacherRepository,
                              StudentRepository studentRepository,
@@ -133,7 +139,7 @@ public class SectionServiceImp implements SectionService {
         Section section = sectionRepository.findById(sectionId).orElseThrow(()->
                 new IllegalArgumentException("Section not found"));
         if(section.getClassTeacher()!=null){
-            section.getClassTeacher().setClassTeacher(null);
+            section.setClassTeacher(null);
             section.setClassTeacher(null);
         }
         sectionRepository.delete(section);
@@ -470,27 +476,26 @@ public class SectionServiceImp implements SectionService {
     }
 
     @Override
-    @PreAuthorize("hasAnyRole('HOD','ADMIN')")
+    @PreAuthorize("hasAnyRole('HOD','ADMIN','TEACHER')")
     @Cacheable(cacheNames = "sectionSubjectStudents",key = "{#sectionSubjectId,#pageNumber,#pageSize}")
-    public Page<SectionStudentResponse> getAllStudentFromSectionSubject(Long sectionSubjectId, int pageNumber, int pageSize) {
+    public Page<SectionSubjectResponse> getAllStudentFromSectionSubject(Long sectionSubjectId, int pageNumber, int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        Page<StudentSubject> studentSubjects = studentSubjectRepository.findBySectionSubjectId(sectionSubjectId,pageable);
+        logger.info("Fetching Students from sectionSubject | sectionSubjectId={}",sectionSubjectId);
+        try{
+            Pageable pageable = PageRequest.of(pageNumber,pageSize,Sort.by(Sort.Direction.DESC,"createdAt"));
+            Page<StudentSubject> studentSubjects = studentSubjectRepository.findBySectionSubjectId(sectionSubjectId,pageable);
 
-        Page<SectionStudentResponse> responses  = studentSubjects.map(studentSubject->{
-            Student student = studentSubject.getStudent();
-
-           SectionStudentResponse res = new SectionStudentResponse();
-           res.setId(student.getId());
-           res.setRollNumber(student.getRollNumber());
-           res.setRegistrationNumber(student.getRegistrationNumber());
-           res.setFirstName(student.getFirstName());
-           res.setLastName(student.getLastName());
-           res.setEmail(student.getEmail());
-           res.setPhoneNumber(student.getPhoneNumber());
-           return res;
-        });
-
-        return responses;
+            Page<SectionSubjectResponse> responses = studentSubjects.map(sectionSubject->{
+               SectionSubjectResponse res = modelMapper.map(sectionSubject,SectionSubjectResponse.class);
+               StudentResponse studentResponse = modelMapper.map(sectionSubject.getStudent(),StudentResponse.class);
+               res.setStudentResponse(studentResponse);
+               return res;
+            });
+            logger.info("Students from sectionSubject Fetched successfully | sectionSubjectId={} | returnedElements={}",sectionSubjectId,responses.getNumberOfElements());
+            return responses;
+        } catch (Exception  e){
+            logger.error("Failed fetch student from student subject | sectionSubjectId={}",sectionSubjectId,e);
+            throw e;
+        }
     }
 }
