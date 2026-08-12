@@ -3,6 +3,8 @@ package com.example.UniversityManagementSystem.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class StudentSubject {
@@ -15,6 +17,9 @@ public class StudentSubject {
 
     @ManyToOne
     private SectionSubject sectionSubject;
+
+    @OneToMany(mappedBy = "studentSubject")
+    private List<StudentAttendance> studentAttendances = new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -60,5 +65,13 @@ public class StudentSubject {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public List<StudentAttendance> getStudentAttendances() {
+        return studentAttendances;
+    }
+
+    public void setStudentAttendances(List<StudentAttendance> studentAttendances) {
+        this.studentAttendances = studentAttendances;
     }
 }
