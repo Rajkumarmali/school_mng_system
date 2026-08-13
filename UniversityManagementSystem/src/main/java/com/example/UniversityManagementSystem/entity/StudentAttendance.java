@@ -2,16 +2,23 @@ package com.example.UniversityManagementSystem.entity;
 
 import com.example.UniversityManagementSystem.entity.type.AttendanceStatus;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
+@NoArgsConstructor
+@Getter
+@Setter
 public class StudentAttendance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime date;
+    private LocalDate date;
 
     @Enumerated(EnumType.STRING)
     private AttendanceStatus status;
@@ -22,54 +29,4 @@ public class StudentAttendance {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public StudentAttendance() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
-
-    public AttendanceStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(AttendanceStatus status) {
-        this.status = status;
-    }
-
-    public StudentSubject getStudentSubject() {
-        return studentSubject;
-    }
-
-    public void setStudentSubject(StudentSubject studentSubject) {
-        this.studentSubject = studentSubject;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 }
