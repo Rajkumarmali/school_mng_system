@@ -14,6 +14,7 @@ const Sidebar = () => {
     const isHod = roles.includes("HOD")
     const isAccountant = roles.includes("ACCOUNTANT")
     const isStudent = roles.includes("STUDENT")
+    const isTeacher = roles.includes("TEACHER")
 
     return (
         <div className="sidebar">
@@ -87,6 +88,17 @@ const Sidebar = () => {
                             Fee
                         </Link>
                     </li>
+                }
+                {
+                    isTeacher &&
+                    <>
+                        <li>
+                            <Link to="/teacher/classes" className="menu-item">
+                                <i className="bi bi-easel-fill me-2"></i>
+                                Classes
+                            </Link>
+                        </li>
+                    </>
                 }
                 {
                     isStudent &&

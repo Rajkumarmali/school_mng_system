@@ -196,11 +196,11 @@ const Student = () => {
                                 section?.sectionSubjectStudents?.content?.map((stu, index) =>
                                     <tr>
                                         <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                        <td>{stu?.rollNumber}</td>
-                                        <td>{stu.registrationNumber}</td>
-                                        <td>{stu.firstName} {stu.lastName}</td>
-                                        <td>{stu.email}</td>
-                                        <td>{stu.phoneNumber}</td>
+                                        <td>{stu?.studentResponse?.rollNumber}</td>
+                                        <td>{stu?.studentResponse?.registrationNumber}</td>
+                                        <td>{stu?.studentResponse?.firstName} {stu.lastName}</td>
+                                        <td>{stu?.studentResponse?.email}</td>
+                                        <td>{stu?.studentResponse?.phoneNumber}</td>
                                     </tr>
                                 )
                                 :
