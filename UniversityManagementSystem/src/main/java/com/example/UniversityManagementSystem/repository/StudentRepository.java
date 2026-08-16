@@ -1,6 +1,7 @@
 package com.example.UniversityManagementSystem.repository;
 
 import com.example.UniversityManagementSystem.entity.Section;
+import com.example.UniversityManagementSystem.dto.course.CourseStudentResponse;
 import com.example.UniversityManagementSystem.entity.Department;
 import com.example.UniversityManagementSystem.entity.Scholarship;
 import com.example.UniversityManagementSystem.entity.Student;
@@ -16,8 +17,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     Student findByRegistrationNumber(String registrationNumber);
 
-    Page<Student> findByClasses(Section clas, Pageable pageable);
-
     Student findByUserId(Long userId);
 
     Page<Student> findByScholarships(Scholarship scholarship, Pageable pageable);
@@ -27,4 +26,8 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Page<Student> findByCollegeIdAndRollNumberNull(Long collegeId, Pageable pageable);
 
     Page<Student> findByDepartmentCourseId(Long courseId, Pageable pageable);
+
+    Page<Student> findBySections(Section section, Pageable pageable);
+
+    Page<Student> findByDepartmentCourseIdAndCollegeId(Long collegeId, Long collegeId1, Pageable pageable);
 }

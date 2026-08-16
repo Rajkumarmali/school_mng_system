@@ -2,10 +2,16 @@ import React, { useEffect, useState } from 'react'
 import './Course.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom';
-import { createCourse, getAllCourse } from '../../state/course/Action';
+import { createCourse, getAllCourse, getCourseByCollege } from '../../state/course/Action';
 import CourseDetails from './CourseDetails';
+import { jwtDecode } from 'jwt-decode';
 
 const Course = () => {
+
+    const token = localStorage.getItem("token")
+    const decoded = jwtDecode(token)
+    const roles = decoded.roles;
+    const isSuperAdmin = roles.includes("SUPER_ADMIN")
 
     const dispatch = useDispatch();
     const course = useSelector((state) => state.course)
@@ -20,7 +26,6 @@ const Course = () => {
         shortName: "",
         duration: "",
         courseDurationType: "YEAR",
-        totalSemester: "",
         description: ""
     })
 
@@ -38,7 +43,6 @@ const Course = () => {
             shortName: "",
             duration: "",
             courseDurationType: "YEAR",
-            totalSemester: "",
             description: ""
         })
     }
@@ -55,7 +59,11 @@ const Course = () => {
 
     }
 
-    const totalPages = course?.courses?.totalPages || 0;
+    const totalPages =
+        isSuperAdmin ?
+            course?.courses?.totalPages || 0
+            :
+            course?.collegeCourses?.totalPages || 0
     const getPageNumbers = () => {
         const pages = [];
 
@@ -118,8 +126,11 @@ const Course = () => {
 
 
     useEffect(() => {
-        dispatch(getAllCourse(pageNumber, pageSize))
-    }, [dispatch, pageNumber, pageSize]);
+        isSuperAdmin ?
+            dispatch(getAllCourse(pageNumber, pageSize))
+            :
+            dispatch(getCourseByCollege(pageNumber, pageSize))
+    }, [dispatch, pageNumber, pageSize, isSuperAdmin]);
 
     return (
         <div className="course-container">
@@ -134,10 +145,14 @@ const Course = () => {
                             <div>
                                 <h2>Course Management</h2>
                             </div>
-                            <button className="add-course-btn" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={handleClearData}>
-                                <i className="bi bi-plus-circle me-2"></i>
-                                Add New Course
-                            </button>
+                            {
+                                isSuperAdmin &&
+                                <button className="add-course-btn" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={handleClearData}>
+                                    <i className="bi bi-plus-circle me-2"></i>
+                                    Add New Course
+                                </button>
+                            }
+
                         </div>
                         <div className="course-card">
                             <table className="table course-table">
@@ -148,19 +163,40 @@ const Course = () => {
                                         <th>Name</th>
                                         <th>Duration Type</th>
                                         <th>Duration</th>
+                                        {
+                                            isSuperAdmin &&
+                                            <th>Total College</th>
+                                        }
+
                                         <th className='text-center'>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
-                                        course?.courses?.content?.length > 0 ?
-                                            course?.courses?.content?.map((course, index) =>
+                                        ((isSuperAdmin && course?.courses?.content?.length === 0) || (course?.collegeCourses?.content?.length === 0)) ?
+                                            <tr>
+                                                <td colSpan="8" className="text-center">
+                                                    No Course Found
+                                                </td>
+                                            </tr>
+                                            :
+                                            (
+                                                isSuperAdmin ?
+                                                    course?.courses?.content
+                                                    :
+                                                    course?.collegeCourses?.content
+                                            )?.map((course, index) =>
                                                 <tr>
                                                     <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
                                                     <td>{course.courseCode}</td>
                                                     <td>{course.shortName}</td>
                                                     <td>{course.courseDurationType}</td>
                                                     <td>{course.duration} Year</td>
+                                                    {
+                                                        isSuperAdmin &&
+                                                        <td>{course.totalCollege}</td>
+                                                    }
+
                                                     <td className='text-center'>
                                                         <button
                                                             onClick={() => handleViewCourseDetails(course.id)}
@@ -171,18 +207,18 @@ const Course = () => {
                                                     </td>
                                                 </tr>
                                             )
-                                            :
-                                            <tr>
-                                                <td colSpan="8" className="text-center">
-                                                    No Course Found
-                                                </td>
-                                            </tr>
                                     }
                                 </tbody>
                             </table>
                             <div className="pagination-container">
                                 <div className="pagination-info">
-                                    Total : <strong>{course?.courses?.totalElements || 0}</strong>
+                                    Total :
+                                    {
+                                        isSuperAdmin ?
+                                            <strong>{course?.courses?.totalElements || 0}</strong>
+                                            :
+                                            <strong>{course?.collegeCourses?.totalElements || 0}</strong>
+                                    }
                                 </div>
                                 <div className="page-size-selector">
                                     <label>Show :</label>
@@ -281,16 +317,6 @@ const Course = () => {
                                         <option>YEAR</option>
                                         <option>SEMESTER</option>
                                     </select>
-                                </div>
-                                <div>
-                                    <label>Total Semester</label>
-                                    <input type='number'
-                                        className="modal-input"
-                                        name='totalSemester'
-                                        value={courseData.totalSemester}
-                                        onChange={handleChange}
-                                    />
-
                                 </div>
                                 <div>
                                     <label>Description</label>

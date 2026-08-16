@@ -182,8 +182,8 @@ const FeeStudentDetails = () => {
                         <i
                             className={
                                 fee?.feeStudent?.status === "PAID"
-                                    ? "bi bi-patch-check-fill text-success"
-                                    : "bi bi-hourglass-split text-warning"
+                                    ? "bi bi-patch-check-fill"
+                                    : "bi bi-hourglass-split"
                             }
                         ></i>
                         <span>

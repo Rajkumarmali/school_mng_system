@@ -12,12 +12,12 @@ import College from '../pages/College/College';
 import CollegeProfile from '../pages/College/CollegeProfile';
 import Department from '../pages/department/Department';
 import DepartmentDetails from '../pages/department/DepartmentDetails';
-import Classes from '../pages/classes/Classes';
-import ClassDetails from '../pages/classes/ClassDetails';
 import Fee from '../pages/fee/Fee';
 import StudentsFee from '../pages/student/fee/StudentsFee';
 import Course from '../pages/course/Course';
 import Notification from '../pages/notification/Notification';
+import Section from '../pages/section/Section';
+
 
 
 const Layout = () => {
@@ -42,8 +42,7 @@ const Layout = () => {
                         <Route path='teacher' element={<Teacher />} />
                         <Route path='teacher/profile' element={<TeacherProfile />} />
                         <Route path='department' element={<Department />} />
-                        <Route path='classes' element={<Classes />} />
-                        <Route path='classes/details/:classId' element={<ClassDetails />} />
+                        <Route path='sections' element={<Section />} />
                         <Route path='department/details/:departmentId' element={<DepartmentDetails />} />
                         <Route path='fee' element={<Fee />} />
                         <Route path='notification' element={<Notification />} />

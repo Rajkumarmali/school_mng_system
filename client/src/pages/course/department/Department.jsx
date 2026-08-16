@@ -1,10 +1,16 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
-import { getDepartmentByCourseId } from '../../../state/course/Action';
+import { getDepartmentByCourseId, getDepartmentByCourseIdForCollege } from '../../../state/course/Action';
 import './Department.css'
+import { jwtDecode } from 'jwt-decode';
 
 const Department = () => {
+
+    const token = localStorage.getItem("token")
+    const decoded = jwtDecode(token)
+    const roles = decoded.roles;
+    const isSuperAdmin = roles.includes("SUPER_ADMIN")
 
     const [searchParams, setSearchParams] = useSearchParams();
     const pageNumber = Number(searchParams.get('page')) || 1
@@ -15,7 +21,11 @@ const Department = () => {
     const dispatch = useDispatch();
     const course = useSelector((state) => state.course)
 
-    const totalPages = course?.courseDepartments?.totalPages || 0;
+    const totalPages = isSuperAdmin ?
+        course?.courseDepartments?.totalPages || 0
+        :
+        course?.courseDepartmentsForCollege.totalPages || 0
+
     const getPageNumbers = () => {
         const pages = [];
 
@@ -85,8 +95,11 @@ const Department = () => {
     }
 
     useEffect(() => {
-        dispatch(getDepartmentByCourseId(courseId, pageNumber, pageSize))
-    }, [dispatch, pageNumber, pageSize, courseId]);
+        isSuperAdmin ?
+            dispatch(getDepartmentByCourseId(courseId, pageNumber, pageSize))
+            :
+            dispatch(getDepartmentByCourseIdForCollege(courseId, pageNumber, pageSize))
+    }, [dispatch, pageNumber, pageSize, courseId, isSuperAdmin]);
 
     return (
         <div>
@@ -97,6 +110,10 @@ const Department = () => {
                             <th>S.No</th>
                             <th>Code</th>
                             <th>Name</th>
+                            {
+                                isSuperAdmin &&
+                                <th>College</th>
+                            }
                             <th>HodName</th>
                             <th>HodEmail</th>
                             <th>HodPhoneNumber</th>
@@ -104,29 +121,46 @@ const Department = () => {
                     </thead>
                     <tbody>
                         {
-                            course?.courseDepartments?.content?.length > 0 ?
-                                course?.courseDepartments?.content?.map((department, index) =>
-                                    <tr>
-                                        <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                        <td>{department.code}</td>
-                                        <td>{department.name}</td>
-                                        <td>{department.hodName}</td>
-                                        <td>{department.hodEmail}</td>
-                                        <td>{department.hodPhoneNumber}</td>
-                                    </tr>
-                                )
-                                :
+                            ((isSuperAdmin && course?.courseDepartments?.content?.length === 0) || (course?.courseDepartmentsForCollege?.content?.length === 0)) ?
                                 <tr>
                                     <td colSpan="8" className="text-center">
                                         No Department Found
                                     </td>
                                 </tr>
+                                :
+                                (
+                                    isSuperAdmin ?
+                                        (course?.courseDepartments?.content)
+                                        :
+                                        (course?.courseDepartmentsForCollege?.content)
+                                )?.map((department, index) =>
+                                    <tr>
+                                        <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                        <td>{department.code}</td>
+                                        <td>{department.name}</td>
+                                        {
+                                            isSuperAdmin &&
+                                            <td>{department.collegeName ? department.collegeName : "-"}</td>
+                                        }
+
+                                        <td>{department.hodName}</td>
+                                        <td>{department.hodEmail}</td>
+                                        <td>{department.hodPhoneNumber}</td>
+                                    </tr>
+                                )
+
                         }
                     </tbody>
                 </table>
                 <div className="pagination-container">
                     <div className="pagination-info">
-                        Total : <strong>{course?.courseDepartments?.totalElements || 0}</strong>
+                        Total : {
+                            isSuperAdmin ?
+                                <strong>{course?.courseDepartments?.totalElements || 0}</strong>
+                                :
+                                <strong>{course?.courseDepartmentsForCollege?.totalElements || 0}</strong>
+                        }
+
                     </div>
                     <div className="page-size-selector">
                         <label>Show :</label>

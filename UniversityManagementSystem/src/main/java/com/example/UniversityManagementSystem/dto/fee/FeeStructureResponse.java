@@ -10,8 +10,8 @@ public class FeeStructureResponse implements Serializable {
     private Double amount;
     private String academicYear;
     private String description;
-    private String classCode;
-    private String className;
+    private String sectionCode;
+    private String sectionName;
     private String departmentCode;
     private String departmentName;
     private String feeTypeName;
@@ -28,13 +28,13 @@ public class FeeStructureResponse implements Serializable {
     public FeeStructureResponse() {
     }
 
-    public FeeStructureResponse(Long id, Double amount, String academicYear, String description, String classCode, String className, String departmentCode, String departmentName, String feeTypeName, LocalDateTime dueDate, FeeStructureStatus status, Double totalCollectionAmount, Double totalCollectedAmount, Double totalPendingAmount, Integer totalStudent, Integer totalPainStudent, Integer totalUnPaidStudent) {
+    public FeeStructureResponse(Long id, Double amount, String academicYear, String description, String classCode, String sectionName, String departmentCode, String departmentName, String feeTypeName, LocalDateTime dueDate, FeeStructureStatus status, Double totalCollectionAmount, Double totalCollectedAmount, Double totalPendingAmount, Integer totalStudent, Integer totalPainStudent, Integer totalUnPaidStudent) {
         this.id = id;
         this.amount = amount;
         this.academicYear = academicYear;
         this.description = description;
-        this.classCode = classCode;
-        this.className = className;
+        this.sectionCode = classCode;
+        this.sectionName = sectionName;
         this.departmentCode = departmentCode;
         this.departmentName = departmentName;
         this.feeTypeName = feeTypeName;
@@ -72,12 +72,12 @@ public class FeeStructureResponse implements Serializable {
         this.academicYear = academicYear;
     }
 
-    public String getClassCode() {
-        return classCode;
+    public String getSectionCode() {
+        return sectionCode;
     }
 
-    public void setClassCode(String classCode) {
-        this.classCode = classCode;
+    public void setSectionCode(String sectionCode) {
+        this.sectionCode = sectionCode;
     }
 
 
@@ -105,12 +105,12 @@ public class FeeStructureResponse implements Serializable {
         this.feeTypeName = feeTypeName;
     }
 
-    public String getClassName() {
-        return className;
+    public String getSectionName() {
+        return sectionName;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    public void setSectionName(String sectionName) {
+        this.sectionName = sectionName;
     }
 
     public String getDepartmentName() {

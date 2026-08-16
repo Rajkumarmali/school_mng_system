@@ -1,0 +1,20 @@
+.fee-sections-table {
+    margin-bottom: 0;
+}
+
+.fee-sections-table thead {
+  background: transparent !important;
+}
+
+.fee-sections-table th {
+    background: transparent !important;
+    font-weight: 600;
+    color: #495057;
+    padding: 14px;
+}
+
+.fee-sections-table td {
+    background: transparent !important;
+    vertical-align: middle;
+    padding: 14px;
+}

@@ -13,4 +13,6 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     Department findByCode(String departmentCode);
 
     Page<Department> findByCourseId(Long courseId, Pageable pageable);
+
+    Page<Department> findByCourseIdAndCollegeId(Long courseId, Long collegeId, Pageable pageable);
 }
