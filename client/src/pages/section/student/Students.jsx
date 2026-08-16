@@ -4,6 +4,7 @@ import { jwtDecode } from 'jwt-decode'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
 import { addStudentInSection, deleteStudentFromSection, getStudentsFromSection } from '../../../state/section/Action'
+import StudentDetail from './StudentDetail'
 
 const Students = () => {
 
@@ -20,6 +21,7 @@ const Students = () => {
     const sectionId = searchParams.get("sectionId")
     const pageNumber = Number(searchParams.get("page")) || 1;
     const pageSize = Number(searchParams.get("size")) || 10;
+    const studentId = searchParams.get("studentId")
 
     const [sectionStudentData, setSectionStudentData] = useState([
         {
@@ -154,119 +156,134 @@ const Students = () => {
 
     return (
         <div>
-            <div className="class-student-header">
-                <div>
-                    <h2>Students</h2>
-                </div>
-                {
-                    isHod &&
-                    <button
-                        className="add-class-student-btn" data-bs-toggle="modal"
-                        data-bs-target="#studentModal"
-                    >
-                        <i className="bi bi-plus-circle me-2"></i>
-                        Add Students
-                    </button>
-                }
-            </div>
-            <table className="table class-student-table">
-                <thead>
-                    <tr>
-                        <th>S No.</th>
-                        <th>Roll No.</th>
-                        <th>Registration No.</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        {
-                            isHod &&
-                            <td>Action</td>
-                        }
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        section?.sectionStudents?.content?.length > 0 ?
-                            section?.sectionStudents?.content?.map((student, index) =>
-                                <tr>
-                                    <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                    <td>{student.rollNumber}</td>
-                                    <td>{student.registrationNumber}</td>
-                                    <td>{student.firstName}{" "}{student.lastName}</td>
-                                    <td>{student.email}</td>
-                                    <td>{student.phoneNumber}</td>
-                                    {
-                                        isHod &&
-                                        <td className='text-center'>
-                                            <button
-                                                onClick={() => handleDeleteStudentFromSection(student.id)}
-                                                className="btn btn-sm custom-action-btn me-2"
-                                            >
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </td>
-                                    }
-                                </tr>
-                            )
-                            :
-                            <tr>
-                                <td colSpan="9" className="text-center">
-                                    No Student Found
-                                </td>
-                            </tr>
-                    }
-                </tbody>
-            </table>
-            <div className="pagination-container">
-                <div className="pagination-info">
-                    Total : <strong>{section?.sectionStudents?.totalElements || 0}</strong>
-                </div>
-                <div className="page-size-selector">
-                    <label>Show :</label>
-                    <select
-                        value={pageSize}
-                        onChange={handleChangePageSize}
-                    >
-                        <option value={10}>10</option>
-                        <option value={50}>50</option>
-                        <option value={100}>100</option>
-                    </select>
-                </div>
-                <ul className="custom-pagination">
-                    <li>
-                        <button
-                            onClick={handleGetPerviousPageData}
-                            disabled={pageNumber === 1}
-                        >
-                            &laquo;
-                        </button>
-                    </li>
-                    {getPageNumbers().map((page, index) =>
-                        page === "..." ? (
-                            <li key={index} className="dots">
-                                ...
-                            </li>
-                        ) : (
-                            <li key={index}>
+            {
+                studentId ?
+                    <div>
+                        <StudentDetail />
+                    </div>
+                    :
+                    <div>
+                        <div className="class-student-header">
+                            <div>
+                                <h2>Students</h2>
+                            </div>
+                            {
+                                isHod &&
                                 <button
-                                    className={pageNumber === page ? "active-page" : ""}
-                                    onClick={() => handleGetPageNumberData(page)}
+                                    className="add-class-student-btn" data-bs-toggle="modal"
+                                    data-bs-target="#studentModal"
                                 >
-                                    {page}
+                                    <i className="bi bi-plus-circle me-2"></i>
+                                    Add Students
                                 </button>
-                            </li>
-                        )
-                    )}
-                    <li>
-                        <button
-                            onClick={handleGetNextPageData}
-                            disabled={pageNumber === totalPages}
-                        >
-                            &raquo;
-                        </button>
-                    </li>
-                </ul>
-            </div>
+                            }
+                        </div>
+                        <table className="table class-student-table">
+                            <thead>
+                                <tr>
+                                    <th>S No.</th>
+                                    <th>Roll No.</th>
+                                    <th>Registration No.</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Attendance(%)</th>
+                                    <td className='text-center'>Action</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    section?.sectionStudents?.content?.length > 0 ?
+                                        section?.sectionStudents?.content?.map((student, index) =>
+                                            <tr>
+                                                <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                <td>{student.rollNumber}</td>
+                                                <td>{student.registrationNumber}</td>
+                                                <td>{student.firstName}{" "}{student.lastName}</td>
+                                                <td>{student.email}</td>
+                                                <td>{student.phoneNumber}</td>
+                                                <td>{student?.attendancePercent.toFixed(2)}%</td>
+                                                <td className='text-center'>
+                                                    <button
+                                                        onClick={() => setSearchParams({ sectionId, tab, page: pageNumber, size: pageSize, studentId: student.id })}
+                                                        className="btn btn-sm custom-action-btn me-2">
+                                                        <i class="bi bi-eye"></i>
+                                                    </button>
+                                                    {
+                                                        isHod &&
+                                                        <button
+                                                            onClick={() => handleDeleteStudentFromSection(student.id)}
+                                                            className="btn btn-sm custom-action-btn me-2"
+                                                        >
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    }
+                                                </td>
+
+                                            </tr>
+                                        )
+                                        :
+                                        <tr>
+                                            <td colSpan="9" className="text-center">
+                                                No Student Found
+                                            </td>
+                                        </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <div className="pagination-container">
+                            <div className="pagination-info">
+                                Total : <strong>{section?.sectionStudents?.totalElements || 0}</strong>
+                            </div>
+                            <div className="page-size-selector">
+                                <label>Show :</label>
+                                <select
+                                    value={pageSize}
+                                    onChange={handleChangePageSize}
+                                >
+                                    <option value={10}>10</option>
+                                    <option value={50}>50</option>
+                                    <option value={100}>100</option>
+                                </select>
+                            </div>
+                            <ul className="custom-pagination">
+                                <li>
+                                    <button
+                                        onClick={handleGetPerviousPageData}
+                                        disabled={pageNumber === 1}
+                                    >
+                                        &laquo;
+                                    </button>
+                                </li>
+                                {getPageNumbers().map((page, index) =>
+                                    page === "..." ? (
+                                        <li key={index} className="dots">
+                                            ...
+                                        </li>
+                                    ) : (
+                                        <li key={index}>
+                                            <button
+                                                className={pageNumber === page ? "active-page" : ""}
+                                                onClick={() => handleGetPageNumberData(page)}
+                                            >
+                                                {page}
+                                            </button>
+                                        </li>
+                                    )
+                                )}
+                                <li>
+                                    <button
+                                        onClick={handleGetNextPageData}
+                                        disabled={pageNumber === totalPages}
+                                    >
+                                        &raquo;
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+            }
+
 
             <div class="modal fade" id="studentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-xl">

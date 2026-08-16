@@ -7,8 +7,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface StudentSubjectRepository extends JpaRepository<StudentSubject, Long> {
     Boolean existsByStudentAndSectionSubject(Student student, SectionSubject sectionSubject);
 
     Page<StudentSubject> findBySectionSubjectId(Long sectionSubjectId, Pageable pageable);
+
+    List<StudentSubject> findByStudentIdAndSectionSubjectSectionId(Long studentId, Long sectionId);
+
+    Page<StudentSubject> findByStudentIdAndSectionSubjectSectionId(Long studentId, Long sectionId,Pageable pageable);
 }

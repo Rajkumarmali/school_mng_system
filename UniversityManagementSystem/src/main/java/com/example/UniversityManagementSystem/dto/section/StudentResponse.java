@@ -1,5 +1,6 @@
 package com.example.UniversityManagementSystem.dto.section;
 
+import com.example.UniversityManagementSystem.entity.type.Gender;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,6 +17,8 @@ public class StudentResponse implements Serializable {
     private String lastName;
     private String email;
     private String registrationNumber;
+    private Gender gender;
     private String phoneNumber;
-
+    private double attendancePercent;
+    private ParentResponse parentResponse;
 }

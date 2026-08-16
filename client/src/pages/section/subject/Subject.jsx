@@ -160,6 +160,7 @@ const Subject = () => {
                                         <th>Subject</th>
                                         <th>Teacher</th>
                                         <th>Teacher Phone No.</th>
+                                        <th>Students</th>
                                         <th className="text-center">Action</th>
                                     </tr>
                                 </thead>
@@ -171,8 +172,9 @@ const Subject = () => {
                                                     <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
                                                     <td>{subject?.subjectResponse?.code ? subject?.subjectResponse?.code : "-"}</td>
                                                     <td>{subject?.subjectResponse?.shortName ? subject?.subjectResponse?.shortName : "-"}</td>
-                                                    <td>{subject?.teacherResponse?.name}</td>
+                                                    <td>{subject?.teacherResponse?.firstName} {subject?.teacherResponse?.lastName}</td>
                                                     <td>{subject?.teacherResponse?.phoneNumber}</td>
+                                                    <td>{subject?.subjectResponse?.totalStudent}</td>
                                                     <td className='text-center'>
                                                         <button
                                                             className="btn btn-sm custom-reset-btn me-2"
