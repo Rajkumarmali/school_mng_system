@@ -18,4 +18,8 @@ public interface StudentSubjectRepository extends JpaRepository<StudentSubject, 
     Page<StudentSubject> findByStudentUserIdAndSectionSubjectSectionStatus(Long userId, SectionStatus sectionStatus, Pageable pageable);
 
     List<StudentSubject> findByStudentUserIdAndSectionSubjectSectionStatus(Long userId, SectionStatus sectionStatus);
+
+    List<StudentSubject> findByStudentIdAndSectionSubjectSectionId(Long studentId, Long sectionId);
+
+    Page<StudentSubject> findByStudentIdAndSectionSubjectSectionId(Long studentId, Long sectionId,Pageable pageable);
 }

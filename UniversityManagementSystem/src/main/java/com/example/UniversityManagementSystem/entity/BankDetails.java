@@ -12,7 +12,7 @@ public class BankDetails {
     private Long id;
 
     private String accountHolderName;
-    private String accountName;
+    private String accountNumber;
     private String ifscCode;
     private String bankName;
     private String bankBranch;
@@ -45,12 +45,12 @@ public class BankDetails {
         this.accountHolderName = accountHolderName;
     }
 
-    public String getAccountName() {
-        return accountName;
+    public String getAccountNumber() {
+        return accountNumber;
     }
 
-    public void setAccountName(String accountName) {
-        this.accountName = accountName;
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
     public String getIfscCode() {

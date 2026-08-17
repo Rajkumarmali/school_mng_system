@@ -95,7 +95,6 @@ const StudentDetails = () => {
                 message: `${documentType} submitted by student ${college?.collegeStudent?.name} has been rejected. Please instruct the student to upload a valid document for verification.`,
                 userEmail: college?.college?.email
             }
-            console.log(payload)
             await dispatch(createNotification(payload))
         }
         await dispatch(updateStudentDocumentStatus(documentId, status));

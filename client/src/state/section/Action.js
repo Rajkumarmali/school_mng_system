@@ -24,7 +24,13 @@ import {
     ADD_STUDENT_IN_SECTION_SUBJECT_SUCCESS,
     GET_STUDENT_FROM_SECTION_SUBJECT_REQUEST,
     GET_STUDENT_FROM_SECTION_SUBJECT_FAILER,
-    GET_STUDENT_FROM_SECTION_SUBJECT_SUCCESS
+    GET_STUDENT_FROM_SECTION_SUBJECT_SUCCESS,
+    GET_STUDENT_FROM_SECTION_BY_STUDENTID_REQUEST,
+    GET_STUDENT_FROM_SECTION_BY_STUDENTID_FAILER,
+    GET_STUDENT_FROM_SECTION_BY_STUDENTID_SUCCESS,
+    GET_STUDENT_SUBJECT_BY_SECTIONANDSTUDENTID_REQUEST,
+    GET_STUDENT_SUBJECT_BY_SECTIONANDSTUDENTID_FAILER,
+    GET_STUDENT_SUBJECT_BY_SECTIONANDSTUDENTID_SUCCESS
 } from "./ActionType"
 
 const BASE_API = process.env.REACT_APP_BASE_URL + "/section";
@@ -168,6 +174,23 @@ export const getStudentsFromSection = (sectionId, pageNumber, pageSize) => async
     }
 }
 
+export const getStudentFromSectionByStudentId = (studentId) => async (dispatch) => {
+    dispatch({ type: GET_STUDENT_FROM_SECTION_BY_STUDENTID_REQUEST })
+    try {
+        const res = await fetch(`${BASE_API}/get/studentbyid/${studentId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        })
+        const data = await res.json();
+        dispatch({ type: GET_STUDENT_FROM_SECTION_BY_STUDENTID_SUCCESS, payload: data })
+    } catch (err) {
+        dispatch({ type: GET_STUDENT_FROM_SECTION_BY_STUDENTID_FAILER, payload: err.message })
+    }
+}
+
 export const deleteStudentFromSection = (sectionId, studentId) => async (dispatch) => {
     dispatch({ type: DELETE_STUDENT_FROM_SECTION_REQUEST })
     try {
@@ -287,5 +310,22 @@ export const getAllStudentFromSectionSubject = (sectionSubjectId, pageNumber, pa
         dispatch({ type: GET_STUDENT_FROM_SECTION_SUBJECT_SUCCESS, payload: data })
     } catch (err) {
         dispatch({ type: GET_STUDENT_FROM_SECTION_SUBJECT_FAILER, payload: err.message })
+    }
+}
+
+export const getStudentSubjectBySectionIdAndStudentId = (sectionId, studentId, pageNumber, pageSize) => async (dispatch) => {
+    dispatch({ type: GET_STUDENT_SUBJECT_BY_SECTIONANDSTUDENTID_REQUEST })
+    try {
+        const res = await fetch(`${BASE_API}/get/student/subject/${sectionId}/${studentId}?pageNumber=${pageNumber - 1}&pageSize=${pageSize}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+        })
+        const data = await res.json();
+        dispatch({ type: GET_STUDENT_SUBJECT_BY_SECTIONANDSTUDENTID_SUCCESS, payload: data })
+    } catch (err) {
+        dispatch({ type: GET_STUDENT_SUBJECT_BY_SECTIONANDSTUDENTID_FAILER, payload: err.message })
     }
 }

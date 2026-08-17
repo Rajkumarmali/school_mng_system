@@ -14,11 +14,13 @@ public interface SectionService {
     SectionResponse getSectionById(Long sectionId);
     String addStudentInSection(Long sectionId, List<SectionStudentRequest> dto);
     String deleteStudentFromSection(Long sectionId,Long studentId);
-    Page<SectionStudentResponse> getAllStudentFromSection(Long sectionId, int pageNumber, int pageSize);
+    Page<StudentResponse> getAllStudentFromSection(Long sectionId, int pageNumber, int pageSize);
+    StudentResponse getStudentFromSectionByStudentId(Long studentId);
     String addSubjectInSection(Long sectionId, SectionSubjectRequest dto);
     Page<SectionSubjectResponse>  getAllSectionSubject(Long sectionId,int pageNumber,int pageSize);
     SectionSubjectResponse getSectionSubjectById(Long sectionSubjectId);
     String updateSubjectTeacher(Long sectionSubjectId, SectionSubjectRequest dto);
     String addStudentInSectionSubject(Long sectionSubjectId, List<SectionStudentRequest> dto);
-    Page<SectionStudentResponse> getAllStudentFromSectionSubject(Long sectionSubjectId,int pageNumber,int pageSize);
+    Page<SectionSubjectResponse> getAllStudentFromSectionSubject(Long sectionSubjectId,int pageNumber,int pageSize);
+    StudentSubjectResponse getStudentSubjectBySectionIdAndStudentId(Long sectionId, Long studentId,int pageNumber,int pageSize);
 }

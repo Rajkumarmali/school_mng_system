@@ -162,7 +162,7 @@ const SectionDetails = () => {
                             <div className="section-details-info">
                                 <div className="section-details-contact">
                                     <div>
-                                        <span><strong>Class Teacher Name : </strong> {section?.section?.classTeacherResponse?.name}</span>
+                                        <span><strong>Class Teacher Name : </strong> {section?.section?.classTeacherResponse?.firstName} {section?.section?.classTeacherResponse?.lastName}</span>
                                     </div>
                                     <div>
                                         <span> <strong>EmployeeId  : </strong>{section?.section?.classTeacherResponse?.employeeId} </span>

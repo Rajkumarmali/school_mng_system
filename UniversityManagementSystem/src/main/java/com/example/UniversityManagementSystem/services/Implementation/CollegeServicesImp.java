@@ -344,6 +344,10 @@ public class CollegeServicesImp implements CollegeServices {
             @CacheEvict(cacheNames = "collegeStudents",allEntries = true),
             @CacheEvict(cacheNames = "collegeAdmission",allEntries = true),
             @CacheEvict(cacheNames = "college",allEntries = true),
+            @CacheEvict(cacheNames = "universityStudent",key = "#studentId"),
+            @CacheEvict(cacheNames = "universityStudents",allEntries = true),
+            @CacheEvict(cacheNames = "universityAdmissionStudents",allEntries = true),
+            @CacheEvict(cacheNames = "university",allEntries = true),
     })
     public String generateEnrollmentNumberAndRollNumber(Long studentId) {
 

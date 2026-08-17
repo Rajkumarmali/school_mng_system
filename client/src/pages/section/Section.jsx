@@ -207,7 +207,7 @@ const Section = () => {
                                                     <td>{section.academicYear}</td>
                                                     <td>{section.departmentCode}</td>
                                                     <td>{section.sectionStatus}</td>
-                                                    <td>{section.classTeacherResponse?.name}</td>
+                                                    <td>{section.classTeacherResponse?.firstName} {section.classTeacherResponse?.lastName}</td>
                                                     <td className="text-center">
                                                         <button
                                                             onClick={() => handleViewSectionDetails(section.id)}

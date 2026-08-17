@@ -21,23 +21,8 @@ public class TeacherRequest {
 
    private ParentRequest parentRequest;
    private AddressRequest addressRequest;
+   private BankRequest bankRequest;
 
-    public TeacherRequest(String firstName, String lastName, String email, String phoneNumber, LocalDate dob,
-                          Gender gender, Cast cast, String aadharNumber, String panNumber, String departmentCode,
-                          ParentRequest parentRequest, AddressRequest addressRequest) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.dob = dob;
-        this.gender = gender;
-        this.cast = cast;
-        this.aadharNumber = aadharNumber;
-        this.panNumber = panNumber;
-        this.departmentCode = departmentCode;
-        this.parentRequest = parentRequest;
-        this.addressRequest = addressRequest;
-    }
 
     public TeacherRequest() {
     }
@@ -136,5 +121,13 @@ public class TeacherRequest {
 
     public void setDepartmentCode(String departmentCode) {
         this.departmentCode = departmentCode;
+    }
+
+    public BankRequest getBankRequest() {
+        return bankRequest;
+    }
+
+    public void setBankRequest(BankRequest bankRequest) {
+        this.bankRequest = bankRequest;
     }
 }
