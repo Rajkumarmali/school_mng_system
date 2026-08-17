@@ -17,6 +17,7 @@ import StudentsFee from '../pages/student/fee/StudentsFee';
 import Course from '../pages/course/Course';
 import Notification from '../pages/notification/Notification';
 import Section from '../pages/section/Section';
+import Attendance from '../pages/student/attendance/Attendance';
 
 
 
@@ -39,6 +40,7 @@ const Layout = () => {
                         <Route path='users' element={<Users />} />
                         <Route path='/student' element={<Student />} />
                         <Route path='student/fee' element={<StudentsFee />} />
+                        <Route path='student/attendance' element={<Attendance />} />
                         <Route path='teacher' element={<Teacher />} />
                         <Route path='teacher/profile' element={<TeacherProfile />} />
                         <Route path='department' element={<Department />} />

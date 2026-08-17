@@ -2,17 +2,16 @@ package com.example.UniversityManagementSystem.services.Implementation;
 
 import com.example.UniversityManagementSystem.dto.address.AddressResponse;
 import com.example.UniversityManagementSystem.dto.parent.ParentResponse;
-import com.example.UniversityManagementSystem.dto.student.DocumentRequest;
-import com.example.UniversityManagementSystem.dto.student.DocumentResponse;
-import com.example.UniversityManagementSystem.dto.student.StudentRequest;
-import com.example.UniversityManagementSystem.dto.student.StudentResponse;
+import com.example.UniversityManagementSystem.dto.student.*;
 import com.example.UniversityManagementSystem.entity.*;
 import com.example.UniversityManagementSystem.entity.Address;
 import com.example.UniversityManagementSystem.entity.College;
 import com.example.UniversityManagementSystem.entity.Parent;
 import com.example.UniversityManagementSystem.entity.Student;
 import com.example.UniversityManagementSystem.entity.University;
+import com.example.UniversityManagementSystem.entity.type.AttendanceStatus;
 import com.example.UniversityManagementSystem.entity.type.DocumentStatus;
+import com.example.UniversityManagementSystem.entity.type.SectionStatus;
 import com.example.UniversityManagementSystem.repository.*;
 import com.example.UniversityManagementSystem.services.AddressService;
 import com.example.UniversityManagementSystem.services.AuthService;
@@ -29,12 +28,17 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+
+import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,11 +56,18 @@ public class StudentServicesImp implements StudentServices {
     private final DepartmentRepository departmentRepository;
     private final StudentDocumentRepository studentDocumentRepository;
 
+    private final Logger logger = LoggerFactory.getLogger(StudentServicesImp.class);
+    private final ModelMapper modelMapper = new ModelMapper();
+    private final StudentSubjectRepository studentSubjectRepository;
+    private final StudentAttendanceRepository studentAttendanceRepository;
+
 
     public StudentServicesImp(StudentRepository studentRepository, CollegeRepository collegeRepository, AuthService authService, AddressService addressService, ParentServices parentServices,
                               UniversityRepository universityRepository,
                               DepartmentRepository departmentRepository,
-                              StudentDocumentRepository studentDocumentRepository) {
+                              StudentDocumentRepository studentDocumentRepository,
+                              StudentSubjectRepository studentSubjectRepository,
+                              StudentAttendanceRepository studentAttendanceRepository) {
         this.studentRepository = studentRepository;
         this.collegeRepository = collegeRepository;
         this.authService = authService;
@@ -65,6 +76,23 @@ public class StudentServicesImp implements StudentServices {
         this.universityRepository = universityRepository;
         this.departmentRepository = departmentRepository;
         this.studentDocumentRepository = studentDocumentRepository;
+        this.studentSubjectRepository = studentSubjectRepository;
+        this.studentAttendanceRepository = studentAttendanceRepository;
+    }
+
+    private int[] getOverallAttendance(Long userId) {
+        List<StudentSubject> studentSubjects = studentSubjectRepository.findByStudentUserIdAndSectionSubjectSectionStatus(userId,SectionStatus.ACTIVE);
+        int totalPresent = 0;
+        int totalAbsent = 0;
+        for(StudentSubject subject:studentSubjects){
+            for(StudentAttendance studentAttendance:subject.getStudentAttendances()){
+                if(studentAttendance.getStatus()==AttendanceStatus.PRESENT)
+                    totalPresent++;
+                else if(studentAttendance.getStatus()==AttendanceStatus.ABSENT)
+                    totalAbsent++;
+            }
+        }
+        return new int[]{totalPresent,totalAbsent};
     }
 
     @Transactional
@@ -475,6 +503,63 @@ public class StudentServicesImp implements StudentServices {
         response.setStatus(document.getStatus());
         response.setFilePath(document.getFilePath());
         return response;
+    }
+
+    @Override
+    @PreAuthorize("hasRole('STUDENT')")
+    @Cacheable(cacheNames = "studentSubjects",key = "{#userId,#pageNumber,#pageSize}")
+    public StudentSubjectResponse getStudentSubjects(Long userId, int pageNumber, int pageSize) {
+        logger.info("Fetching StudentSubjects | userId = {}",userId);
+        try {
+            Pageable pageable = PageRequest.of(pageNumber,pageSize, Sort.by(Sort.Direction.DESC,"createdAt"));
+            Page<StudentSubject> studentSubjects = studentSubjectRepository.findByStudentUserIdAndSectionSubjectSectionStatus(userId, SectionStatus.ACTIVE,pageable);
+
+            StudentSubjectResponse response = new StudentSubjectResponse();
+
+            Page<SubjectResponse> subjectResponses = studentSubjects.map(studentSubject -> {
+               SubjectResponse res = modelMapper.map(studentSubject.getSectionSubject().getSubject(),SubjectResponse.class);
+
+               res.setTotalPresent(studentSubject.getStudentAttendances()
+                       .stream()
+                       .filter(studentAttendance -> studentAttendance.getStatus()== AttendanceStatus.PRESENT)
+                       .toList().size());
+               res.setTotalAbsent(studentSubject.getStudentAttendances()
+                       .stream()
+                       .filter(studentAttendance -> studentAttendance.getStatus()== AttendanceStatus.ABSENT)
+                       .toList().size());
+
+               res.setStudentSubjectId(studentSubject.getId());
+               return res;
+            });
+            response.setSubjectResponses(subjectResponses);
+            response.setTotalPresent(getOverallAttendance(userId)[0]);
+            response.setTotalAbsent(getOverallAttendance(userId)[1]);
+            logger.info("Successfully fetched student subjects | userId = {} | returnedElement = {}",userId,response.getSubjectResponses().getNumberOfElements());
+            return response;
+        } catch (Exception e) {
+            logger.error("Failed fetched Student subjects | userId = {}",userId,e);
+            throw e;
+        }
+    }
+
+    @Override
+    @PreAuthorize("hasRole('STUDENT')")
+    @Cacheable(cacheNames = "StudentAttendances",key = "{#studentSubjectId,#pageNumber,#pageSize}")
+    public Page<StudentAttendanceResponse> getStudentAttendanceByStudentSubjectId(Long studentSubjectId, int pageNumber, int pageSize) {
+        logger.info("Fetching student attendances | studentSubjectId = {}",studentSubjectId);
+        try{
+            Pageable pageable = PageRequest.of(pageNumber,pageSize, Sort.by(Sort.Direction.DESC,"date"));
+            Page<StudentAttendance> studentAttendances = studentAttendanceRepository.findByStudentSubjectId(studentSubjectId,pageable);
+
+            Page<StudentAttendanceResponse> responses = studentAttendances.map(attendance->{
+               return modelMapper.map(attendance,StudentAttendanceResponse.class);
+            });
+            logger.info("Fetching student attendance | studentSubjectId = {} | returnedElements = {}",studentSubjectId,responses.getNumberOfElements());
+            return responses;
+        } catch (Exception e){
+          logger.error("Failed to fetched student attendances | studentSubjectId = {}",studentSubjectId,e);
+          throw e;
+        }
     }
 
 }

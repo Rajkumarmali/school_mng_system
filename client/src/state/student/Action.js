@@ -1,13 +1,15 @@
 import {
     CREATE_STUDENT_FAILER, CREATE_STUDENT_REQUEST, CREATE_STUDENT_SUCCESS, DELETE_STUDENT_DOCUMENT_FAILER, DELETE_STUDENT_DOCUMENT_REQUEST, DELETE_STUDENT_DOCUMENT_SUCCESS, DELETE_STUDENT_FAILER,
     DELETE_STUDENT_REQUEST, DELETE_STUDENT_SUCCESS, GET_ALLSTUDENT_FAILER, GET_ALLSTUDENT_REQUEST,
-    GET_ALLSTUDENT_SUCCESS, GET_STUDENT_BYID_FAILER, GET_STUDENT_BYID_REQUEST, GET_STUDENT_BYID_SUCCESS,
+    GET_ALLSTUDENT_SUCCESS, GET_STUDENT_ATTENDANCE_FAILER, GET_STUDENT_ATTENDANCE_REQUEST, GET_STUDENT_ATTENDANCE_SUCCESS, GET_STUDENT_BYID_FAILER, GET_STUDENT_BYID_REQUEST, GET_STUDENT_BYID_SUCCESS,
     GET_STUDENT_DOCUMENT_FAILER,
     GET_STUDENT_DOCUMENT_REQUEST,
     GET_STUDENT_DOCUMENT_SUCCESS,
     GET_STUDENT_DOCUMENTBYID_FAILER,
     GET_STUDENT_DOCUMENTBYID_REQUEST,
     GET_STUDENT_DOCUMENTBYID_SUCCESS,
+    GET_STUDENT_SUBJECTS_REQUEST,
+    GET_STUDENT_SUBJECTS_SUCCESS,
     GET_STUDENTS_FEEOVERVIEW_FAILER, GET_STUDENTS_FEEOVERVIEW_REQUEST, GET_STUDENTS_FEEOVERVIEW_SUCCESS,
     GET_STUDENTS_PAIDFEE_FAILER, GET_STUDENTS_PAIDFEE_REQUEST, GET_STUDENTS_PAIDFEE_SUCCESS, GET_STUDENTS_UNPAIDFEE_FAILER, GET_STUDENTS_UNPAIDFEE_REQUEST,
     GET_STUDENTS_UNPAIDFEE_SUCCESS, UPDATE_STUDENT_DOCUMENT_FAILER, UPDATE_STUDENT_DOCUMENT_REQUEST, UPDATE_STUDENT_DOCUMENT_STATUS_FAILER, UPDATE_STUDENT_DOCUMENT_STATUS_REQUEST, UPDATE_STUDENT_DOCUMENT_STATUS_SUCCESS, UPDATE_STUDENT_DOCUMENT_SUCCESS, UPDATE_STUDENT_FAILER, UPDATE_STUDENT_IMAGE_FAILER, UPDATE_STUDENT_IMAGE_REQUEST,
@@ -299,5 +301,39 @@ export const deleteDocument = (documentId) => async (dispatch) => {
         dispatch({ type: DELETE_STUDENT_DOCUMENT_SUCCESS, payload: data })
     } catch (err) {
         dispatch({ type: DELETE_STUDENT_DOCUMENT_FAILER, payload: err.message })
+    }
+}
+
+export const getStudentSubjects = (pageNumber, pageSize) => async (dispatch) => {
+    dispatch({ type: GET_STUDENT_SUBJECTS_REQUEST })
+    try {
+        const res = await fetch(`${BASE_API}/student/get/studentSubject?pageNumber=${pageNumber - 1}&pageSize=${pageSize}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+        })
+        const data = await res.json()
+        dispatch({ type: GET_STUDENT_SUBJECTS_SUCCESS, payload: data })
+    } catch (err) {
+        dispatch({ type: GET_STUDENT_SUBJECTS_REQUEST, payload: err.message })
+    }
+}
+
+export const getStudentAttendance = (studentSubjectId, pageNumber, pageSize) => async (dispatch) => {
+    dispatch({ type: GET_STUDENT_ATTENDANCE_REQUEST })
+    try {
+        const res = await fetch(`${BASE_API}/student/get/studentAttendance/${studentSubjectId}?pageNumber=${pageNumber - 1}&pageSize=${pageSize}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+        })
+        const data = await res.json()
+        dispatch({ type: GET_STUDENT_ATTENDANCE_SUCCESS, payload: data })
+    } catch (err) {
+        dispatch({ type: GET_STUDENT_ATTENDANCE_FAILER, payload: err.message })
     }
 }

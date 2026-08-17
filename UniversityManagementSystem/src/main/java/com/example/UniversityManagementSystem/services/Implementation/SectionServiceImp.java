@@ -133,7 +133,7 @@ public class SectionServiceImp implements SectionService {
         Section section = sectionRepository.findById(sectionId).orElseThrow(()->
                 new IllegalArgumentException("Section not found"));
         if(section.getClassTeacher()!=null){
-            section.getClassTeacher().setClassTeacher(null);
+            section.setClassTeacher(null);
             section.setClassTeacher(null);
         }
         sectionRepository.delete(section);
