@@ -1,10 +1,7 @@
 package com.example.UniversityManagementSystem.controller;
 
 import com.example.UniversityManagementSystem.config.JwtProvider;
-import com.example.UniversityManagementSystem.dto.student.DocumentRequest;
-import com.example.UniversityManagementSystem.dto.student.DocumentResponse;
-import com.example.UniversityManagementSystem.dto.student.StudentRequest;
-import com.example.UniversityManagementSystem.dto.student.StudentResponse;
+import com.example.UniversityManagementSystem.dto.student.*;
 import com.example.UniversityManagementSystem.services.StudentServices;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -109,6 +106,23 @@ public class StudentController {
     @GetMapping("/get/documents/{documentId}")
     public ResponseEntity<DocumentResponse> getDocumentById(@PathVariable Long documentId){
       DocumentResponse res = studentServices.getStudentDocumentById(documentId);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/get/studentSubject")
+    public ResponseEntity<StudentSubjectResponse> getStudentSubjectByStudentId(@RequestHeader("Authorization") String jwt,
+                                                                               @RequestParam(defaultValue = "0") int pageNumber,
+                                                                               @RequestParam(defaultValue = "10") int pageSize){
+        Long userId = jwtProvider.getUserIdFromToken(jwt);
+        StudentSubjectResponse res = studentServices.getStudentSubjects(userId,pageNumber,pageSize);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/get/studentAttendance/{studentSubjectId}")
+    public ResponseEntity<Page<StudentAttendanceResponse>> getStudentAttendanceByStudentSubjectId(@PathVariable Long studentSubjectId,
+                                                                                            @RequestParam(defaultValue = "0") int pageNumber,
+                                                                                            @RequestParam(defaultValue = "10") int pageSize){
+        Page<StudentAttendanceResponse> res = studentServices.getStudentAttendanceByStudentSubjectId(studentSubjectId,pageNumber,pageSize);
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
 }

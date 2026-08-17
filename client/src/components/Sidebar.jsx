@@ -113,6 +113,10 @@ const Sidebar = () => {
                 {
                     isStudent &&
                     <li>
+                        <Link to="/student/attendance" className="menu-item">
+                            <i className="bi bi-clipboard-check-fill me-2"></i>
+                            Attendance
+                        </Link>
                         <Link to="/student/fee" className="menu-item">
                             <i className="bi bi-cash-coin me-2"></i>
                             Fee

@@ -1,9 +1,6 @@
 package com.example.UniversityManagementSystem.services;
 
-import com.example.UniversityManagementSystem.dto.student.DocumentRequest;
-import com.example.UniversityManagementSystem.dto.student.DocumentResponse;
-import com.example.UniversityManagementSystem.dto.student.StudentRequest;
-import com.example.UniversityManagementSystem.dto.student.StudentResponse;
+import com.example.UniversityManagementSystem.dto.student.*;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,4 +19,6 @@ public interface StudentServices {
     String deleteDocument(Long documentId);
     List<DocumentResponse> getStudentDocument(Long studentId);
     DocumentResponse getStudentDocumentById(Long documentId);
+    StudentSubjectResponse getStudentSubjects(Long userId,int pageNumber,int pageSize);
+    Page<StudentAttendanceResponse> getStudentAttendanceByStudentSubjectId(Long studentSubjectId, int pageNumber, int pageSize);
 }
