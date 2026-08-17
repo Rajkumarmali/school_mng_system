@@ -37,7 +37,7 @@ public class SectionController {
     }
 
     @DeleteMapping("/delete/{sectionId}")
-    public ResponseEntity<String> deleteClass(@PathVariable Long sectionId){
+    public ResponseEntity<String> deleteSection(@PathVariable Long sectionId){
         String res = sectionService.deleteSection(sectionId);
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
@@ -61,31 +61,37 @@ public class SectionController {
     }
 
     @GetMapping("/get-byid/{sectionId}")
-    public ResponseEntity<SectionResponse> getClassById(@PathVariable Long sectionId){
+    public ResponseEntity<SectionResponse> getSectionById(@PathVariable Long sectionId){
         SectionResponse res = sectionService.getSectionById(sectionId);
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
 
     @PostMapping("/add/student/{sectionId}")
-    public ResponseEntity<String> addStudentInClass(@PathVariable Long sectionId,
+    public ResponseEntity<String> addStudentInSection(@PathVariable Long sectionId,
                                                     @RequestBody List<SectionStudentRequest> dto){
         String res = sectionService.addStudentInSection(sectionId,dto);
         return new ResponseEntity<>(res,HttpStatus.CREATED);
     }
 
     @DeleteMapping("/delete/student/{sectionId}/{studentId}")
-    public ResponseEntity<String> deleteStudentFromClass(@PathVariable Long sectionId,
-                                                         @PathVariable Long studentId){
+    public ResponseEntity<String> deleteStudentFromSection(@PathVariable Long sectionId,
+                                                           @PathVariable Long studentId){
         String res = sectionService.deleteStudentFromSection(sectionId,studentId);
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
 
     @GetMapping("/get/student/{sectionId}")
-    public ResponseEntity<Page<SectionStudentResponse>> getAllStudentFromClass(@PathVariable Long sectionId,
+    public ResponseEntity<Page<StudentResponse>> getAllStudentFromSection(@PathVariable Long sectionId,
                                                                                @RequestParam(defaultValue = "0") int pageNumber,
                                                                                @RequestParam(defaultValue = "10") int pageSize){
-         Page<SectionStudentResponse> res = sectionService.getAllStudentFromSection(sectionId,pageNumber,pageSize);
+         Page<StudentResponse> res = sectionService.getAllStudentFromSection(sectionId,pageNumber,pageSize);
          return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/get/studentbyid/{studentId}")
+    public ResponseEntity<StudentResponse> getStudentFromSectionByStudentId(@PathVariable Long studentId){
+        StudentResponse res = sectionService.getStudentFromSectionByStudentId(studentId);
+        return new ResponseEntity<>(res,HttpStatus.OK);
     }
 
     @PostMapping("/add/subject/{sectionId}")
@@ -128,6 +134,14 @@ public class SectionController {
                                                                                         @RequestParam(defaultValue = "0") int pageNumber,
                                                                                         @RequestParam(defaultValue = "10") int pageSize){
         Page<SectionSubjectResponse> res = sectionService.getAllStudentFromSectionSubject(sectionSubjectId,pageNumber,pageSize);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+    @GetMapping("/get/student/subject/{sectionId}/{studentId}")
+    public ResponseEntity<StudentSubjectResponse> getStudentSubjectBySectionAndStudentId(@PathVariable Long sectionId,
+                                                                                         @PathVariable Long studentId,
+                                                                                               @RequestParam(defaultValue = "0") int pageNumber,
+                                                                                               @RequestParam(defaultValue = "10") int pageSize){
+        StudentSubjectResponse res = sectionService.getStudentSubjectBySectionIdAndStudentId(sectionId,studentId,pageNumber,pageSize);
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
 }

@@ -2,6 +2,7 @@ package com.example.UniversityManagementSystem.services.Implementation;
 
 import com.example.UniversityManagementSystem.dto.section.*;
 import com.example.UniversityManagementSystem.entity.*;
+import com.example.UniversityManagementSystem.entity.type.AttendanceStatus;
 import com.example.UniversityManagementSystem.entity.type.SectionStatus;
 import com.example.UniversityManagementSystem.repository.*;
 import com.example.UniversityManagementSystem.services.SectionService;
@@ -65,6 +66,36 @@ public class SectionServiceImp implements SectionService {
            studentSubjectRepository.saveAll(studentSubjects);
     }
 
+    private double getOverallAttendancePercent(Long sectionId, Long studentId) {
+        List<StudentSubject> studentSubjects = studentSubjectRepository.findByStudentIdAndSectionSubjectSectionId(studentId,sectionId);
+        int totalPresent = 0;
+        int totalAbsent = 0;
+        for(StudentSubject subject:studentSubjects){
+            for(StudentAttendance attendance:subject.getStudentAttendances()){
+                if(attendance.getStatus()==AttendanceStatus.PRESENT)
+                    totalPresent++;
+                else if(attendance.getStatus()==AttendanceStatus.ABSENT)
+                    totalAbsent++;
+            }
+        }
+        int totalAttendance = totalPresent+totalAbsent;
+        return totalAttendance==0 ? 0 : (((double) totalPresent /totalAttendance)*100);
+    }
+
+    private int[] getOverallAttendance(Long sectionId,Long studentId){
+        List<StudentSubject> studentSubjects = studentSubjectRepository.findByStudentIdAndSectionSubjectSectionId(studentId,sectionId);
+        int totalPresent = 0;
+        int totalAbsent=0;
+        for(StudentSubject subject:studentSubjects){
+            for(StudentAttendance studentAttendance:subject.getStudentAttendances()){
+                if(studentAttendance.getStatus()==AttendanceStatus.PRESENT)
+                    totalPresent++;
+                else if(studentAttendance.getStatus()==AttendanceStatus.ABSENT)
+                    totalAbsent++;
+            }
+        }
+        return new int[]{totalPresent,totalAbsent};
+    }
 
     @Override
     @Transactional
@@ -159,7 +190,8 @@ public class SectionServiceImp implements SectionService {
             if(section.getClassTeacher()!=null){
                 Teacher teacher = section.getClassTeacher();
                 ClassTeacherResponse classTeacherResponse = new ClassTeacherResponse();
-                classTeacherResponse.setName(teacher.getFirstName()+" "+teacher.getLastName());
+                classTeacherResponse.setFirstName(teacher.getFirstName());
+                classTeacherResponse.setLastName(teacher.getLastName());
                 res.setClassTeacherResponse(classTeacherResponse);
             }
             res.setSectionStatus(section.getStatus());
@@ -192,7 +224,8 @@ public class SectionServiceImp implements SectionService {
            if(section.getClassTeacher()!=null){
                Teacher teacher = section.getClassTeacher();
                ClassTeacherResponse classTeacherResponse = new ClassTeacherResponse();
-               classTeacherResponse.setName(teacher.getFirstName()+" "+teacher.getLastName());
+               classTeacherResponse.setFirstName(teacher.getFirstName());
+               classTeacherResponse.setLastName(teacher.getLastName());
                res.setClassTeacherResponse(classTeacherResponse);
            }
 
@@ -221,7 +254,8 @@ public class SectionServiceImp implements SectionService {
         if(section.getClassTeacher()!=null){
             Teacher teacher = section.getClassTeacher();
             ClassTeacherResponse classTeacherResponse = new ClassTeacherResponse();
-            classTeacherResponse.setName(teacher.getFirstName()+" "+teacher.getLastName());
+            classTeacherResponse.setFirstName(teacher.getFirstName());
+            classTeacherResponse.setLastName(teacher.getLastName());
             classTeacherResponse.setEmail(teacher.getEmail());
             classTeacherResponse.setPhoneNumber(teacher.getPhoneNumber());
             classTeacherResponse.setEmployeeId(teacher.getEmployeeId());
@@ -281,25 +315,47 @@ public class SectionServiceImp implements SectionService {
     @Override
     @PreAuthorize("hasAnyRole('HOD','ADMIN')")
     @Cacheable(cacheNames = "sectionStudents",key = "{#sectionId,#pageNumber,#pageSize}")
-    public Page<SectionStudentResponse> getAllStudentFromSection(Long sectionId, int pageNumber, int pageSize) {
+    public Page<StudentResponse> getAllStudentFromSection(Long sectionId, int pageNumber, int pageSize) {
+        logger.info("Fetching students from section | sectionId = {}",sectionId);
+        try{
+            Pageable pageable = PageRequest.of(pageNumber,pageSize);
+            Section section = sectionRepository.findById(sectionId).orElseThrow(()->
+                    new IllegalArgumentException("Class not found"));
 
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        Section section = sectionRepository.findById(sectionId).orElseThrow(()->
-                new IllegalArgumentException("Class not found"));
+            Page<Student> students = studentRepository.findBySections(section,pageable);
+            Page<StudentResponse> responses = students.map(s->{
+                StudentResponse res = modelMapper.map(s,StudentResponse.class);
+                double overallAttendancePercent =  getOverallAttendancePercent(sectionId,s.getId());
+                res.setAttendancePercent(overallAttendancePercent);
+                return res;
+            });
+            logger.info("students fetched successfully from section | sectionId = {} | returnedElements = {}",sectionId,responses.getNumberOfElements());
+            return responses;
+        } catch (Exception e){
+            logger.error("Failed fetch students from section | sectionId = {}",sectionId,e);
+            throw e;
+        }
+    }
 
-        Page<Student> students = studentRepository.findBySections(section,pageable);
-        Page<SectionStudentResponse> responses = students.map(s->{
-           SectionStudentResponse res = new SectionStudentResponse();
-           res.setId(s.getId());
-           res.setRollNumber(s.getRollNumber());
-           res.setFirstName(s.getFirstName());
-           res.setLastName(s.getLastName());
-           res.setRegistrationNumber(s.getRegistrationNumber());
-           res.setPhoneNumber(s.getPhoneNumber());
-           res.setEmail(s.getEmail());
-           return res;
-        });
-        return responses;
+    @Override
+    @PreAuthorize("hasAnyRole('HOD','ADMIN')")
+    @Cacheable(cacheNames = "sectionStudent",key = "#studentId")
+    public StudentResponse getStudentFromSectionByStudentId(Long studentId) {
+        logger.info("Fetching student | studentId = {}",studentId);
+        try{
+          Student student = studentRepository.findById(studentId).orElseThrow(()->{
+              logger.info("Student not found | studentId = {}",studentId);
+              throw new IllegalArgumentException("Student not found");
+          });
+
+          StudentResponse response = modelMapper.map(student,StudentResponse.class);
+          response.setParentResponse(modelMapper.map(student.getParent(),ParentResponse.class));
+          logger.info("Successfully fetch student | studentId = {}",studentId);
+          return response;
+        } catch (Exception e) {
+             logger.error("Failed fetched student | studentId = {}",studentId,e);
+            throw e;
+        }
     }
 
     @Override
@@ -338,40 +394,35 @@ public class SectionServiceImp implements SectionService {
     @PreAuthorize("hasAnyRole('HOD','ADMIN')")
     @Cacheable(cacheNames = "sectionSubjects",key = "{#sectionId,#pageNumber,#pageSize}")
     public Page<SectionSubjectResponse> getAllSectionSubject(Long sectionId, int pageNumber, int pageSize) {
+        logger.info("Fetching section subjects by sectionId | sectionId = {}",sectionId);
+        try{
+            Pageable pageable = PageRequest.of(pageNumber,pageSize);
+            Page<SectionSubject> sectionSubjects = sectionSubjectRepository.findBySectionId(sectionId,pageable);
 
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        Page<SectionSubject> sectionSubjects = sectionSubjectRepository.findBySectionId(sectionId,pageable);
+            Page<SectionSubjectResponse> responses = sectionSubjects.map(sectionSubject->{
+                SectionSubjectResponse res = modelMapper.map(sectionSubject,SectionSubjectResponse.class);
 
-        Page<SectionSubjectResponse> responses = sectionSubjects.map(sectionSubject->{
+                Subject subject = sectionSubject.getSubject();
+                Teacher teacher = sectionSubject.getTeacher();
 
-            Subject subject = sectionSubject.getSubject();
-            Teacher teacher = sectionSubject.getTeacher();
+                if(subject!=null){
+                    SubjectResponse subjectResponse = modelMapper.map(subject,SubjectResponse.class);
+                    subjectResponse.setTotalStudent(sectionSubject.getStudentSubjects().size());
+                    res.setSubjectResponse(subjectResponse);
+                }
 
-           SectionSubjectResponse res = new SectionSubjectResponse();
-           SubjectResponse subjectResponse = new SubjectResponse();
-           ClassTeacherResponse teacherResponse = new ClassTeacherResponse();
-
-           if(subject!=null){
-               subjectResponse.setId(subject.getId());
-               subjectResponse.setCode(subject.getCode());
-               subjectResponse.setShortName(subject.getShortName());
-           }
-
-           if(teacher!=null){
-               teacherResponse.setName(teacher.getFirstName()+" "+teacher.getLastName());
-               teacherResponse.setEmployeeId(teacher.getEmployeeId());
-               teacherResponse.setEmail(teacher.getEmail());
-               teacherResponse.setPhoneNumber(teacher.getPhoneNumber());
-            }
-
-           res.setId(sectionSubject.getId());
-           res.setSubjectResponse(subjectResponse);
-           res.setTeacherResponse(teacherResponse);
-
-           return res;
-        });
-
-        return responses;
+                if(teacher!=null){
+                    ClassTeacherResponse teacherResponse = modelMapper.map(teacher,ClassTeacherResponse.class);
+                    res.setTeacherResponse(teacherResponse);
+                }
+                return res;
+            });
+            logger.info("successfully fetched section subject by section id | sectionId = {} | returned elements = {}",sectionId,responses.getNumberOfElements());
+            return responses;
+        } catch (Exception e){
+            logger.error("Failed fetched section subjects by section id | sectionId= {}",sectionId,e);
+            throw e;
+        }
     }
 
     @Override
@@ -403,7 +454,8 @@ public class SectionServiceImp implements SectionService {
 
         if(teacher!=null){
            teacherResponse.setEmployeeId(teacher.getEmployeeId());
-           teacherResponse.setName(teacher.getFirstName()+" "+teacher.getLastName());
+            teacherResponse.setFirstName(teacher.getFirstName());
+            teacherResponse.setLastName(teacher.getLastName());
            teacherResponse.setEmail(teacher.getEmail());
            teacherResponse.setPhoneNumber(teacher.getPhoneNumber());
         }
@@ -485,9 +537,23 @@ public class SectionServiceImp implements SectionService {
             Pageable pageable = PageRequest.of(pageNumber,pageSize,Sort.by(Sort.Direction.DESC,"createdAt"));
             Page<StudentSubject> studentSubjects = studentSubjectRepository.findBySectionSubjectId(sectionSubjectId,pageable);
 
-            Page<SectionSubjectResponse> responses = studentSubjects.map(sectionSubject->{
-               SectionSubjectResponse res = modelMapper.map(sectionSubject,SectionSubjectResponse.class);
-               StudentResponse studentResponse = modelMapper.map(sectionSubject.getStudent(),StudentResponse.class);
+            Page<SectionSubjectResponse> responses = studentSubjects.map(studentSubject->{
+
+                int totalPresent = 0;
+                int totalAbsent = 0;
+
+                for(StudentAttendance attendance:studentSubject.getStudentAttendances()){
+                   if(attendance.getStatus()==AttendanceStatus.PRESENT)
+                       totalPresent++;
+                   else if(attendance.getStatus()==AttendanceStatus.ABSENT)
+                       totalAbsent++;
+                }
+                int totalAttendance = totalPresent+totalAbsent;
+                double attendancePercent = totalAttendance==0 ? 0 :  ((double)totalPresent /totalAttendance)*100.0;
+
+               SectionSubjectResponse res = modelMapper.map(studentSubject,SectionSubjectResponse.class);
+               StudentResponse studentResponse = modelMapper.map(studentSubject.getStudent(),StudentResponse.class);
+               studentResponse.setAttendancePercent(attendancePercent);
                res.setStudentResponse(studentResponse);
                return res;
             });
@@ -497,5 +563,39 @@ public class SectionServiceImp implements SectionService {
             logger.error("Failed fetch student from student subject | sectionSubjectId={}",sectionSubjectId,e);
             throw e;
         }
+    }
+
+    @Override
+    @PreAuthorize("hasAnyRole('HOD','ADMIN')")
+    @Cacheable(cacheNames = "studentSubjects",key = "{#sectionId,#studentId,#pageNumber,#pageSize}")
+    public StudentSubjectResponse getStudentSubjectBySectionIdAndStudentId(Long sectionId, Long studentId, int pageNumber, int pageSize) {
+       logger.info("Fetching student subjects | sectionId = {} | studentId = {}",sectionId,studentId);
+       try{
+
+           StudentSubjectResponse responses = new StudentSubjectResponse();
+
+           Pageable pageable = PageRequest.of(pageNumber,pageSize,Sort.by(Sort.Direction.DESC,"createdAt"));
+           Page<StudentSubject> studentSubjects = studentSubjectRepository.findByStudentIdAndSectionSubjectSectionId(studentId,sectionId,pageable);
+
+           Page<SubjectResponse> subjectResponses = studentSubjects.map(studentSubject -> {
+               SubjectResponse res= modelMapper.map(studentSubject.getSectionSubject().getSubject(),SubjectResponse.class);
+
+               res.setTotalPresent(studentSubject.getStudentAttendances().stream()
+                       .filter(attendance->attendance.getStatus()==AttendanceStatus.PRESENT).toList().size());
+               res.setTotalAbsent(studentSubject.getStudentAttendances().stream()
+                       .filter(attendance->attendance.getStatus()==AttendanceStatus.ABSENT).toList().size());
+               return res;
+           });
+           responses.setSubjectResponse(subjectResponses);
+
+           responses.setTotalPresent(getOverallAttendance(sectionId,studentId)[0]);
+           responses.setTotalAbsent(getOverallAttendance(sectionId,studentId)[1]);
+
+           logger.info("Successfully fetched student subjects | sectionId = {} | studentId = {} | returnedElement = {}",sectionId,studentId,responses.getSubjectResponse().getNumberOfElements());
+           return responses;
+       } catch (Exception e){
+         logger.error("Failed fetched student subjects | sectionId = {} | studentId = {}",sectionId,studentId,e);
+         throw e;
+       }
     }
 }
