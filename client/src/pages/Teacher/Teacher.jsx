@@ -40,7 +40,15 @@ const Teacher = () => {
                 state: '',
                 country: '',
                 pincode: ''
-            }
+            },
+            bankRequest: {
+                accountHolderName: "",
+                accountNumber: "",
+                ifscCode: "",
+                bankName: "",
+                bankBranch: "",
+                accountType: "SAVING"
+            },
         }
     );
 
@@ -106,6 +114,17 @@ const Teacher = () => {
         })
     }
 
+    const handleBankChange = (e) => {
+        const { name, value } = e.target
+        setTeacherData({
+            ...teacherData,
+            bankRequest: {
+                ...teacherData.bankRequest,
+                [name]: value
+            }
+        })
+    }
+
     const handleCancel = () => {
         setIsOpenModal(false)
         clearTeacherData();
@@ -140,7 +159,15 @@ const Teacher = () => {
                 state: '',
                 country: '',
                 pincode: ''
-            }
+            },
+            bankRequest: {
+                accountHolderName: "",
+                accountName: "",
+                ifscCode: "",
+                bankName: "",
+                bankBranch: "",
+                accountType: "SAVING"
+            },
         })
     }
 
@@ -257,7 +284,7 @@ const Teacher = () => {
                                         :
                                         (
                                             <tr>
-                                                <td colSpan="8" className="text-center">
+                                                <td colSpan="10" className="text-center">
                                                     No Teacher Found
                                                 </td>
                                             </tr>
@@ -519,6 +546,69 @@ const Teacher = () => {
                                     />
                                 </div>
                             </div>
+                            <h6 className="form-section-title mt-4">
+                                Bank Details
+                            </h6>
+                            <div className="form-grid">
+                                <div>
+                                    <label>Account Holder Name</label>
+                                    <input type="text"
+                                        className="modal-input"
+                                        name='accountHolderName'
+                                        value={teacherData.bankRequest.accountHolderName}
+                                        onChange={handleBankChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Account Number</label>
+                                    <input type="text"
+                                        className="modal-input"
+                                        name='accountNumber'
+                                        value={teacherData.bankRequest.accountNumber}
+                                        onChange={handleBankChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Account Type</label>
+                                    <select type="text"
+                                        className="modal-input"
+                                        name='accountType'
+                                        value={teacherData.bankRequest.accountType}
+                                        onChange={handleBankChange}
+                                    >
+                                        <option value="SAVING">Saving</option>
+                                        <option value="CURRENT">Current</option>
+                                        <option value="OTHER">Other</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Bank Name</label>
+                                    <input type="text"
+                                        className="modal-input"
+                                        name='bankName'
+                                        value={teacherData.bankRequest.bankName}
+                                        onChange={handleBankChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Bank Branch</label>
+                                    <input type="text"
+                                        className="modal-input"
+                                        name='bankBranch'
+                                        value={teacherData.bankRequest.bankBranch}
+                                        onChange={handleBankChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label>IFSC Code</label>
+                                    <input type="text"
+                                        className="modal-input"
+                                        name='ifscCode'
+                                        value={teacherData.bankRequest.ifscCode}
+                                        onChange={handleBankChange}
+                                    />
+                                </div>
+                            </div>
                             <div className="text-end mt-4">
                                 <button onClick={handleCancel} type="button" className="teacher-modal-btn">
                                     Cancel
@@ -530,7 +620,7 @@ const Teacher = () => {
                         </div>
                     </div>
             }
-        </div >
+        </div>
     )
 }
 

@@ -2,17 +2,15 @@ package com.example.UniversityManagementSystem.services.Implementation;
 
 import com.example.UniversityManagementSystem.dto.address.AddressResponse;
 import com.example.UniversityManagementSystem.dto.parent.ParentResponse;
-import com.example.UniversityManagementSystem.dto.teacher.TeacherRequest;
-import com.example.UniversityManagementSystem.dto.teacher.TeacherResponse;
+import com.example.UniversityManagementSystem.dto.teacher.*;
 import com.example.UniversityManagementSystem.entity.*;
 import com.example.UniversityManagementSystem.entity.Address;
 import com.example.UniversityManagementSystem.entity.College;
 import com.example.UniversityManagementSystem.entity.Parent;
 import com.example.UniversityManagementSystem.entity.University;
-import com.example.UniversityManagementSystem.repository.CollegeRepository;
-import com.example.UniversityManagementSystem.repository.DepartmentRepository;
-import com.example.UniversityManagementSystem.repository.TeacherRepository;
-import com.example.UniversityManagementSystem.repository.UniversityRepository;
+import com.example.UniversityManagementSystem.entity.type.AttendanceStatus;
+import com.example.UniversityManagementSystem.entity.type.SectionStatus;
+import com.example.UniversityManagementSystem.repository.*;
 import com.example.UniversityManagementSystem.services.*;
 import com.example.UniversityManagementSystem.services.AddressService;
 import com.example.UniversityManagementSystem.services.ParentServices;
@@ -21,18 +19,23 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 
 
 @Service
@@ -46,10 +49,21 @@ public class TeacherServicesImp implements TeacherServices {
     private final TeacherRepository teacherRepository;
     private final UniversityRepository universityRepository;
     private final DepartmentRepository departmentRepository;
+    private final BankDetailsRepository bankDetailsRepository;
+    private final SectionSubjectRepository sectionSubjectRepository;
+
+    private final Logger logger = LoggerFactory.getLogger(TeacherServicesImp.class);
+    private final ModelMapper modelMapper = new ModelMapper();
+    private final StudentSubjectRepository studentSubjectRepository;
+    private final StudentAttendanceRepository studentAttendanceRepository;
 
     public TeacherServicesImp(AuthService authService, AddressService addressService, CollegeRepository collegeRepository, ParentServices parentServices, TeacherRepository teacherRepository,
                               UniversityRepository universityRepository,
-                              DepartmentRepository departmentRepository) {
+                              DepartmentRepository departmentRepository,
+                              BankDetailsRepository bankDetailsRepository,
+                              SectionSubjectRepository sectionSubjectRepository,
+                              StudentSubjectRepository studentSubjectRepository,
+                              StudentAttendanceRepository studentAttendanceRepository) {
         this.authService = authService;
         this.addressService = addressService;
         this.collegeRepository = collegeRepository;
@@ -57,6 +71,10 @@ public class TeacherServicesImp implements TeacherServices {
         this.teacherRepository = teacherRepository;
         this.universityRepository = universityRepository;
         this.departmentRepository = departmentRepository;
+        this.bankDetailsRepository = bankDetailsRepository;
+        this.sectionSubjectRepository = sectionSubjectRepository;
+        this.studentSubjectRepository = studentSubjectRepository;
+        this.studentAttendanceRepository = studentAttendanceRepository;
     }
 
     @Override
@@ -109,6 +127,22 @@ public class TeacherServicesImp implements TeacherServices {
             }
         }
 
+        if(dto.getBankRequest()!=null){
+            BankRequest bankRequest = dto.getBankRequest();
+            BankDetails bankDetail = new BankDetails();
+
+            bankDetail.setAccountHolderName(bankRequest.getAccountHolderName());
+            bankDetail.setAccountNumber(bankRequest.getAccountNumber());
+            bankDetail.setIfscCode(bankRequest.getIfscCode());
+            bankDetail.setBankName(bankRequest.getBankName());
+            bankDetail.setBankBranch(bankRequest.getBankBranch());
+            bankDetail.setAccountType(bankRequest.getAccountType());
+            bankDetail.setCreatedAt(LocalDateTime.now());
+            BankDetails savedBankDetails = bankDetailsRepository.save(bankDetail);
+
+            teacher.setBankDetails(savedBankDetails);
+        }
+
         teacher.setFirstName(dto.getFirstName());
         teacher.setLastName(dto.getLastName());
         teacher.setEmail(dto.getEmail());
@@ -141,7 +175,7 @@ public class TeacherServicesImp implements TeacherServices {
     @PreAuthorize("hasRole('ADMIN')")
     public Page<TeacherResponse> getAllTeacher(Long collegeId,int pageNumber,int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Pageable pageable = PageRequest.of(pageNumber,pageSize, Sort.by(Sort.Direction.DESC,"createdAt"));
 
         Page<Teacher> teacherList = teacherRepository.findByCollegeId(collegeId,pageable);
         Page<TeacherResponse> responses = teacherList.map(teacher -> {
@@ -211,7 +245,21 @@ public class TeacherServicesImp implements TeacherServices {
             return addressService.updateAddress(teacher.getAddress().getId(),dto.getAddressRequest());
         } else if(dto.getParentRequest()!=null){
             return parentServices.updateParent(teacher.getParent().getId(),dto.getParentRequest());
-        } else{
+        } else if(dto.getBankRequest()!=null){
+            BankDetails bankDetail = teacher.getBankDetails();
+            BankRequest bankRequest = dto.getBankRequest();
+
+            bankDetail.setAccountHolderName(bankRequest.getAccountHolderName());
+            bankDetail.setAccountNumber(bankRequest.getAccountNumber());
+            bankDetail.setIfscCode(bankRequest.getIfscCode());
+            bankDetail.setBankName(bankRequest.getBankName());
+            bankDetail.setBankBranch(bankRequest.getBankBranch());
+            bankDetail.setAccountType(bankRequest.getAccountType());
+            bankDetail.setUpdatedAt(LocalDateTime.now());
+            bankDetailsRepository.save(bankDetail);
+            return "Bank details update successfully";
+        }
+        else{
             teacher.setFirstName(dto.getFirstName());
             teacher.setLastName(dto.getLastName());
             teacher.setEmail(dto.getEmail());
@@ -252,6 +300,7 @@ public class TeacherServicesImp implements TeacherServices {
         TeacherResponse teacherResponse = new TeacherResponse();
         AddressResponse addressResponse = new AddressResponse();
         ParentResponse parentResponse = new ParentResponse();
+        BankResponse bankResponse = new BankResponse();
 
         Address address = teacher.getAddress();
         Parent parent = teacher.getParent();
@@ -286,7 +335,17 @@ public class TeacherServicesImp implements TeacherServices {
         }
         teacherResponse.setAddressResponse(addressResponse);
         teacherResponse.setParentResponse(parentResponse);
-
+        if(teacher.getBankDetails()!=null){
+           BankDetails bankDetails = teacher.getBankDetails();
+           bankResponse.setId(bankDetails.getId());
+           bankResponse.setAccountHolderName(bankDetails.getAccountHolderName());
+           bankResponse.setAccountNumber(bankDetails.getAccountNumber());
+           bankResponse.setIfscCode(bankDetails.getIfscCode());
+           bankResponse.setBankName(bankDetails.getBankName());
+           bankResponse.setBankBranch(bankDetails.getBankBranch());
+           bankResponse.setAccountType(bankDetails.getAccountType());
+           teacherResponse.setBankResponse(bankResponse);
+        }
         return teacherResponse;
     }
 
@@ -322,4 +381,179 @@ public class TeacherServicesImp implements TeacherServices {
         }
     }
 
+    @Override
+    @PreAuthorize("hasRole('TEACHER')")
+    @Cacheable(cacheNames = "teacherClasses",key = "{#userId,#pageNumber,#pageSize}")
+    public Page<TeacherClassResponse> getTeacherClasses(Long userId, int pageNumber, int pageSize) {
+
+        logger.info("Fetching Teacher classes | userId = {}",userId);
+        try {
+            Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
+            Page<SectionSubject> sectionSubjects = sectionSubjectRepository.findByTeacherUserIdAndSectionStatus(userId, SectionStatus.ACTIVE, pageable);
+
+            Page<TeacherClassResponse> responses = sectionSubjects.map(sectionSubject -> {
+                TeacherClassResponse res = new TeacherClassResponse();
+
+                Section section = sectionSubject.getSection();
+                Subject subject = sectionSubject.getSubject();
+
+                SectionResponse sectionResponse = modelMapper.map(section,SectionResponse.class);
+                SubjectResponse subjectResponse = modelMapper.map(subject,SubjectResponse.class);
+
+                res.setId(sectionSubject.getId());
+                res.setTotalStudent(sectionSubject.getStudentSubjects().size());
+                res.setSectionResponse(sectionResponse);
+                res.setSubjectResponse(subjectResponse);
+
+                return res;
+            });
+            logger.info(
+                    "Teacher classes successfully fetched | userId={}, returnedElements={}",
+                    userId,
+                    responses.getNumberOfElements()
+            );
+            return responses;
+        } catch (Exception e){
+            logger.error(
+                    "Failed to fetch teacher classes | userId={}",
+                    userId,
+                    e
+            );
+            throw e;
+        }
+    }
+
+    @Override
+    @PreAuthorize("hasRole('TEACHER')")
+    @Cacheable(cacheNames = "teacherClass",key = "#sectionSubjectId")
+    public TeacherClassResponse getTeacherClassBySectionSubjectId(Long sectionSubjectId) {
+        logger.info("Fetching the Section subject by id | sectionSubjectId ={}", sectionSubjectId);
+        try{
+            SectionSubject sectionSubject = sectionSubjectRepository.findById(sectionSubjectId).orElseThrow(()->{
+               logger.error("Section subject not found | sectionSubjectId = {}", sectionSubjectId);
+               return new IllegalArgumentException("Section subject not found");
+            });
+
+            TeacherClassResponse response = modelMapper.map(sectionSubject,TeacherClassResponse.class);
+            SectionResponse sectionResponse = modelMapper.map(sectionSubject.getSection(),SectionResponse.class);
+            SubjectResponse subjectResponse = modelMapper.map(sectionSubject.getSubject(),SubjectResponse.class);
+
+            response.setSectionResponse(sectionResponse);
+            response.setSubjectResponse(subjectResponse);
+            response.setTotalStudent(sectionSubject.getStudentSubjects().size());
+
+            logger.info("Section subject successfully fetched | sectionSubjectId = {}",sectionSubjectId);
+
+            return response;
+        } catch (Exception e){
+            logger.error("Failed to fetch Section subject | sectionSubjectId={}", sectionSubjectId,e);
+            throw e;
+        }
+    }
+
+    @Override
+    @PreAuthorize("hasRole('TEACHER')")
+    @Cacheable(cacheNames = "sectionSubjectStudents",key = "{#sectionSubjectId,#pageNumber,#pageSize,#date}")
+    public Page<StudentSubjectResponse> getStudentsFromStudentSubjectBySectionSubjectId(Long sectionSubjectId, int pageNumber, int pageSize, LocalDate date) {
+        logger.info("Fetching the students from student subject | sectionSubjectId = {} | date = {}",sectionSubjectId,date);
+        try{
+            Pageable pageable = PageRequest.of(pageNumber,pageSize,Sort.by(Sort.Direction.DESC,"createdAt"));
+            Page<StudentSubject> studentSubjects = studentSubjectRepository.findBySectionSubjectId(sectionSubjectId,pageable);
+
+            Page<StudentSubjectResponse> responses = studentSubjects.map(studentSubject->{
+               StudentSubjectResponse res = modelMapper.map(studentSubject,StudentSubjectResponse.class);
+               StudentResponse studentResponse = modelMapper.map(studentSubject.getStudent(),StudentResponse.class);
+               res.setStudentResponse(studentResponse);
+
+                AttendanceStatus attendanceStatus = studentSubject.getStudentAttendances()
+                        .stream()
+                        .filter(attendance->date.equals(attendance.getDate()))
+                        .map(StudentAttendance::getStatus)
+                        .findFirst()
+                        .orElse(AttendanceStatus.NOT_MARKED);
+                res.setAttendance(attendanceStatus);
+               return res;
+            });
+            logger.info("Students fetched successfully from student subject | studentSubjectId = {} | date = {}| returnedElements = {}",sectionSubjectId,date,responses.getNumberOfElements());
+            return responses;
+        } catch (Exception e){
+            logger.error("Failed fetch students from student subject | sectionSubjectId = {} | date = {}",sectionSubjectId,date,e);
+            throw e;
+        }
+    }
+
+    @Override
+    @PreAuthorize("hasRole('TEACHER')")
+    @Cacheable(cacheNames ="sectionSubjectStudent",key = "#studentSubjectId")
+    public StudentSubjectResponse getStudentFromStudentSubjectByStudentSubjectId(Long studentSubjectId) {
+        logger.info("Fetching student from Student subject | StudentSubjectId = {}",studentSubjectId);
+        try{
+          StudentSubject studentSubject = studentSubjectRepository.findById(studentSubjectId).orElseThrow(()->{
+              logger.info("student from student subject not found | StudentSubjectId = {}",studentSubjectId);
+              return new IllegalArgumentException("Student subject not found");
+          });
+
+          Student student = studentSubject.getStudent();
+
+          StudentSubjectResponse response = modelMapper.map(studentSubject,StudentSubjectResponse.class);
+          StudentResponse studentResponse = modelMapper.map(student,StudentResponse.class);
+          studentResponse.setParentResponse(modelMapper.map(student.getParent(), com.example.UniversityManagementSystem.dto.teacher.ParentResponse.class));
+
+          int totalPresent = 0;
+          int totalAbsent = 0;
+
+          for(StudentAttendance s:studentSubject.getStudentAttendances()){
+              if(s.getStatus()==AttendanceStatus.PRESENT)
+                  totalPresent++;
+              else if(s.getStatus()==AttendanceStatus.ABSENT)
+                  totalAbsent++;
+          }
+
+          response.setStudentResponse(studentResponse);
+          response.setTotalPresent(totalPresent);
+          response.setTotalAbsent(totalAbsent);
+
+          logger.info("Successfully fetched student from student subject | StudentSubjectId = {}",studentSubjectId);
+          return response;
+        } catch (Exception e){
+            logger.error("Failed fetch student from Student subject | StudentSubjectId = {}",studentSubjectId,e);
+            throw e;
+        }
+    }
+
+    @Override
+    @PreAuthorize("hasRole('TEACHER')")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "sectionSubjectStudent",key = "#studentSubjectId"),
+            @CacheEvict(cacheNames = "sectionSubjectStudents",allEntries = true),
+    })
+    public String markStudentAttendance(Long studentSubjectId, StudentAttendanceRequest dto) {
+        logger.info("Student attendance marking | studentSubjectId = {}",studentSubjectId);
+        try{
+            StudentSubject studentSubject = studentSubjectRepository.findById(studentSubjectId).orElseThrow(()->{
+                logger.info("student subject not found | studentSubjectId = {}",studentSubjectId);
+                throw new IllegalArgumentException("Student subject not found");
+            });
+
+            StudentAttendance studentAttendance = studentAttendanceRepository.findByStudentSubjectIdAndDate(studentSubjectId,dto.getDate());
+            if(studentAttendance!=null){
+              studentAttendance.setStatus(dto.getStatus());
+              studentAttendance.setUpdatedAt(LocalDateTime.now());
+              studentAttendanceRepository.save(studentAttendance);
+              logger.info("Student attendance update successfully | studentSubjectId = {}",studentSubjectId);
+              return "Student attendance update successfully";
+            }
+
+            studentAttendance = modelMapper.map(dto,StudentAttendance.class);
+            studentAttendance.setStudentSubject(studentSubject);
+            studentAttendance.setCreatedAt(LocalDateTime.now());
+            studentAttendanceRepository.save(studentAttendance);
+            logger.info("Student attendance marks successfully | studentSubjectId = {}",studentSubjectId);
+            return "Student attendance mark successfully";
+        } catch (Exception e){
+            logger.error("Failed to mark student attendance | studentSubjectId = {}",studentSubjectId,e);
+            throw e;
+        }
+
+    }
 }

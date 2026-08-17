@@ -206,7 +206,7 @@ const SubjectDetails = () => {
                 </div>
             </div>
 
-        </div >
+        </div>
 
     )
 }

@@ -20,5 +20,5 @@ public interface SectionService {
     SectionSubjectResponse getSectionSubjectById(Long sectionSubjectId);
     String updateSubjectTeacher(Long sectionSubjectId, SectionSubjectRequest dto);
     String addStudentInSectionSubject(Long sectionSubjectId, List<SectionStudentRequest> dto);
-    Page<SectionStudentResponse> getAllStudentFromSectionSubject(Long sectionSubjectId,int pageNumber,int pageSize);
+    Page<SectionSubjectResponse> getAllStudentFromSectionSubject(Long sectionSubjectId,int pageNumber,int pageSize);
 }
