@@ -1,0 +1,89 @@
+.university-student-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.university-student-detail-header h4 {
+    margin: 0;
+    font-weight: 700;
+}
+
+.university-student-detail-btn {
+    background: transparent;
+    color: white;
+    border: 1px solid white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+.university-student-detail-btn:hover {
+    background: transparent;
+    color: #3c58c9;
+}
+
+.university-student-profile-header {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    /* padding: 30px; */
+}
+
+.university-student-profile-avatar {
+    width: 140px;
+    height: 140px;
+    border-radius: 4px;
+    background: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 70px;
+    color: #6c757d;
+}
+
+.university-student-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.university-student-profile-info {
+        justify-content: space-between;
+    display: flex;
+    flex: 1;
+}
+.university-student-profile-contact {
+    margin-top: 25px;
+}
+.university-student-profile-contact div {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.university-student-profile-body {
+    padding-top: 15px;
+}
+
+.simple-section {
+    margin-bottom: 30px;
+}
+
+.simple-section h5 {
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.info-line {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.info-line span {
+    margin-right: 10px;
+    min-width: 250px;
+}
+
