@@ -1,5 +1,6 @@
 package com.example.UniversityManagementSystem.entity;
 
+import com.example.UniversityManagementSystem.entity.type.StudentExamStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,27 +14,25 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class SectionSubject {
+public class StudentExam {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private Section section;
+    @Enumerated(EnumType.STRING)
+    private StudentExamStatus status;
+
+    private Integer obtainMarks;
 
     @ManyToOne
-    private Subject subject;
+    private Student student;
 
     @ManyToOne
-    private Teacher teacher;
+    private Exam exam;
 
-    @OneToMany(mappedBy = "sectionSubject")
-    private List<StudentSubject> studentSubjects = new ArrayList<>();
-
-    @OneToMany(mappedBy = "sectionSubject")
-    private List<Exam> exams = new ArrayList<>();
+    @OneToMany(mappedBy = "studentExam")
+    private List<StudentExamAnswer> studentExamAnswers = new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
 }

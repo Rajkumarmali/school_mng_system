@@ -94,7 +94,7 @@ public class SectionController {
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
 
-    @PostMapping("/add/subject/{sectionId}")
+    @PostMapping("/add/universityExamSubject/{sectionId}")
     public ResponseEntity<String> addSubjectInSection(@PathVariable Long sectionId,
                                                       @RequestBody SectionSubjectRequest dto){
         String res = sectionService.addSubjectInSection(sectionId,dto);
@@ -109,13 +109,13 @@ public class SectionController {
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
 
-   @GetMapping("/get/subject/bysectionsubjectid/{sectionSubjectId}")
+   @GetMapping("/get/universityExamSubject/bysectionsubjectid/{sectionSubjectId}")
    public ResponseEntity<SectionSubjectResponse> getSectionSubjectById(@PathVariable Long sectionSubjectId){
         SectionSubjectResponse res = sectionService.getSectionSubjectById(sectionSubjectId);
         return new ResponseEntity<>(res,HttpStatus.OK);
    }
 
-    @PostMapping("/update/subject-teacher/{sectionSubjectId}")
+    @PostMapping("/update/universityExamSubject-teacher/{sectionSubjectId}")
     public ResponseEntity<String> updateSectionSubjectTeacher(@PathVariable Long sectionSubjectId,
                                                               @RequestBody SectionSubjectRequest dto){
         String res = sectionService.updateSubjectTeacher(sectionSubjectId,dto);
@@ -129,14 +129,14 @@ public class SectionController {
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
 
-    @GetMapping("/get/section/subject/student/{sectionSubjectId}")
+    @GetMapping("/get/section/universityExamSubject/student/{sectionSubjectId}")
     public ResponseEntity<Page<SectionSubjectResponse>> getAllStudentFromSectionSubject(@PathVariable Long sectionSubjectId,
                                                                                         @RequestParam(defaultValue = "0") int pageNumber,
                                                                                         @RequestParam(defaultValue = "10") int pageSize){
         Page<SectionSubjectResponse> res = sectionService.getAllStudentFromSectionSubject(sectionSubjectId,pageNumber,pageSize);
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
-    @GetMapping("/get/student/subject/{sectionId}/{studentId}")
+    @GetMapping("/get/student/universityExamSubject/{sectionId}/{studentId}")
     public ResponseEntity<StudentSubjectResponse> getStudentSubjectBySectionAndStudentId(@PathVariable Long sectionId,
                                                                                          @PathVariable Long studentId,
                                                                                                @RequestParam(defaultValue = "0") int pageNumber,

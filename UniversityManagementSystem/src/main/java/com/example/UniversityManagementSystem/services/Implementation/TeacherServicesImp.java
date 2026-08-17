@@ -427,11 +427,11 @@ public class TeacherServicesImp implements TeacherServices {
     @PreAuthorize("hasRole('TEACHER')")
     @Cacheable(cacheNames = "teacherClass",key = "#sectionSubjectId")
     public TeacherClassResponse getTeacherClassBySectionSubjectId(Long sectionSubjectId) {
-        logger.info("Fetching the Section subject by id | sectionSubjectId ={}", sectionSubjectId);
+        logger.info("Fetching the Section universityExamSubject by id | sectionSubjectId ={}", sectionSubjectId);
         try{
             SectionSubject sectionSubject = sectionSubjectRepository.findById(sectionSubjectId).orElseThrow(()->{
-               logger.error("Section subject not found | sectionSubjectId = {}", sectionSubjectId);
-               return new IllegalArgumentException("Section subject not found");
+               logger.error("Section universityExamSubject not found | sectionSubjectId = {}", sectionSubjectId);
+               return new IllegalArgumentException("Section universityExamSubject not found");
             });
 
             TeacherClassResponse response = modelMapper.map(sectionSubject,TeacherClassResponse.class);
@@ -442,11 +442,11 @@ public class TeacherServicesImp implements TeacherServices {
             response.setSubjectResponse(subjectResponse);
             response.setTotalStudent(sectionSubject.getStudentSubjects().size());
 
-            logger.info("Section subject successfully fetched | sectionSubjectId = {}",sectionSubjectId);
+            logger.info("Section universityExamSubject successfully fetched | sectionSubjectId = {}",sectionSubjectId);
 
             return response;
         } catch (Exception e){
-            logger.error("Failed to fetch Section subject | sectionSubjectId={}", sectionSubjectId,e);
+            logger.error("Failed to fetch Section universityExamSubject | sectionSubjectId={}", sectionSubjectId,e);
             throw e;
         }
     }
@@ -455,7 +455,7 @@ public class TeacherServicesImp implements TeacherServices {
     @PreAuthorize("hasRole('TEACHER')")
     @Cacheable(cacheNames = "sectionSubjectStudents",key = "{#sectionSubjectId,#pageNumber,#pageSize,#date}")
     public Page<StudentSubjectResponse> getStudentsFromStudentSubjectBySectionSubjectId(Long sectionSubjectId, int pageNumber, int pageSize, LocalDate date) {
-        logger.info("Fetching the students from student subject | sectionSubjectId = {} | date = {}",sectionSubjectId,date);
+        logger.info("Fetching the students from student universityExamSubject | sectionSubjectId = {} | date = {}",sectionSubjectId,date);
         try{
             Pageable pageable = PageRequest.of(pageNumber,pageSize,Sort.by(Sort.Direction.DESC,"createdAt"));
             Page<StudentSubject> studentSubjects = studentSubjectRepository.findBySectionSubjectId(sectionSubjectId,pageable);
@@ -474,10 +474,10 @@ public class TeacherServicesImp implements TeacherServices {
                 res.setAttendance(attendanceStatus);
                return res;
             });
-            logger.info("Students fetched successfully from student subject | studentSubjectId = {} | date = {}| returnedElements = {}",sectionSubjectId,date,responses.getNumberOfElements());
+            logger.info("Students fetched successfully from student universityExamSubject | studentSubjectId = {} | date = {}| returnedElements = {}",sectionSubjectId,date,responses.getNumberOfElements());
             return responses;
         } catch (Exception e){
-            logger.error("Failed fetch students from student subject | sectionSubjectId = {} | date = {}",sectionSubjectId,date,e);
+            logger.error("Failed fetch students from student universityExamSubject | sectionSubjectId = {} | date = {}",sectionSubjectId,date,e);
             throw e;
         }
     }
@@ -486,11 +486,11 @@ public class TeacherServicesImp implements TeacherServices {
     @PreAuthorize("hasRole('TEACHER')")
     @Cacheable(cacheNames ="sectionSubjectStudent",key = "#studentSubjectId")
     public StudentSubjectResponse getStudentFromStudentSubjectByStudentSubjectId(Long studentSubjectId) {
-        logger.info("Fetching student from Student subject | StudentSubjectId = {}",studentSubjectId);
+        logger.info("Fetching student from Student universityExamSubject | StudentSubjectId = {}",studentSubjectId);
         try{
           StudentSubject studentSubject = studentSubjectRepository.findById(studentSubjectId).orElseThrow(()->{
-              logger.info("student from student subject not found | StudentSubjectId = {}",studentSubjectId);
-              return new IllegalArgumentException("Student subject not found");
+              logger.info("student from student universityExamSubject not found | StudentSubjectId = {}",studentSubjectId);
+              return new IllegalArgumentException("Student universityExamSubject not found");
           });
 
           Student student = studentSubject.getStudent();
@@ -513,10 +513,10 @@ public class TeacherServicesImp implements TeacherServices {
           response.setTotalPresent(totalPresent);
           response.setTotalAbsent(totalAbsent);
 
-          logger.info("Successfully fetched student from student subject | StudentSubjectId = {}",studentSubjectId);
+          logger.info("Successfully fetched student from student universityExamSubject | StudentSubjectId = {}",studentSubjectId);
           return response;
         } catch (Exception e){
-            logger.error("Failed fetch student from Student subject | StudentSubjectId = {}",studentSubjectId,e);
+            logger.error("Failed fetch student from Student universityExamSubject | StudentSubjectId = {}",studentSubjectId,e);
             throw e;
         }
     }
@@ -531,8 +531,8 @@ public class TeacherServicesImp implements TeacherServices {
         logger.info("Student attendance marking | studentSubjectId = {}",studentSubjectId);
         try{
             StudentSubject studentSubject = studentSubjectRepository.findById(studentSubjectId).orElseThrow(()->{
-                logger.info("student subject not found | studentSubjectId = {}",studentSubjectId);
-                throw new IllegalArgumentException("Student subject not found");
+                logger.info("student universityExamSubject not found | studentSubjectId = {}",studentSubjectId);
+                throw new IllegalArgumentException("Student universityExamSubject not found");
             });
 
             StudentAttendance studentAttendance = studentAttendanceRepository.findByStudentSubjectIdAndDate(studentSubjectId,dto.getDate());

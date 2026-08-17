@@ -74,7 +74,7 @@ public class SubjectServiceImp implements SubjectService {
     @Caching(
             evict = {
                     @CacheEvict(cacheNames = "subjects",allEntries = true),
-                    @CacheEvict(cacheNames = "subject",key = "#subjectId")
+                    @CacheEvict(cacheNames = "universityExamSubject",key = "#subjectId")
             }
     )
     public String updateSubject(Long subjectId, SubjectRequest dto) {
@@ -125,7 +125,7 @@ public class SubjectServiceImp implements SubjectService {
 
     @Override
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
-    @Cacheable(cacheNames = "subject",key = "#subjectId")
+    @Cacheable(cacheNames = "universityExamSubject",key = "#subjectId")
     public SubjectResponse getSubjectById(Long subjectId) {
         Subject subject = subjectRepository.findById(subjectId).orElseThrow(()->
                 new IllegalArgumentException("Subject not found"));

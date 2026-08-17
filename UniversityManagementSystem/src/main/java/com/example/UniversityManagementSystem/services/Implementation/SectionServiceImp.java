@@ -307,7 +307,7 @@ public class SectionServiceImp implements SectionService {
         Student student = studentRepository.findById(studentId).orElseThrow(()->
                 new IllegalArgumentException("Student not found"));
         section.getStudents().remove(student);
-        student.getClasses().remove(section);
+        student.getSections().remove(section);
         sectionRepository.save(section);
         return "Student delete from the section";
     }
@@ -374,7 +374,7 @@ public class SectionServiceImp implements SectionService {
 
         Boolean isExists = sectionSubjectRepository.existsBySubjectAndSection(subject,section);
         if(isExists){
-            return  "already add this subject";
+            return  "already add this universityExamSubject";
         }
 
         SectionSubject sectionSubject = new SectionSubject();
@@ -387,7 +387,7 @@ public class SectionServiceImp implements SectionService {
        if(dto.getAddAllSectionStudent())
            addSectionStudentInSectionSubject(savedSectionSubject,section);
 
-        return "add subject in the section";
+        return "add universityExamSubject in the section";
     }
 
     @Override
@@ -417,7 +417,7 @@ public class SectionServiceImp implements SectionService {
                 }
                 return res;
             });
-            logger.info("successfully fetched section subject by section id | sectionId = {} | returned elements = {}",sectionId,responses.getNumberOfElements());
+            logger.info("successfully fetched section universityExamSubject by section id | sectionId = {} | returned elements = {}",sectionId,responses.getNumberOfElements());
             return responses;
         } catch (Exception e){
             logger.error("Failed fetched section subjects by section id | sectionId= {}",sectionId,e);
@@ -477,7 +477,7 @@ public class SectionServiceImp implements SectionService {
     public String updateSubjectTeacher(Long sectionSubjectId, SectionSubjectRequest dto) {
 
         SectionSubject sectionSubject = sectionSubjectRepository.findById(sectionSubjectId).orElseThrow(()->
-                new IllegalArgumentException("section subject not found"));
+                new IllegalArgumentException("section universityExamSubject not found"));
 
         Teacher teacher = teacherRepository.findByEmailOrEmployeeId(dto.getTeacherEmpIdOrEmail(), dto.getTeacherEmpIdOrEmail());
 
@@ -486,7 +486,7 @@ public class SectionServiceImp implements SectionService {
 
         sectionSubjectRepository.save(sectionSubject);
 
-        return "subject teacher update successfully";
+        return "universityExamSubject teacher update successfully";
     }
 
     @Override
@@ -560,7 +560,7 @@ public class SectionServiceImp implements SectionService {
             logger.info("Students from sectionSubject Fetched successfully | sectionSubjectId={} | returnedElements={}",sectionSubjectId,responses.getNumberOfElements());
             return responses;
         } catch (Exception  e){
-            logger.error("Failed fetch student from student subject | sectionSubjectId={}",sectionSubjectId,e);
+            logger.error("Failed fetch student from student universityExamSubject | sectionSubjectId={}",sectionSubjectId,e);
             throw e;
         }
     }
