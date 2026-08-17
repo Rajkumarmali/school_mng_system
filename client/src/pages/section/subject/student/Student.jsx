@@ -202,7 +202,7 @@ const Student = () => {
                                         <td>{stu?.studentResponse?.firstName} {stu.lastName}</td>
                                         <td>{stu?.studentResponse?.email}</td>
                                         <td>{stu?.studentResponse?.phoneNumber}</td>
-                                        <td>{stu?.studentResponse?.attendancePercent}%</td>
+                                        <td>{(stu?.studentResponse?.attendancePercent).toFixed(2)}%</td>
                                     </tr>
                                 )
                                 :

@@ -549,7 +549,7 @@ public class SectionServiceImp implements SectionService {
                        totalAbsent++;
                 }
                 int totalAttendance = totalPresent+totalAbsent;
-                double attendancePercent = totalAttendance==0 ? 0 : (double) (totalPresent /totalAttendance)*100;
+                double attendancePercent = totalAttendance==0 ? 0 :  ((double)totalPresent /totalAttendance)*100.0;
 
                SectionSubjectResponse res = modelMapper.map(studentSubject,SectionSubjectResponse.class);
                StudentResponse studentResponse = modelMapper.map(studentSubject.getStudent(),StudentResponse.class);

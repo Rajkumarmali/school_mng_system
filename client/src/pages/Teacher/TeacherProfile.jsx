@@ -14,6 +14,7 @@ const TeacherProfile = () => {
     const [isEditParentModal, setIsEditParentModal] = useState(false);
     const [isEditImageModal, setIsEditImageModal] = useState(false);
     const [isEditDepartmentModal, setIsEditDepartmentModal] = useState(false);
+    const [isEditBankDetail, setIsEditBankDetail] = useState(false);
     const [image, setImage] = useState(null)
     const [departmentCode, setDepartmentCode] = useState(null);
 
@@ -42,7 +43,15 @@ const TeacherProfile = () => {
                 state: '',
                 country: '',
                 pincode: ''
-            }
+            },
+            bankRequest: {
+                accountHolderName: "",
+                accountNumber: "",
+                ifscCode: "",
+                bankName: "",
+                bankBranch: "",
+                accountType: "SAVING"
+            },
         }
     );
 
@@ -52,6 +61,7 @@ const TeacherProfile = () => {
         setIsEditParentModal(false);
         setIsEditImageModal(false);
         setIsEditDepartmentModal(false);
+        setIsEditBankDetail(false);
         handleSetData();
     }
 
@@ -61,6 +71,7 @@ const TeacherProfile = () => {
         setIsEditParentModal(false);
         setIsEditImageModal(false)
         setIsEditDepartmentModal(false);
+        setIsEditBankDetail(false);
         handleSetData();
     }
 
@@ -70,6 +81,17 @@ const TeacherProfile = () => {
         setIsEditParentModal(true);
         setIsEditImageModal(false)
         setIsEditDepartmentModal(false);
+        setIsEditBankDetail(false);
+        handleSetData()
+    }
+
+    const handleEditBank = () => {
+        setIsEditPersonModal(false);
+        setIsEditAddressModal(false);
+        setIsEditParentModal(false);
+        setIsEditImageModal(false)
+        setIsEditDepartmentModal(false);
+        setIsEditBankDetail(true);
         handleSetData()
     }
 
@@ -79,6 +101,7 @@ const TeacherProfile = () => {
         setIsEditParentModal(false);
         setIsEditImageModal(true)
         setIsEditDepartmentModal(false);
+        setIsEditBankDetail(false);
     }
 
     const handleEditDepartment = () => {
@@ -87,6 +110,8 @@ const TeacherProfile = () => {
         setIsEditParentModal(false);
         setIsEditImageModal(false)
         setIsEditDepartmentModal(true);
+        setIsEditBankDetail(false);
+        setDepartmentCode(teacher?.teacher?.departmentCode);
     }
 
     const handlePersonChange = (e) => {
@@ -119,8 +144,22 @@ const TeacherProfile = () => {
         })
     }
 
+    const handleBankChange = (e) => {
+        const { name, value } = e.target
+        setTeacherData({
+            ...teacherData,
+            bankRequest: {
+                ...teacherData.bankRequest,
+                [name]: value
+            }
+        })
+    }
+
     const handleUpdate = async () => {
         if (isEditDepartmentModal) {
+            if (!departmentCode) {
+                return alert("enter department code")
+            }
             await dispatch(updateTeacher(teacherId, { departmentCode }))
         }
         else if (isEditImageModal) {
@@ -131,12 +170,17 @@ const TeacherProfile = () => {
                 ...teacherData,
                 parentRequest: null,
                 addressRequest: null,
+                bankRequest: null,
             }
             await dispatch(updateTeacher(teacherId, payload));
         } else if (isEditParentModal) {
             await dispatch(updateTeacher(teacherId, {
                 parentRequest: teacherData.parentRequest
             }));
+        } else if (isEditBankDetail) {
+            await dispatch(updateTeacher(teacherId, {
+                bankRequest: teacherData.bankRequest
+            }))
         } else {
             await dispatch(updateTeacher(teacherId, {
                 addressRequest: teacherData.addressRequest
@@ -167,6 +211,14 @@ const TeacherProfile = () => {
                 state: teacher?.teacher?.addressResponse?.state || '',
                 country: teacher?.teacher?.addressResponse?.country || '',
                 pincode: teacher?.teacher?.addressResponse?.pincode || ''
+            },
+            bankRequest: {
+                accountHolderName: teacher?.teacher?.bankResponse?.accountHolderName || "",
+                accountNumber: teacher?.teacher?.bankResponse?.accountNumber || "",
+                ifscCode: teacher?.teacher?.bankResponse?.ifscCode || "",
+                bankName: teacher?.teacher?.bankResponse?.bankName || "",
+                bankBranch: teacher?.teacher?.bankResponse?.bankBranch || "",
+                accountType: teacher?.teacher?.bankResponse?.accountType || "SAVING"
             }
         });
     };
@@ -282,8 +334,34 @@ const TeacherProfile = () => {
                             <span><strong>Pincode :</strong> {teacher?.teacher?.addressResponse?.pincode}</span>
                         </div>
                     </div>
+                    <div className="simple-section">
+                        <div className="info-line">
+                            <h5>Bank Details : </h5>
+                            <div className="profile-actions">
+                                <button
+                                    className="teacher-edit-btn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal"
+                                    onClick={handleEditBank}
+                                >
+                                    <i className="bi bi-pencil-square me-2"></i>
+                                    Edit Bank
+                                </button>
+                            </div>
+                        </div>
+                        <div className="info-line">
+                            <span><strong>Accound Holder Name :</strong> {teacher?.teacher?.bankResponse?.accountHolderName}</span>
+                            <span><strong>Accound Number :</strong> {teacher?.teacher?.bankResponse?.accountNumber}</span>
+                            <span><strong>Accound Type :</strong> {teacher?.teacher?.bankResponse?.accountType}</span>
+                            <span><strong>Bank Name :</strong> {teacher?.teacher?.bankResponse?.bankName}</span>
+                            <span><strong>Bank Branch :</strong> {teacher?.teacher?.bankResponse?.bankBranch}</span>
+                            <span><strong>IFSC Code :</strong> {teacher?.teacher?.bankResponse?.ifscCode}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-xl">
                     <div class="modal-content custom-modal">
@@ -293,7 +371,8 @@ const TeacherProfile = () => {
                                     isEditAddress ? "Edit Address " :
                                         isEditImageModal ? "Edit Image" :
                                             isEditDepartmentModal ? "Edit Department" :
-                                                "Edit Parents"}
+                                                isEditBankDetail ? "Edit Bank Details" :
+                                                    "Edit Parents"}
                             </h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
@@ -485,20 +564,86 @@ const TeacherProfile = () => {
                                                     />
                                                 </div>
                                                 :
-                                                <div>
-                                                    <input
-                                                        type='file'
-                                                        accept='image/*'
-                                                        onChange={(e) => setImage(e.target.files[0])}
-                                                    />
-                                                </div>
+                                                isEditBankDetail ?
+                                                    <div>
+                                                        <div className="form-grid">
+                                                            <div>
+                                                                <label>Account Holder Name</label>
+                                                                <input type="text"
+                                                                    className="modal-input"
+                                                                    name='accountHolderName'
+                                                                    value={teacherData.bankRequest.accountHolderName}
+                                                                    onChange={handleBankChange}
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <label>Account Number</label>
+                                                                <input type="text"
+                                                                    className="modal-input"
+                                                                    name='accountNumber'
+                                                                    value={teacherData.bankRequest.accountNumber}
+                                                                    onChange={handleBankChange}
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <label>Account Type</label>
+                                                                <select type="text"
+                                                                    className="modal-input"
+                                                                    name='accountType'
+                                                                    value={teacherData.bankRequest.accountType}
+                                                                    onChange={handleBankChange}
+                                                                >
+                                                                    <option value="SAVING">Saving</option>
+                                                                    <option value="CURRENT">Current</option>
+                                                                    <option value="OTHER">Other</option>
+                                                                </select>
+                                                            </div>
+                                                            <div>
+                                                                <label>Bank Name</label>
+                                                                <input type="text"
+                                                                    className="modal-input"
+                                                                    name='bankName'
+                                                                    value={teacherData.bankRequest.bankName}
+                                                                    onChange={handleBankChange}
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <label>Bank Branch</label>
+                                                                <input type="text"
+                                                                    className="modal-input"
+                                                                    name='bankBranch'
+                                                                    value={teacherData.bankRequest.bankBranch}
+                                                                    onChange={handleBankChange}
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <label>IFSC Code</label>
+                                                                <input type="text"
+                                                                    className="modal-input"
+                                                                    name='ifscCode'
+                                                                    value={teacherData.bankRequest.ifscCode}
+                                                                    onChange={handleBankChange}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    :
+                                                    <div>
+                                                        <input
+                                                            type='file'
+                                                            accept='image/*'
+                                                            onChange={(e) => setImage(e.target.files[0])}
+                                                        />
+                                                    </div>
                             }
                         </div>
                         <div class="modal-footer ">
                             <button type="button" className="teacher-modal-btn" data-bs-dismiss="modal">Close</button>
                             <button type="button" className="teacher-modal-btn"
                                 data-bs-dismiss="modal" onClick={handleUpdate}
-                            >Update</button>
+                            >
+                                Update
+                            </button>
                         </div>
                     </div>
                 </div>

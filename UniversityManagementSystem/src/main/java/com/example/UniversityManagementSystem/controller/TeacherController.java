@@ -1,9 +1,7 @@
 package com.example.UniversityManagementSystem.controller;
 
 import com.example.UniversityManagementSystem.config.JwtProvider;
-import com.example.UniversityManagementSystem.dto.teacher.TeacherRequest;
-import com.example.UniversityManagementSystem.dto.teacher.TeacherResponse;
-import com.example.UniversityManagementSystem.entity.Teacher;
+import com.example.UniversityManagementSystem.dto.teacher.*;
 import com.example.UniversityManagementSystem.services.TeacherServices;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -12,8 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.security.PublicKey;
-import java.util.List;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/teacher")
@@ -69,5 +66,44 @@ public class TeacherController {
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
 
+    @GetMapping("/classes")
+    public ResponseEntity<Page<TeacherClassResponse>> getAllClasses(@RequestHeader("Authorization") String jwt,
+                                                                    @RequestParam(defaultValue = "0") int pageNumber,
+                                                                    @RequestParam(defaultValue = "10") int pageSize){
+        Long userId = jwtProvider.getUserIdFromToken(jwt);
+        Page<TeacherClassResponse> res = teacherServices.getTeacherClasses(userId,pageNumber,pageSize);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/classes/by/{sectionSubjectId}")
+    public ResponseEntity<TeacherClassResponse> getClassBySectionSubjectId(@PathVariable Long sectionSubjectId){
+        TeacherClassResponse res = teacherServices.getTeacherClassBySectionSubjectId(sectionSubjectId);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/sectionSubject/students/{sectionSubjectId}")
+    public ResponseEntity<Page<StudentSubjectResponse>> getAllStudentFromStudentSubjectBySectionSubjectId(@PathVariable Long sectionSubjectId,
+                                                                                                    @RequestParam(defaultValue = "0") int pageNumber,
+                                                                                                    @RequestParam(defaultValue = "10") int pageSize,
+                                                                                                          @RequestParam(required = false) LocalDate date){
+        if (date == null) {
+            date = LocalDate.now();
+        }
+        Page<StudentSubjectResponse> res = teacherServices.getStudentsFromStudentSubjectBySectionSubjectId(sectionSubjectId,pageNumber ,pageSize ,date);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/sectionSubject/student/{studentSubjectId}")
+    public ResponseEntity<StudentSubjectResponse> getStudentFromStudentSubjectByStudentId(@PathVariable Long studentSubjectId){
+        StudentSubjectResponse res = teacherServices.getStudentFromStudentSubjectByStudentSubjectId(studentSubjectId);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @PostMapping("/mark/student/attendance/{studentSubjectId}")
+    public ResponseEntity<String> markStudentAttendance(@PathVariable Long studentSubjectId,
+                                                        @RequestBody StudentAttendanceRequest dto){
+        String res = teacherServices.markStudentAttendance(studentSubjectId,dto);
+        return new ResponseEntity<>(res,HttpStatus.CREATED);
+    }
 
 }

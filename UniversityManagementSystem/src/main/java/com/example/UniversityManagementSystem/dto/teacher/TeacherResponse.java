@@ -28,28 +28,8 @@ public class TeacherResponse implements Serializable {
 
     private ParentResponse parentResponse;
     private AddressResponse addressResponse;
+    private BankResponse bankResponse;
 
-    public TeacherResponse(Long id, Long userId, String firstName, String lastName, String email, String phoneNumber,
-                           LocalDate dob, Gender gender, Cast cast, String employeeId, String aadharNumber, String panNumber, String image, String departmentCode, String departmentName,
-                           ParentResponse parentResponse, AddressResponse addressResponse) {
-        this.id = id;
-        this.userId = userId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.dob = dob;
-        this.gender = gender;
-        this.cast = cast;
-        this.employeeId = employeeId;
-        this.aadharNumber = aadharNumber;
-        this.panNumber = panNumber;
-        this.image = image;
-        this.departmentCode = departmentCode;
-        this.departmentName = departmentName;
-        this.parentResponse = parentResponse;
-        this.addressResponse = addressResponse;
-    }
 
     public TeacherResponse() {
     }
@@ -188,5 +168,13 @@ public class TeacherResponse implements Serializable {
 
     public void setDepartmentName(String departmentName) {
         this.departmentName = departmentName;
+    }
+
+    public BankResponse getBankResponse() {
+        return bankResponse;
+    }
+
+    public void setBankResponse(BankResponse bankResponse) {
+        this.bankResponse = bankResponse;
     }
 }
