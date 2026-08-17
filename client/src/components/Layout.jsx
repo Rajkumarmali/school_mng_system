@@ -18,6 +18,7 @@ import Course from '../pages/course/Course';
 import Notification from '../pages/notification/Notification';
 import Section from '../pages/section/Section';
 import Class from '../pages/Teacher/classes/Class';
+import University from '../pages/university/University';
 
 
 
@@ -33,6 +34,7 @@ const Layout = () => {
                 <div>
                     <Routes>
                         <Route path="dashboard" element={<Dashboard />} />
+                        <Route path='university' element={<University />} />
                         <Route path="college" element={<College />} />
                         <Route path='college/profile' element={<CollegeProfile />} />
                         <Route path='course' element={<Course />} />

@@ -26,12 +26,22 @@ const Sidebar = () => {
                     </Link>
                 </li>
                 {
-                    isSuperAdmin && <li>
-                        <Link to="/college" className="menu-item">
-                            <i className="bi bi-bank me-2"></i>
-                            Colleges
-                        </Link>
-                    </li>
+                    isSuperAdmin &&
+                    <>
+                        <li>
+                            <Link to="/university" className="menu-item">
+                                <i className="bi bi-bank me-2"></i>
+                                University
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/college" className="menu-item">
+                                <i className="bi bi-buildings-fill me-2"></i>
+                                Colleges
+                            </Link>
+                        </li>
+                    </>
+
                 }
                 {
                     isAdmin &&
