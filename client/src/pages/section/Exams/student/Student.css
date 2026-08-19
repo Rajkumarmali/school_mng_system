@@ -1,0 +1,20 @@
+.section-exam-student-table {
+    margin-top: 30px;
+}
+
+.sectioin-exam-student-table thead {
+  background: transparent !important;
+}
+
+.section-exam-student-table th {
+    background: transparent !important;
+    font-weight: 600;
+    color: #495057;
+    padding: 14px;
+}
+
+.section-exam-student-table td {
+    background: transparent !important;
+    vertical-align: middle;
+    padding: 14px;
+}
