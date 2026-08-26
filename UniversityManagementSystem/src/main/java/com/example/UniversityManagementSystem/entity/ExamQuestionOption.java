@@ -20,7 +20,7 @@ public class ExamQuestionOption {
 
     private Boolean isTrue;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private ExamQuestion examQuestion;
 
     @OneToOne(mappedBy = "selectedOption")
