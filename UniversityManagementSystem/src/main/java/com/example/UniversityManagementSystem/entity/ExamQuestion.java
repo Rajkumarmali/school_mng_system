@@ -31,7 +31,7 @@ public class ExamQuestion {
     @ManyToOne
     private Exam exam;
 
-    @OneToMany(mappedBy = "examQuestion")
+    @OneToMany(mappedBy = "examQuestion",fetch = FetchType.LAZY)
     private List<ExamQuestionOption> QuestionOptions= new ArrayList<>();
 
     @OneToOne(mappedBy = "question")
