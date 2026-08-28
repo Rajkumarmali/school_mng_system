@@ -24,7 +24,7 @@ public class StudentExamAnswer {
     private Boolean isMarkedForReview;
     private Boolean isAnswered;
 
-    @OneToOne
+    @ManyToOne
     private ExamQuestionOption selectedOption;
 
     @ManyToOne
