@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @NoArgsConstructor
 @Getter
@@ -23,7 +25,7 @@ public class ExamQuestionOption {
     @ManyToOne(fetch = FetchType.LAZY)
     private ExamQuestion examQuestion;
 
-    @OneToOne(mappedBy = "selectedOption")
-    private StudentExamAnswer studentExamAnswer;
+    @OneToMany(mappedBy = "selectedOption")
+    private List<StudentExamAnswer> studentExamAnswer;
 
 }
