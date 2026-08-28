@@ -30,7 +30,7 @@ public class StudentExamAnswer {
     @ManyToOne
     private StudentExam studentExam;
 
-    @OneToOne
+    @ManyToOne
     private ExamQuestion question;
 
     private LocalDateTime createdAt;
