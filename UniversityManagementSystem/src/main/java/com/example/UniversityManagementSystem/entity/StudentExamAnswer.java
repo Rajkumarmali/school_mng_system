@@ -21,6 +21,8 @@ public class StudentExamAnswer {
     private String answer;
 
     private Integer obtainMarks;
+    private Boolean isMarkedForReview;
+    private Boolean isAnswered;
 
     @OneToOne
     private ExamQuestionOption selectedOption;
