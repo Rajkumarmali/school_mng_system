@@ -37,6 +37,7 @@ public class Exam {
     private Integer passingMarks;
 
     private Boolean showQuestionToStudent;
+    private Boolean showResult;
 
     @Enumerated(EnumType.STRING)
     private ExamStatus status;

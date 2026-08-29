@@ -23,6 +23,7 @@ public class StudentExam {
     private StudentExamStatus status;
 
     private Integer obtainMarks;
+    private LocalDateTime submitted_at;
 
     @ManyToOne
     private Student student;
@@ -32,6 +33,9 @@ public class StudentExam {
 
     @OneToMany(mappedBy = "studentExam")
     private List<StudentExamAnswer> studentExamAnswers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "studentExam")
+    private List<ExamQuestionResult> examQuestionResults = new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
