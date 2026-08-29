@@ -7,30 +7,23 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+
 @Entity
 @NoArgsConstructor
 @Getter
 @Setter
-public class StudentExamAnswer {
+public class ExamQuestionResult {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Lob
-    @Column(columnDefinition = "TEXT")
-    private String answer;
-
-    private Boolean isMarkedForReview;
-    private Boolean isAnswered;
-
-    @ManyToOne
-    private ExamQuestionOption selectedOption;
+    private Double obtainMarks;
 
     @ManyToOne
     private StudentExam studentExam;
 
     @ManyToOne
-    private ExamQuestion question;
+    private ExamQuestion examQuestion;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

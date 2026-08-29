@@ -27,6 +27,7 @@ public class ExamQuestion {
     private QuestionType type;
 
     private Integer marks;
+    private Double negativeMarks;
 
     @ManyToOne
     private Exam exam;
@@ -39,6 +40,9 @@ public class ExamQuestion {
 
     @OneToMany(mappedBy = "question",fetch = FetchType.LAZY)
     private List<StudentExamAnswer> studentExamAnswer=new ArrayList<>();
+
+    @OneToMany(mappedBy = "examQuestion")
+    private List<ExamQuestionResult> examQuestionResults = new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
