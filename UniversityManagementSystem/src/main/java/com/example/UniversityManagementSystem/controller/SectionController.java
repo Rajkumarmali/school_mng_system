@@ -144,39 +144,4 @@ public class SectionController {
         StudentSubjectResponse res = sectionService.getStudentSubjectBySectionIdAndStudentId(sectionId,studentId,pageNumber,pageSize);
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
-
-    @PostMapping("/create/exam")
-    public ResponseEntity<String> createExam(@RequestBody List<ExamRequest> dto){
-        String res = sectionService.createExam(dto);
-        return new ResponseEntity<>(res,HttpStatus.CREATED);
-    }
-
-    @PostMapping("/update/exam/{examId}")
-    public ResponseEntity<String> updateExam(@PathVariable Long examId,
-                                             @RequestBody ExamRequest dto){
-        String res = sectionService.updateExam(examId,dto);
-        return new ResponseEntity<>(res,HttpStatus.OK);
-    }
-
-    @GetMapping("/get/exam/{sectionId}")
-    public ResponseEntity<Page<ExamResponse>> getExams(@PathVariable Long sectionId,
-                                                       @RequestParam(defaultValue = "0") int pageNumber,
-                                                       @RequestParam(defaultValue = "10") int pageSize){
-        Page<ExamResponse> res = sectionService.getExams(sectionId,pageNumber,pageSize);
-        return new ResponseEntity<>(res,HttpStatus.OK);
-    }
-
-    @GetMapping("/get/exambyid/{examId}")
-    public ResponseEntity<ExamResponse> getExamById(@PathVariable Long examId){
-        ExamResponse res = sectionService.getExamById(examId);
-        return new ResponseEntity<>(res,HttpStatus.OK);
-    }
-
-    @GetMapping("/get/studentExam/{examId}")
-    public ResponseEntity<Page<StudentExamResponse>> getStudentExamByExamId(@PathVariable Long examId,
-                                                                            @RequestParam(defaultValue = "0") int pageNumber,
-                                                                            @RequestParam(defaultValue = "10") int pageSize){
-        Page<StudentExamResponse> res = sectionService.getStudentExamsByExamId(examId,pageNumber,pageSize);
-        return new ResponseEntity<>(res,HttpStatus.OK);
-    }
 }

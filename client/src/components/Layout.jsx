@@ -20,8 +20,7 @@ import Section from '../pages/section/Section';
 import Attendance from '../pages/student/attendance/Attendance';
 import Class from '../pages/Teacher/classes/Class';
 import University from '../pages/university/University';
-
-
+import Exam from '../pages/student/exam/Exam';
 
 const Layout = () => {
     return (
@@ -43,6 +42,7 @@ const Layout = () => {
                         <Route path='users' element={<Users />} />
                         <Route path='/student' element={<Student />} />
                         <Route path='student/fee' element={<StudentsFee />} />
+                        <Route path='student/exam' element={<Exam />} />
                         <Route path='student/attendance' element={<Attendance />} />
                         <Route path='teacher' element={<Teacher />} />
                         <Route path='teacher/profile' element={<TeacherProfile />} />
@@ -54,7 +54,6 @@ const Layout = () => {
                         <Route path='notification' element={<Notification />} />
                     </Routes>
                 </div>
-
             </div>
         </div>
     )

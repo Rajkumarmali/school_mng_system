@@ -3,8 +3,9 @@ import './Exam.css'
 import { jwtDecode } from 'jwt-decode'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
-import { createExam, getAllSectionSubject, getExamBySectionId } from '../../../state/section/Action'
+import { getAllSectionSubject } from '../../../state/section/Action'
 import ExamDetails from './ExamDetails'
+import { createExam, getExamBySectionId } from '../../../state/exam/Action'
 const Exam = () => {
 
     const token = localStorage.getItem("token")
@@ -14,6 +15,7 @@ const Exam = () => {
 
     const dispatch = useDispatch()
     const section = useSelector((state) => state.section)
+    const exam = useSelector((state) => state.exam)
 
     const [searchParams, setSearchParams] = useSearchParams();
     const tab = searchParams.get("tab") || "student"
@@ -67,7 +69,7 @@ const Exam = () => {
         return pages;
     };
 
-    const totalPages = section?.exams?.totalPages || 0;
+    const totalPages = exam?.exams?.totalPages || 0;
     const getPageNumbers = () => {
         const pages = [];
 
@@ -136,7 +138,7 @@ const Exam = () => {
         })
     }
 
-    const handleAddExamModal = async (page = 1, size = 1) => {
+    const handleAddExamModal = async (page = 1, size = 10) => {
         await dispatch(getAllSectionSubject(sectionId, page, size))
     }
 
@@ -249,8 +251,8 @@ const Exam = () => {
                             </thead>
                             <tbody>
                                 {
-                                    section?.exams?.content?.length > 0 ?
-                                        section?.exams?.content?.map((exam, index) =>
+                                    exam?.exams?.content?.length > 0 ?
+                                        exam?.exams?.content?.map((exam, index) =>
                                             <tr>
                                                 <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
                                                 <td>{exam?.name}</td>
@@ -279,7 +281,7 @@ const Exam = () => {
                         </table>
                         <div className="pagination-container">
                             <div className="pagination-info">
-                                Total : <strong>{section?.exams?.totalElements || 0}</strong>
+                                Total : <strong>{exam?.exams?.totalElements || 0}</strong>
                             </div>
                             <div className="page-size-selector">
                                 <label>Show :</label>

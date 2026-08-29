@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ExamRepository extends JpaRepository<Exam, Long> {
     Page<Exam> findBySectionSubjectSectionId(Long sectionId, Pageable pageable);
+
+    Page<Exam> findBySectionSubjectId(Long sectionSubjectId, Pageable pageable);
 }

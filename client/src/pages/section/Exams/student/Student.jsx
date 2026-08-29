@@ -2,11 +2,11 @@ import React, { useEffect } from 'react'
 import './Student.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
-import { getStudentExamByExamId } from '../../../../state/section/Action'
+import { getStudentExamByExamId } from '../../../../state/exam/Action'
 const Student = () => {
 
     const dispatch = useDispatch()
-    const section = useSelector((state) => state.section)
+    const exam = useSelector((state) => state.exam)
 
     const [searchParams, setSearchParams] = useSearchParams();
     const tab = searchParams.get("tab") || "student"
@@ -18,7 +18,7 @@ const Student = () => {
     const pageNumber = Number(searchParams.get("pageNumber")) || 1;
     const pageSize = Number(searchParams.get("pageSize")) || 10;
 
-    const totalPages = section?.studentExams?.totalPages || 0;
+    const totalPages = exam?.studentExams?.totalPages || 0;
     const getPageNumbers = () => {
         const pages = [];
 
@@ -123,8 +123,8 @@ const Student = () => {
                 </thead>
                 <tbody>
                     {
-                        section?.studentExams?.content?.length > 0 ?
-                            section?.studentExams?.content?.map((stu, index) =>
+                        exam?.studentExams?.content?.length > 0 ?
+                            exam?.studentExams?.content?.map((stu, index) =>
                                 <tr>
                                     <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
                                     <td>{stu?.studentResponse?.rollNumber}</td>
@@ -146,7 +146,7 @@ const Student = () => {
             </table>
             <div className="pagination-container">
                 <div className="pagination-info">
-                    Total : <strong>{section?.studentExams?.totalElements || 0}</strong>
+                    Total : <strong>{exam?.studentExams?.totalElements || 0}</strong>
                 </div>
                 <div className="page-size-selector">
                     <label>Show :</label>

@@ -1,25 +1,21 @@
 import React, { useEffect, useState } from 'react'
-import './ExamDetails.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
-import { jwtDecode } from 'jwt-decode'
+import { getExamById, updateExam } from '../../../../state/exam/Action'
 import Student from './student/Student'
-import { getExamById, updateExam } from '../../../state/exam/Action'
-const ExamDetails = () => {
+import QuestionPaper from './QuestionPaper'
 
-    const token = localStorage.getItem("token")
-    const decoded = jwtDecode(token)
-    const roles = decoded.roles;
-    const isHod = roles.includes("HOD")
+const ExamDetail = () => {
+
 
     const dispatch = useDispatch()
     const exam = useSelector((state) => state.exam)
 
     const [searchParams, setSearchParams] = useSearchParams();
+    const sectionSubjectId = searchParams.get("classId")
     const tab = searchParams.get("tab")
-    const sectionId = searchParams.get("sectionId")
-    const page = Number(searchParams.get("page")) || 1;
-    const size = Number(searchParams.get("size")) || 10;
+    const pageNumber = Number(searchParams.get("page")) || 1;
+    const pageSize = Number(searchParams.get("size")) || 10;
     const examId = searchParams.get("examId")
     const action = searchParams.get("action")
 
@@ -37,10 +33,10 @@ const ExamDetails = () => {
 
     const handleBack = () => {
         setSearchParams({
-            sectionId,
+            classId: sectionSubjectId,
             tab,
-            page,
-            size
+            page: pageNumber,
+            size: pageSize
         })
     }
 
@@ -88,21 +84,25 @@ const ExamDetails = () => {
         dispatch(getExamById(examId))
     }, [dispatch, examId]);
 
-
-
     return (
         <div>
             <div className="section-exam-detail-header">
                 <div className="d-flex gap-3">
                     <button
                         className="back-section-exam-detail-btn"
-                        onClick={() => setSearchParams({ sectionId, tab, page, size, examId, action: "exam" })}
+                        onClick={() => setSearchParams({ classId: sectionSubjectId, tab, page: pageNumber, size: pageSize, examId, action: "exam" })}
                     >
                         Exam details
                     </button>
                     <button
                         className="back-section-exam-detail-btn"
-                        onClick={() => setSearchParams({ sectionId, tab, page, size, examId, action: "student" })}
+                        onClick={() => setSearchParams({ classId: sectionSubjectId, tab, page: pageNumber, size: pageSize, examId, action: "questionPaper" })}
+                    >
+                        Question Paper
+                    </button>
+                    <button
+                        className="back-section-exam-detail-btn"
+                        onClick={() => setSearchParams({ classId: sectionSubjectId, tab, page: pageNumber, size: pageSize, examId, action: "student" })}
                     >
                         Students
                     </button>
@@ -122,17 +122,20 @@ const ExamDetails = () => {
                             <Student />
                         </div>
                         :
-                        <div>
-                            <div className="section-exam-detail-card">
-                                <div className="section-student-detail-info">
-                                    <div className="section-student-detail-contact">
-                                        <div>
-                                            <i className="bi bi-journal-text me-2"></i>
-                                            <span>
-                                                <strong>Exam Details  :</strong>
-                                            </span>
-                                            {
-                                                isHod &&
+                        action === "questionPaper" ?
+                            <div>
+                                <QuestionPaper />
+                            </div>
+                            :
+                            <div>
+                                <div className="section-exam-detail-card">
+                                    <div className="section-student-detail-info">
+                                        <div className="section-student-detail-contact">
+                                            <div>
+                                                <i className="bi bi-journal-text me-2"></i>
+                                                <span>
+                                                    <strong>Exam Details  :</strong>
+                                                </span>
                                                 <button
                                                     type="button"
                                                     className="exam-edit-btn"
@@ -142,94 +145,94 @@ const ExamDetails = () => {
                                                 >
                                                     <i className="bi bi-pencil-square me-1"></i>
                                                 </button>
-                                            }
+                                            </div>
+                                            <div>
+                                                <i className="bi bi-file-earmark-text-fill me-2"></i>
+                                                <span>Name : {exam?.exam?.name}</span>
+                                            </div>
+                                            <div>
+                                                <i className="bi bi-calendar-event-fill me-2"></i>
+                                                <span>Date : {exam?.exam?.date
+                                                    ? new Date(exam.exam.date).toLocaleDateString("en-GB")
+                                                    : "-"}</span>
+                                            </div>
+                                            <div>
+                                                <i className="bi bi-laptop-fill me-2"></i>
+                                                <span>Mode : {exam?.exam?.mode}</span>
+                                            </div>
+                                            <div>
+                                                <i className="bi bi-info-circle-fill me-2"></i>
+                                                <span>Status : {exam?.exam?.status}</span>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <i className="bi bi-file-earmark-text-fill me-2"></i>
-                                            <span>Name : {exam?.exam?.name}</span>
-                                        </div>
-                                        <div>
-                                            <i className="bi bi-calendar-event-fill me-2"></i>
-                                            <span>Date : {exam?.exam?.date
-                                                ? new Date(exam.exam.date).toLocaleDateString("en-GB")
-                                                : "-"}</span>
-                                        </div>
-                                        <div>
-                                            <i className="bi bi-laptop-fill me-2"></i>
-                                            <span>Mode : {exam?.exam?.mode}</span>
-                                        </div>
-                                        <div>
-                                            <i className="bi bi-info-circle-fill me-2"></i>
-                                            <span>Status : {exam?.exam?.status}</span>
+                                    </div>
+                                    <div className="section-student-detail-info">
+                                        <div className="section-student-detail-contact">
+                                            <div>
+                                                <i className="bi bi-clock-fill me-2"></i>
+                                                <span>StartTime :
+                                                    {exam?.exam?.startTime
+                                                        ? new Date(exam.exam.startTime).toLocaleTimeString("en-IN", {
+                                                            hour: "2-digit",
+                                                            minute: "2-digit",
+                                                            hour12: true
+                                                        })
+                                                        : "-"}</span>
+                                            </div>
+                                            <div>
+                                                <i className="bi bi-clock-history me-2"></i>
+                                                <span>EndTime :
+                                                    {exam?.exam?.endTime
+                                                        ? new Date(exam.exam.endTime).toLocaleTimeString("en-IN", {
+                                                            hour: "2-digit",
+                                                            minute: "2-digit",
+                                                            hour12: true
+                                                        })
+                                                        : "-"}</span>
+                                            </div>
+                                            <div>
+                                                <i className="bi bi-clipboard-data-fill me-2"></i>
+                                                <span>MaxMarks : {exam?.exam?.maxMarks}</span>
+                                            </div>
+                                            <div>
+                                                <i className="bi bi-check-circle-fill me-2"></i>
+                                                <span>PassingMarks : {exam?.exam?.passingMarks}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="section-student-detail-info">
-                                    <div className="section-student-detail-contact">
-                                        <div>
-                                            <i className="bi bi-clock-fill me-2"></i>
-                                            <span>StartTime :
-                                                {exam?.exam?.startTime
-                                                    ? new Date(exam.exam.startTime).toLocaleTimeString("en-IN", {
-                                                        hour: "2-digit",
-                                                        minute: "2-digit",
-                                                        hour12: true
-                                                    })
-                                                    : "-"}</span>
-                                        </div>
-                                        <div>
-                                            <i className="bi bi-clock-history me-2"></i>
-                                            <span>EndTime :
-                                                {exam?.exam?.endTime
-                                                    ? new Date(exam.exam.endTime).toLocaleTimeString("en-IN", {
-                                                        hour: "2-digit",
-                                                        minute: "2-digit",
-                                                        hour12: true
-                                                    })
-                                                    : "-"}</span>
-                                        </div>
-                                        <div>
-                                            <i className="bi bi-clipboard-data-fill me-2"></i>
-                                            <span>MaxMarks : {exam?.exam?.maxMarks}</span>
-                                        </div>
-                                        <div>
-                                            <i className="bi bi-check-circle-fill me-2"></i>
-                                            <span>PassingMarks : {exam?.exam?.passingMarks}</span>
+                                <div className="section-exam-detail-card">
+                                    <div className="section-student-detail-info">
+                                        <div className="section-student-detail-contact">
+                                            <div>
+                                                <i className="bi bi-journal-bookmark-fill me-2"></i>
+                                                <span>
+                                                    <strong>Subject Details  :</strong>
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <i className="bi bi-upc-scan me-2"></i>
+                                                <span>Code : {exam?.exam?.subjectResponse?.code}</span>
+                                            </div>
+                                            <div>
+                                                <i className="bi bi-book-fill me-2"></i>
+                                                <span>Name : {exam?.exam?.subjectResponse?.name} ({exam?.exam?.subjectResponse?.shortName})</span>
+                                            </div>
+                                            <div>
+                                                <i className="bi bi-bookmark-fill me-2"></i>
+                                                <span>Subject Type : {exam?.exam?.subjectResponse?.subjectType}</span>
+                                            </div>
+                                            <div>
+                                                <i className="bi bi-award-fill me-2"></i>
+                                                <span>Credit : {exam?.exam?.subjectResponse?.credit}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="section-exam-detail-card">
-                                <div className="section-student-detail-info">
-                                    <div className="section-student-detail-contact">
-                                        <div>
-                                            <i className="bi bi-journal-bookmark-fill me-2"></i>
-                                            <span>
-                                                <strong>Subject Details  :</strong>
-                                            </span>
-                                        </div>
-                                        <div>
-                                            <i className="bi bi-upc-scan me-2"></i>
-                                            <span>Code : {exam?.exam?.subjectResponse?.code}</span>
-                                        </div>
-                                        <div>
-                                            <i className="bi bi-book-fill me-2"></i>
-                                            <span>Name : {exam?.exam?.subjectResponse?.name} ({exam?.exam?.subjectResponse?.shortName})</span>
-                                        </div>
-                                        <div>
-                                            <i className="bi bi-bookmark-fill me-2"></i>
-                                            <span>Subject Type : {exam?.exam?.subjectResponse?.subjectType}</span>
-                                        </div>
-                                        <div>
-                                            <i className="bi bi-award-fill me-2"></i>
-                                            <span>Credit : {exam?.exam?.subjectResponse?.credit}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                 }
             </div>
+
 
             <div class="modal fade" id="editExamModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-xl">
@@ -356,4 +359,4 @@ const ExamDetails = () => {
     )
 }
 
-export default ExamDetails
+export default ExamDetail

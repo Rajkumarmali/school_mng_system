@@ -1,23 +1,21 @@
-package com.example.UniversityManagementSystem.dto.section;
+package com.example.UniversityManagementSystem.dto.exam;
 
-import com.example.UniversityManagementSystem.entity.SectionSubject;
 import com.example.UniversityManagementSystem.entity.type.ExamMode;
 import com.example.UniversityManagementSystem.entity.type.ExamStatus;
 import com.example.UniversityManagementSystem.entity.type.ExamType;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
 @Setter
-public class ExamRequest {
+public class ExamResponse implements Serializable {
+    private Long id;
     private String name;
     private ExamType type;
     private ExamMode mode;
@@ -27,5 +25,7 @@ public class ExamRequest {
     private Integer maxMarks;
     private Integer passingMarks;
     private ExamStatus status;
-    private Long sectionSubjectId;
+    private Boolean showQuestionToStudent;
+    private Integer totalQuestion;
+    private SubjectResponse subjectResponse;
 }

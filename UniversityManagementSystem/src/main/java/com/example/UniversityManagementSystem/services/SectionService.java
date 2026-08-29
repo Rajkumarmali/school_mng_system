@@ -23,9 +23,4 @@ public interface SectionService {
     String addStudentInSectionSubject(Long sectionSubjectId, List<SectionStudentRequest> dto);
     Page<SectionSubjectResponse> getAllStudentFromSectionSubject(Long sectionSubjectId,int pageNumber,int pageSize);
     StudentSubjectResponse getStudentSubjectBySectionIdAndStudentId(Long sectionId, Long studentId,int pageNumber,int pageSize);
-    String createExam(List<ExamRequest> dto);
-    String updateExam(Long examId,ExamRequest dto);
-    Page<ExamResponse> getExams(Long sectionId,int pageNumber,int pageSize);
-    ExamResponse getExamById(Long examId);
-    Page<StudentExamResponse> getStudentExamsByExamId(Long examId,int pageNumber,int pageSize);
 }

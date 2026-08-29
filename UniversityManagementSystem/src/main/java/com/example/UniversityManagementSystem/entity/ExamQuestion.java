@@ -31,8 +31,11 @@ public class ExamQuestion {
     @ManyToOne
     private Exam exam;
 
-    @OneToMany(mappedBy = "examQuestion",fetch = FetchType.LAZY)
-    private List<ExamQuestionOption> QuestionOptions= new ArrayList<>();
+    @OneToMany(mappedBy = "examQuestion",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<ExamQuestionOption> questionOptions= new ArrayList<>();
 
     @OneToMany(mappedBy = "question",fetch = FetchType.LAZY)
     private List<StudentExamAnswer> studentExamAnswer=new ArrayList<>();

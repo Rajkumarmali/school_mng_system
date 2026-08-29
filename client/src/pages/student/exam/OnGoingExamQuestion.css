@@ -1,0 +1,374 @@
+.exam-start-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(180deg, #3ea0d3, #3c58c9);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.exam-start-card {
+  background: rgba(255, 255, 255, 0.08);
+  width: 90%;
+  max-width: 650px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 32px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+.start-header {
+  text-align: center;
+}
+
+.start-icon {
+  font-size: 2.8rem;
+}
+
+.start-header h2 {
+  margin: 12px 0 6px 0;
+  font-size: 1.4rem;
+}
+
+.exam-code-tag {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.divider {
+  border: 0;
+  height: 1px;
+  background: #e2e8f0;
+  margin: 20px 0;
+}
+
+.exam-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.detail-item i {
+  font-size: 1.4rem;
+}
+
+.detail-item span {
+  display: block;
+  font-size: 0.75rem;
+}
+
+.detail-item strong {
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+
+.instructions-box {
+  background: transparent;
+  border-left: 4px solid #2563eb;
+  padding: 16px;
+  border-radius: 4px;
+  margin-bottom: 24px;
+}
+
+.instructions-box h4 {
+  margin: 0 0 8px 0;
+  font-size: 0.95rem;
+}
+
+.instructions-box ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.85rem;
+}
+
+.instructions-box li {
+  margin-bottom: 4px;
+}
+
+.btn-start-exam {
+  width: 100%;
+  background: transparent;
+  color: white;
+  border: 1px solid white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.btn-start-exam:hover {
+  background: transparent;
+  color:#3c58c9
+}
+
+.exam-fullscreen-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+ background: linear-gradient(180deg, #3ea0d3, #3c58c9);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.exam-top-header {
+  height: 60px;
+  background-color: #5588dc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+}
+
+.exam-branding h2 {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.exam-code {
+  font-size: 0.8rem;
+}
+
+.exam-timer-wrapper {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: 1px solid white;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+}
+
+.timer-text {
+  color: #ffffff;
+  font-weight: 700;
+  font-family: monospace;
+  font-size: 1.1rem;
+  margin-left: 6px;
+}
+
+.exam-body-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.exam-main-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #ecf0f1;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+}
+
+.question-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.badge-type {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge-type.mcq {
+  background-color: #e3f2fd;
+}
+
+.badge-type.msq {
+  background-color: #f3e5f5;
+}
+
+.question-text {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.option-card {
+  display: flex;
+  align-items: center;
+  padding: 14px 18px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.option-card:hover {
+  background: transparent;
+  color: #3c58c9;
+}
+
+.option-card.selected {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: #409eff;
+}
+
+.option-card input {
+  margin-right: 12px;
+}
+
+.option-label {
+  font-weight: bold;
+  margin-right: 10px;
+  color: #606266;
+}
+
+.question-footer-actions {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #ebedf0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.left-actions, .right-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-action {
+  background: transparent;
+  color: white;
+  border: 1px solid white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 400;
+  transition: 0.3s
+}
+
+.btn-action:hover {
+  background: transparent;
+  color:#000000
+}
+
+.btn-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.exam-sidebar-panel {
+  width: 300px;
+  background-color: #1e293b;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.exam-sidebar-panel h4 {
+  margin-top: 0;
+  font-size: 1rem;
+}
+
+.status-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+  font-size: 0.8rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-box {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.palette-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  overflow-y: auto;
+}
+
+.palette-btn {
+  height: 40px;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  background-color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.palette-btn.active-question {
+  background: #f59595;
+  outline-offset: 1px;
+}
+
+.status-answered {
+  background-color: #349c00 !important;
+  color: #ffffff;
+}
+
+.status-unanswered {
+  background-color: #ffffff;
+  color: #606266;
+}
+
+.status-review {
+  background-color: #ff9900 !important;
+  color: #ffffff;
+}
+
+.status-answered-review {
+  background-color: #909399 !important;
+  color: #ffffff;
+}
+
+.sidebar-submit-wrapper {
+  margin-top: auto;
+  padding-top: 20px;
+}
+
+.btn-submit-exam {
+  width: 100%;
+  background: transparent;
+  color: white;
+  border: 1px solid white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 400;
+  transition: 0.3s
+}
+
+.btn-submit-exam:hover{
+  background: transparent;
+  color:#000000
+}
+
