@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,7 +26,7 @@ public class ExamQuestionOption {
     @ManyToOne(fetch = FetchType.LAZY)
     private ExamQuestion examQuestion;
 
-    @OneToMany(mappedBy = "selectedOption")
-    private List<StudentExamAnswer> studentExamAnswer;
+    @OneToMany(mappedBy = "examQuestionOption")
+    private List<SelectedOptions> selectedOptions=new ArrayList<>();
 
 }

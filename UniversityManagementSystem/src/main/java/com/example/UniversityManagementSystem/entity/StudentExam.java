@@ -34,9 +34,6 @@ public class StudentExam {
     @OneToMany(mappedBy = "studentExam")
     private List<StudentExamAnswer> studentExamAnswers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "studentExam")
-    private List<ExamQuestionResult> examQuestionResults = new ArrayList<>();
-
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
