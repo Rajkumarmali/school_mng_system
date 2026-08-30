@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -22,15 +24,16 @@ public class StudentExamAnswer {
 
     private Boolean isMarkedForReview;
     private Boolean isAnswered;
-
-    @ManyToOne
-    private ExamQuestionOption selectedOption;
+    private Double obtainMarks;
 
     @ManyToOne
     private StudentExam studentExam;
 
     @ManyToOne
     private ExamQuestion question;
+
+    @OneToMany(mappedBy = "studentExamAnswer")
+    private List<SelectedOptions> selectedOptions = new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

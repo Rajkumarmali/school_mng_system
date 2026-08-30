@@ -12,19 +12,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ExamQuestionResult {
+public class SelectedOptions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Double obtainMarks;
+    @ManyToOne
+    private StudentExamAnswer studentExamAnswer;
 
     @ManyToOne
-    private StudentExam studentExam;
+    private ExamQuestionOption examQuestionOption;
 
-    @ManyToOne
-    private ExamQuestion examQuestion;
-
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }

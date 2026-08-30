@@ -41,9 +41,6 @@ public class ExamQuestion {
     @OneToMany(mappedBy = "question",fetch = FetchType.LAZY)
     private List<StudentExamAnswer> studentExamAnswer=new ArrayList<>();
 
-    @OneToMany(mappedBy = "examQuestion")
-    private List<ExamQuestionResult> examQuestionResults = new ArrayList<>();
-
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
