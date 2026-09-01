@@ -22,7 +22,7 @@ public class StudentExam {
     @Enumerated(EnumType.STRING)
     private StudentExamStatus status;
 
-    private Integer obtainMarks;
+    private Double obtainMarks;
     private LocalDateTime submitted_at;
 
     @ManyToOne

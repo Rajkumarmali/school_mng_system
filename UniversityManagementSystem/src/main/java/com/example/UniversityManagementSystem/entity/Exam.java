@@ -33,8 +33,8 @@ public class Exam {
     private LocalDate date;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private Integer maxMarks;
-    private Integer passingMarks;
+    private Double maxMarks;
+    private Double passingMarks;
 
     private Boolean showQuestionToStudent;
     private Boolean showResult;
