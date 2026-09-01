@@ -26,7 +26,7 @@ public class ExamQuestion {
     @Enumerated(EnumType.STRING)
     private QuestionType type;
 
-    private Integer marks;
+    private Double marks;
     private Double negativeMarks;
 
     @ManyToOne
