@@ -18,9 +18,7 @@ public class StudentExamAnswer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Lob
-    @Column(columnDefinition = "TEXT")
-    private String answer;
+    private Integer answer;
 
     private Boolean isMarkedForReview;
     private Boolean isAnswered;

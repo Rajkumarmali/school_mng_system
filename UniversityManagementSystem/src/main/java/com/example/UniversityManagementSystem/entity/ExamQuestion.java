@@ -29,6 +29,8 @@ public class ExamQuestion {
     private Double marks;
     private Double negativeMarks;
 
+    private Integer correctAnswer;
+
     @ManyToOne
     private Exam exam;
 
