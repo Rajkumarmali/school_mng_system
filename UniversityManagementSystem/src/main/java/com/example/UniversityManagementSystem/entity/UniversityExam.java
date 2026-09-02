@@ -26,18 +26,23 @@ public class UniversityExam {
     @Enumerated(EnumType.STRING)
     private ExamType type;
 
-    @Enumerated(EnumType.STRING)
-    private ExamStatus status;
+    private LocalDateTime formStartAt;
+    private LocalDateTime formEndAt;
 
     private String academicYear;
     private Integer year;
     private Integer semester;
+
+    private Boolean showResult;
 
     @ManyToOne
     private Course course;
 
     @OneToMany(mappedBy = "universityExam")
     private List<UniversityExamSubject> universityExamSubjects = new ArrayList<>();
+
+    @OneToMany(mappedBy = "universityExam")
+    private List<StudentUniversityExam> studentUniversityExams = new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
