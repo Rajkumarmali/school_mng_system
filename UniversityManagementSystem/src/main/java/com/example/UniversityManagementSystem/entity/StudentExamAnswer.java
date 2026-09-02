@@ -13,27 +13,26 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class SectionSubject {
+public class StudentExamAnswer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private Section section;
+    private Integer answer;
+
+    private Boolean isMarkedForReview;
+    private Boolean isAnswered;
+    private Double obtainMarks;
 
     @ManyToOne
-    private Subject subject;
+    private StudentExam studentExam;
 
     @ManyToOne
-    private Teacher teacher;
+    private ExamQuestion question;
 
-    @OneToMany(mappedBy = "sectionSubject")
-    private List<StudentSubject> studentSubjects = new ArrayList<>();
-
-    @OneToMany(mappedBy = "sectionSubject")
-    private List<Exam> exams = new ArrayList<>();
+    @OneToMany(mappedBy = "studentExamAnswer")
+    private List<SelectedOptions> selectedOptions = new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
 }
