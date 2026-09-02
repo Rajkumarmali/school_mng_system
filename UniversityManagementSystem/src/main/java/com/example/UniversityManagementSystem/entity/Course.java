@@ -42,6 +42,9 @@ public class Course {
     @OneToMany(mappedBy = "course")
     private List<UniversityExam> universityExams = new ArrayList<>();
 
+    @OneToMany(mappedBy = "course")
+    private List<StudentAcademic> studentAcademics = new ArrayList<>();
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

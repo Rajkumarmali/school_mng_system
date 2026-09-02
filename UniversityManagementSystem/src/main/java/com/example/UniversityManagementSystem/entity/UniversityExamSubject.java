@@ -32,7 +32,7 @@ public class UniversityExamSubject {
     private Subject subject;
 
     @OneToMany(mappedBy = "universityExamSubject")
-    private List<StudentUniversityExam> studentUniversityExams = new ArrayList<>();
+    private List<StudentUniversityExamSubject> universityExamSubject=new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

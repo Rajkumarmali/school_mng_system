@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -18,20 +20,19 @@ public class StudentUniversityExam {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private StudentExamStatus status;
-
-    @Enumerated(EnumType.STRING)
-    private ResultStatus resultStatus;
-
-    private Integer internalMarks;
-    private Integer obtainedMarks;
+    private Double sgpa;
+    private Double cgpa;
+    private Integer totalCredits;
+    private Integer earnedCredits;
 
     @ManyToOne
-    private UniversityExamSubject universityExamSubject;
+    private UniversityExam universityExam;
 
     @ManyToOne
     private Student student;
+
+    @OneToMany(mappedBy = "studentUniversityExam")
+    private List<StudentUniversityExamSubject> studentUniversityExamSubjects = new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
