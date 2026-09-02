@@ -11,4 +11,5 @@ public class StudentExamAnswerRequest {
     private Long questionId;
     private Long selectedOptionId;
     private Long studentExamId;
+    private Integer answer;
 }

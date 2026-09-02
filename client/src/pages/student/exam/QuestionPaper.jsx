@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import './QuestionPaper.css'
 import { useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getExamQuestions } from '../../../state/exam/Action';
+import { getStudentExamResult } from '../../../state/exam/Action';
 
 const QuestionPaper = () => {
 
@@ -13,12 +13,11 @@ const QuestionPaper = () => {
     const page = Number(searchParams.get("page"))
     const size = Number(searchParams.get("size"))
     const studentExamId = searchParams.get("studentExamId")
-    const examId = searchParams.get("examId")
     const action = searchParams.get("action")
     const pageNumber = Number(searchParams.get("pageNumber")) || 1;
     const pageSize = Number(searchParams.get("pageSize")) || 10;
 
-    const totalPages = exam?.examQuestions?.totalPages || 0;
+    const totalPages = exam?.studentExamResult?.examQuestionResponses?.totalPages || 0;
     const getPageNumbers = () => {
         const pages = [];
 
@@ -56,7 +55,6 @@ const QuestionPaper = () => {
             page,
             size,
             studentExamId,
-            examId,
             action,
             pageNumber: 1,
             pageSize: pageSize,
@@ -68,7 +66,6 @@ const QuestionPaper = () => {
             page,
             size,
             studentExamId,
-            examId,
             action,
             pageNumber: pageNumber - 1,
             pageSize,
@@ -80,7 +77,6 @@ const QuestionPaper = () => {
             page,
             size,
             studentExamId,
-            examId,
             action,
             pageNumber: pageNumber + 1,
             pageSize,
@@ -92,16 +88,207 @@ const QuestionPaper = () => {
             page,
             size,
             studentExamId,
-            examId,
             action,
             pageNumber: pageNumber,
             pageSize,
         })
     }
 
+    const handleCheckIsCorrectOrNot = (question) => {
+        const totalCorrectOptions = question?.examQuestionOptionResponses?.filter(option =>
+            option.isTrue).length || 0
+
+        const totalCorrectSelectedOptions = question?.studentExamAnswerResponses?.selectedOptions?.filter(option =>
+            option.isCorrect).length || 0
+
+        const totalWrongSelectedOptions = question?.studentExamAnswerResponses?.selectedOptions?.filter(option =>
+            option.isCorrect === false).length || 0
+
+        if (question?.type === "NUMERICAL") {
+            if (question?.correctAnswer === null)
+                return <div className="question-mark">
+                    <div>
+                        <span>Max: <strong>{question?.marks}</strong></span>
+                        <span style={{ color: "#dc3545" }}>[{question?.negativeMarks || 0} Neg.]</span>
+                    </div>
+                </div>
+            if (question?.correctAnswer === question?.studentExamAnswerResponses?.answer)
+                return <>
+                    <span className="question-correct">
+                        <i className="bi bi-check-circle-fill"></i>
+                        Correct
+                    </span>
+                    <div className="question-mark">
+                        <span>
+                            Obtain: <strong>{(question?.studentExamAnswerResponses?.obtainMarks)?.toFixed(2) ?? 0}</strong>
+                        </span>
+                        <span>
+                            <span>Max: <strong>{question?.marks}</strong></span>
+                            <span style={{ color: "#dc3545" }}>[{question?.negativeMarks || 0} Neg.]</span>
+                        </span>
+                    </div>
+                </>
+            else if (question?.studentExamAnswerResponses === null || question?.studentExamAnswerResponses?.answer === null)
+                return <>
+                    <span className="not-answered">
+                        <i className="bi bi-dash-circle-fill"></i>
+                        Not Answered
+                    </span>
+                    <div>
+                        <span>Max: <strong>{question?.marks}</strong></span>
+                        <span style={{ color: "#dc3545" }}>[{question?.negativeMarks || 0} Neg.]</span>
+                    </div>
+                </>
+            else
+                return <>
+                    <span className="question-incorrect">
+                        <i className="bi bi-x-circle-fill"></i>
+                        Wrong
+                    </span>
+                    <div className="question-mark">
+                        <span>
+                            Obtain: <strong>{(question?.studentExamAnswerResponses?.obtainMarks)?.toFixed(2) ?? 0}</strong>
+                        </span>
+                        <span>
+                            <span>Max: <strong>{question?.marks}</strong></span>
+                            <span style={{ color: "#dc3545" }}>[{question?.negativeMarks || 0} Neg.]</span>
+                        </span>
+                    </div>
+                </>
+        }
+
+        if (totalCorrectOptions === 0)
+            return <div className="question-mark">
+                <div>
+                    <span>Max: <strong>{question?.marks}</strong></span>
+                    <span style={{ color: "#dc3545" }}>[{question?.negativeMarks || 0} Neg.]</span>
+                </div>
+            </div>
+
+        if (totalWrongSelectedOptions > 0)
+            return <>
+                <span className="question-incorrect">
+                    <i className="bi bi-x-circle-fill"></i>
+                    Wrong
+                </span>
+                <div className="question-mark">
+                    <span>
+                        Obtain: <strong>{(question?.studentExamAnswerResponses?.obtainMarks)?.toFixed(2) ?? 0}</strong>
+                    </span>
+                    <span>
+                        <span>Max: <strong>{question?.marks}</strong></span>
+                        <span style={{ color: "#dc3545" }}>[{question?.negativeMarks || 0} Neg.]</span>
+                    </span>
+                </div>
+            </>
+
+        if (totalCorrectOptions === totalCorrectSelectedOptions)
+            return <>
+                <span className="question-correct">
+                    <i className="bi bi-check-circle-fill"></i>
+                    Correct
+                </span>
+                <div className="question-mark">
+                    <span>
+                        Obtain: <strong>{(question?.studentExamAnswerResponses?.obtainMarks)?.toFixed(2) ?? 0}</strong>
+                    </span>
+                    <span>
+                        <span>Max: <strong>{question?.marks}</strong></span>
+                        <span style={{ color: "#dc3545" }}>[{question?.negativeMarks || 0} Neg.]</span>
+                    </span>
+                </div>
+            </>
+
+        if (totalCorrectSelectedOptions + totalWrongSelectedOptions === 0)
+            return <>
+                <span className="not-answered">
+                    <i className="bi bi-dash-circle-fill"></i>
+                    Not Answered
+                </span>
+                <div className="question-mark">
+                    <span>
+                        Obtain: <strong>{(question?.studentExamAnswerResponses?.obtainMarks)?.toFixed(2) ?? 0}</strong>
+                    </span>
+                    <span>
+                        <span>Max: <strong>{question?.marks}</strong></span>
+                        <span style={{ color: "#dc3545" }}>[{question?.negativeMarks || 0} Neg.]</span>
+                    </span>
+                </div>
+            </>
+
+        return <>
+            <span className="partial-correct">
+                <i className="bi bi-check2-circle me-1"></i>
+                Partial Correct
+            </span>
+            <div className="question-mark">
+                <span>
+                    Obtain: <strong>{(question?.studentExamAnswerResponses?.obtainMarks)?.toFixed(2) ?? 0}</strong>
+                </span>
+                <span>
+                    <span>Max: <strong>{question?.marks}</strong></span>
+                    <span style={{ color: "#dc3545" }}>[{question?.negativeMarks || 0} Neg.]</span>
+                </span>
+            </div>
+        </>
+
+    }
+
+
+    const getOptionClass = (option, selected) => {
+
+        const isCorrect = selected?.isCorrect
+
+        if (option?.isTrue === null && selected) {
+            return "student-selected"
+        }
+
+        if (selected && isCorrect) {
+            return "student-correct-option"
+        }
+
+        if (selected && !isCorrect) {
+            return "student-wrong-option"
+        }
+
+        if (option?.isTrue) {
+            return "correct-answer-option"
+        }
+
+        return ""
+    }
+
+    const getOptionIcon = (option, selectedOption) => {
+
+        const isCorrect = option?.isTrue === true
+
+        if (option?.isTrue === null)
+            return
+
+        if (selectedOption && isCorrect) {
+            return (
+                <i className="bi bi-check-circle-fill option-result-icon"></i>
+            )
+        }
+
+        if (selectedOption && !isCorrect) {
+            return (
+                <i className="bi bi-x-circle-fill option-result-icon"></i>
+            )
+        }
+
+        if (!selectedOption && isCorrect) {
+            return (
+                <i className="bi bi-check-circle-fill option-result-icon"></i>
+            )
+        }
+
+        return null
+    }
+
     useEffect(() => {
-        dispatch(getExamQuestions(examId, pageNumber, pageSize))
-    }, [dispatch, examId, pageNumber, pageSize])
+        dispatch(getStudentExamResult(studentExamId, pageNumber, pageSize))
+    }, [dispatch, studentExamId, pageNumber, pageSize])
 
     return (
         <div className="student-exam-detail-card">
@@ -114,51 +301,89 @@ const QuestionPaper = () => {
                         </h3>
                         <span>
                             Total Questions:{" "}
-                            {exam?.examQuestions?.totalElements || 0}
+                            {exam?.studentExamResult?.examQuestionResponses?.totalElements || 0}
                         </span>
                     </div>
                 </div>
                 <div className="questions-container">
                     {
-                        exam?.examQuestions?.content?.length > 0 ?
-                            exam?.examQuestions?.content?.map((question, index) => (
+                        exam?.studentExamResult?.examQuestionResponses?.content?.length > 0 ?
+                            exam?.studentExamResult?.examQuestionResponses?.content?.map((question, index) => (
                                 <div
                                     className="exam-question-card"
                                     key={question.id}>
                                     <div className="exam-question-header">
                                         <div className="question-number">
                                             Question {(pageNumber - 1) * pageSize + index + 1}.
-                                        </div>
-                                        <div className="question-type-marks">
                                             <span className="question-type">
                                                 {question.type}
                                             </span>
-                                            <span className="question-marks">
-                                                <i className="bi bi-star-fill me-1"></i>
-                                                {question.marks} Mark
-                                                {question.marks !== 1 ? "s" : ""}
-                                            </span>
+                                        </div>
+                                        <div className="question-status">
+                                            {handleCheckIsCorrectOrNot(question)}
                                         </div>
                                     </div>
                                     <div className="exam-question-body">
                                         <h4>
                                             {question.question}
                                         </h4>
+                                        {
+                                            question?.type === "NUMERICAL" &&
+                                            <div className='numerical-question'>
+                                                {
+                                                    question?.correctAnswer && <span>Correct Answer :{question?.correctAnswer} </span>
+                                                }
+                                                <span>Student Answer : {question?.studentExamAnswerResponses?.answer}</span>
+                                            </div>
+                                        }
                                         <div className="exam-options">
                                             {
-                                                question?.examQuestionOptionResponses?.map((option, index) => (
-                                                    <label
-                                                        key={option.id}
-                                                        className={`exam-option`}
-                                                    >
-                                                        <input
-                                                            type="radio"
-                                                        />
-                                                        <span className="option-text">
-                                                            {option.optionText}
-                                                        </span>
-                                                    </label>
-                                                ))
+                                                question?.examQuestionOptionResponses?.map((option, index) => {
+                                                    const selectedOption = question?.studentExamAnswerResponses?.selectedOptions?.find(selectedOption =>
+                                                        selectedOption.id === option.id)
+                                                    return (
+                                                        <div
+                                                            key={option.id}
+                                                            className={`result-option ${getOptionClass(
+                                                                option,
+                                                                selectedOption,
+                                                            )}`}
+                                                        >
+                                                            <div className="option-left">
+                                                                <span className="option-letter">
+                                                                    {
+                                                                        String.fromCharCode(65 + index)
+                                                                    }
+                                                                </span>
+                                                                <span className="option-text">
+                                                                    {option.optionText}
+                                                                </span>
+                                                            </div>
+                                                            <div className="option-right">
+                                                                {
+                                                                    selectedOption && (
+                                                                        <span className="selected-label">
+                                                                            <i className="bi bi-person-fill me-1"></i>
+                                                                            Selected
+                                                                        </span>
+                                                                    )
+                                                                }
+                                                                {
+                                                                    selectedOption?.isCorrect && (
+                                                                        <span className="correct-label">
+                                                                            <i className="bi bi-check-lg me-1"></i>
+                                                                            Correct Answer
+                                                                        </span>
+                                                                    )
+                                                                }
+                                                                {getOptionIcon(
+                                                                    option,
+                                                                    selectedOption
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                })
                                             }
                                         </div>
                                     </div>
@@ -176,7 +401,7 @@ const QuestionPaper = () => {
                 </div>
                 <div className="pagination-container">
                     <div className="pagination-info">
-                        Total : <strong>{exam?.examQuestions?.totalElements || 0}</strong>
+                        Total : <strong>{exam?.studentExamResult?.examQuestionResponses?.totalElements || 0}</strong>
                     </div>
                     <div className="page-size-selector">
                         <label>Show :</label>

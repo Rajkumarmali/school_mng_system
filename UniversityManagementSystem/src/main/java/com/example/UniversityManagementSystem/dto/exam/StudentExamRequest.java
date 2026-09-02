@@ -11,5 +11,5 @@ import lombok.Setter;
 public class StudentExamRequest {
     private Long id;
     private StudentExamStatus status;
-    private Integer obtainMarks;
+    private Double obtainMarks;
 }

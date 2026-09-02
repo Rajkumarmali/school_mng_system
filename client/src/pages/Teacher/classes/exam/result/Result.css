@@ -1,0 +1,247 @@
+.exam-result-header{
+    margin-top: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding:10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, .08);
+    align-items: flex-start;
+    justify-content: space-between;
+    display: flex;
+}
+
+.exam-student-container{
+    margin-top: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding:10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, .08);
+    align-items: end;
+}
+
+.exam-result-header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.result-page-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    background: #3f51b5;
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 23px;
+}
+
+.exam-result-header-actions {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.result-publish-status {
+    padding: 9px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.result-publish-status.published {
+    background: #e8f8ef;
+    color: #1d8b50;
+}
+
+.result-publish-status.not-published {
+    background: #fff3e8;
+    color: #d97819;
+}
+
+.result-action-buttons{
+    display: grid;
+    align-items: center;
+    gap: 4px
+}
+
+.generate-result-btn{
+    border: none;
+    padding: 10px 18px;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+.generate-result-btn:hover{
+     transform: translateY(-1px);
+}
+
+.result-publish-btn,
+.result-hide-btn {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.result-publish-btn {
+    background: #3f51b5;
+    color: white;
+}
+
+.result-publish-btn:hover {
+    background: #303f9f;
+    transform: translateY(-1px);
+}
+
+.result-hide-btn {
+    background: #e74c3c;
+    color: white;
+}
+
+.result-hide-btn:hover {
+    background: #c0392b;
+}
+
+.result-stats-container {
+    margin-top: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding:10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, .08);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+}
+
+.result-stat-card {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 17px;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.result-stat-icon {
+    width: 43px;
+    height: 43px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 18px;
+}
+
+.result-stat-card h3 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.result-stat-card span {
+    font-size: 12px;
+}
+
+.top-performer-card {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 6px;
+}
+
+.section-heading h3 {
+    margin: 0;
+    font-size: 17px;
+}
+
+.section-heading p {
+    margin: 5px 0 16px;
+    font-size: 13px;
+}
+
+.top-performer-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.top-performer-item {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    padding: 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.performer-rank {
+    width: 32px;
+    text-align: center;
+    font-size: 20px;
+}
+
+.performer-avatar,
+.student-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.3); 
+    font-weight: 700;
+}
+
+.performer-avatar {
+    width: 38px;
+    height: 38px;
+}
+
+.performer-details {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.performer-details strong {
+    font-size: 13px;
+}
+
+.performer-details span {
+    margin-top: 3px;
+    font-size: 11px;
+}
+
+.performer-marks {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.performer-marks strong {
+    font-size: 14px;
+}
+
+.performer-marks span {
+    margin-top: 2px;
+}

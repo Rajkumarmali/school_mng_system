@@ -9,12 +9,16 @@ public interface ExamServices {
     String createExam(List<ExamRequest> dto);
     String updateExam(Long examId,ExamRequest dto);
     String updateExamToShowQuestionPaper(Long examId);
+    String updateExamToShowResult(Long examId);
+    String generateExamResult(Long examId);
+    ExamResultOverviewResponse getExamResultOverview(Long examId);
     Page<ExamResponse> getExams(Long sectionId, int pageNumber, int pageSize);
     Page<ExamResponse> getExamsBySectionSubjectId(Long sectionSubjectId,int pageNumber,int pageSize);
     ExamResponse getExamById(Long examId);
     Page<StudentExamResponse> getStudentExamsByExamId(Long examId, int pageNumber, int pageSize);
     Page<StudentExamResponse> getStudentExamsByUserId(Long userId, int pageNumber, int pageSize);
     Page<StudentExamResponse> getOnGoingStudentExams(Long userId, int pageNumber, int pageSize);
+    StudentExamResultResponse getStudentExamResult(Long studentExamId,int pageNumber,int pageSize);
     StudentExamOverviewResponse getStudentExamOverview(Long userId);
     StudentExamResponse getStudentExamById(Long studentExamId);
     String updateStudentExamStatus(StudentExamRequest dto);

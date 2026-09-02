@@ -143,7 +143,7 @@ const Exam = () => {
                                                 <span>Upcoming Exams</span>
                                             </div>
                                             <div className="stat-card">
-                                                <h5>{exam?.userStudentExamOverview?.avgMarks}%</h5>
+                                                <h5>{(exam?.userStudentExamOverview?.avgMarks)?.toFixed(2)}%</h5>
                                                 <span>Avg. Marks</span>
                                                 <div className="progress" role="progressbar" aria-label="Success example" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
                                                     <div className="progress-bar bg-success" style={{ width: `${exam?.userStudentExamOverview?.avgMarks}%` }}></div>
@@ -186,7 +186,7 @@ const Exam = () => {
                                                                         exam.status === "ABSENT" ?
                                                                             "ABSENT"
                                                                             :
-                                                                            exam.obtainMarks
+                                                                            (exam?.obtainMarks)?.toFixed(2)
                                                                     }
 
                                                                 </td>

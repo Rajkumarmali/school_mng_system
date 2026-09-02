@@ -14,7 +14,8 @@ const OnGoingExamQuestion = () => {
 
     const [isExamStarted, setIsExamStarted] = useState(false);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [timeLeft, setTimeLeft] = useState(0);
+    const [timeLeft, setTimeLeft] = useState(60);
+    const [studentAnswer, setStudentAnswer] = useState("")
 
     const navigate = useNavigate()
 
@@ -48,11 +49,12 @@ const OnGoingExamQuestion = () => {
         setTimeLeft(getDuration(exam?.userStudentExam?.examResponse?.startTime, exam?.userStudentExam?.examResponse?.endTime) * 60)
     };
 
-    const handleSaveStudentAnswer = async (questionId, optionId) => {
+    const handleSaveStudentAnswer = async (questionId, optionId, answer = 0) => {
         const studentAnswerData = {
             questionId: questionId,
             selectedOptionId: optionId,
-            studentExamId: studentExamId
+            studentExamId: studentExamId,
+            answer: answer
         }
         await dispatch(saveStudentAnswer(studentAnswerData))
         await dispatch(getStudentExamQuestions(studentExamId))
@@ -68,6 +70,14 @@ const OnGoingExamQuestion = () => {
         await dispatch(getStudentExamQuestions(studentExamId))
     }
 
+    const handleKeyPress = (key) => {
+        if (key === "clear")
+            setStudentAnswer("")
+        else if (key === "backspace")
+            setStudentAnswer((prev) => prev.slice(0, -1))
+        else setStudentAnswer((prev) => prev + key)
+    }
+
     const handleSubmitExam = useCallback(async () => {
         if (document.fullscreenElement) {
             try {
@@ -80,6 +90,7 @@ const OnGoingExamQuestion = () => {
         navigate(`/student/exam/submit/${studentExamId}`)
     }, [navigate, studentExamId, dispatch])
 
+
     useEffect(() => {
         if (!isExamStarted) return;
 
@@ -89,6 +100,16 @@ const OnGoingExamQuestion = () => {
 
         return () => clearInterval(timer);
     }, [isExamStarted]);
+
+    useEffect(() => {
+        const savedAnswer = currentQuestion?.studentExamAnswerResponses?.answer;
+        setStudentAnswer(
+            savedAnswer != null ?
+                savedAnswer :
+                ""
+        )
+
+    }, [currentQuestion])
 
     useEffect(() => {
         (timeLeft === 0 && isExamStarted) &&
@@ -202,21 +223,66 @@ const OnGoingExamQuestion = () => {
                                     <h3>
                                         Question {currentQuestionIndex + 1} of {exam?.studentExamQuestions?.length}
                                     </h3>
-                                    <span className={`badge-type ${currentQuestion?.type?.toLowerCase() || ""}`}>
-                                        {currentQuestion?.type === 'MCQ' ? 'Single Choice (MCQ)' : 'Multiple Choice (MSQ)'}
-                                    </span>
+                                    <div className='badge-type'>
+                                        <span>
+                                            {currentQuestion?.type}
+                                        </span>
+                                        <span className='m-2'>[{currentQuestion?.marks} Mark]</span>
+                                        <span style={{ color: "#dc3545" }}>[{currentQuestion?.negativeMarks || 0} Neg.]</span>
+                                    </div>
                                 </div>
 
                                 <div className="question-text">
                                     <p>{currentQuestion?.question}</p>
                                 </div>
+                                {
+                                    currentQuestion?.type === "NUMERICAL" &&
+                                    <div className='answer-label'>
+                                        <input
+                                            type='number'
+                                            className='student-answer-input'
+                                            value={studentAnswer}
+                                            onChange={(e) => setStudentAnswer(e.target.value)}
+                                        />
+                                        <div className="virtual-keyboard">
+                                            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num =>
+                                                <button
+                                                    onClick={() => handleKeyPress(num)}
+                                                >
+                                                    {num}
+                                                </button>
+                                            ))}
+                                            <button
+                                                onClick={() => handleKeyPress("clear")}
+                                            >
+                                                Clear
+                                            </button>
+                                            <button>
+                                                0
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleKeyPress("backspace")}
+                                            >
+                                                <i className="bi bi-backspace-fill"></i>
+                                            </button>
+                                        </div>
+                                        <button
+                                            className='submit-answer-btn'
+                                            onClick={(() => handleSaveStudentAnswer(currentQuestion.id, null, studentAnswer))}
+                                        >
+                                            Submit
+                                        </button>
+                                    </div>
+                                }
+
                                 <div className="options-list">
                                     {
                                         currentQuestion?.examQuestionOptionResponses?.map((option, index) => {
                                             const type = currentQuestion?.type
                                             const isMSQ = type === "MSQ"
-                                            const answers = currentQuestion?.studentExamAnswerResponses || [];
-                                            const isSelected = answers.some(answer => answer?.selectedOptionId === option?.id);
+                                            const answers = currentQuestion?.studentExamAnswerResponses?.selectedOptions || [];
+                                            const isSelected = answers.some(answer => answer?.id === option?.id);
                                             return (
                                                 <div
                                                     key={index}
@@ -241,7 +307,7 @@ const OnGoingExamQuestion = () => {
                                             className="btn-action"
                                             onClick={handleUpdateQuestionReview}
                                         >
-                                            {currentQuestion?.studentExamAnswerResponses?.[0]?.isMarkedForReview ? 'Unmark Review' : 'Mark for Review'}
+                                            {currentQuestion?.studentExamAnswerResponses?.isMarkedForReview ? 'Unmark Review' : 'Mark for Review'}
                                         </button>
                                         <button type="button" className="btn-action"
                                             onClick={handleClearStudentAnswer}
@@ -280,8 +346,8 @@ const OnGoingExamQuestion = () => {
                                 <div className="palette-grid">
                                     {
                                         exam?.studentExamQuestions?.map((_, idx) => {
-                                            const isAnswered = exam?.studentExamQuestions?.[idx]?.studentExamAnswerResponses?.[0]?.isAnswered
-                                            const isMarksReview = exam?.studentExamQuestions?.[idx]?.studentExamAnswerResponses?.[0]?.isMarkedForReview
+                                            const isAnswered = exam?.studentExamQuestions?.[idx]?.studentExamAnswerResponses?.isAnswered
+                                            const isMarksReview = exam?.studentExamQuestions?.[idx]?.studentExamAnswerResponses?.isMarkedForReview
                                             return (
                                                 <button
                                                     key={idx}

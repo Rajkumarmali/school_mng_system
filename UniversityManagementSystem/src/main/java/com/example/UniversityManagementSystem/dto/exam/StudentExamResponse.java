@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class StudentExamResponse implements Serializable {
     private Long id;
     private StudentExamStatus status;
-    private Integer obtainMarks;
+    private Double obtainMarks;
     private StudentResponse studentResponse;
     private ExamResponse examResponse;
 }

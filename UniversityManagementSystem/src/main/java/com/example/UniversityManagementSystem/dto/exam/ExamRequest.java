@@ -20,8 +20,8 @@ public class ExamRequest {
     private LocalDate date;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private Integer maxMarks;
-    private Integer passingMarks;
+    private Double maxMarks;
+    private Double passingMarks;
     private ExamStatus status;
     private Long sectionSubjectId;
 }

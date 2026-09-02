@@ -16,7 +16,9 @@ public class ExamQuestionResponse implements Serializable {
     private Long id;
     private String question;
     private QuestionType type;
-    private Integer marks;
+    private Integer correctAnswer;
+    private Double marks;
+    private Double negativeMarks;
+    StudentExamAnswerResponse studentExamAnswerResponses;
     List<ExamQuestionOptionResponse> examQuestionOptionResponses;
-    List<StudentExamAnswerResponse> studentExamAnswerResponses;
 }

@@ -13,6 +13,8 @@ import java.util.List;
 public class ExamQuestionRequest {
     private String question;
     private QuestionType type;
-    private Integer marks;
+    private Integer correctAnswer;
+    private Double marks;
+    private Double negativeMarks;
     List<ExamQuestionOptionRequest> examQuestionOptionRequests;
 }

@@ -30,13 +30,13 @@ const ExamDetails = () => {
                 <div className="d-flex gap-3">
                     <button
                         className="back-student-exam-detail-btn"
-                        onClick={() => setSearchParams({ page: pageNumber, size: pageSize, studentExamId, examId: exam?.userStudentExam.examResponse.id, action: "overview" })}
+                        onClick={() => setSearchParams({ page: pageNumber, size: pageSize, studentExamId, action: "overview" })}
                     >
                         Overview
                     </button>
                     <button
                         className="back-student-exam-detail-btn"
-                        onClick={() => setSearchParams({ page: pageNumber, size: pageSize, studentExamId, examId: exam?.userStudentExam.examResponse.id, action: "questionPaper" })}
+                        onClick={() => setSearchParams({ page: pageNumber, size: pageSize, studentExamId, action: "questionPaper" })}
                     >
                         Question Paper
                     </button>
@@ -57,6 +57,64 @@ const ExamDetails = () => {
                         </div>
                         :
                         <div>
+                            <div className="section-exam-detail-card">
+                                <div className="section-student-detail-info">
+                                    <div className="section-student-detail-contact">
+                                        <div>
+                                            <i className="bi bi-bar-chart-fill me-2"></i>
+                                            <span>
+                                                <strong>Marks Details  :</strong>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <i className="bi bi-clipboard-data-fill me-2"></i>
+                                            <span>MaxMarks : {exam?.userStudentExam?.examResponse?.maxMarks}</span>
+                                        </div>
+                                        <div>
+                                            <i className="bi bi-check-circle-fill me-2"></i>
+                                            <span>PassingMarks : {exam?.userStudentExam?.examResponse?.passingMarks}</span>
+                                        </div>
+                                        <div>
+                                            <i className="bi bi-award-fill me-2"></i>
+                                            <span>ObtainMarks :
+                                                {
+                                                    exam?.userStudentExam?.status === "ABSENT" ?
+                                                        "ABSENT"
+                                                        :
+                                                        (exam?.userStudentExam?.obtainMarks)?.toFixed(2)
+                                                }
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="student-exam-detail-info">
+                                    <div className="student-exam-detail-contact">
+                                        <div>
+                                            <i className="bi bi-percent me-2"></i>
+                                            <span>Percentage : {((exam?.userStudentExam?.obtainMarks / exam?.userStudentExam?.examResponse?.maxMarks) * 100).toFixed(2)}%</span>
+                                        </div>
+                                        <div>
+                                            <i className="bi bi-award-fill me-2"></i>
+                                            <span>Grade : </span>
+                                        </div>
+
+                                        <div>
+                                            <i className="bi bi-check2-circle me-2"></i>
+                                            <span>Result :
+                                                {
+                                                    exam?.userStudentExam?.obtainMarks ?
+                                                        exam?.userStudentExam?.obtainMarks >= exam?.userStudentExam?.examResponse?.passingMarks ?
+                                                            "PASS"
+                                                            :
+                                                            "FAIL"
+                                                        :
+                                                        "-"
+                                                }
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div className="student-exam-detail-card">
                                 <div className="student-exam-detail-info">
                                     <div className="student-exam-detail-contact">
@@ -141,64 +199,7 @@ const ExamDetails = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="section-exam-detail-card">
-                                <div className="section-student-detail-info">
-                                    <div className="section-student-detail-contact">
-                                        <div>
-                                            <i className="bi bi-bar-chart-fill me-2"></i>
-                                            <span>
-                                                <strong>Marks Details  :</strong>
-                                            </span>
-                                        </div>
-                                        <div>
-                                            <i className="bi bi-clipboard-data-fill me-2"></i>
-                                            <span>MaxMarks : {exam?.userStudentExam?.examResponse?.maxMarks}</span>
-                                        </div>
-                                        <div>
-                                            <i className="bi bi-check-circle-fill me-2"></i>
-                                            <span>PassingMarks : {exam?.userStudentExam?.examResponse?.passingMarks}</span>
-                                        </div>
-                                        <div>
-                                            <i className="bi bi-award-fill me-2"></i>
-                                            <span>ObtainMarks :
-                                                {
-                                                    exam?.userStudentExam?.status === "ABSENT" ?
-                                                        "ABSENT"
-                                                        :
-                                                        exam?.userStudentExam?.obtainMarks
-                                                }
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="student-exam-detail-info">
-                                    <div className="student-exam-detail-contact">
-                                        <div>
-                                            <i className="bi bi-percent me-2"></i>
-                                            <span>Percentage : {((exam?.userStudentExam?.obtainMarks / exam?.userStudentExam?.examResponse?.maxMarks) * 100).toFixed(2)}%</span>
-                                        </div>
-                                        <div>
-                                            <i className="bi bi-award-fill me-2"></i>
-                                            <span>Grade : </span>
-                                        </div>
 
-                                        <div>
-                                            <i className="bi bi-check2-circle me-2"></i>
-                                            <span>Result :
-                                                {
-                                                    exam?.userStudentExam?.obtainMarks ?
-                                                        exam?.userStudentExam?.obtainMarks >= exam?.userStudentExam?.examResponse?.passingMarks ?
-                                                            "PASS"
-                                                            :
-                                                            "FAIL"
-                                                        :
-                                                        "-"
-                                                }
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                 }
             </div>

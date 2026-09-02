@@ -28,6 +28,8 @@ const QuestionPaper = () => {
         question: "",
         type: "MCQ",
         marks: 4,
+        negativeMarks: 0,
+        correctAnswer: 0,
         examQuestionOptionRequests: [
             {
                 "optionText": "",
@@ -140,6 +142,8 @@ const QuestionPaper = () => {
             question: question.question,
             type: question.type || "MCQ",
             marks: question.marks || 0,
+            negativeMarks: question.negativeMarks || 0,
+            correctAnswer: question?.type === "NUMERICAL" ? question.correctAnswer : 0,
             examQuestionOptionRequests: (question?.type === "MCQ" || question?.type === "MSQ") ? [
                 {
                     optionText: question?.examQuestionOptionResponses[0]?.optionText || "",
@@ -228,7 +232,7 @@ const QuestionPaper = () => {
 
     const handleSaveQuestion = async (e) => {
         e.preventDefault()
-
+        console.log(questionData)
         isEditQuestionModal ?
             await dispatch(updateExamQuestion(editQuestionId, questionData))
             :
@@ -240,7 +244,9 @@ const QuestionPaper = () => {
         setQuestionData({
             question: "",
             type: "MCQ",
+            correctAnswer: 0,
             marks: 4,
+            negativeMarks: 0,
             examQuestionOptionRequests: [
                 {
                     "optionText": "",
@@ -347,11 +353,10 @@ const QuestionPaper = () => {
                                             >
                                                 <option value="MCQ">Multiple Choice (MCQ)</option>
                                                 <option value="MSQ">Multiple Select  (MSQ)</option>
-                                                <option value="SHORT_ANSWER">Short answer</option>
-                                                <option value="LONG_ANSWER">Long answer</option>
+                                                <option value="NUMERICAL">Numerical</option>
+
                                             </select>
                                         </div>
-
                                         <div className="form-group small-input">
                                             <label>Marks</label>
                                             <input
@@ -359,6 +364,17 @@ const QuestionPaper = () => {
                                                 min="1"
                                                 name="marks"
                                                 value={questionData.marks}
+                                                onChange={handleChange}
+                                            />
+                                        </div>
+                                        <div className="form-group small-input">
+                                            <label>NagativeMarks</label>
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                step="0.01"
+                                                name="negativeMarks"
+                                                value={questionData.negativeMarks}
                                                 onChange={handleChange}
                                             />
                                         </div>
@@ -374,6 +390,18 @@ const QuestionPaper = () => {
                                             placeholder="Type your question statement here..."
                                             required
                                         ></textarea>
+                                        {
+                                            questionData.type === "NUMERICAL" &&
+                                            <>
+                                                <label>Correct Answer</label>
+                                                <input
+                                                    type='number'
+                                                    name='correctAnswer'
+                                                    value={questionData.correctAnswer}
+                                                    onChange={handleChange}
+                                                />
+                                            </>
+                                        }
                                     </div>
                                     {
                                         (questionData.type === 'MCQ' || questionData.type === 'MSQ') && (
@@ -404,6 +432,7 @@ const QuestionPaper = () => {
                                                 ))}
                                             </div>
                                         )
+
                                     }
 
                                     <button
@@ -439,6 +468,7 @@ const QuestionPaper = () => {
                                                     </span>
                                                     <div className="q-header-meta">
                                                         <span className="q-marks">{q.marks} Marks</span>
+                                                        <span style={{ color: "#dc3545" }}>[{q?.negativeMarks || 0} Neg.]</span>
                                                         <button
                                                             className="btn-delete"
                                                             onClick={() => handleEditQuestionModal(q)}
@@ -457,7 +487,9 @@ const QuestionPaper = () => {
                                                 <p className="q-item-text">
                                                     <strong>Q{(pageNumber - 1) * pageSize + idx + 1}.</strong> {q.question}
                                                 </p>
-
+                                                {q.type === "NUMERICAL" &&
+                                                    <p>Correct Answer : {q?.correctAnswer}</p>
+                                                }
                                                 {(q?.type === 'MCQ' || q?.type === "MSQ" || q?.type === "TRUE_FALSE") &&
                                                     <div className="q-item-options">
                                                         {q?.examQuestionOptionResponses?.map((opt, oIdx) =>
@@ -494,11 +526,20 @@ const QuestionPaper = () => {
                                     <div key={q.id} className="preview-q-block">
                                         <div className="preview-q-meta">
                                             <strong>
-                                                Q{(pageNumber - 1) * pageSize + idx + 1}. ({q.marks} Marks) ({q.type})
+                                                Q{(pageNumber - 1) * pageSize + idx + 1}.
+
+                                                ({q.type})
                                             </strong>
+                                            <div>
+                                                <span className="q-marks">{q.marks} Marks</span>
+                                                <span style={{ color: "#dc3545" }}>[{q.negativeMarks || 0} Neg.]</span>
+                                            </div>
 
                                         </div>
                                         <p>{q?.question}</p>
+                                        {q.type === "NUMERICAL" &&
+                                            <p>Correct Answer : {q?.correctAnswer}</p>
+                                        }
                                         {
                                             (q?.type === 'MCQ' || q?.type === "MSQ" || q?.type === "TRUE_FALSE") &&
                                             <ul className="preview-options">

@@ -185,16 +185,22 @@ const OnGoingExamDetail = () => {
                             <strong>Exam is currently ongoing</strong>
                         </div>
                     </div>
+                    {
+                        exam?.userStudentExam?.status === "PRESENT" ?
+                            <div className="exam-submitted-status">
+                                <i className="bi bi-check-circle-fill me-2"></i>
+                                Exam Submitted
+                            </div>
+                            :
+                            <button
+                                className="start-exam-btn"
+                                onClick={handleContinueExam}
 
-                    <button
-                        className="start-exam-btn"
-                        onClick={handleContinueExam}
-
-                    >
-                        <i className="bi bi-play-fill me-2"></i>
-                        Continue Exam
-                    </button>
-
+                            >
+                                <i className="bi bi-play-fill me-2"></i>
+                                Continue Exam
+                            </button>
+                    }
                 </div>
 
             </div>

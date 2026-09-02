@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
 import { getExamById, updateExam } from '../../../../state/exam/Action'
-import Student from './student/Student'
 import QuestionPaper from './QuestionPaper'
+import Result from './result/Result'
 
 const ExamDetail = () => {
 
@@ -102,9 +102,9 @@ const ExamDetail = () => {
                     </button>
                     <button
                         className="back-section-exam-detail-btn"
-                        onClick={() => setSearchParams({ classId: sectionSubjectId, tab, page: pageNumber, size: pageSize, examId, action: "student" })}
+                        onClick={() => setSearchParams({ classId: sectionSubjectId, tab, page: pageNumber, size: pageSize, examId, action: "result" })}
                     >
-                        Students
+                        Result
                     </button>
                 </div>
                 <button
@@ -117,9 +117,9 @@ const ExamDetail = () => {
             </div>
             <div>
                 {
-                    action === "student" ?
+                    action === "result" ?
                         <div>
-                            <Student />
+                            <Result />
                         </div>
                         :
                         action === "questionPaper" ?

@@ -132,7 +132,7 @@ const Student = () => {
                                     <td>{stu?.studentResponse?.firstName} {stu?.studentResponse?.lastName}</td>
                                     <td>{stu?.studentResponse?.email}</td>
                                     <td>{stu?.status}</td>
-                                    <td>{stu?.obtainMarks}</td>
+                                    <td>{(stu?.obtainMarks)?.toFixed(2)}</td>
                                 </tr>
                             )
                             :

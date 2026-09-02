@@ -192,18 +192,73 @@
   text-transform: uppercase;
 }
 
-.badge-type.mcq {
-  background-color: #e3f2fd;
-}
-
-.badge-type.msq {
-  background-color: #f3e5f5;
-}
-
 .question-text {
   font-size: 1.05rem;
   line-height: 1.6;
   margin-bottom: 24px;
+}
+
+.answer-label {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ gap: 15px;
+ margin: 80px;
+}
+
+.student-answer-input {   
+    width: 210px;
+    height: 48px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 0 15px;
+    text-align: center;
+    background: transparent;
+}
+.virtual-keyboard {
+    display: grid;
+    grid-template-columns: repeat(3, 65px);
+    gap: 8px;
+}
+
+.virtual-keyboard button {
+     background: transparent;
+    color: white;
+    border: 1px solid white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 400;
+    transition: 0.3s
+}
+
+.virtual-keyboard button:hover {
+     background: transparent;
+  color:#000000
+}
+
+.keyboard-clear {
+    color: #dc2626;
+}
+
+.keyboard-backspace {
+    color: #2563eb;
+}
+
+
+.submit-answer-btn {
+  width: 210px;
+  background: transparent;
+  color: white;
+  border: 1px solid white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 400;
+  transition: 0.3s
+}
+
+.submit-answer-btn:hover {
+  background: transparent;
+  color:#000000
 }
 
 .options-list {

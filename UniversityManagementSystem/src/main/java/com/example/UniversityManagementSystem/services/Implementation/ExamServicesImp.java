@@ -26,9 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,19 +41,22 @@ public class ExamServicesImp implements ExamServices {
     private final ExamQuestionRepository examQuestionRepository;
     private final ExamQuestionOptionRepository examQuestionOptionRepository;
     private final StudentExamAnswerRepository studentExamAnswerRepository;
+    private final SelectedOptionsRepository selectedOptionsRepository;
 
     public ExamServicesImp(SectionSubjectRepository sectionSubjectRepository,
                            ExamRepository examRepository,
                            StudentExamRepository studentExamRepository,
                            ExamQuestionRepository examQuestionRepository,
                            ExamQuestionOptionRepository examQuestionOptionRepository,
-                           StudentExamAnswerRepository studentExamAnswerRepository) {
+                           StudentExamAnswerRepository studentExamAnswerRepository,
+                           SelectedOptionsRepository selectedOptionsRepository) {
         this.sectionSubjectRepository = sectionSubjectRepository;
         this.examRepository = examRepository;
         this.studentExamRepository = studentExamRepository;
         this.examQuestionRepository = examQuestionRepository;
         this.examQuestionOptionRepository = examQuestionOptionRepository;
         this.studentExamAnswerRepository = studentExamAnswerRepository;
+        this.selectedOptionsRepository = selectedOptionsRepository;
     }
 
 
@@ -72,6 +73,39 @@ public class ExamServicesImp implements ExamServices {
         examQuestionOptionRepository.saveAll(examQuestionOptions);
     }
 
+    private static double checkAnswer(ExamQuestion question,StudentExamAnswer answer){
+
+        if(question.getType().equals(QuestionType.NUMERICAL)){
+            if(answer.getAnswer()==null){
+                return 0.0;
+            } else if (answer.getAnswer().equals(question.getCorrectAnswer()))
+               return question.getMarks();
+             else
+                return question.getNegativeMarks()*(-1.0);
+        }
+
+        List<ExamQuestionOption> examQuestionOptions = question.getQuestionOptions();
+        List<SelectedOptions> selectedOptions = answer.getSelectedOptions();
+        if(selectedOptions==null || selectedOptions.isEmpty()){
+            return 0.0;
+        }
+        int totalCorrectOptions =(int) examQuestionOptions.stream()
+                .filter(option-> option.getIsTrue().equals(true))
+                .count();
+
+        int totalSelectedCorrectOption=0;
+        for(SelectedOptions selectedOptions1:selectedOptions){
+            boolean isCorrect = examQuestionOptions.stream()
+                    .anyMatch(option -> Objects.equals(option.getId(), selectedOptions1.getExamQuestionOption().getId())
+                            && Boolean.TRUE.equals(option.getIsTrue()));
+            if(isCorrect)
+                totalSelectedCorrectOption++;
+            else
+                return question.getNegativeMarks()*(-1.00);
+        }
+        return ((double) totalSelectedCorrectOption/totalCorrectOptions)*((double)question.getMarks());
+    }
+
     @Override
     @Transactional
     @PreAuthorize("hasAnyRole('HOD','TEACHER')")
@@ -85,12 +119,16 @@ public class ExamServicesImp implements ExamServices {
         logger.info("Creating exam");
         try{
             for(ExamRequest examRequest:dto){
-                Exam exam = modelMapper.map(examRequest,Exam.class);
-                exam.setShowQuestionToStudent(false);
+
                 SectionSubject sectionSubject = sectionSubjectRepository.findById(examRequest.getSectionSubjectId()).orElseThrow(()->{
                     logger.error("Section subject not found | sectionSubjectId = {}",examRequest.getSectionSubjectId());
                     return new IllegalArgumentException("Section subject not found");
                 });
+
+                Exam exam = modelMapper.map(examRequest,Exam.class);
+                exam.setShowQuestionToStudent(false);
+                exam.setGeneratedResult(false);
+                exam.setShowResult(false);
                 exam.setCreatedAt(LocalDateTime.now());
                 exam.setId(null);
                 Exam savedExam = examRepository.save(exam);
@@ -154,7 +192,8 @@ public class ExamServicesImp implements ExamServices {
     @PreAuthorize("hasAnyRole('TEACHER')")
     @Caching(evict = {
             @CacheEvict(cacheNames = "examQuestions",allEntries = true),
-            @CacheEvict(cacheNames = "exam",key = "#examId")
+            @CacheEvict(cacheNames = "exam",key = "#examId"),
+            @CacheEvict(cacheNames = "studentExamResult",allEntries = true)
     })
     public String updateExamToShowQuestionPaper(Long examId) {
         logger.info("Updating exam to show question paper to students | examId = {}",examId);
@@ -171,6 +210,153 @@ public class ExamServicesImp implements ExamServices {
         } catch (Exception e) {
             logger.error("Failed to update exam to show question paper to students | examId = {}",examId,e);
             throw e;
+        }
+    }
+
+    @Override
+    @PreAuthorize("hasAnyRole('TEACHER')")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "exam",key = "#examId"),
+            @CacheEvict(cacheNames = "studentExams",allEntries = true),
+            @CacheEvict(cacheNames = "studentExamOverview",allEntries = true),
+            @CacheEvict(cacheNames = "studentExamResult",allEntries = true)
+    })
+    public String updateExamToShowResult(Long examId) {
+        logger.info("Updating exam to show result | examId = {}",examId);
+        try{
+            Exam exam = examRepository.findById(examId).orElseThrow(()->{
+                logger.error("exam not found | examId = {}",examId);
+                throw new IllegalArgumentException("Exam not found");
+            });
+            exam.setShowResult(!exam.getShowResult());
+            examRepository.save(exam);
+            logger.info("Successfully update exam to show result | examId = {}",examId);
+            return "Successfully update";
+        } catch (Exception e) {
+            logger.error("Failed to update exam to show result | examId = {}",examId,e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasAnyRole('TEACHER')")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "exam",key = "#examId"),
+            @CacheEvict(cacheNames = "studentExams",allEntries = true),
+            @CacheEvict(cacheNames = "examResultOverview",key = "#examId"),
+    })
+    public String generateExamResult(Long examId) {
+        logger.info("Generating exam result | examId = {}",examId);
+        try{
+            Exam exam = examRepository.findById(examId).orElseThrow(()->{
+                logger.error("Exam not found | examId = {}",examId);
+                throw new IllegalArgumentException("Exam not found");
+            });
+            if(exam.getGeneratedResult()!=null && exam.getGeneratedResult()){
+                return "already generated";
+            }
+            List<StudentExam> studentExams = exam.getStudentExams();
+            for(StudentExam studentExam:studentExams){
+                List<StudentExamAnswer> studentExamAnswers = new ArrayList<>();
+                for(StudentExamAnswer answer:studentExam.getStudentExamAnswers()){
+                    ExamQuestion examQuestion = answer.getQuestion();
+
+                    double marks = checkAnswer(examQuestion,answer);
+                    answer.setObtainMarks(marks);
+                    answer.setUpdatedAt(LocalDateTime.now());
+                    studentExamAnswers.add(answer);
+                }
+                studentExamAnswerRepository.saveAll(studentExamAnswers);
+                if(studentExam.getStatus()==null){
+                    studentExam.setStatus(StudentExamStatus.ABSENT);
+                } else if (studentExam.getStatus()==StudentExamStatus.PRESENT){
+                    double totalObtainMarks = studentExamAnswers.stream()
+                                    .mapToDouble(StudentExamAnswer::getObtainMarks)
+                                            .sum();
+                    studentExam.setObtainMarks(totalObtainMarks);
+                    studentExamRepository.save(studentExam);
+                }
+            }
+            exam.setGeneratedResult(true);
+            examRepository.save(exam);
+            logger.info("Successfully generate exam result | examId = {}",examId);
+            return "Successfully generate exam result";
+        } catch (Exception e) {
+            logger.error("Failed to generate exam result | examId = {}",examId);
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
+    @Override
+    @Cacheable(cacheNames = "examResultOverview",key = "#examId")
+    public ExamResultOverviewResponse getExamResultOverview(Long examId) {
+        logger.info("Fetching exam result review | examId = {}",examId);
+        try{
+
+            List<StudentExam> studentExams = studentExamRepository.findByExamId(examId,Sort.by(Sort.Direction.DESC,"obtainMarks"));
+
+            int totalStudents = studentExams.size();
+
+            int totalAppearedStudents = studentExams.stream()
+                    .filter(se->se.getStatus()==StudentExamStatus.PRESENT)
+                    .toList().size();
+
+            int totalPassedStudents = studentExams.stream()
+                    .filter(se->se.getStatus()==StudentExamStatus.PRESENT
+                            && se.getObtainMarks()!=null
+                            && se.getObtainMarks()>=se.getExam().getPassingMarks())
+                    .toList()
+                    .size();
+
+            int totalFailedStudents = studentExams.stream()
+                    .filter(se->se.getStatus()==StudentExamStatus.PRESENT
+                            && se.getObtainMarks()!=null
+                            && se.getObtainMarks()<se.getExam().getPassingMarks())
+                    .toList()
+                    .size();
+
+            double totalObtainMarks = studentExams.stream()
+                    .filter(se->se.getStatus()==StudentExamStatus.PRESENT
+                            && se.getObtainMarks()!=null)
+                    .mapToDouble(StudentExam::getObtainMarks)
+                    .sum();
+
+            double agvMarks = totalObtainMarks!=0 ? totalObtainMarks/totalAppearedStudents :0 ;
+
+            List<StudentExam> topPerformanceStudents = studentExams.stream()
+                    .filter(se->se.getStatus()==StudentExamStatus.PRESENT
+                            && se.getObtainMarks()!=null
+                            && se.getObtainMarks()>=se.getExam().getPassingMarks())
+                    .limit(3)
+                    .toList();
+
+            List<Map<String,Object>> topPerformanceStudentsResponse = new ArrayList<>();
+
+            for(StudentExam studentExam:topPerformanceStudents){
+                Map<String,Object> topPerformanceStudentRes = new HashMap<>();
+                topPerformanceStudentRes.put("name",studentExam.getStudent().getFirstName()+" "+studentExam.getStudent().getLastName());
+                topPerformanceStudentRes.put("rollNumber",studentExam.getStudent().getRollNumber());
+                topPerformanceStudentRes.put("obtainMarks",studentExam.getObtainMarks());
+
+                topPerformanceStudentsResponse.add(topPerformanceStudentRes);
+            }
+
+            ExamResultOverviewResponse response = new ExamResultOverviewResponse();
+            response.setTotalStudent(totalStudents);
+            response.setTotalAppearedStudent(totalAppearedStudents);
+            response.setTotalPassedStudent(totalPassedStudents);
+            response.setTotalFiledStudent(totalFailedStudents);
+            response.setAvgMarks(agvMarks);
+            response.setTopPerformanceStudents(topPerformanceStudentsResponse);
+
+            logger.info("Successfully fetched exam result review | examId = {}",examId);
+            return response;
+        } catch (Exception e) {
+            logger.error("Failed to fetched exam result review | examId = {}",examId,e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -228,7 +414,12 @@ public class ExamServicesImp implements ExamServices {
             Page<StudentExam> studentExams = studentExamRepository.findByStudentUserIdAndExamStatusNot(userId,ExamStatus.ONGOING, pageable);
 
             Page<StudentExamResponse> responses = studentExams.map(studentExam -> {
-              StudentExamResponse res = modelMapper.map(studentExam,StudentExamResponse.class);
+              StudentExamResponse res =new StudentExamResponse();
+              res.setId(studentExam.getId());
+              res.setStatus(studentExam.getStatus());
+              if(studentExam.getExam().getShowResult()){
+                  res.setObtainMarks(studentExam.getObtainMarks());
+              }
               ExamResponse examResponse = modelMapper.map(studentExam.getExam(),ExamResponse.class);
               examResponse.setSubjectResponse(modelMapper.map(studentExam.getExam().getSectionSubject().getSubject(),SubjectResponse.class));
               res.setExamResponse(examResponse);
@@ -271,6 +462,103 @@ public class ExamServicesImp implements ExamServices {
     }
 
     @Override
+    @PreAuthorize("hasAnyRole('TEACHER','STUDENT')")
+    @Cacheable(cacheNames = "studentExamResult", key = "{#studentExamId,#pageNumber,#pageSize} + ':' + T(org.springframework.security.core.context.SecurityContextHolder).getContext().getAuthentication().getAuthorities()")
+    public StudentExamResultResponse getStudentExamResult(Long studentExamId, int pageNumber, int pageSize) {
+        logger.info("Fetching student exam result | studentExamId = {}",studentExamId);
+        try{
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Set<String> roles = authentication.getAuthorities()
+                    .stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toSet());
+
+            StudentExam studentExam = studentExamRepository.findById(studentExamId).orElseThrow(()->{
+                logger.error("Student Exam not found | studentExamId = {}",studentExamId);
+                throw new IllegalArgumentException("Student Exam not found");
+            });
+            boolean isView = roles.contains("ROLE_TEACHER") || roles.contains("ROLE_HOD");
+
+            if(!isView &&  !studentExam.getExam().getShowQuestionToStudent()){
+                logger.info("Questions are hidden for students | StudentExamId = {}", studentExamId);
+                return null;
+            }
+
+            Student student = studentExam.getStudent();
+
+            Pageable pageable = PageRequest.of(pageNumber,pageSize);
+            Page<ExamQuestion> examQuestions = examQuestionRepository.findByExamId(studentExam.getExam().getId(),pageable);
+
+            Page<ExamQuestionResponse> examQuestionResponses = examQuestions
+                    .map(question->{
+                       ExamQuestionResponse res = modelMapper.map(question,ExamQuestionResponse.class);
+                       if(!isView && !studentExam.getExam().getShowResult()){
+                           res.setCorrectAnswer(null);
+                       }
+                       List<ExamQuestionOptionResponse> questionOptionResponses = question.getQuestionOptions()
+                               .stream()
+                               .map(option->{
+                                   ExamQuestionOptionResponse optionResponse = modelMapper.map(option,ExamQuestionOptionResponse.class);
+                                   if(!isView && !studentExam.getExam().getShowResult())
+                                       optionResponse.setIsTrue(null);
+                                   return optionResponse;
+                               }).toList();
+
+                           StudentExamAnswer questionAnswer= studentExamAnswerRepository.findByStudentExamIdAndQuestionId(studentExamId,question.getId());
+                           if(questionAnswer!=null){
+                               StudentExamAnswerResponse answerResponse = new StudentExamAnswerResponse();
+                               answerResponse.setId(questionAnswer.getId());
+                               if((isView || studentExam.getExam().getShowResult())
+                                       && questionAnswer.getObtainMarks()!=null)
+                                           answerResponse.setObtainMarks(questionAnswer.getObtainMarks());
+
+                               if(questionAnswer.getAnswer()!=null)
+                                   answerResponse.setAnswer(questionAnswer.getAnswer());
+
+                               List<SelectedOptions> selectedOptions = questionAnswer.getSelectedOptions();
+
+                               List<Map<String,Object>> optionsResponse  = new ArrayList<>();
+                               if(selectedOptions!=null){
+                                   for(SelectedOptions option:selectedOptions){
+                                       Map<String,Object> selectedOption = new HashMap<>();
+                                       selectedOption.put("id",option.getExamQuestionOption().getId());
+                                       if(isView || studentExam.getExam().getShowResult()){
+                                           selectedOption.put("isCorrect",option.getExamQuestionOption().getIsTrue());
+                                       }
+                                       optionsResponse.add(selectedOption);
+                                   }
+                               }
+                               answerResponse.setSelectedOptions(optionsResponse);
+                               res.setStudentExamAnswerResponses(answerResponse);
+                           }
+
+
+                       res.setExamQuestionOptionResponses(questionOptionResponses);
+                       return res;
+                    });
+
+            StudentExamResultResponse response = new StudentExamResultResponse();
+            response.setStudentName(student.getFirstName()+" "+student.getLastName());
+            response.setRollNumber(student.getRollNumber());
+            response.setRegistrationNumber(student.getRegistrationNumber());
+
+            response.setTotalMarks((double)studentExam.getExam().getMaxMarks());
+            if(studentExam.getObtainMarks()!=null)
+             response.setTotalObtainMarks((double)studentExam.getObtainMarks());
+
+            response.setExamQuestionResponses(examQuestionResponses);
+
+            logger.info("Successfully fetched student exam result | studentExamId = {}",studentExamId);
+            return response;
+        } catch (Exception e) {
+            logger.error("Failed to fetched student exam result | studentExamId = {}",studentExamId,e);
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Override
     @PreAuthorize("hasAnyRole('STUDENT')")
     @Cacheable(cacheNames = "studentExamOverview",key = "#userId")
     public StudentExamOverviewResponse getStudentExamOverview(Long userId) {
@@ -285,14 +573,16 @@ public class ExamServicesImp implements ExamServices {
             int onGoingExam = 0;
 
             for(StudentExam studentExam:studentExams){
-                if(studentExam.getObtainMarks()!=null){
+                if(studentExam.getObtainMarks()!=null && studentExam.getExam().getShowResult()){
                     totalMarks += studentExam.getExam().getMaxMarks();
                     totalObtainMarks += studentExam.getObtainMarks();
                 }
                 if(studentExam.getExam().getStatus() == ExamStatus.ONGOING)
                     onGoingExam++;
             }
+
             double avgMarks = (totalObtainMarks/totalMarks)*100;
+            avgMarks = Math.round(avgMarks*100.00)/100.00;
 
             int upcomingExam = studentExams.stream()
                             .filter(se->se.getExam().getDate().isAfter(LocalDate.now()))
@@ -322,6 +612,8 @@ public class ExamServicesImp implements ExamServices {
             });
             int totalQuestion = studentExam.getExam().getExamQuestions().size();
             StudentExamResponse response = modelMapper.map(studentExam,StudentExamResponse.class);
+            if(!studentExam.getExam().getShowResult())
+              response.setObtainMarks(null);
             ExamResponse examResponse = modelMapper.map(studentExam.getExam(),ExamResponse.class);
             examResponse.setTotalQuestion(totalQuestion);
             examResponse.setSubjectResponse(modelMapper.map(studentExam.getExam().getSectionSubject().getSubject(),SubjectResponse.class));
@@ -381,6 +673,7 @@ public class ExamServicesImp implements ExamServices {
     @PreAuthorize("hasAnyRole('TEACHER')")
     @Caching(evict = {
             @CacheEvict(cacheNames = "studentExams",allEntries = true),
+            @CacheEvict(cacheNames = "examResultOverview",allEntries = true),
     })
     public String updateStudentExamStatus(StudentExamRequest dto) {
         logger.info("Updating student exam status");
@@ -407,6 +700,7 @@ public class ExamServicesImp implements ExamServices {
     @PreAuthorize("hasAnyRole('HOD','ADMIN','TEACHER')")
     @Caching(evict = {
             @CacheEvict(cacheNames = "studentExams",allEntries = true),
+            @CacheEvict(cacheNames = "examResultOverview",allEntries = true),
     })
     public String updateStudentExamObtainMarks(List<StudentExamRequest> dto) {
         logger.info("Updating student exam marks");
@@ -447,7 +741,11 @@ public class ExamServicesImp implements ExamServices {
                 examQuestion.setQuestion(dto.getQuestion());
                 examQuestion.setType(dto.getType());
                 examQuestion.setMarks(dto.getMarks());
+                examQuestion.setNegativeMarks(dto.getNegativeMarks());
                 examQuestion.setExam(exam);
+                if(dto.getType().equals(QuestionType.NUMERICAL)){
+                    examQuestion.setCorrectAnswer(dto.getCorrectAnswer());
+                }
                 examQuestion.setCreatedAt(LocalDateTime.now());
 
                 ExamQuestion savedExamQuestion =  examQuestionRepository.save(examQuestion);
@@ -482,6 +780,7 @@ public class ExamServicesImp implements ExamServices {
             examQuestion.setQuestion(dto.getQuestion());
             examQuestion.setType(dto.getType());
             examQuestion.setMarks(dto.getMarks());
+            examQuestion.setNegativeMarks(dto.getNegativeMarks());
             examQuestion.setUpdatedAt(LocalDateTime.now());
 
             if(dto.getType().equals(QuestionType.MSQ) || dto.getType().equals(QuestionType.MCQ) || dto.getType().equals(QuestionType.TRUE_FALSE)){
@@ -496,7 +795,8 @@ public class ExamServicesImp implements ExamServices {
                        examQuestion.getQuestionOptions().add(examQuestionOption);
                    }
                }
-            } else{
+            } else if(dto.getType().equals(QuestionType.NUMERICAL)){
+                examQuestion.setCorrectAnswer(dto.getCorrectAnswer());
                 examQuestion.getQuestionOptions().clear();
             }
             examQuestionRepository.save(examQuestion);
@@ -562,6 +862,8 @@ public class ExamServicesImp implements ExamServices {
                 res.setQuestion(examQuestion.getQuestion());
                 res.setType(examQuestion.getType());
                 res.setMarks(examQuestion.getMarks());
+                res.setCorrectAnswer(examQuestion.getCorrectAnswer());
+                res.setNegativeMarks(examQuestion.getNegativeMarks());
                 if(examQuestion.getType().equals(QuestionType.MCQ)
                         || examQuestion.getType().equals(QuestionType.MSQ)
                         || examQuestion.getType().equals(QuestionType.TRUE_FALSE)){
@@ -605,6 +907,7 @@ public class ExamServicesImp implements ExamServices {
            List<ExamQuestion> examQuestions = examQuestionRepository.findByExamId(studentExam.getExam().getId());
            List<ExamQuestionResponse> responses = examQuestions.stream().map(examQuestion->{
                ExamQuestionResponse res = modelMapper.map(examQuestion,ExamQuestionResponse.class);
+               res.setCorrectAnswer(null);
                List<ExamQuestionOptionResponse> examQuestionOptionResponses = examQuestion.getQuestionOptions()
                        .stream().map(option->{
                            ExamQuestionOptionResponse examQuestionOptionResponse =new ExamQuestionOptionResponse();
@@ -613,16 +916,34 @@ public class ExamServicesImp implements ExamServices {
                            return examQuestionOptionResponse;
                        }).toList();
 
-               List<StudentExamAnswer> studentExamAnswers = studentExamAnswerRepository.findByQuestionIdAndStudentExamId(examQuestion.getId(),studentExamId);
+               StudentExamAnswer studentExamAnswer = studentExamAnswerRepository.findByQuestionIdAndStudentExamId(examQuestion.getId(),studentExamId);
+               if(studentExamAnswer!=null) {
 
-               List<StudentExamAnswerResponse> studentExamAnswerResponses = studentExamAnswers.
-                       stream().map(answer->{
-                          StudentExamAnswerResponse studentExamAnswerResponse = modelMapper.map(answer,StudentExamAnswerResponse.class);
-                          return studentExamAnswerResponse;
-                       }).toList();
+                   StudentExamAnswerResponse studentExamAnswerResponse = new StudentExamAnswerResponse();
+                   studentExamAnswerResponse.setId(studentExamAnswer.getId());
+                   studentExamAnswerResponse.setIsAnswered(studentExamAnswer.getIsAnswered());
+                   studentExamAnswerResponse.setIsMarkedForReview(studentExamAnswer.getIsMarkedForReview());
+                   if(examQuestion.getType().equals(QuestionType.NUMERICAL)){
+                       studentExamAnswerResponse.setAnswer(studentExamAnswer.getAnswer());
+                   }
+
+                   List<SelectedOptions> selectedOptions = studentExamAnswer.getSelectedOptions();
+
+                   List<Map<String,Object>> optionsResponse  = new ArrayList<>();
+
+                   if(selectedOptions!=null){
+                       for(SelectedOptions options:selectedOptions){
+                           Map<String,Object> option = new HashMap<>();
+                           option.put("id",options.getExamQuestionOption().getId());
+
+                           optionsResponse.add(option);
+                       }
+                   }
+                   studentExamAnswerResponse.setSelectedOptions(optionsResponse);
+                   res.setStudentExamAnswerResponses(studentExamAnswerResponse);
+               }
 
                res.setExamQuestionOptionResponses(examQuestionOptionResponses);
-               res.setStudentExamAnswerResponses(studentExamAnswerResponses);
                return res;
            }).toList();
            logger.info("Successfully fetched student exam questions | studentExamId = {} | returnedElements = {}",studentExamId,responses.size());
@@ -641,56 +962,115 @@ public class ExamServicesImp implements ExamServices {
     })
     public String saveStudentAnswer(StudentExamAnswerRequest dto) {
         try{
+
             ExamQuestion question = examQuestionRepository.findById(dto.getQuestionId()).orElseThrow(()->{
                 throw new IllegalArgumentException("Question not found");
             });
-            if(question.getType()==QuestionType.MCQ){
-                StudentExamAnswer studentExamAnswer = studentExamAnswerRepository.findByStudentExamIdAndQuestionId(dto.getStudentExamId(),dto.getQuestionId());
+
+            StudentExam studentExam = studentExamRepository.findById(dto.getStudentExamId()).orElseThrow(()->{
+                throw new IllegalArgumentException("Student exam not found");
+            });
+
+            StudentExamAnswer studentExamAnswer = studentExamAnswerRepository.findByStudentExamIdAndQuestionId(dto.getStudentExamId(),dto.getQuestionId());
+
+            if(question.getType().equals(QuestionType.NUMERICAL)){
                 if(studentExamAnswer!=null){
-                    ExamQuestionOption option = examQuestionOptionRepository.findById(dto.getSelectedOptionId()).orElseThrow(()->{
-                        throw new IllegalArgumentException("Option not found");
-                    });
-                    studentExamAnswer.setSelectedOption(option);
-                    studentExamAnswer.setIsMarkedForReview(false);
-                    studentExamAnswer.setIsAnswered(true);
-                    studentExamAnswer.setUpdatedAt(LocalDateTime.now());
-                    studentExamAnswerRepository.save(studentExamAnswer);
-                } else{
-                    ExamQuestionOption option = examQuestionOptionRepository.findById(dto.getSelectedOptionId()).orElseThrow(()->{
-                        throw new IllegalArgumentException("Option not found");
-                    });
-                    StudentExam studentExam = studentExamRepository.findById(dto.getStudentExamId()).orElseThrow(()->{
-                       throw new IllegalArgumentException("Student exam not found");
-                    });
+                    studentExamAnswer.setAnswer(dto.getAnswer());
+                }else{
                     studentExamAnswer = new StudentExamAnswer();
                     studentExamAnswer.setQuestion(question);
-                    studentExamAnswer.setSelectedOption(option);
+                    studentExamAnswer.setAnswer(dto.getAnswer());
                     studentExamAnswer.setStudentExam(studentExam);
-                    studentExamAnswer.setIsAnswered(true);
-                    studentExamAnswer.setIsMarkedForReview(false);
-                    studentExamAnswer.setCreatedAt(LocalDateTime.now());
-                    studentExamAnswerRepository.save(studentExamAnswer);
                 }
-            } else if (question.getType() == QuestionType.MSQ){
-                StudentExamAnswer studentExamAnswer = studentExamAnswerRepository.findByQuestionIdAndSelectedOptionIdAndStudentExamId(dto.getQuestionId(),
-                       dto.getSelectedOptionId(),dto.getStudentExamId());
+                studentExamAnswer.setIsAnswered(true);
+                studentExamAnswer.setIsMarkedForReview(false);
+                studentExamAnswerRepository.save(studentExamAnswer);
+                studentExamAnswer.setCreatedAt(LocalDateTime.now());
+                return "successfully save answer";
+            }
+
+            ExamQuestionOption option = examQuestionOptionRepository.findById(dto.getSelectedOptionId()).orElseThrow(()->{
+                throw new IllegalArgumentException("Option not found");
+            });
+
+
+
+            if(question.getType()==QuestionType.MCQ){
                 if(studentExamAnswer!=null){
-                    studentExamAnswerRepository.delete(studentExamAnswer);
-                } else {
-                    ExamQuestionOption option = examQuestionOptionRepository.findById(dto.getSelectedOptionId()).orElseThrow(() -> {
-                        throw new IllegalArgumentException("Option not found");
-                    });
-                    StudentExam studentExam = studentExamRepository.findById(dto.getStudentExamId()).orElseThrow(() -> {
-                        throw new IllegalArgumentException("Student exam not found");
-                    });
+                    studentExamAnswer.setIsMarkedForReview(false);
+                    studentExamAnswer.setIsAnswered(true);
+                    studentExamAnswerRepository.save(studentExamAnswer);
+
+                    List<SelectedOptions> selectedOptions = studentExamAnswer.getSelectedOptions();
+                    if(selectedOptions!=null && !selectedOptions.isEmpty()){
+                       SelectedOptions selectedOptions1= selectedOptions.get(0);
+                       selectedOptions1.setExamQuestionOption(option);
+                       selectedOptionsRepository.save(selectedOptions1);
+                    } else{
+                        SelectedOptions selectedOptions1 = new SelectedOptions();
+                        selectedOptions1.setExamQuestionOption(option);
+                        selectedOptions1.setStudentExamAnswer(studentExamAnswer);
+                        selectedOptionsRepository.save(selectedOptions1);
+                    }
+                } else{
                     studentExamAnswer = new StudentExamAnswer();
                     studentExamAnswer.setQuestion(question);
-                    studentExamAnswer.setSelectedOption(option);
                     studentExamAnswer.setStudentExam(studentExam);
                     studentExamAnswer.setIsAnswered(true);
                     studentExamAnswer.setIsMarkedForReview(false);
                     studentExamAnswer.setCreatedAt(LocalDateTime.now());
-                    studentExamAnswerRepository.save(studentExamAnswer);
+                    StudentExamAnswer savedStudentExamAnswer =  studentExamAnswerRepository.save(studentExamAnswer);
+
+                    SelectedOptions selectedOptions1 = new SelectedOptions();
+                    selectedOptions1.setExamQuestionOption(option);
+                    selectedOptions1.setStudentExamAnswer(savedStudentExamAnswer);
+                    selectedOptionsRepository.save(selectedOptions1);
+                }
+            }
+            else if (question.getType() == QuestionType.MSQ){
+                if(studentExamAnswer!=null){
+                    List<SelectedOptions> selectedOptions = studentExamAnswer.getSelectedOptions();
+                    SelectedOptions selectedOptions1 = selectedOptions.stream()
+                            .filter(selectedOptions2 ->
+                            Objects.equals(
+                                    selectedOptions2.getExamQuestionOption().getId(),
+                                    option.getId()
+                            ))
+                            .findFirst()
+                            .orElse(null);
+                    if(selectedOptions1!=null){
+                        selectedOptions.remove(selectedOptions1);
+
+                        studentExamAnswer.setIsMarkedForReview(false);
+                        studentExamAnswer.setIsAnswered(true);
+                        studentExamAnswerRepository.save(studentExamAnswer);
+
+                        if(selectedOptions.isEmpty()){
+                            studentExamAnswerRepository.delete(studentExamAnswer);
+                        }
+                    } else{
+                        selectedOptions1 = new SelectedOptions();
+                        selectedOptions1.setStudentExamAnswer(studentExamAnswer);
+                        selectedOptions1.setExamQuestionOption(option);
+                        studentExamAnswer.setIsAnswered(true);
+                        selectedOptionsRepository.save(selectedOptions1);
+
+                        studentExamAnswer.setIsMarkedForReview(false);
+                        studentExamAnswerRepository.save(studentExamAnswer);
+                    }
+                } else {
+                    studentExamAnswer = new StudentExamAnswer();
+                    studentExamAnswer.setQuestion(question);
+                    studentExamAnswer.setStudentExam(studentExam);
+                    studentExamAnswer.setIsAnswered(true);
+                    studentExamAnswer.setIsMarkedForReview(false);
+                    studentExamAnswer.setCreatedAt(LocalDateTime.now());
+                    StudentExamAnswer savedStudentExamAnswer = studentExamAnswerRepository.save(studentExamAnswer);
+
+                    SelectedOptions selectedOptions1 = new SelectedOptions();
+                    selectedOptions1.setStudentExamAnswer(savedStudentExamAnswer);
+                    selectedOptions1.setExamQuestionOption(option);
+                    selectedOptionsRepository.save(selectedOptions1);
                 }
             }
             return "successfully save answer";
@@ -706,17 +1086,16 @@ public class ExamServicesImp implements ExamServices {
     })
     public String updateReviewQuestion(Long studentExamId, Long questionId) {
         try{
-            List<StudentExamAnswer> studentExamAnswers = studentExamAnswerRepository
+            StudentExamAnswer studentExamAnswers = studentExamAnswerRepository
                     .findByQuestionIdAndStudentExamId(questionId,studentExamId);
-            if(studentExamAnswers.size()!=0){
-                for(StudentExamAnswer answer:studentExamAnswers){
-                    answer.setIsMarkedForReview(!answer.getIsMarkedForReview());
-                    studentExamAnswerRepository.save(answer);
-                }
+            if(studentExamAnswers!=null){
+                studentExamAnswers.setIsMarkedForReview(!studentExamAnswers.getIsMarkedForReview());
+                studentExamAnswerRepository.save(studentExamAnswers);
             } else{
                 ExamQuestion question = examQuestionRepository.findById(questionId).orElseThrow(()->{
                     throw new IllegalArgumentException("Question not found");
                 });
+
                 StudentExam studentExam = studentExamRepository.findById(studentExamId).orElseThrow(() -> {
                     throw new IllegalArgumentException("Student exam not found");
                 });
@@ -742,9 +1121,10 @@ public class ExamServicesImp implements ExamServices {
     })
     public String clearStudentAnswer(Long studentExamId, Long questionId) {
         try{
-            List<StudentExamAnswer> studentExamAnswers = studentExamAnswerRepository
+            StudentExamAnswer studentExamAnswer = studentExamAnswerRepository
                     .findByQuestionIdAndStudentExamId(questionId,studentExamId);
-            studentExamAnswerRepository.deleteAll(studentExamAnswers);
+            studentExamAnswer.getSelectedOptions().clear();
+            studentExamAnswerRepository.delete(studentExamAnswer);
             return "Successfully clear answer";
         } catch (Exception e){
             throw new RuntimeException(e);
@@ -755,7 +1135,6 @@ public class ExamServicesImp implements ExamServices {
     @PreAuthorize("hasRole('STUDENT')")
     @Caching(evict = {
             @CacheEvict(cacheNames = "studentExam",key = "#studentExamId"),
-            @CacheEvict(cacheNames = "studentExam",key = "#studentExamId")
     })
     public String submitExam(Long studentExamId) {
         logger.info("Submitting... studentExam | studentExamId = {}",studentExamId);
@@ -765,6 +1144,7 @@ public class ExamServicesImp implements ExamServices {
                 throw new IllegalArgumentException("StudentExam not found");
             });
             studentExam.setStatus(StudentExamStatus.PRESENT);
+            studentExam.setSubmitted_at(LocalDateTime.now());
             studentExam.setUpdatedAt(LocalDateTime.now());
             studentExamRepository.save(studentExam);
             logger.info("Successfully submitted studentExam | studentExamId = {}",studentExamId);
@@ -782,23 +1162,22 @@ public class ExamServicesImp implements ExamServices {
        logger.info("Fetching submit studentExam Details | studentExamId = {}", studentExamId);
        try{
 
-           List<StudentExamAnswer> studentExamAnswers = studentExamAnswerRepository.findByStudentExamId(studentExamId);
+           StudentExam studentExam = studentExamRepository.findById(studentExamId).orElseThrow(()->{
+               logger.error("Student Exam not found | studentExamId = {}",studentExamId);
+               throw new IllegalArgumentException("Student exam not found");
+           });
 
-           int totalQuestions = (int) studentExamAnswers.stream()
-                   .map(answer->answer.getQuestion().getId())
-                   .distinct()
-                   .count();
+           List<StudentExamAnswer> studentExamAnswers = studentExamAnswerRepository.findByStudentExamId(studentExamId);
+           
+           int totalQuestions = studentExam.getExam()
+                   .getExamQuestions().size();
 
            int answeredQuestions = (int) studentExamAnswers.stream()
-                   .filter(answer->Boolean.TRUE.equals(answer.getIsAnswered()))
-                   .map(answer->answer.getQuestion().getId())
-                   .distinct()
+                   .filter(answer->answer.getIsAnswered()==true)
                    .count();
 
            int markedForReviewQuestions = (int) studentExamAnswers.stream()
-                   .filter(answer->Boolean.TRUE.equals(answer.getIsMarkedForReview()))
-                   .map(answer->answer.getQuestion().getId())
-                   .distinct()
+                   .filter(answer->answer.getIsMarkedForReview()==true)
                    .count();
 
            SubmitStudentExamResponse response = new SubmitStudentExamResponse();

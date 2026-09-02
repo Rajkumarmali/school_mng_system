@@ -370,7 +370,7 @@ const Exam = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 

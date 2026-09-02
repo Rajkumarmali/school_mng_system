@@ -41,6 +41,24 @@ public class ExamController {
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
 
+    @PostMapping("/update/showResult/{examId}")
+    public ResponseEntity<String>updateToSowResult(@PathVariable Long examId){
+        String res = examServices.updateExamToShowResult(examId);
+        return new ResponseEntity<>(res,HttpStatus.CREATED);
+    }
+
+    @PostMapping("/generate/exam-result/{examId}")
+    public ResponseEntity<String> generateExamResult(@PathVariable Long examId){
+        String res = examServices.generateExamResult(examId);
+        return new ResponseEntity<>(res,HttpStatus.CREATED);
+    }
+
+    @GetMapping("/get/exam-result-overview/{examId}")
+    public ResponseEntity<ExamResultOverviewResponse> getExamResultOverview(@PathVariable Long examId){
+        ExamResultOverviewResponse res = examServices.getExamResultOverview(examId);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
     @GetMapping("/get/{sectionId}")
     public ResponseEntity<Page<ExamResponse>> getExams(@PathVariable Long sectionId,
                                                        @RequestParam(defaultValue = "0") int pageNumber,
@@ -92,6 +110,14 @@ public class ExamController {
                                                                            @RequestParam(defaultValue = "10") int pageSize ){
         Long userId = jwtProvider.getUserIdFromToken(jwt);
         Page<StudentExamResponse> res = examServices.getOnGoingStudentExams(userId,pageNumber,pageSize);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/get/student-exam-result/{studentExamId}")
+    public ResponseEntity<StudentExamResultResponse> getStudentExamResult(@PathVariable Long studentExamId,
+                                                                          @RequestParam(defaultValue = "0") int pageNumber,
+                                                                          @RequestParam(defaultValue = "10") int pageSize){
+        StudentExamResultResponse res = examServices.getStudentExamResult(studentExamId,pageNumber,pageSize);
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
 

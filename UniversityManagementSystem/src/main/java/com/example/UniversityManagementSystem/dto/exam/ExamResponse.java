@@ -26,6 +26,8 @@ public class ExamResponse implements Serializable {
     private Integer passingMarks;
     private ExamStatus status;
     private Boolean showQuestionToStudent;
+    private Boolean showResult;
+    private Boolean generatedResult;
     private Integer totalQuestion;
     private SubjectResponse subjectResponse;
 }

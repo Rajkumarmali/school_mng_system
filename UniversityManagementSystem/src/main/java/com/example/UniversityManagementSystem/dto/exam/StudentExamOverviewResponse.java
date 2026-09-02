@@ -13,5 +13,5 @@ public class StudentExamOverviewResponse implements Serializable {
     private Integer totalExam;
     private Integer upcomingExam;
     private Integer onGoingExam;
-    private double avgMarks;
+    private Double avgMarks;
 }
