@@ -24,6 +24,7 @@ public class StudentUniversityExam {
     private Double cgpa;
     private Integer totalCredits;
     private Integer earnedCredits;
+    private Boolean filledFrom;
 
     @ManyToOne
     private UniversityExam universityExam;
