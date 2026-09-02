@@ -4,6 +4,7 @@ import com.example.UniversityManagementSystem.dto.section.*;
 import com.example.UniversityManagementSystem.entity.*;
 import com.example.UniversityManagementSystem.entity.type.AttendanceStatus;
 import com.example.UniversityManagementSystem.entity.type.SectionStatus;
+import com.example.UniversityManagementSystem.entity.type.StudentExamStatus;
 import com.example.UniversityManagementSystem.repository.*;
 import com.example.UniversityManagementSystem.services.SectionService;
 import jakarta.transaction.Transactional;
@@ -36,18 +37,24 @@ public class SectionServiceImp implements SectionService {
 
     private final Logger logger = LoggerFactory.getLogger(SectionServiceImp.class);
     private final ModelMapper modelMapper = new ModelMapper();
+    private final ExamRepository examRepository;
+    private final StudentExamRepository studentExamRepository;
 
     public SectionServiceImp(SectionRepository sectionRepository, TeacherRepository teacherRepository,
                              StudentRepository studentRepository,
                              SubjectRepository subjectRepository,
                              SectionSubjectRepository sectionSubjectRepository,
-                             StudentSubjectRepository studentSubjectRepository) {
+                             StudentSubjectRepository studentSubjectRepository,
+                             ExamRepository examRepository,
+                             StudentExamRepository studentExamRepository) {
         this.sectionRepository = sectionRepository;
         this.teacherRepository = teacherRepository;
         this.studentRepository = studentRepository;
         this.subjectRepository = subjectRepository;
         this.sectionSubjectRepository = sectionSubjectRepository;
         this.studentSubjectRepository = studentSubjectRepository;
+        this.examRepository = examRepository;
+        this.studentExamRepository = studentExamRepository;
     }
 
     private void addSectionStudentInSectionSubject(SectionSubject savedSectionSubject, Section section) {
@@ -307,7 +314,7 @@ public class SectionServiceImp implements SectionService {
         Student student = studentRepository.findById(studentId).orElseThrow(()->
                 new IllegalArgumentException("Student not found"));
         section.getStudents().remove(student);
-        student.getClasses().remove(section);
+        student.getSections().remove(section);
         sectionRepository.save(section);
         return "Student delete from the section";
     }

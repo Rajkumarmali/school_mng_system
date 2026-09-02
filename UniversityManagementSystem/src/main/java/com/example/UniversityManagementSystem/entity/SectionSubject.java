@@ -1,12 +1,18 @@
 package com.example.UniversityManagementSystem.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@NoArgsConstructor
+@Getter
+@Setter
 public class SectionSubject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,65 +30,10 @@ public class SectionSubject {
     @OneToMany(mappedBy = "sectionSubject")
     private List<StudentSubject> studentSubjects = new ArrayList<>();
 
+    @OneToMany(mappedBy = "sectionSubject")
+    private List<Exam> exams = new ArrayList<>();
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public SectionSubject() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Section getSection() {
-        return section;
-    }
-
-    public void setSection(Section section) {
-        this.section = section;
-    }
-
-    public Subject getSubject() {
-        return subject;
-    }
-
-    public void setSubject(Subject subject) {
-        this.subject = subject;
-    }
-
-    public Teacher getTeacher() {
-        return teacher;
-    }
-
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public List<StudentSubject> getStudentSubjects() {
-        return studentSubjects;
-    }
-
-    public void setStudentSubjects(List<StudentSubject> studentSubjects) {
-        this.studentSubjects = studentSubjects;
-    }
 }

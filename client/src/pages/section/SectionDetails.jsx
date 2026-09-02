@@ -6,6 +6,7 @@ import { jwtDecode } from 'jwt-decode'
 import { getSectionById, updateSection } from '../../state/section/Action'
 import Students from './student/Students';
 import Subject from './subject/Subject'
+import Exam from './Exams/Exam'
 
 
 
@@ -109,6 +110,14 @@ const SectionDetails = () => {
                             Student
                         </button>
                     </li>
+                    <li class="nav-item">
+                        <button
+                            class="nav-link"
+                            onClick={() => { setSearchParams({ sectionId, tab: "exams" }) }}
+                        >
+                            Exams
+                        </button>
+                    </li>
                 </ul>
             </nav>
             {
@@ -200,9 +209,14 @@ const SectionDetails = () => {
                             <Subject />
                         </div>
                         :
-                        <div className="section-student-card">
-                            <Students />
-                        </div>
+                        activeTab === "exams" ?
+                            <div className="section-student-card">
+                                <Exam />
+                            </div>
+                            :
+                            <div className="section-student-card">
+                                <Students />
+                            </div>
             }
 
             <div class="modal fade" id="editSectionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
