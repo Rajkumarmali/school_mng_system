@@ -912,6 +912,7 @@ public class FeeServiceImp implements FeeServices {
 
         Document document = new Document(PageSize.A4, 40, 40, 40, 40);
 
+
         PdfWriter.getInstance(document, out);
         document.open();
 

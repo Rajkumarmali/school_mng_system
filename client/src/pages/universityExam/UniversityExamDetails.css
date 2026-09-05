@@ -1,0 +1,50 @@
+.university-exam-detail-nav-card{
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+}
+
+.exam-detail-card {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    padding: 20px
+}
+
+.universtiy-exam-detail-profile-body {
+    padding: 25px;
+}
+
+.university-exam-edit-btn{
+    border: none;
+    background: transparent;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.3s
+}
+.university-exam-edit-btn:hover{
+   transform:scale(1.1);
+}
+
+.simple-section {
+    margin-bottom: 30px;
+}
+
+.info-line {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.info-line span {
+    margin-right: 10px;
+    min-width: 250px;
+}
