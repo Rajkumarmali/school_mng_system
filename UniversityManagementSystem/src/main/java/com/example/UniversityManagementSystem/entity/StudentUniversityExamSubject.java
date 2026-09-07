@@ -13,7 +13,6 @@ public class StudentUniversityExamSubject {
 
     private Double internalMarks;
     private Double obtainMarks;
-    private Integer totalCredits;
     private Integer earnedCredits;
 
     @Enumerated(EnumType.STRING)
