@@ -25,6 +25,7 @@ public class StudentUniversityExam {
     private Integer totalCredits;
     private Integer earnedCredits;
     private Boolean filledFrom;
+    private LocalDateTime submittedAt;
 
     @ManyToOne
     private UniversityExam universityExam;
