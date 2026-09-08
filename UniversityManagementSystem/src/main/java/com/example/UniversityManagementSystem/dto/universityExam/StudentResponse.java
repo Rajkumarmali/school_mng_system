@@ -2,12 +2,10 @@ package com.example.UniversityManagementSystem.dto.universityExam;
 
 import com.example.UniversityManagementSystem.entity.type.Cast;
 import com.example.UniversityManagementSystem.entity.type.Gender;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.query.sqm.CastType;
+
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -30,4 +28,6 @@ public class StudentResponse implements Serializable {
     private Cast cast;
     private String fatherName;
     private String motherName;
+    private String collegeName;
+    private String collegeCode;
 }

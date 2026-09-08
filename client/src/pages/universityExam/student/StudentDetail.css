@@ -1,0 +1,198 @@
+.university-exam-student-detail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.university-exam-student-detail-title {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.university-exam-student-detail-back-btn {
+    border: 1px solid white;
+    background: transparent;
+    color: white;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: 0.3s
+}
+
+.university-exam-student-detail-back-btn:hover {
+    background: transparent;
+    color:#3c58c9
+}
+
+.exam-center-edit-btn{
+    border: none;
+    background: transparent;
+    /* font-size: 20px; */
+    cursor: pointer;
+    transition: 0.3s
+}
+
+.student-detail-card {
+     border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 11px;
+    padding: 20px;
+    margin-bottom: 17px;
+}
+
+.student-details-card-header {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    margin-bottom: 17px;
+}
+
+.student-details-card-header-icon {
+    width: 37px;
+    height: 37px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.student-details-card-header h3 {
+    margin: 0;
+    font-size: 14px;
+}
+
+.student-details-card-header p {
+    margin: 3px 0 0;
+    font-size: 10px;
+}
+
+
+.universityexam-student-detail-header {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    margin-bottom: 17px;
+}
+
+.universityexam-student-detail-header-icon {
+    width: 37px;
+    height: 37px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.universityexam-student-detail-header h3 {
+    margin: 0;
+    font-size: 14px;
+}
+
+.universityexam-student-detail-header p {
+    margin: 3px 0 0;
+    font-size: 10px;
+}
+
+.student-details-grid{
+    display: grid;
+    grid-template-columns: 162px 944px;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.student-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.student-profile-image img{
+    width: 150px;
+    height: 150px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.student-profile-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.student-info-field label {
+    display: block;
+    font-size: 12px !important;
+    font-weight: 600;
+}
+
+.subject-card-header {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    margin-bottom: 17px;
+}
+
+.subject-card-header-icon {
+    width: 37px;
+    height: 37px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.subject-card-header h3 {
+    margin: 0;
+    font-size: 14px;
+}
+
+.subject-table {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.subject-table-header,
+.subject-row {
+    display: grid;
+    height:30px;
+    grid-template-columns: 70px 110px 1fr 96px 80px;
+    align-items: center;
+}
+
+.subject-table-header {
+    min-height: 38px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.subject-table-header span,
+.subject-row > * {
+    padding: 0 12px;
+}
+
+.subject-row {
+    min-height: 52px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.subject-row:last-child {
+    border-bottom: none;
+}

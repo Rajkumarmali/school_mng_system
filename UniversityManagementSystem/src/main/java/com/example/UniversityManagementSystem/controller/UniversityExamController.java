@@ -1,10 +1,7 @@
 package com.example.UniversityManagementSystem.controller;
 
 import com.example.UniversityManagementSystem.config.JwtProvider;
-import com.example.UniversityManagementSystem.dto.universityExam.StudentUniversityExamResponse;
-import com.example.UniversityManagementSystem.dto.universityExam.UniversityExamRequest;
-import com.example.UniversityManagementSystem.dto.universityExam.UniversityExamResponse;
-import com.example.UniversityManagementSystem.dto.universityExam.UniversityExamSubjectResponse;
+import com.example.UniversityManagementSystem.dto.universityExam.*;
 import com.example.UniversityManagementSystem.entity.StudentUniversityExam;
 import com.example.UniversityManagementSystem.entity.UniversityExamSubject;
 import com.example.UniversityManagementSystem.services.UniversityExamService;
@@ -63,6 +60,21 @@ public class UniversityExamController {
         return new ResponseEntity<>(res,HttpStatus.OK);
     }
 
+    @GetMapping("/get/university-exam-subject/byid/{universityExamSubjectId}")
+    public ResponseEntity<UniversityExamSubjectResponse> getUniversityExamSubjectById(@PathVariable Long universityExamSubjectId,
+                                                                                      @RequestParam(defaultValue = "0") int pageNumber,
+                                                                                      @RequestParam(defaultValue = "10") int pageSize){
+        UniversityExamSubjectResponse res = universityExamService.getUniversityExamSubjectById(universityExamSubjectId,pageNumber,pageSize);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @PostMapping("/update/university-exam-subject/{universityExamSubjectId}")
+    public ResponseEntity<String> updateUniversityExamSubject(@PathVariable Long universityExamSubjectId,
+                                                              @RequestBody UniversityExamSubjectRequest dto){
+        String res = universityExamService.updateUniversityExamSubject(universityExamSubjectId,dto);
+        return new ResponseEntity<>(res,HttpStatus.CREATED);
+    }
+
     @GetMapping("/get/student-university-exam/by-university-exam-id/{universityExamId}")
     public ResponseEntity<Page<StudentUniversityExamResponse>> getStudentUniversityExamByUniversityExamId(@PathVariable Long universityExamId,
                                                                                                           @RequestParam(defaultValue = "0") int pageNumber,
@@ -84,6 +96,13 @@ public class UniversityExamController {
     public ResponseEntity<StudentUniversityExamResponse> getStudentUniversityExam(@PathVariable Long universityExamId){
         StudentUniversityExamResponse res = universityExamService.getStudentUniversityExamById(universityExamId);
         return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @PostMapping("/updat-student-universityexam-center/{studentUniversityExamId}")
+    public ResponseEntity<String> updateStudentUniversityExamCenter(@PathVariable Long studentUniversityExamId,
+                                                                    @RequestBody String collegeCode){
+        String res = universityExamService.updateStudentUniversityExamCenter(studentUniversityExamId,collegeCode);
+        return new ResponseEntity<>(res,HttpStatus.CREATED);
     }
 
     @PostMapping("/save/student-university-exam-form/{studentUniversityExamId}")

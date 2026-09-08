@@ -3,6 +3,7 @@ package com.example.UniversityManagementSystem.dto.universityExam;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -20,5 +21,6 @@ public class UniversityExamSubjectResponse implements Serializable {
     private LocalDateTime endTime;
     private SubjectResponse subjectResponse;
     private Integer totalStudents;
+    private Page<StudentUniversityExamSubjectResponse> studentUniversityExamSubjectResponses;
 }
 

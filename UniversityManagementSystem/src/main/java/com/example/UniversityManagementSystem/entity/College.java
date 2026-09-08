@@ -49,6 +49,9 @@ public class College {
     @OneToMany(mappedBy = "college")
     private List<Scholarship> scholarships = new ArrayList<>();
 
+    @OneToMany(mappedBy = "examCenterCollege")
+    private List<StudentUniversityExam> studentUniversityExamCenter=new ArrayList<>();
+
     @ManyToMany
     @JoinTable(
             name = "college_course",
