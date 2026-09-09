@@ -32,6 +32,10 @@ public class StudentUniversityExam {
     private Boolean filledFrom;
     private LocalDateTime submittedAt;
 
+    private Double totalMarks;
+    private Double totalObtainMarks;
+    private ResultStatus resultStatus;
+
     @ManyToOne
     private UniversityExam universityExam;
 
