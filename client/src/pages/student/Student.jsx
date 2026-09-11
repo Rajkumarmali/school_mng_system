@@ -27,6 +27,8 @@ const Student = () => {
         gender: "MALE",
         cast: "GENERAL",
         aadharNumber: "",
+        academicYear: "",
+        courseCode: '',
         departmentCode: "",
         addressRequest: {
             address: "",
@@ -73,6 +75,9 @@ const Student = () => {
             gender: "MALE",
             cast: "GENERAL",
             aadharNumber: "",
+            academicYear: "",
+            courseCode: '',
+            departmentCode: "",
             addressRequest: {
                 address: "",
                 city: "",
@@ -218,7 +223,7 @@ const Student = () => {
                                         <th>S.No</th>
                                         <th>Roll No.</th>
                                         <th>Registration No.</th>
-                                        <th>Department</th>
+                                        <th>Course</th>
                                         <th>Name</th>
                                         <th>Phone Number</th>
                                         <th>Email</th>
@@ -235,7 +240,7 @@ const Student = () => {
                                                         <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
                                                         <td>{student.rollNumber}</td>
                                                         <td>{student.registrationNumber}</td>
-                                                        <td>{student.departmentCode}</td>
+                                                        <td>{student.studentAcademicResponse.courseCode}</td>
                                                         <td>{student.firstName} {student.lastName}</td>
                                                         <td>{student.phoneNumber}</td>
                                                         <td>{student.email}</td>
@@ -247,12 +252,12 @@ const Student = () => {
                                                             >
                                                                 <i class="bi bi-eye"></i>
                                                             </button>
-                                                            <button
+                                                            {/* <button
                                                                 className="btn btn-sm custom-reset-btn me-2"
                                                                 onClick={() => handleDelete(student.id)}
                                                             >
                                                                 <i class="bi bi-trash"></i>
-                                                            </button>
+                                                            </button> */}
                                                         </td>
                                                     </tr>
                                                 )
@@ -411,6 +416,24 @@ const Student = () => {
                                         className="modal-input"
                                         name='aadharNumber'
                                         value={studentData.aadharNumber}
+                                        onChange={handlStudentChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Academic Year</label>
+                                    <input type="text"
+                                        className="modal-input"
+                                        name='academicYear'
+                                        value={studentData.academicYear}
+                                        onChange={handlStudentChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Course Code</label>
+                                    <input type="text"
+                                        className="modal-input"
+                                        name='courseCode'
+                                        value={studentData.courseCode}
                                         onChange={handlStudentChange}
                                     />
                                 </div>
