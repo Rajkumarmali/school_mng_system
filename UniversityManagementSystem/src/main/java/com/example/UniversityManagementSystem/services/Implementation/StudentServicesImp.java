@@ -155,9 +155,9 @@ public class StudentServicesImp implements StudentServices {
         student.setUser(savedUser);
         student.setCollege(college);
         student.setParent(savedParent);
-        if(department!=null){
-            student.setDepartment(department);
-        }
+//        if(department!=null){
+//            student.setDepartment(department);
+//        }
         student.setCreatedAt(LocalDateTime.now());
         Student savedStudent = studentRepository.save(student);
 
@@ -209,9 +209,9 @@ public class StudentServicesImp implements StudentServices {
             studentResponse.setRegistrationNumber(student.getRegistrationNumber());
             studentResponse.setCast(student.getCast());
             studentResponse.setAadharNumber(student.getAadhaarNumber());
-            if(student.getDepartment()!=null){
-                studentResponse.setDepartmentCode(student.getDepartment().getCode());
-            }
+//            if(student.getDepartment()!=null){
+//                studentResponse.setDepartmentCode(student.getDepartment().getCode());
+//            }
             studentResponse.setAddressResponse(addressResponse);
             studentResponse.setParentResponse(parentResponse);
             return studentResponse;
@@ -261,10 +261,10 @@ public class StudentServicesImp implements StudentServices {
         studentResponse.setImage(student.getImage());
         studentResponse.setAadharNumber(student.getAadhaarNumber());
         studentResponse.setUsername(student.getUser().getUsername());
-        if(student.getDepartment()!=null){
-            studentResponse.setDepartmentCode(student.getDepartment().getCode());
-            studentResponse.setDepartmentName(student.getDepartment().getName());
-        }
+//        if(student.getDepartment()!=null){
+//            studentResponse.setDepartmentCode(student.getDepartment().getCode());
+//            studentResponse.setDepartmentName(student.getDepartment().getName());
+//        }
         studentResponse.setAddressResponse(addressResponse);
         studentResponse.setParentResponse(parentResponse);
         return studentResponse;
@@ -282,7 +282,7 @@ public class StudentServicesImp implements StudentServices {
                 new IllegalArgumentException("Student not found"));
         if(dto.getDepartmentCode()!=null){
             Department department = departmentRepository.findByCode(dto.getDepartmentCode());
-            student.setDepartment(department);
+//            student.setDepartment(department);
             student.setUpdatedAt(LocalDateTime.now());
             studentRepository.save(student);
             return "Department update successfully";

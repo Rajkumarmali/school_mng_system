@@ -150,8 +150,8 @@ public class DepartmentServicesImp implements DepartmentServices {
         response.setCode(department.getCode());
         response.setDescription(department.getDescription());
         response.setTotalTeacher(department.getTeacherList().size());
-        response.setTotalStudent(department.getStudentList().size());
-        response.setTotalClass(department.getClassList().size());
+//        response.setTotalStudent(department.getStudentList().size());
+//        response.setTotalClass(department.getClassList().size());
         if(department.getHodTeacher()!=null){
             response.setHodName(department.getHodTeacher().getFirstName()+" "+department.getHodTeacher().getLastName());
             response.setHodEmail(department.getHodTeacher().getEmail());
@@ -209,7 +209,8 @@ public class DepartmentServicesImp implements DepartmentServices {
         Department department = departmentRepository.findById(departmentId).orElseThrow(()->
                 new IllegalArgumentException("Department not found"));
 
-        Page<Student> students = studentRepository.findByDepartment(department,pageable);
+        Page<Student> students = null;
+//                studentRepository.findByDepartment(department,pageable);
         Page<DepartmentStudentsResponse> responses = students.map(student -> {
             DepartmentStudentsResponse res = new DepartmentStudentsResponse();
             res.setId(student.getId());

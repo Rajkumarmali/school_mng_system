@@ -720,8 +720,8 @@ public class FeeServiceImp implements FeeServices {
         response.setPhoneNumber(student.getPhoneNumber());
         response.setEmail(student.getEmail());
         response.setGender(student.getGender());
-        response.setDepartmentCode(student.getDepartment().getCode());
-        response.setDepartmentName(student.getDepartment().getName());
+//        response.setDepartmentCode(student.getDepartment().getCode());
+//        response.setDepartmentName(student.getDepartment().getName());
 
         response.setFatherName(student.getParent().getFatherName());
         response.setFatherNumber(student.getParent().getFatherNumber());

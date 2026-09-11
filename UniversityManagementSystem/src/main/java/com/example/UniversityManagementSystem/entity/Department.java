@@ -1,12 +1,18 @@
 package com.example.UniversityManagementSystem.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@NoArgsConstructor
+@Getter
+@Setter
 public class Department {
 
     @Id
@@ -27,13 +33,13 @@ public class Department {
     List<Teacher> teacherList  = new ArrayList<>();
 
     @OneToMany(mappedBy = "department")
-    List<Student> studentList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "department")
     List<Section> sectionList = new ArrayList<>();
 
     @OneToMany(mappedBy = "department")
     private List<FeeStructure> feeStructures=new ArrayList<>();
+
+    @OneToMany(mappedBy = "department")
+    private List<StudentAcademic> studentAcademics = new ArrayList<>();
 
     @ManyToOne
     private Course course;
@@ -41,127 +47,4 @@ public class Department {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Department() {
-    }
-
-    public Department(Long id, String name, String description, String code, College college, Teacher hodTeacher,
-                      List<Teacher> teacherList, List<Student> studentList, List<Section> sectionList, List<FeeStructure> feeStructures,
-                      LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.code = code;
-        this.college = college;
-        this.hodTeacher = hodTeacher;
-        this.teacherList = teacherList;
-        this.studentList = studentList;
-        this.sectionList = sectionList;
-        this.feeStructures=feeStructures;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public College getCollege() {
-        return college;
-    }
-
-    public void setCollege(College college) {
-        this.college = college;
-    }
-
-    public Teacher getHodTeacher() {
-        return hodTeacher;
-    }
-
-    public void setHodTeacher(Teacher hodTeacher) {
-        this.hodTeacher = hodTeacher;
-    }
-
-    public List<Teacher> getTeacherList() {
-        return teacherList;
-    }
-
-    public void setTeacherList(List<Teacher> teacherList) {
-        this.teacherList = teacherList;
-    }
-
-    public List<Student> getStudentList() {
-        return studentList;
-    }
-
-    public void setStudentList(List<Student> studentList) {
-        this.studentList = studentList;
-    }
-
-    public List<Section> getClassList() {
-        return sectionList;
-    }
-
-    public void setClassList(List<Section> sectionList) {
-        this.sectionList = sectionList;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public List<FeeStructure> getFeeStructures() {
-        return feeStructures;
-    }
-
-    public void setFeeStructures(List<FeeStructure> feeStructures) {
-        this.feeStructures = feeStructures;
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
-    }
 }
