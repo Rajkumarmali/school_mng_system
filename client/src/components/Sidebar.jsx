@@ -35,6 +35,12 @@ const Sidebar = () => {
                             </Link>
                         </li>
                         <li>
+                            <Link to="/university/exam" className="menu-item">
+                                <i className="bi bi-clipboard-check-fill me-2"></i>
+                                UniversityExam
+                            </Link>
+                        </li>
+                        <li>
                             <Link to="/college" className="menu-item">
                                 <i className="bi bi-buildings-fill me-2"></i>
                                 Colleges
@@ -117,9 +123,17 @@ const Sidebar = () => {
                             <i className="bi bi-clipboard-check-fill me-2"></i>
                             Attendance
                         </Link>
+                        <Link to="/student/exam" className="menu-item">
+                            <i className="bi bi-clipboard-check me-2"></i>
+                            Exams
+                        </Link>
                         <Link to="/student/fee" className="menu-item">
                             <i className="bi bi-cash-coin me-2"></i>
                             Fee
+                        </Link>
+                        <Link to="/student/university-exam" className="menu-item">
+                            <i className="bi bi-clipboard-check-fill me-2"></i>
+                            UniversityExam
                         </Link>
                     </li>
                 }

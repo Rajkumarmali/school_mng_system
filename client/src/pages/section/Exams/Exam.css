@@ -1,0 +1,59 @@
+.section-exam-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.section-exam-header h2 {
+    margin: 0;
+    font-weight: 700;
+}
+
+.add-section-exam-btn {
+    background: transparent;
+    color: white;
+    border: 1px solid white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.add-section-exam-btn:hover {
+    background: transparent;
+    color: #3c58c9;
+}
+
+.section-exam-table {
+    margin-top: 30px;
+}
+
+.section-exam-table thead {
+  background: transparent !important;
+}
+
+.section-exam-table th {
+    background: transparent !important;
+    font-weight: 600;
+    color: #495057;
+    padding: 14px;
+}
+
+.section-exam-table td {
+    background: transparent !important;
+    vertical-align: middle;
+    padding: 14px;
+}
+
+.exam-modal-btn{
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    margin: 5px;
+    color: black;
+    padding: 10px 18px;
+    border-radius: 8px
+}
+.exam-modal-btn:hover{
+    background: transparent;
+    color:white
+}

@@ -123,7 +123,7 @@ const AttendanceDetails = () => {
             </table>
             <div className="pagination-container">
                 <div className="pagination-info">
-                    Total : <strong>{student?.studentSubjects?.subjectResponses?.totalElements || 0}</strong>
+                    Total : <strong>{student?.studentAttendances.totalElements || 0}</strong>
                 </div>
                 <div className="page-size-selector">
                     <label>Show :</label>

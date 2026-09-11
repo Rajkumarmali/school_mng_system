@@ -1,0 +1,52 @@
+.student-exam-container {
+    margin-left: 200px;
+    padding: 70px 25px;
+    background: linear-gradient(
+        180deg,
+        #3ea0d3,
+        #3c58c9
+    );
+    min-height: 100vh; 
+}
+
+.student-exam-card {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 10px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.student-exam-nav-card{
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+}
+
+.student-exam-table {
+    margin-top: 30px;
+}
+
+.student-exam-table thead {
+  background: transparent !important;
+}
+
+.student-exam-table th {
+    background: transparent !important;
+    font-weight: 600;
+    color: #495057;
+    padding: 14px;
+}
+
+.student-exam-table td {
+    background: transparent !important;
+    vertical-align: middle;
+    padding: 14px;
+}

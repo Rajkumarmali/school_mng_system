@@ -30,7 +30,7 @@ public class StudentExamAnswer {
     @ManyToOne
     private ExamQuestion question;
 
-    @OneToMany(mappedBy = "studentExamAnswer")
+    @OneToMany(mappedBy = "studentExamAnswer",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SelectedOptions> selectedOptions = new ArrayList<>();
 
     private LocalDateTime createdAt;

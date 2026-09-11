@@ -20,8 +20,10 @@ import Section from '../pages/section/Section';
 import Attendance from '../pages/student/attendance/Attendance';
 import Class from '../pages/Teacher/classes/Class';
 import University from '../pages/university/University';
-
-
+import Exam from '../pages/student/exam/Exam';
+import StudentExamResult from '../pages/Teacher/classes/exam/result/StudentExamResult';
+import UniversityExam from '../pages/universityExam/UniversityExam';
+import StudentUniversityExam from '../pages/student/universityExam/StudentUniversityExam';
 
 const Layout = () => {
     return (
@@ -36,6 +38,7 @@ const Layout = () => {
                     <Routes>
                         <Route path="dashboard" element={<Dashboard />} />
                         <Route path='university' element={<University />} />
+                        <Route path="university/exam" element={<UniversityExam />} />
                         <Route path="college" element={<College />} />
                         <Route path='college/profile' element={<CollegeProfile />} />
                         <Route path='course' element={<Course />} />
@@ -43,10 +46,13 @@ const Layout = () => {
                         <Route path='users' element={<Users />} />
                         <Route path='/student' element={<Student />} />
                         <Route path='student/fee' element={<StudentsFee />} />
+                        <Route path='student/exam' element={<Exam />} />
+                        <Route path='student/university-exam' element={<StudentUniversityExam />} />
                         <Route path='student/attendance' element={<Attendance />} />
                         <Route path='teacher' element={<Teacher />} />
                         <Route path='teacher/profile' element={<TeacherProfile />} />
                         <Route path='teacher/classes' element={<Class />} />
+                        <Route path='teacher/classes/student-exam-result/:studentExamId' element={<StudentExamResult />} />
                         <Route path='department' element={<Department />} />
                         <Route path='sections' element={<Section />} />
                         <Route path='department/details/:departmentId' element={<DepartmentDetails />} />
@@ -54,7 +60,6 @@ const Layout = () => {
                         <Route path='notification' element={<Notification />} />
                     </Routes>
                 </div>
-
             </div>
         </div>
     )

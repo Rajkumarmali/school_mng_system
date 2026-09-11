@@ -1,0 +1,66 @@
+.university-exam-detail-nav-card{
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+}
+.university-exam-action-card{
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    margin-bottom:6px
+}
+
+.university-exam-action-btns{
+    display: flex;
+    gap: 16px;
+}
+
+.university-exam-action-btn{
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px
+}
+
+.university-exam-action-btn:hover{
+    color:#3c58c9
+}
+
+.exam-detail-card {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    padding: 20px
+}
+
+.university-exam-edit-btn{
+    border: none;
+    background: transparent;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.3s
+}
+.university-exam-edit-btn:hover{
+   transform:scale(1.1);
+}
+
+.info-line {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.info-line span {
+    margin-right: 10px;
+    min-width: 250px;
+}
+

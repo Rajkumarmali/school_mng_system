@@ -33,6 +33,7 @@ public class UniversityExam {
     private Integer year;
     private Integer semester;
 
+    private Boolean generatedResult;
     private Boolean showTimeTable;
     private Boolean showAdmitCard;
     private Boolean showResult;

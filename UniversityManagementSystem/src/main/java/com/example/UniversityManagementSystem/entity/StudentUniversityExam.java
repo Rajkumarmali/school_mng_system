@@ -24,6 +24,11 @@ public class StudentUniversityExam {
     private Double cgpa;
     private Integer totalCredits;
     private Integer earnedCredits;
+
+
+    @ManyToOne
+    private College examCenterCollege;
+
     private Boolean filledFrom;
     private LocalDateTime submittedAt;
 
