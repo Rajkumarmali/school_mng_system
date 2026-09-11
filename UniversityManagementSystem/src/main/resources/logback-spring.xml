@@ -1,12 +1,9 @@
 <configuration>
 
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{d/M/y hh:mm:ss.SSS:a} [%thread] %-5level %logger{36} -%kvp- %msg%n</pattern>
-        </encoder>
-    </appender>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
-    <appender name="FILE_SOUTH" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="FILE_SOUTH"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/university-mng.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>logs/university-mng-%d{yyyy-MM-dd}.log</fileNamePattern>
@@ -17,12 +14,25 @@
         </encoder>
     </appender>
 
-    <logger name="com.example.UniversityManagementSystem" level="DEBUG" additivity="false">
-        <appender-ref ref="FILE_SOUTH" />
-    </logger>
+    <appender name="CONSOLE"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
 
-    <root level="DEBUG">
-        <appender-ref ref="STDOUT" />
+    <logger name="com.example.UniversityManagementSystem"
+            level="DEBUG"
+            additivity="false">
+
+        <appender-ref ref="FILE_SOUTH"/>
+        <appender-ref ref="CONSOLE"/>
+
+    </logger>
+    <root level="INFO">
+        <appender-ref ref="FILE_SOUTH"/>
+        <appender-ref ref="CONSOLE"/>
     </root>
 
 </configuration>

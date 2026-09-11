@@ -6,34 +6,27 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @NoArgsConstructor
 @Getter
 @Setter
-public class SectionSubject {
+public class StudentAcademic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private Section section;
+    private Integer year;
+    private Integer semester;
+    private String academicYear;
+    private Boolean isCurrent;
 
     @ManyToOne
-    private Subject subject;
+    private Student student;
 
     @ManyToOne
-    private Teacher teacher;
-
-    @OneToMany(mappedBy = "sectionSubject")
-    private List<StudentSubject> studentSubjects = new ArrayList<>();
-
-    @OneToMany(mappedBy = "sectionSubject")
-    private List<Exam> exams = new ArrayList<>();
+    private Course course;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
 }

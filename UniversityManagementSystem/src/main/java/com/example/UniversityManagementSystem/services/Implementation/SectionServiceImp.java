@@ -307,7 +307,7 @@ public class SectionServiceImp implements SectionService {
         Student student = studentRepository.findById(studentId).orElseThrow(()->
                 new IllegalArgumentException("Student not found"));
         section.getStudents().remove(student);
-        student.getClasses().remove(section);
+        student.getSections().remove(section);
         sectionRepository.save(section);
         return "Student delete from the section";
     }
