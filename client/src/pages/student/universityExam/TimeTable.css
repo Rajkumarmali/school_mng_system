@@ -1,0 +1,434 @@
+.students-universityexam-timetable-card{
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 10px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+     width: 100%;
+     overflow: hidden;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.timetable-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 22px;
+    /* border-bottom: 1px solid #e5e7eb; */
+}
+
+.timetable-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.timetable-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border-radius: 9px;
+    background: #eef2ff;
+    color: #4f46e5; */
+    font-size: 18px;
+}
+
+.timetable-title h3 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    /* color: #111827; */
+}
+
+.timetable-title p {
+    margin: 4px 0 0;
+    /* color: #9ca3af; */
+    font-size: 12px;
+}
+
+.timetable-back-btn {
+   background: transparent;
+    color: white;
+    border: 1px solid white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.3s
+}
+
+.timetable-back-btn:hover{
+  color:#3c58c9
+}
+
+/* 
+.status-dot {
+    width: 7px;
+    height: 7px;
+    background: #16a34a;
+    border-radius: 50%;
+} */
+
+/* =========================
+   EXAM SUMMARY
+========================= */
+
+/* .exam-summary {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 1px;
+    margin: 20px 22px;
+    background: #e5e7eb;
+    border: 1px solid #e5e7eb;
+    border-radius: 9px;
+    overflow: hidden;
+}
+
+.exam-summary-item {
+    background: #f9fafb;
+    padding: 14px 16px;
+}
+
+.exam-summary-item span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #9ca3af;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.exam-summary-item span i {
+    font-size: 12px;
+} */
+
+/* .exam-summary-item strong {
+    display: block;
+    color: #374151;
+    font-size: 13px;
+} */
+
+/* =========================
+   NOTICE
+========================= */
+
+/* .timetable-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 0 22px 20px;
+    padding: 12px 14px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.timetable-notice > i {
+    color: #4f46e5;
+    font-size: 16px;
+    margin-top: 2px;
+}
+
+.timetable-notice strong {
+    display: block;
+    font-size: 12px;
+    color: #374151;
+}
+
+.timetable-notice p {
+    margin: 3px 0 0;
+    font-size: 11px;
+    color: #6b7280;
+} */
+
+/* =========================
+   TABLE
+========================= */
+
+.timetable-table-wrapper {
+    /* margin: 0 22px; */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 9px;
+    overflow-x: auto;
+}
+
+.timetable-table {
+    width: 100%;
+    /* min-width: 950px; */
+    border-collapse: collapse;
+}
+
+.timetable-table thead {
+    /* background: #f9fafb; */
+}
+
+.timetable-table th {
+    padding: 12px 14px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 700;
+    /* color: #6b7280;
+    text-transform: uppercase; */
+    letter-spacing: 0.3px;
+   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    /* white-space: nowrap; */
+}
+
+.timetable-table td {
+    padding: 14px;
+   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    vertical-align: middle;
+}
+
+.timetable-table tbody tr:last-child td {
+    border-bottom: none;
+}
+/* 
+.timetable-table tbody tr:hover {
+    background: #fafafa;
+} */
+
+/* =========================
+   NUMBER
+========================= */
+/* 
+.exam-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    background: #f3f4f6;
+    color: #6b7280;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+/* =========================
+   DATE
+========================= */
+
+/* .exam-date {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    white-space: nowrap;
+} */ 
+
+/* .exam-date strong {
+    font-size: 12px;
+    color: #374151;
+}
+
+.exam-date span {
+    font-size: 11px;
+    color: #9ca3af;
+} */
+
+/* =========================
+   SUBJECT
+========================= */
+
+/* .subject-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 220px;
+}
+
+.subject-info strong {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.subject-info span {
+    font-size: 11px;
+    color: #9ca3af;
+} */
+
+/* =========================
+   CODE
+========================= */
+/* 
+.subject-code {
+    padding: 5px 8px;
+    background: #f3f4f6;
+    border-radius: 5px;
+    color: #4b5563;
+    font-size: 11px;
+    font-weight: 600;
+} */
+
+/* =========================
+   TYPE
+========================= */
+/* 
+.subject-type {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 15px;
+    font-size: 9px;
+    font-weight: 700;
+} */
+
+/* .subject-type.theory {
+    background: #eef2ff;
+    color: #4f46e5;
+}
+
+.subject-type.elective {
+    background: #ecfdf5;
+    color: #047857;
+}
+
+.subject-type.practical {
+    background: #fff7ed;
+    color: #c2410c;
+} */
+
+/* =========================
+   TIME
+========================= */
+
+/* .exam-time {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.exam-time > i {
+    color: #6b7280;
+    font-size: 15px;
+}
+
+.exam-time div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.exam-time strong {
+    font-size: 12px;
+    color: #374151;
+}
+
+.exam-time span {
+    font-size: 10px;
+    color: #9ca3af;
+} */
+
+/* =========================
+   CENTER
+========================= */
+
+/* .exam-center {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 160px;
+}
+
+.exam-center i {
+    color: #ef4444;
+    font-size: 14px;
+}
+
+.exam-center span {
+    font-size: 11px;
+    color: #6b7280;
+} */
+
+/* =========================
+   FOOTER
+========================= */
+
+.timetable-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 22px;
+    margin-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.3)
+}
+
+.footer-message {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    /* color: #6b7280; */
+}
+
+.footer-message i {
+    /* color: #16a34a; */
+    font-size: 15px;
+}
+
+.print-timetable-btn {
+   display: flex;
+    align-items: center;
+    gap: 7px;
+    /* border: 1px solid #d1d5db; */
+    /* background: #ffffff; */
+    /* color: #374151; */
+    /* padding: 8px 13px; */
+    /* border-radius: 7px; */
+    font-size: 12px;
+    /* font-weight: 600; */
+    cursor: pointer;
+    background: transparent;
+    color: white;
+    border: 1px solid white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.print-timetable-btn:hover {
+   color:#3c58c9
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+    .exam-summary {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .timetable-header {
+        align-items: flex-start;
+        gap: 15px;
+        flex-direction: column;
+    }
+
+    .exam-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .timetable-footer {
+        align-items: flex-start;
+        gap: 12px;
+        flex-direction: column;
+    }
+
+    .print-timetable-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+

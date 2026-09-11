@@ -16,5 +16,6 @@ public class SubjectResponse implements Serializable {
     private String shortName;
     private String name;
     private Integer credit;
+    private Integer maxMarks;
     private SubjectType subjectType;
 }

@@ -1,6 +1,7 @@
 package com.example.UniversityManagementSystem.dto.universityExam;
 
 import com.example.UniversityManagementSystem.entity.Course;
+import com.example.UniversityManagementSystem.entity.StudentUniversityExam;
 import com.example.UniversityManagementSystem.entity.type.ExamType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -8,6 +9,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -23,6 +25,11 @@ public class UniversityExamResponse implements Serializable {
     private LocalDateTime formStartAt;
     private LocalDateTime formEndAt;
 
+    private Boolean showTimeTable;
+    private Boolean showAdmitCard;
+    private Boolean showResult;
+    private Boolean generatedResult;
+
     private String academicYear;
     private Integer year;
     private Integer semester;
@@ -32,4 +39,9 @@ public class UniversityExamResponse implements Serializable {
     private Integer totalSubjects;
     private Integer totalStudents;
     private Integer totalFilledFormStudents;
+
+    private Integer totalPassedStudent;
+    private Integer totalFailedStudent;
+
+    Page<StudentUniversityExamResponse> studentUniversityExamResponse;
 }

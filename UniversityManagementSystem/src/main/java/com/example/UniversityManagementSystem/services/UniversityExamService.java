@@ -11,6 +11,9 @@ public interface UniversityExamService {
     Page<UniversityExamResponse> getAllExam(int pageNumber,int pageSize);
     UniversityExamResponse getExamById(Long universityExamId);
     String updateUniversityExam(Long universityExamId, UniversityExamRequest dto);
+    String updateUniversityExamShowTimeTable(Long universityExamId);
+    String updateUniversityExamShowAdmitCard(Long universityExamId);
+    String updateUniversityExamShowResul(Long universityExamId);
     List<UniversityExamSubjectResponse> getUniversityExamSubjects(Long universityExamId);
     UniversityExamSubjectResponse getUniversityExamSubjectById(Long universityExamSubjectId, int pageNumber, int pageSize);
     String updateUniversityExamSubject(Long universityExamSubjectId, UniversityExamSubjectRequest dto);
@@ -20,4 +23,9 @@ public interface UniversityExamService {
     String updateStudentUniversityExamCenter(Long studentUniversityExamId,String collegeCode);
     String saveStudentUniversityExamForm(Long studentUniversityExamId,List<Long> universityExamSubjectsIds);
     ByteArrayInputStream generateStudentApplicationForm(Long studentUniversityExamId);
+    List<UniversityExamSubjectResponse> getUniversityExamTimeTable(Long universityExamId);
+    ByteArrayInputStream generateStudentAdmitCard(Long studentUniversityExamId);
+    String updateStudentUniversityExamSubjectObtainMarks(List<StudentUniversityExamSubjectRequest> dto);
+    String generateUniversityExamResult(Long universityExamId);
+    UniversityExamResponse getUniversityExamResultOverview(Long universityExamId,int pageNumber,int pageSize);
 }

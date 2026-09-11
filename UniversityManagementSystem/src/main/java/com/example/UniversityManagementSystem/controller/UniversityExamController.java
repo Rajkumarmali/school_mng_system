@@ -54,6 +54,24 @@ public class UniversityExamController {
         return new ResponseEntity<>(res,HttpStatus.CREATED);
     }
 
+    @PostMapping("/update/university-exam/show-time-table/{universityExamId}")
+    public ResponseEntity<String> updateUniversityExamShowTimeTable(@PathVariable Long universityExamId){
+        String res = universityExamService.updateUniversityExamShowTimeTable(universityExamId);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @PostMapping("/update/university-exam/show-admit-card/{universityExamId}")
+    public ResponseEntity<String> updateUniversityExamShowAdmitCardTable(@PathVariable Long universityExamId){
+        String res = universityExamService.updateUniversityExamShowAdmitCard(universityExamId);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @PostMapping("/update/university-exam/show-result/{universityExamId}")
+    public ResponseEntity<String> updateUniversityExamShowResultTable(@PathVariable Long universityExamId){
+        String res = universityExamService.updateUniversityExamShowResul(universityExamId);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
     @GetMapping("/get/university-exam-subject/{universityExamId}")
     public ResponseEntity<List<UniversityExamSubjectResponse>> getUniversityExamSubjects(@PathVariable Long universityExamId){
         List<UniversityExamSubjectResponse> res = universityExamService.getUniversityExamSubjects(universityExamId);
@@ -123,4 +141,40 @@ public class UniversityExamController {
                 .body(new InputStreamResource(res));
     }
 
+    @GetMapping("/get/university-exam-time-table/{universityExamId}")
+    public ResponseEntity<List<UniversityExamSubjectResponse>> getUniversityExamTimeTable(@PathVariable Long universityExamId){
+        List<UniversityExamSubjectResponse> res = universityExamService.getUniversityExamTimeTable(universityExamId);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @GetMapping("/generate/student-admint-card/{studentUniversityExamId}")
+    public ResponseEntity<InputStreamResource> generateStudentAdmitCard(@PathVariable Long studentUniversityExamId){
+        ByteArrayInputStream res = universityExamService.generateStudentAdmitCard(studentUniversityExamId);
+        HttpHeaders headers  = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION,"attachment; fulename=admitcard.pdf");
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(new InputStreamResource(res));
+    }
+
+    @PostMapping("/update/student-universit-exam-subject/marks")
+    public ResponseEntity<String> updateStudentUniversityExamSubjectMarks(@RequestBody  List<StudentUniversityExamSubjectRequest> dto){
+        String res = universityExamService.updateStudentUniversityExamSubjectObtainMarks(dto);
+        return new ResponseEntity<>(res,HttpStatus.CREATED);
+    }
+
+    @PostMapping("/generate-university-exam-result/{universityExamId}")
+    public ResponseEntity<String> generateUniversityExamResult(@PathVariable Long universityExamId){
+        String res = universityExamService.generateUniversityExamResult(universityExamId);
+        return new ResponseEntity<>(res,HttpStatus.CREATED);
+    }
+
+    @GetMapping("/get/university-exam-result-overview/{universityExamId}")
+    public ResponseEntity<UniversityExamResponse> getUniversityExamResultOverview(@PathVariable Long universityExamId,
+                                                                                  @RequestParam(defaultValue = "0") int pageNumber,
+                                                                                  @RequestParam(defaultValue = "10") int pageSize){
+        UniversityExamResponse res = universityExamService.getUniversityExamResultOverview(universityExamId,pageNumber,pageSize);
+        return new ResponseEntity<>(res,HttpStatus.OK);
+     }
 }

@@ -2,6 +2,7 @@ package com.example.UniversityManagementSystem.dto.universityExam;
 
 import com.example.UniversityManagementSystem.entity.type.Cast;
 import com.example.UniversityManagementSystem.entity.type.Gender;
+import com.example.UniversityManagementSystem.entity.type.ResultStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

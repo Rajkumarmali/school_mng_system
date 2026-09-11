@@ -135,9 +135,6 @@ const StudentDetail = () => {
                     </div>
                     <div>
                         <h3>Student Information</h3>
-                        <p>
-                            Verify your personal information
-                        </p>
                     </div>
                 </div>
                 <div className="student-details-grid">

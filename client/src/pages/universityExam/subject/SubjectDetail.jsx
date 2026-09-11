@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './SubjectDetail.css';
 import { useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUniversityExamSubjectById, updateUniversityExamSubject } from '../../../state/universityExam/Action';
+import { getUniversityExamSubjectById, updateStudentUniversityExamSubjectMarks, updateUniversityExamSubject } from '../../../state/universityExam/Action';
 
 const SubjectDetail = () => {
 
@@ -21,6 +21,8 @@ const SubjectDetail = () => {
         startTime: "",
         endTime: ""
     });
+    const [isEditMarks, setIsEditMarks] = useState(false)
+    const [studentExamMarksData, setStudentExamMarksData] = useState([])
 
     const totalPages = universityExam?.universityExamSubject?.studentUniversityExamSubjectResponses?.totalPages || 0;
     const getPageNumbers = () => {
@@ -146,6 +148,66 @@ const SubjectDetail = () => {
         await dispatch(updateUniversityExamSubject(subjectId, payload));
         await dispatch(getUniversityExamSubjectById(subjectId, pageNumber, pageSize));
     };
+
+    const handleChangeStudentExamMarks = (studentExamSubjectId, value) => {
+        setStudentExamMarksData(pre =>
+            pre.map(item =>
+                item.studentUniversityExamSubjectId === studentExamSubjectId ? {
+                    ...item,
+                    obtainMarks: value
+                }
+                    :
+                    item
+            )
+        )
+    }
+
+    const handelUpdateStudentExamMarks = async () => {
+        await dispatch(updateStudentUniversityExamSubjectMarks(studentExamMarksData))
+        await dispatch(getUniversityExamSubjectById(subjectId, pageNumber, pageSize))
+        handleCancelEditMarks()
+    }
+
+    const handleCancelEditMarks = () => {
+        setIsEditMarks(false)
+        if (universityExam?.universityExamSubject?.studentUniversityExamSubjectResponses?.content) {
+            setStudentExamMarksData(
+                universityExam?.universityExamSubject?.studentUniversityExamSubjectResponses?.content?.map(item => ({
+                    studentUniversityExamSubjectId: item.id,
+                    obtainMarks: item.obtainMarks || 0
+                }))
+            )
+        } else {
+            setStudentExamMarksData([])
+        }
+    }
+    useEffect(() => {
+        if (universityExam?.universityExamSubject?.studentUniversityExamSubjectResponses?.content) {
+            setStudentExamMarksData(pre => {
+                const newData = universityExam?.universityExamSubject
+                    ?.studentUniversityExamSubjectResponses?.content.map(item => {
+                        const existing = pre.find(
+                            oldItem =>
+                                oldItem.studentUniversityExamSubjectId === item.id
+                        )
+
+                        return existing || {
+                            studentUniversityExamSubjectId: item.id,
+                            obtainMarks: item.obtainMarks ?? 0
+                        }
+                    })
+                const currentPageIds = new Set(
+                    newData.map(
+                        item => item.studentUniversityExamSubjectId
+                    )
+                )
+                const oldData = pre.filter(
+                    item => !currentPageIds.has(item.studentUniversityExamSubjectId)
+                )
+                return [...oldData, ...newData]
+            })
+        }
+    }, [universityExam?.universityExamSubject?.studentUniversityExamSubjectResponses?.content])
 
     useEffect(() => {
         dispatch(getUniversityExamSubjectById(subjectId, pageNumber, pageSize))
@@ -275,7 +337,34 @@ const SubjectDetail = () => {
                                 <th>Gender</th>
                                 <th>Email</th>
                                 <th>Internal Marks</th>
-                                <th>ObtainMarks</th>
+                                <th>
+                                    ObtainMarks
+                                    {
+                                        !isEditMarks ?
+                                            <button
+                                                type="button"
+                                                className="exam-edit-btn"
+                                                onClick={() => setIsEditMarks(true)}
+                                            >
+                                                <i className="bi bi-pencil-square me-1"></i>
+                                            </button>
+                                            :
+                                            <>
+                                                <button
+                                                    className="exam-edit-btn"
+                                                    onClick={handelUpdateStudentExamMarks}
+                                                >
+                                                    <i className="bi bi-check-lg"></i>
+                                                </button>
+                                                <button
+                                                    className="exam-edit-btn"
+                                                    onClick={handleCancelEditMarks}
+                                                >
+                                                    <i class="bi bi-x"></i>
+                                                </button>
+                                            </>
+                                    }
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -301,7 +390,21 @@ const SubjectDetail = () => {
                                                 {student?.studentResponse?.email}
                                             </td>
                                             <td>{student?.internameMarks}</td>
-                                            <td>{student?.obtainMarks}</td>
+                                            <td>
+                                                {
+                                                    isEditMarks ?
+                                                        <input
+                                                            type="number"
+                                                            value={
+                                                                studentExamMarksData.find(item => item.studentUniversityExamSubjectId === student.id)?.obtainMarks ?? 0
+                                                            }
+                                                            onChange={(e) => handleChangeStudentExamMarks(student.id, e.target.value)}
+                                                        />
+                                                        :
+                                                        student?.obtainMarks
+
+                                                }
+                                            </td>
                                         </tr>
                                     )
                                     :

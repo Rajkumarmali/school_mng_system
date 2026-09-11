@@ -4,15 +4,16 @@ import com.example.UniversityManagementSystem.dto.universityExam.*;
 import com.example.UniversityManagementSystem.entity.*;
 import com.example.UniversityManagementSystem.entity.type.DocumentStatus;
 import com.example.UniversityManagementSystem.entity.type.DocumentType;
+import com.example.UniversityManagementSystem.entity.type.ResultStatus;
 import com.example.UniversityManagementSystem.repository.*;
 import com.example.UniversityManagementSystem.services.UniversityExamService;
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.Barcode128;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfTable;
 import com.lowagie.text.pdf.PdfWriter;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -36,10 +37,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,6 +53,7 @@ public class UniversityExamServicesImp implements UniversityExamService {
     private final NotificationRepository notificationRepository;
     private final StudentUniversityExamSubjectRepository studentUniversityExamSubjectRepository;
     private final CollegeRepository collegeRepository;
+    private final StudentDocumentRepository studentDocumentRepository;
 
     public UniversityExamServicesImp(CourseRepository courseRepository,
                                      UniversityExamRepository universityExamRepository,
@@ -62,7 +62,8 @@ public class UniversityExamServicesImp implements UniversityExamService {
                                      NotificationRepository notificationRepository,
                                      ExamRepository examRepository,
                                      StudentUniversityExamSubjectRepository studentUniversityExamSubjectRepository,
-                                     CollegeRepository collegeRepository) {
+                                     CollegeRepository collegeRepository,
+                                     StudentDocumentRepository studentDocumentRepository) {
         this.courseRepository = courseRepository;
         this.universityExamRepository = universityExamRepository;
         this.universityExamSubjectRepository = universityExamSubjectRepository;
@@ -70,6 +71,7 @@ public class UniversityExamServicesImp implements UniversityExamService {
         this.notificationRepository = notificationRepository;
         this.studentUniversityExamSubjectRepository = studentUniversityExamSubjectRepository;
         this.collegeRepository = collegeRepository;
+        this.studentDocumentRepository = studentDocumentRepository;
     }
 
     private void createNotification(User user,String title,String message){
@@ -87,6 +89,12 @@ public class UniversityExamServicesImp implements UniversityExamService {
             return "";
         }
         return String.valueOf(value);
+    }
+
+    private String formatTime(LocalDateTime time) {
+        return time != null
+                ? time.format(DateTimeFormatter.ofPattern("hh:mm a"))
+                : "";
     }
 
     private void addDetailRow(PdfPTable table, String label1, String value1, String label2, String value2) {
@@ -226,6 +234,16 @@ public class UniversityExamServicesImp implements UniversityExamService {
         return table;
     }
 
+    private void addLabelValue(PdfPTable table,String label, String value, Font labelFont, Font valueFont) {
+        PdfPCell labelCell = new PdfPCell(new Paragraph(label, labelFont));
+
+        labelCell.setPadding(5);
+        table.addCell(labelCell);
+        PdfPCell valueCell = new PdfPCell(new Paragraph(value != null ? value : "-", valueFont));
+        valueCell.setPadding(5);
+        table.addCell(valueCell);
+    }
+
     @Override
     @Transactional
     @PreAuthorize("hasRole('SUPER_ADMIN')")
@@ -238,6 +256,8 @@ public class UniversityExamServicesImp implements UniversityExamService {
             Course course = courseRepository.findByCourseCode(dto.getCourseCode());
             UniversityExam exam = modelMapper.map(dto,UniversityExam.class);
             exam.setCourse(course);
+            exam.setShowTimeTable(false);
+            exam.setShowAdmitCard(false);
             exam.setShowResult(false);
             exam.setCreatedAt(LocalDateTime.now());
 
@@ -299,7 +319,6 @@ public class UniversityExamServicesImp implements UniversityExamService {
             throw new RuntimeException(e);
         }
     }
-
 
     @Override
     @PreAuthorize("hasRole('SUPER_ADMIN')")
@@ -371,6 +390,82 @@ public class UniversityExamServicesImp implements UniversityExamService {
             return "Successfully update";
         } catch (Exception e) {
             logger.error("Failed to update universityExam | universityExamId = {}",universityExamId,e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "universityExam",key = "#universityExamId"),
+            @CacheEvict(cacheNames = "studentUniversityExamsByUserId",allEntries = true)
+    })
+    public String updateUniversityExamShowTimeTable(Long universityExamId) {
+        logger.info("Updating university-exam show time table | universityExamId = {}",universityExamId);
+        try{
+            UniversityExam universityExam = universityExamRepository.findById(universityExamId).orElseThrow(()->{
+                logger.error("UniversityExam not found | universityExamId = {}",universityExamId);
+                return new IllegalArgumentException("UniversityExam not found");
+            });
+            universityExam.setShowTimeTable(!universityExam.getShowTimeTable());
+            universityExam.setUpdatedAt(LocalDateTime.now());
+            universityExamRepository.save(universityExam);
+
+            logger.info("Successfully update university-exam show time table | univsersityExamId = {}",universityExamId);
+            return "Successfully update";
+        } catch (Exception e) {
+            logger.error("Failed to update university-exam show time table | universityExamId = {}",universityExamId,e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "universityExam",key = "#universityExamId"),
+            @CacheEvict(cacheNames = "studentUniversityExamsByUserId",allEntries = true)
+    })
+    public String updateUniversityExamShowAdmitCard(Long universityExamId) {
+        logger.info("Updating to show university-exam show admit card | universityExamId = {}",universityExamId);
+        try{
+            UniversityExam universityExam = universityExamRepository.findById(universityExamId).orElseThrow(()->{
+               logger.error("UniversityExam not found | universityExamId = {}",universityExamId);
+               return new IllegalArgumentException("UniversityExam not found");
+            });
+            universityExam.setShowAdmitCard(!universityExam.getShowAdmitCard());
+            universityExam.setUpdatedAt(LocalDateTime.now());
+            universityExamRepository.save(universityExam);
+
+            logger.info("Successfully update universityExam show admit card | universityExamId = {}",universityExamId);
+            return "successfully update";
+        } catch (Exception e) {
+            logger.error("Failed to updated the universityExam show admit card | universityExamId = {}",universityExamId);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "universityExam",key = "#universityExamId"),
+            @CacheEvict(cacheNames = "universityExamResultOverview",allEntries = true),
+            @CacheEvict(cacheNames = "studentUniversityExamsByUserId",allEntries = true)
+    })
+    public String updateUniversityExamShowResul(Long universityExamId) {
+        logger.info("Updating universityExam show result | universityExamId = {}",universityExamId);
+        try{
+            UniversityExam universityExam = universityExamRepository.findById(universityExamId).orElseThrow(()->{
+                logger.error("UniversityExam not found | universityExamId = {}",universityExamId);
+                return new IllegalArgumentException("UniversityExam not found");
+            });
+            universityExam.setShowResult(!universityExam.getShowResult());
+            universityExam.setUpdatedAt(LocalDateTime.now());
+            universityExamRepository.save(universityExam);
+
+            logger.info("Successfully update universityExam | universityExamId = {}",universityExamId);
+            return "successfully update";
+        } catch (Exception e) {
+            logger.error("Failed to update universityExam | universityExamId = {}",universityExamId);
             throw new RuntimeException(e);
         }
     }
@@ -854,6 +949,394 @@ public class UniversityExamServicesImp implements UniversityExamService {
         } catch (Exception e) {
             logger.error("Failed to generate student university application form | studentUniversityExamId = {}", studentUniversityExamId, e);
             throw new RuntimeException("Failed to generate application form", e);
+        }
+    }
+
+    @Override
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','STUDENT')")
+    @Cacheable(cacheNames = "universityExamTimeTable",key = "#universityExamId")
+    public List<UniversityExamSubjectResponse> getUniversityExamTimeTable(Long universityExamId) {
+        logger.info("Fetching university-exam-subject for the timetable | universityExamId = {}",universityExamId);
+        try{
+            List<UniversityExamSubject> universityExamSubjects = universityExamSubjectRepository.findByUniversityExamId(universityExamId);
+            List<UniversityExamSubjectResponse> responses  = universityExamSubjects.stream().map(universityExamSubject->{
+                UniversityExamSubjectResponse res = new UniversityExamSubjectResponse();
+                res.setId(universityExamSubject.getId());
+                res.setDate(universityExamSubject.getDate());
+                res.setStartTime(universityExamSubject.getStartTime());
+                res.setEndTime(universityExamSubject.getEndTime());
+
+                Subject subject = universityExamSubject.getSubject();
+                SubjectResponse subjectResponse = new SubjectResponse();
+
+                subjectResponse.setId(subject.getId());
+                subjectResponse.setName(subject.getName());
+                subjectResponse.setCode(subject.getCode());
+                subjectResponse.setSubjectType(subject.getSubjectType());
+
+                res.setSubjectResponse(subjectResponse);
+                return res;
+            }).toList();
+            return responses;
+        } catch (Exception e) {
+            logger.error("Failed to fetched the university-exam-subject for the timetable | universityExamId = {}",universityExamId,e);
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    @Override
+    @PreAuthorize("hasRole('STUDENT')")
+    public ByteArrayInputStream generateStudentAdmitCard(Long studentUniversityExamId) {
+        logger.info("Generating student exam admit card | studentUniversityExamId = {}", studentUniversityExamId);
+        try {
+            StudentUniversityExam studentUniversityExam = studentUniversityExamRepository.findById(studentUniversityExamId).orElseThrow(() -> {
+                                logger.error("StudentUniversityExam not found | studentUniversityExamId = {}", studentUniversityExamId);
+                                return new IllegalArgumentException("StudentUniversityExam not found");
+                            });
+
+            UniversityExam universityExam = studentUniversityExam.getUniversityExam();
+
+            Student student = studentUniversityExam.getStudent();
+
+            List<StudentUniversityExamSubject> subjects = studentUniversityExam.getStudentUniversityExamSubjects().stream()
+                    .sorted(Comparator.comparing(subject->subject.getUniversityExamSubject().getDate()))
+                            .toList();
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+            Document document = new Document(PageSize.A4, 30, 30, 30, 30);
+
+            PdfWriter writer=PdfWriter.getInstance(document, outputStream);
+            document.open();
+
+            Font universityFont = new Font(Font.HELVETICA, 18, Font.BOLD);
+            Font titleFont = new Font(Font.HELVETICA, 15, Font.BOLD);
+            Font normalFont = new Font(Font.HELVETICA, 10, Font.NORMAL);
+            Font boldFont = new Font(Font.HELVETICA, 10, Font.BOLD);
+
+//            PdfPTable headerTable = new PdfPTable(1);
+//            headerTable.setWidthPercentage(100);
+
+//            PdfPCell universityCell = new PdfPCell(new Paragraph("UNIVERSITY NAME", universityFont));
+//            universityCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+//            universityCell.setBorder(Rectangle.NO_BORDER);
+//
+//            headerTable.addCell(universityCell);
+//
+//            PdfPCell examCell = new PdfPCell(new Paragraph("UNIVERSITY EXAMINATION", titleFont));
+//            examCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+//            examCell.setBorder(Rectangle.NO_BORDER);
+//
+//            headerTable.addCell(examCell);
+//
+//            document.add(headerTable);
+//
+//            Paragraph admitCardTitle = new Paragraph("EXAMINATION ADMIT CARD", titleFont);
+//            admitCardTitle.setAlignment(Element.ALIGN_CENTER);
+//            admitCardTitle.setSpacingBefore(10);
+//            admitCardTitle.setSpacingAfter(15);
+//
+//            document.add(admitCardTitle);
+
+            PdfPTable barcodeTable = new PdfPTable(1);
+            barcodeTable.setWidthPercentage(100);
+
+            PdfPCell barcodeCell = new PdfPCell();
+            barcodeCell.setBorder(Rectangle.NO_BORDER);
+            barcodeCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            barcodeCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+            barcodeCell.setPaddingTop(8f);
+            barcodeCell.setPaddingBottom(5f);
+            barcodeCell.setPaddingLeft(0f);
+            barcodeCell.setPaddingRight(0f);
+
+            try {
+                String barcodeValue =
+                        "ID=" + safeValue(String.valueOf(studentUniversityExamId))
+                                + "|ROLL=" + safeValue(student.getRollNumber())
+                                + "|NAME=" + safeValue(student.getFirstName())+" "+safeValue(student.getLastName());
+
+                if (barcodeValue.isBlank()) {
+                    barcodeValue = String.valueOf(studentUniversityExamId);
+                }
+
+                Barcode128 barcode = new Barcode128();
+                barcode.setCode(barcodeValue);
+                barcode.setCodeType(Barcode128.CODE128);
+                barcode.setX(1.0f);
+                barcode.setBarHeight(30f);
+                barcode.setFont(null);
+                Image barcodeImage = barcode.createImageWithBarcode(
+                        writer.getDirectContent(),
+                        null,
+                        null
+                );
+                barcodeImage.scalePercent(75f);
+                barcodeImage.setAlignment(Element.ALIGN_LEFT);
+                barcodeCell.addElement(barcodeImage);
+            } catch (Exception ex) {
+                logger.warn("Unable to generate barcode for studentUniversityExamId={}", studentUniversityExamId, ex);
+                Paragraph fallback = new Paragraph(
+                        safeValue(student.getRollNumber()),
+                        boldFont
+                );
+                fallback.setAlignment(Element.ALIGN_LEFT);
+                barcodeCell.addElement(fallback);
+            }
+
+            barcodeTable.addCell(barcodeCell);
+            document.add(barcodeTable);
+
+            PdfPTable examTable = createSectionTable("EXAMINATION INFORMATION", 4);
+
+            addDetailRow(examTable, "Exam Name", safeValue(universityExam.getName()), "Course", universityExam.getCourse().getName());
+            addDetailRow(examTable, "Course Code", safeValue(universityExam.getCourse().getCourseCode()), "Academic Year", safeValue(universityExam.getAcademicYear()));
+            addDetailRow(examTable, "Year", safeValue(universityExam.getYear())+" Year", "Semester", safeValue(universityExam.getSemester())+" Semester");
+
+            document.add(examTable);
+            document.add(new Paragraph(" "));
+
+            PdfPTable studentTable = createSectionTable("STUDENT DETAILS",2);
+            studentTable.setWidthPercentage(100);
+            studentTable.setWidths(new float[]{3f, 1f});
+
+            PdfPTable detailsTable = new PdfPTable(2);
+            detailsTable.setWidthPercentage(100);
+            addLabelValue(detailsTable, "Enrollment Number", safeValue(student.getEnrollmentNumber()), boldFont, normalFont);
+            addLabelValue(detailsTable, "Roll Number", safeValue(student.getRollNumber()), boldFont, normalFont);
+            addLabelValue(detailsTable, "Student Name", safeValue(student.getFirstName()) + " " +safeValue( student.getLastName()), boldFont, normalFont);
+            addLabelValue(detailsTable, "Email", safeValue(student.getEmail()), boldFont, normalFont);
+            addLabelValue(detailsTable, "Phone", safeValue(student.getPhoneNumber()), boldFont, normalFont);
+
+            PdfPCell detailsCell = new PdfPCell(detailsTable);
+            detailsCell.setPadding(5);
+            studentTable.addCell(detailsCell);
+
+            PdfPCell photoCell = new PdfPCell();
+            photoCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            photoCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            photoCell.setPadding(5);
+
+            StudentDocument studentDocument = student.getStudentDocument().stream()
+                    .filter(sd->Objects.equals(sd.getDocumentType(),DocumentType.PHOTO) &&
+                            Objects.equals(sd.getStatus(),DocumentStatus.VERIFIED))
+                    .findFirst()
+                    .orElse(null);
+
+            String studentImage =studentDocument.getFilePath();
+            if (studentImage != null && !studentImage.isBlank()) {
+                try {
+                    Image image = Image.getInstance(studentImage);
+                    image.scaleToFit(100, 120);
+                    photoCell.addElement(image);
+                } catch (Exception imageException) {
+                    photoCell.addElement(new Paragraph("PHOTO", boldFont));
+                    logger.warn("Unable to load student image | path={}", studentImage, imageException);
+                }
+            } else {
+                photoCell.addElement(new Paragraph("PHOTO", boldFont));
+            }
+            studentTable.addCell(photoCell);
+            document.add(studentTable);
+
+            document.add(new Paragraph(" "));
+
+            PdfPTable centerTable = createSectionTable("CENTER DETAILS", 1);
+            centerTable.setWidthPercentage(100);
+
+            PdfPTable centerDetailsTable = new PdfPTable(2);
+            centerDetailsTable.setWidthPercentage(100);
+            centerDetailsTable.setWidths(new float[]{1f,3f});
+
+            addLabelValue(centerDetailsTable, "College Name", safeValue(studentUniversityExam.getExamCenterCollege().getName()), boldFont, normalFont);
+            addLabelValue(centerDetailsTable, "College Code", safeValue(studentUniversityExam.getExamCenterCollege().getCollegeCode()), boldFont, normalFont);
+            addLabelValue(centerDetailsTable, "Address", safeValue(studentUniversityExam.getExamCenterCollege().getAddress().getAddress())+", "+
+                    safeValue(studentUniversityExam.getExamCenterCollege().getAddress().getCity())+", "+
+                    safeValue(studentUniversityExam.getExamCenterCollege().getAddress().getDistrict())+", "+
+                    safeValue(studentUniversityExam.getExamCenterCollege().getAddress().getState()), boldFont, normalFont);
+
+            PdfPCell centerDetailsCell = new PdfPCell(centerDetailsTable);
+            centerDetailsCell.setPadding(5);
+
+            centerTable.addCell(centerDetailsCell);
+
+            PdfPCell emptyCell = new PdfPCell();
+            emptyCell.setBorder(Rectangle.NO_BORDER);
+            centerTable.addCell(emptyCell);
+
+            document.add(centerTable);
+
+            PdfPTable subjectTable = createSectionTable("EXAMINATION SCHEDULE",5);
+            subjectTable.setWidthPercentage(100);
+            subjectTable.setWidths(new float[]{0.5f,1f, 4f, 1.5f, 2.5f});
+
+            addTableHeader(subjectTable, "No.");
+            addTableHeader(subjectTable,"Code");
+            addTableHeader(subjectTable, "Subject");
+            addTableHeader(subjectTable, "Date");
+            addTableHeader(subjectTable, "Time");
+
+            int serialNumber = 1;
+            for (StudentUniversityExamSubject subject : subjects) {
+                subjectTable.addCell(createCenterCell(String.valueOf(serialNumber++)));
+                subjectTable.addCell(safeValue(subject.getUniversityExamSubject().getSubject().getCode()));
+                subjectTable.addCell(safeValue(subject.getUniversityExamSubject().getSubject().getName()));
+                subjectTable.addCell(
+                        subject.getUniversityExamSubject().getDate() != null
+                                ? subject.getUniversityExamSubject().getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                                : ""
+                );
+                subjectTable.addCell(
+                        formatTime(subject.getUniversityExamSubject().getStartTime())
+                                + " - " +
+                                formatTime(subject.getUniversityExamSubject().getEndTime())
+                );
+            }
+
+            document.add(subjectTable);
+            document.add(new Paragraph(" "));
+
+            Paragraph instructionTitle = new Paragraph("IMPORTANT INSTRUCTIONS", boldFont);
+
+            document.add(instructionTitle);
+            document.add(new Paragraph("1. Carry this admit card to the examination hall.", normalFont));
+            document.add(new Paragraph("2. Carry a valid college/university identity card.", normalFont));
+            document.add(new Paragraph("3. Report to the examination hall at least 30 minutes before the examination.", normalFont));
+            document.add(new Paragraph("4. Electronic devices are not permitted in the examination hall.", normalFont));
+
+            document.close();
+
+            logger.info("Successfully generated student exam admit card | studentUniversityExamId = {}", studentUniversityExamId);
+            return new ByteArrayInputStream(outputStream.toByteArray());
+        } catch (Exception e) {
+            logger.error("Failed to generate student exam admit card | studentUniversityExamId = {}", studentUniversityExamId, e);
+            throw new RuntimeException("Failed to generate student admit card", e);
+        }
+    }
+
+    @Override
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @Caching(evict = {
+         @CacheEvict(cacheNames = "universityExamSubject",allEntries = true)
+    })
+    public String updateStudentUniversityExamSubjectObtainMarks(List<StudentUniversityExamSubjectRequest> dto) {
+        logger.info("Updating studentUniversityExamSubject obtain marks");
+        try{
+            for(StudentUniversityExamSubjectRequest req:dto){
+                StudentUniversityExamSubject subject = studentUniversityExamSubjectRepository.findById(req.getStudentUniversityExamSubjectId()).orElseThrow(()->{
+                    logger.error("StudentUniversityExamSubject not found | studentUniversityExamSubjectId = {}",req.getStudentUniversityExamSubjectId());
+                    return new IllegalArgumentException("studentUniversityExamSubject not found");
+                });
+                subject.setObtainMarks(req.getObtainMarks());
+                if(req.getObtainMarks()>=subject.getUniversityExamSubject().getPassingMarks()){
+                    subject.setEarnedCredits(subject.getUniversityExamSubject().getSubject().getCredit());
+                    subject.setResultStatus(ResultStatus.PASS);
+                } else{
+                    subject.setEarnedCredits(0);
+                    subject.setResultStatus(ResultStatus.FAIL);
+                }
+                subject.setUpdatedAt(LocalDateTime.now());
+                studentUniversityExamSubjectRepository.save(subject);
+            }
+            return "successfully update";
+        } catch (Exception e) {
+            logger.error("Failed to update studentUniversityExamSubject obtain marks",e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "universityExamResultOverview",allEntries = true)
+    })
+    public String generateUniversityExamResult(Long universityExamId) {
+        logger.info("Generating universityExam result | universityExamId = {}",universityExamId);
+        try{
+            UniversityExam universityExam = universityExamRepository.findById(universityExamId).orElseThrow(()->{
+                logger.error("UniversityExam not found | universityExamId = {}",universityExamId);
+                return new IllegalArgumentException("UniversityExam not found");
+            });
+
+            universityExam.setGeneratedResult(true);
+            universityExamRepository.save(universityExam);
+
+            for(StudentUniversityExam studentUniversityExam:universityExam.getStudentUniversityExams()){
+                int totalCradit = 0;
+                int totalEarnedCradit=0;
+                double totalMarks = 0;
+                double totalObtainMarks = 0;
+                boolean isPassed = true;
+                for(StudentUniversityExamSubject subject:studentUniversityExam.getStudentUniversityExamSubjects()){
+                    totalCradit += subject.getUniversityExamSubject().getSubject().getCredit();
+                    totalEarnedCradit += subject.getEarnedCredits();
+                    totalMarks += subject.getUniversityExamSubject().getMaxMarks();
+                    totalObtainMarks +=subject.getObtainMarks();
+                    if(subject.getResultStatus()!=ResultStatus.PASS){
+                        isPassed=false;
+                    }
+                }
+                studentUniversityExam.setTotalCredits(totalCradit);
+                studentUniversityExam.setEarnedCredits(totalEarnedCradit);
+                studentUniversityExam.setTotalMarks(totalMarks);
+                studentUniversityExam.setTotalObtainMarks(totalObtainMarks);
+                if(isPassed){
+                    studentUniversityExam.setResultStatus(ResultStatus.PASS);
+                } else{
+                    studentUniversityExam.setResultStatus(ResultStatus.FAIL);
+                }
+                studentUniversityExamRepository.save(studentUniversityExam);
+            }
+            logger.info("Successfully generated universityExam result | universityExamId = {}",universityExamId);
+            return "successfully generate";
+        } catch (Exception e) {
+            logger.error("Failed to generate universityExam result | universityExamId = {}",universityExamId,e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @Cacheable(cacheNames = "universityExamResultOverview",key = "{#universityExamId,#pageNumber,#pageSize}")
+    public UniversityExamResponse getUniversityExamResultOverview(Long universityExamId, int pageNumber, int pageSize) {
+        logger.info("Fetching university-exam-result-overview | universityExamId = {}",universityExamId);
+        try{
+            Pageable pageable = PageRequest.of(pageNumber,pageSize);
+
+            UniversityExam universityExam = universityExamRepository.findById(universityExamId).orElseThrow(()->{
+                logger.error("UniversityExam not found | univeristyExamId = {}",universityExamId);
+                return new IllegalArgumentException("UniversityExam not found");
+            });
+            UniversityExamResponse response = modelMapper.map(universityExam,UniversityExamResponse.class);
+
+            int totalPassedStudent = universityExam.getStudentUniversityExams().stream()
+                            .filter(studentUniversityExam -> Objects.equals(studentUniversityExam.getResultStatus(),ResultStatus.PASS))
+                                    .toList().size();
+            int totalFailedStudent = universityExam.getStudentUniversityExams().stream()
+                            .filter(studentUniversityExam -> Objects.equals(studentUniversityExam.getResultStatus(),ResultStatus.FAIL))
+                                    .toList().size();
+
+            Page<StudentUniversityExam> studentUniversityExams = studentUniversityExamRepository.findByUniversityExamId(universityExamId,pageable);
+            Page<StudentUniversityExamResponse> studentUniversityExamResponses = studentUniversityExams.map(studentUniversityExam -> {
+                StudentUniversityExamResponse res = modelMapper.map(studentUniversityExam, StudentUniversityExamResponse.class);
+                res.setTotalSubjects(studentUniversityExam.getStudentUniversityExamSubjects().size());
+                StudentResponse studentResponse = modelMapper.map(studentUniversityExam.getStudent(),StudentResponse.class);
+                res.setStudentResponse(studentResponse);
+                return res;
+            });
+
+            response.setTotalStudents(universityExam.getStudentUniversityExams().size());
+            response.setTotalPassedStudent(totalPassedStudent);
+            response.setTotalFailedStudent(totalFailedStudent);
+            response.setStudentUniversityExamResponse(studentUniversityExamResponses);
+            logger.info("Successfully fetched university-exam-result-overview | universityExamId = {}",universityExamId);
+            return response;
+        } catch (Exception e) {
+            logger.error("Failed to fetched university-exam-result-overview | universityExamId = {}",universityExamId,e);
+            throw new RuntimeException(e);
         }
     }
 }
