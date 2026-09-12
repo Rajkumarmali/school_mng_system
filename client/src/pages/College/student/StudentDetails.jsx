@@ -287,11 +287,29 @@ const StudentDetails = () => {
                                 <div className="college-student-profile-contact">
                                     <div>
                                         <i className="bi bi-journal-bookmark-fill me-2"></i>
-                                        <span>Course : {college?.collegeStudent?.course}</span>
+                                        <span>Course : {college?.collegeStudent?.studentAcademicResponse?.courseName}
+                                            {
+                                                college?.collegeStudent?.studentAcademicResponse?.courseName &&
+                                                <>{" "}({college?.collegeStudent?.studentAcademicResponse?.courseCode})</>
+                                            }
+                                        </span>
                                     </div>
                                     <div>
                                         <i className="bi bi-diagram-3-fill me-2"></i>
-                                        <span>Department : {college?.collegeStudent?.department}</span>
+                                        <span>Department : {college?.collegeStudent?.studentAcademicResponse?.departmentName}
+                                            {college?.collegeStudent?.studentAcademicResponse?.departmentName &&
+                                                <>{" "}({college?.collegeStudent?.studentAcademicResponse?.departmentCode})</>}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span>
+                                            <i className="bi bi-calendar3 me-2"></i>
+                                            Year : {college?.collegeStudent?.studentAcademicResponse?.year}
+                                            {
+                                                college?.collegeStudent?.studentAcademicResponse?.semester &&
+                                                <>{" "}Semester : {college?.collegeStudent?.studentAcademicResponse?.semester}</>
+                                            }
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -302,7 +320,7 @@ const StudentDetails = () => {
                                     <h5>Personal Information : </h5>
                                 </div>
                                 <div className="info-line">
-                                    <span><strong>Name :</strong> {college?.collegeStudent?.name}</span>
+                                    <span><strong>Name :</strong> {college?.collegeStudent?.firstName} {college?.collegeStudent?.lastName}</span>
                                     <span><strong>Father Name :</strong> {college?.collegeStudent?.parentResponse?.fatherName}</span>
                                     <span><strong>Mother Name :</strong> {college?.collegeStudent?.parentResponse?.motherName}</span>
                                     <span><strong>Mobile Number :</strong> {college?.collegeStudent?.phoneNumber}</span>

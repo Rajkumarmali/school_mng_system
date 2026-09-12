@@ -240,11 +240,31 @@ const StudentDetails = () => {
                                 <div className="university-student-profile-contact">
                                     <div>
                                         <i className="bi bi-journal-bookmark-fill me-2"></i>
-                                        <span>Course : {university?.universityStudent?.course}</span>
+                                        <span>Course : {university?.universityStudent?.studentAcademicResponse?.courseName}
+                                            {
+                                                university?.universityStudent?.studentAcademicResponse?.courseName &&
+                                                <> {" "}({university?.universityStudent?.studentAcademicResponse?.courseCode})</>
+                                            }
+                                        </span>
                                     </div>
                                     <div>
                                         <i className="bi bi-diagram-3-fill me-2"></i>
-                                        <span>Department : {university?.universityStudent?.department}</span>
+                                        <span>Department : {university?.universityStudent?.studentAcademicResponse?.departmentName}
+                                            {
+                                                university?.universityStudent?.studentAcademicResponse?.departmentName &&
+                                                <> {" "}({university?.universityStudent?.studentAcademicResponse?.departmentCode})</>
+                                            }
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span>
+                                            <i className="bi bi-calendar3 me-2"></i>
+                                            Year : {university?.universityStudent?.studentAcademicResponse?.year}
+                                            {
+                                                university?.universityStudent?.studentAcademicResponse?.semester &&
+                                                <>{" "}Semester : {university?.universityStudent?.studentAcademicResponse?.semester}</>
+                                            }
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -255,7 +275,7 @@ const StudentDetails = () => {
                                     <h5>Personal Information : </h5>
                                 </div>
                                 <div className="info-line">
-                                    <span><strong>Name :</strong> {university?.universityStudent?.name}</span>
+                                    <span><strong>Name :</strong> {university?.universityStudent?.firstName} {university?.universityStudent?.lastName}</span>
                                     <span><strong>Father Name :</strong> {university?.universityStudent?.parentResponse?.fatherName}</span>
                                     <span><strong>Mother Name :</strong> {university?.universityStudent?.parentResponse?.motherName}</span>
                                     <span><strong>Mobile Number :</strong> {university?.universityStudent?.phoneNumber}</span>

@@ -10,6 +10,7 @@ import com.example.UniversityManagementSystem.entity.Parent;
 import com.example.UniversityManagementSystem.entity.Student;
 import com.example.UniversityManagementSystem.entity.University;
 import com.example.UniversityManagementSystem.entity.type.AttendanceStatus;
+import com.example.UniversityManagementSystem.entity.type.CourseDurationType;
 import com.example.UniversityManagementSystem.entity.type.DocumentStatus;
 import com.example.UniversityManagementSystem.entity.type.SectionStatus;
 import com.example.UniversityManagementSystem.repository.*;
@@ -27,6 +28,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
@@ -60,14 +62,17 @@ public class StudentServicesImp implements StudentServices {
     private final ModelMapper modelMapper = new ModelMapper();
     private final StudentSubjectRepository studentSubjectRepository;
     private final StudentAttendanceRepository studentAttendanceRepository;
-
+    private final CourseRepository courseRepository;
+    private final StudentAcademicRepository studentAcademicRepository;
 
     public StudentServicesImp(StudentRepository studentRepository, CollegeRepository collegeRepository, AuthService authService, AddressService addressService, ParentServices parentServices,
                               UniversityRepository universityRepository,
                               DepartmentRepository departmentRepository,
                               StudentDocumentRepository studentDocumentRepository,
                               StudentSubjectRepository studentSubjectRepository,
-                              StudentAttendanceRepository studentAttendanceRepository) {
+                              StudentAttendanceRepository studentAttendanceRepository,
+                              CourseRepository courseRepository,
+                              StudentAcademicRepository studentAcademicRepository) {
         this.studentRepository = studentRepository;
         this.collegeRepository = collegeRepository;
         this.authService = authService;
@@ -78,6 +83,28 @@ public class StudentServicesImp implements StudentServices {
         this.studentDocumentRepository = studentDocumentRepository;
         this.studentSubjectRepository = studentSubjectRepository;
         this.studentAttendanceRepository = studentAttendanceRepository;
+        this.courseRepository = courseRepository;
+        this.studentAcademicRepository = studentAcademicRepository;
+    }
+
+
+    private void createStudentAcademic(String academicYear,Student student,String courseCode,String departmentCode){
+        Course course = courseRepository.findByCourseCode(courseCode);
+        Department department = departmentRepository.findByCode(departmentCode);
+
+        StudentAcademic studentAcademic = new StudentAcademic();
+        studentAcademic.setYear(1);
+        if(Objects.equals(course.getCourseDurationType(), CourseDurationType.SEMESTER)){
+            studentAcademic.setSemester(1);
+        }
+        studentAcademic.setAcademicYear(academicYear);
+        studentAcademic.setIsCurrent(true);
+        studentAcademic.setStudent(student);
+        studentAcademic.setCourse(course);
+        studentAcademic.setDepartment(department);
+        studentAcademic.setCreatedAt(LocalDateTime.now());
+        studentAcademicRepository.save(studentAcademic);
+
     }
 
     private int[] getOverallAttendance(Long userId) {
@@ -102,172 +129,141 @@ public class StudentServicesImp implements StudentServices {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public String createStudent(Long collegeId,Long universityId, StudentRequest dto,MultipartFile image) {
+       logger.info("Creating new student");
+       try{
+           College college = null;
+           if (collegeId!=null){
+               college = collegeRepository.findById(collegeId).orElseThrow(()->
+                       new IllegalArgumentException("College not found"));
+           }
+           University university = universityRepository.findById(universityId).orElseThrow(()->{
+               throw new IllegalArgumentException("University not found");
+           });
 
-        College college = null;
-        if (collegeId!=null){
-           college = collegeRepository.findById(collegeId).orElseThrow(()->
-                   new IllegalArgumentException("College not found"));
-        }
-        University university = universityRepository.findById(universityId).orElseThrow(()->{
-           throw new IllegalArgumentException("University not found");
-        });
+           Address savedAddress = addressService.createAddress(dto.getAddressRequest());
+           User savedUser = authService.createUser(dto.getEmail(), college,universityId,"STUDENT");
+           Parent savedParent = parentServices.createParent(dto.getParentRequest());
 
-        Department department = departmentRepository.findByCode(dto.getDepartmentCode());
+           String registrationNumber = "";
+           if(college!=null)
+               registrationNumber=college.getShortName().toUpperCase()+"-STU-";
+           else
+               registrationNumber = university.getShortName().toUpperCase()+"-STU-";
 
-        Address savedAddress = addressService.createAddress(dto.getAddressRequest());
-        User savedUser = authService.createUser(dto.getEmail(), college,universityId,"STUDENT");
-        Parent savedParent = parentServices.createParent(dto.getParentRequest());
+           Student student = new Student();
 
-        String registrationNumber = "";
-        if(college!=null)
-            registrationNumber=college.getShortName().toUpperCase()+"-STU-";
-        else
-            registrationNumber = university.getShortName().toUpperCase()+"-STU-";
+           if(image!=null &&!image.isEmpty()){
+               try{
+                   String uploadDir="upload/student/";
+                   String fileName= UUID.randomUUID()+"_"+image.getOriginalFilename();
+                   Path path = Paths.get(uploadDir,fileName);
+                   Files.createDirectories(path.getParent());
+                   Files.copy(
+                           image.getInputStream(),
+                           path,
+                           StandardCopyOption.REPLACE_EXISTING
+                   );
+                   student.setImage(uploadDir+fileName);
+               } catch (Exception ex){
+                   throw new RuntimeException(ex);
+               }
+           }
 
-        Student student = new Student();
+           student.setFirstName(dto.getFirstName());
+           student.setLastName(dto.getLastName());
+           student.setEmail(dto.getEmail());
+           student.setPhoneNumber(dto.getPhoneNumber());
+           student.setDob(dto.getDob());
+           student.setGender(dto.getGender());
+           student.setCast(dto.getCast());
+           student.setAadhaarNumber(dto.getAadharNumber());
+           student.setAddress(savedAddress);
+           student.setUser(savedUser);
+           student.setCollege(college);
+           student.setParent(savedParent);
+           student.setCreatedAt(LocalDateTime.now());
+           Student savedStudent = studentRepository.save(student);
 
-        if(image!=null &&!image.isEmpty()){
-            try{
-               String uploadDir="upload/student/";
-               String fileName= UUID.randomUUID()+"_"+image.getOriginalFilename();
-               Path path = Paths.get(uploadDir,fileName);
-               Files.createDirectories(path.getParent());
-               Files.copy(
-                       image.getInputStream(),
-                       path,
-                       StandardCopyOption.REPLACE_EXISTING
-               );
-               student.setImage(uploadDir+fileName);
-            } catch (Exception ex){
-                throw new RuntimeException(ex);
-            }
-        }
+           createStudentAcademic(dto.getAcademicYear(),savedStudent,dto.getCourseCode(),dto.getDepartmentCode());
 
-        student.setFirstName(dto.getFirstName());
-        student.setLastName(dto.getLastName());
-        student.setEmail(dto.getEmail());
-        student.setPhoneNumber(dto.getPhoneNumber());
-        student.setDob(dto.getDob());
-        student.setGender(dto.getGender());
-        student.setCast(dto.getCast());
-        student.setAadhaarNumber(dto.getAadharNumber());
-        student.setAddress(savedAddress);
-        student.setUser(savedUser);
-        student.setCollege(college);
-        student.setParent(savedParent);
-//        if(department!=null){
-//            student.setDepartment(department);
-//        }
-        student.setCreatedAt(LocalDateTime.now());
-        Student savedStudent = studentRepository.save(student);
+           registrationNumber += String.format("%03d",savedStudent.getId());
+           savedStudent.setRegistrationNumber(registrationNumber);
+           studentRepository.save(savedStudent);
 
-        registrationNumber += String.format("%03d",savedStudent.getId());
-        savedStudent.setRegistrationNumber(registrationNumber);
-        studentRepository.save(savedStudent);
-
-        return "Student create successfully";
+           return "Student create successfully";
+       } catch (Exception e) {
+           logger.error("Failed to create new student ",e);
+           throw new RuntimeException(e);
+       }
     }
 
     @Override
     @Cacheable(cacheNames = "students",key = "{#collegeId,#pageNumber,#pageSize}")
     @PreAuthorize("hasRole('ADMIN')")
     public Page<StudentResponse> getAllStudent(Long collegeId,int pageNumber,int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        logger.info("Fetching students | collegeId = {}",collegeId);
+        try {
+            Pageable pageable = PageRequest.of(pageNumber,pageSize);
 
-        Page<Student> studentList = studentRepository.findByCollegeId(collegeId,pageable);
-        Page<StudentResponse> response = studentList.map(student -> {
+            Page<Student> studentList = studentRepository.findByCollegeId(collegeId,pageable);
+            Page<StudentResponse> response = studentList.map(student -> {
 
-            Address address = student.getAddress();
-            Parent parent = student.getParent();
+                StudentAcademic studentAcademic = student.getStudentAcademics().stream()
+                        .filter(sa-> Boolean.TRUE.equals(sa.getIsCurrent()))
+                        .findFirst()
+                        .orElse(null);
 
-            StudentResponse studentResponse = new StudentResponse();
-            AddressResponse addressResponse = new AddressResponse();
-            ParentResponse parentResponse = new ParentResponse();
+                StudentResponse studentResponse = modelMapper.map(student,StudentResponse.class);
+                AddressResponse addressResponse = modelMapper.map(student.getAddress(),AddressResponse.class);
+                ParentResponse parentResponse = modelMapper.map(student.getParent(),ParentResponse.class);
+                StudentAcademicResponse studentAcademicResponse = new StudentAcademicResponse();
+                if(studentAcademic!=null)
+                    studentAcademicResponse =  modelMapper.map(studentAcademic,StudentAcademicResponse.class);
 
-            addressResponse.setAddress(address.getAddress());
-            addressResponse.setCity(address.getCity());
-            addressResponse.setDistrict(address.getDistrict());
-            addressResponse.setState(address.getState());
-            addressResponse.setCountry(address.getCountry());
-            addressResponse.setPincode(address.getPincode());
-
-            parentResponse.setFatherName(parent.getFatherName());
-            parentResponse.setFatherNumber(parent.getFatherNumber());
-            parentResponse.setFatherOccupation(parent.getFatherOccupation());
-            parentResponse.setMotherName(parent.getMotherName());
-            parentResponse.setMotherNumber(parent.getMotherNumber());
-            parentResponse.setMotherOccupation(parent.getMotherOccupation());
-
-            studentResponse.setRollNumber(student.getRollNumber());
-            studentResponse.setId(student.getId());
-            studentResponse.setFirstName(student.getFirstName());
-            studentResponse.setLastName(student.getLastName());
-            studentResponse.setEmail(student.getEmail());
-            studentResponse.setPhoneNumber(student.getPhoneNumber());
-            studentResponse.setDob(student.getDob());
-            studentResponse.setGender(student.getGender());
-            studentResponse.setRegistrationNumber(student.getRegistrationNumber());
-            studentResponse.setCast(student.getCast());
-            studentResponse.setAadharNumber(student.getAadhaarNumber());
-//            if(student.getDepartment()!=null){
-//                studentResponse.setDepartmentCode(student.getDepartment().getCode());
-//            }
-            studentResponse.setAddressResponse(addressResponse);
-            studentResponse.setParentResponse(parentResponse);
-            return studentResponse;
-        });
-        return response;
+                studentResponse.setAddressResponse(addressResponse);
+                studentResponse.setParentResponse(parentResponse);
+                studentResponse.setStudentAcademicResponse(studentAcademicResponse);
+                return studentResponse;
+            });
+            logger.info("Successfully fetched students | collegeId = {} | returnedElements = {}",collegeId,response.getNumberOfElements());
+            return response;
+        } catch (Exception e) {
+            logger.error("Failed to fetched students | collegeId = {}",collegeId);
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     @Cacheable(cacheNames = "student",key = "#studentId")
     @PreAuthorize("hasRole('ADMIN')")
     public StudentResponse getStudentById(Long studentId) {
-        Student student = studentRepository.findById(studentId).orElseThrow(()->
-                new IllegalArgumentException("Student not found"));
+        logger.info("Fetching student by id | studentId = {}",studentId);
+        try{
+            Student student = studentRepository.findById(studentId).orElseThrow(()->
+                    new IllegalArgumentException("Student not found"));
+            StudentAcademic studentAcademic = student.getStudentAcademics().stream()
+                    .filter(sa-> Boolean.TRUE.equals(sa.getIsCurrent()))
+                    .findFirst()
+                    .orElse(null);
 
-        Address address = student.getAddress();
-        Parent parent = student.getParent();
+            StudentResponse studentResponse = modelMapper.map(student,StudentResponse.class);
+            AddressResponse addressResponse = modelMapper.map(student.getAddress(),AddressResponse.class);
+            ParentResponse parentResponse = modelMapper.map(student.getParent(),ParentResponse.class);
+            StudentAcademicResponse studentAcademicResponse = new StudentAcademicResponse();
+            if(studentAcademic!=null)
+                studentAcademicResponse = modelMapper.map(studentAcademic,StudentAcademicResponse.class);
 
-        StudentResponse studentResponse = new StudentResponse();
-        AddressResponse addressResponse = new AddressResponse();
-        ParentResponse parentResponse = new ParentResponse();
+            studentResponse.setUsername(student.getUser().getUsername());
+            studentResponse.setAddressResponse(addressResponse);
+            studentResponse.setParentResponse(parentResponse);
+            studentResponse.setStudentAcademicResponse(studentAcademicResponse);
 
-        addressResponse.setAddress(address.getAddress());
-        addressResponse.setCity(address.getCity());
-        addressResponse.setDistrict(address.getDistrict());
-        addressResponse.setState(address.getState());
-        addressResponse.setCountry(address.getCountry());
-        addressResponse.setPincode(address.getPincode());
-
-        parentResponse.setFatherName(parent.getFatherName());
-        parentResponse.setFatherNumber(parent.getFatherNumber());
-        parentResponse.setFatherOccupation(parent.getFatherOccupation());
-        parentResponse.setMotherName(parent.getMotherName());
-        parentResponse.setMotherNumber(parent.getMotherNumber());
-        parentResponse.setMotherOccupation(parent.getMotherOccupation());
-
-        studentResponse.setRollNumber(student.getRollNumber());
-        studentResponse.setEnrollmentNumber(student.getEnrollmentNumber());
-        studentResponse.setId(student.getId());
-        studentResponse.setFirstName(student.getFirstName());
-        studentResponse.setLastName(student.getLastName());
-        studentResponse.setEmail(student.getEmail());
-        studentResponse.setPhoneNumber(student.getPhoneNumber());
-        studentResponse.setDob(student.getDob());
-        studentResponse.setGender(student.getGender());
-        studentResponse.setRegistrationNumber(student.getRegistrationNumber());
-        studentResponse.setCast(student.getCast());
-        studentResponse.setImage(student.getImage());
-        studentResponse.setAadharNumber(student.getAadhaarNumber());
-        studentResponse.setUsername(student.getUser().getUsername());
-//        if(student.getDepartment()!=null){
-//            studentResponse.setDepartmentCode(student.getDepartment().getCode());
-//            studentResponse.setDepartmentName(student.getDepartment().getName());
-//        }
-        studentResponse.setAddressResponse(addressResponse);
-        studentResponse.setParentResponse(parentResponse);
-        return studentResponse;
+            logger.info("Successfully fetched student by id | studentId = {}",studentId);
+            return studentResponse;
+        } catch (Exception e) {
+            logger.error("Failed to fetched student by id | studentId = {}",studentId,e);
+            throw new RuntimeException(e);
+        }
     }
 
     @Transactional
@@ -282,9 +278,15 @@ public class StudentServicesImp implements StudentServices {
                 new IllegalArgumentException("Student not found"));
         if(dto.getDepartmentCode()!=null){
             Department department = departmentRepository.findByCode(dto.getDepartmentCode());
-//            student.setDepartment(department);
-            student.setUpdatedAt(LocalDateTime.now());
-            studentRepository.save(student);
+            StudentAcademic studentAcademic = student.getStudentAcademics().stream()
+                    .filter(sa-> Boolean.TRUE.equals(sa.getIsCurrent()))
+                    .findFirst()
+                    .orElse(null);
+            if(studentAcademic!=null){
+                studentAcademic.setDepartment(department);
+                studentAcademic.setUpdatedAt(LocalDateTime.now());
+                studentAcademicRepository.save(studentAcademic);
+            }
             return "Department update successfully";
         }
         else if(dto.getAddressRequest()!=null){
