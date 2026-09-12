@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import './Student.css'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { createStudent, deleteStudent, getAllStudent } from '../../state/student/Action';
+import { createStudent, getAllStudent } from '../../state/student/Action';
 import { useSearchParams } from 'react-router-dom';
 import StudentProfile from './StudentProfile';
 
@@ -27,6 +27,8 @@ const Student = () => {
         gender: "MALE",
         cast: "GENERAL",
         aadharNumber: "",
+        academicYear: "",
+        courseCode: '',
         departmentCode: "",
         addressRequest: {
             address: "",
@@ -46,10 +48,10 @@ const Student = () => {
         }
     })
 
-    const handleDelete = async (studentId) => {
-        await dispatch(deleteStudent(studentId))
-        await dispatch(getAllStudent(pageNumber, pageSize));
-    }
+    // const handleDelete = async (studentId) => {
+    //     await dispatch(deleteStudent(studentId))
+    //     await dispatch(getAllStudent(pageNumber, pageSize));
+    // }
 
     const handleViewProfile = (studentId) => {
         setSearchParams({
@@ -73,6 +75,9 @@ const Student = () => {
             gender: "MALE",
             cast: "GENERAL",
             aadharNumber: "",
+            academicYear: "",
+            courseCode: '',
+            departmentCode: "",
             addressRequest: {
                 address: "",
                 city: "",
@@ -212,61 +217,68 @@ const Student = () => {
                             </button>
                         </div>
                         <div className="students-card">
-                            <table className="table students-table">
-                                <thead>
-                                    <tr>
-                                        <th>S.No</th>
-                                        <th>Roll No.</th>
-                                        <th>Registration No.</th>
-                                        <th>Department</th>
-                                        <th>Name</th>
-                                        <th>Phone Number</th>
-                                        <th>Email</th>
-                                        <th>Gender</th>
-                                        <th className='text-center'>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        student?.students?.content?.length > 0 ?
-                                            (
-                                                student?.students?.content?.map((student, index) =>
-                                                    <tr kay={student.id}>
-                                                        <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                                        <td>{student.rollNumber}</td>
-                                                        <td>{student.registrationNumber}</td>
-                                                        <td>{student.departmentCode}</td>
-                                                        <td>{student.firstName} {student.lastName}</td>
-                                                        <td>{student.phoneNumber}</td>
-                                                        <td>{student.email}</td>
-                                                        <td>{student.gender}</td>
-                                                        <td className='text-center'>
-                                                            <button
-                                                                className="btn btn-sm custom-reset-btn me-2"
-                                                                onClick={() => handleViewProfile(student.id)}
-                                                            >
-                                                                <i class="bi bi-eye"></i>
-                                                            </button>
-                                                            <button
+                            <div className='table-wrapper'>
+                                <table className="table students-table">
+                                    <thead>
+                                        <tr>
+                                            <th>S.No</th>
+                                            <th>Roll No.</th>
+                                            <th>Registration No.</th>
+                                            <th>Name</th>
+                                            <th>Phone Number</th>
+                                            <th>Email</th>
+                                            <th>Gender</th>
+                                            <th>Course</th>
+                                            <th>Year</th>
+                                            <th>Semester</th>
+                                            <th className='text-center'>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            student?.students?.content?.length > 0 ?
+                                                (
+                                                    student?.students?.content?.map((student, index) =>
+                                                        <tr kay={student.id}>
+                                                            <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                            <td>{student.rollNumber}</td>
+                                                            <td>{student.registrationNumber}</td>
+                                                            <td>{student.firstName} {student.lastName}</td>
+                                                            <td>{student.phoneNumber}</td>
+                                                            <td>{student.email}</td>
+                                                            <td>{student.gender}</td>
+                                                            <td>{student.studentAcademicResponse.courseCode}</td>
+                                                            <td>{student.studentAcademicResponse.year} Year</td>
+                                                            <td>{student.studentAcademicResponse.semester ? student.studentAcademicResponse.semester + " Sem" : "-"}</td>
+                                                            <td className='text-center'>
+                                                                <button
+                                                                    className="btn btn-sm custom-reset-btn me-2"
+                                                                    onClick={() => handleViewProfile(student.id)}
+                                                                >
+                                                                    <i class="bi bi-eye"></i>
+                                                                </button>
+                                                                {/* <button
                                                                 className="btn btn-sm custom-reset-btn me-2"
                                                                 onClick={() => handleDelete(student.id)}
                                                             >
                                                                 <i class="bi bi-trash"></i>
-                                                            </button>
+                                                            </button> */}
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                )
+                                                : (
+                                                    <tr>
+                                                        <td colSpan="8" className="text-center">
+                                                            No Student Found
                                                         </td>
                                                     </tr>
                                                 )
-                                            )
-                                            : (
-                                                <tr>
-                                                    <td colSpan="8" className="text-center">
-                                                        No Student Found
-                                                    </td>
-                                                </tr>
-                                            )
-                                    }
-                                </tbody>
-                            </table>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
                             <div className="pagination-container">
                                 <div className="pagination-info">
                                     Total : <strong>{student?.students?.totalElements || 0}</strong>
@@ -411,6 +423,24 @@ const Student = () => {
                                         className="modal-input"
                                         name='aadharNumber'
                                         value={studentData.aadharNumber}
+                                        onChange={handlStudentChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Academic Year</label>
+                                    <input type="text"
+                                        className="modal-input"
+                                        name='academicYear'
+                                        value={studentData.academicYear}
+                                        onChange={handlStudentChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Course Code</label>
+                                    <input type="text"
+                                        className="modal-input"
+                                        name='courseCode'
+                                        value={studentData.courseCode}
                                         onChange={handlStudentChange}
                                     />
                                 </div>

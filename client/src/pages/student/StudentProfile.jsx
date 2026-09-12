@@ -154,7 +154,7 @@ const StudentProfile = () => {
     }
 
     const handleSetData = () => {
-        setDepartmentCode(student?.student?.departmentCode)
+        setDepartmentCode(student?.student?.studentAcademicResponse?.departmentCode)
         setStudentData({
             firstName: student?.student?.firstName || '',
             lastName: student?.student?.lastName || '',
@@ -258,10 +258,10 @@ const StudentProfile = () => {
                                         </div>
                                         <div>
                                             <i className="bi bi-diagram-3-fill"></i>
-                                            <span>Department : {student?.student?.departmentName}
+                                            <span>Department : {student?.student?.studentAcademicResponse?.departmentName}
                                                 {" "}
-                                                {student?.student?.departmentName &&
-                                                    <>({student?.student?.departmentCode})</>
+                                                {student?.student?.studentAcademicResponse?.departmentName &&
+                                                    <>({student?.student?.studentAcademicResponse?.departmentCode})</>
                                                 }
                                             </span>
                                             <button className="edit-icon-btn"
@@ -274,6 +274,21 @@ const StudentProfile = () => {
                                         </div>
                                     </div>
                                     <div className="student-profile-contact">
+                                        <div>
+                                            <i className="bi bi-book-fill me-2"></i>
+                                            <span>Course : {student?.student?.studentAcademicResponse?.courseName} {student?.student?.studentAcademicResponse?.courseName &&
+                                                <>({student?.student?.studentAcademicResponse?.courseCode})</>} </span>
+                                        </div>
+                                        <div>
+                                            <span>
+                                                <i className="bi bi-calendar3 me-2"></i>
+                                                Year : {student?.student?.studentAcademicResponse?.year}
+                                                {
+                                                    student?.student?.studentAcademicResponse?.semester &&
+                                                    <>{" "}Semester : {student?.student?.studentAcademicResponse?.semester}</>
+                                                }
+                                            </span>
+                                        </div>
                                         <div>
                                             <i className="bi bi-person-vcard-fill me-2"></i>
                                             <span>EnrollmentNo. : {student?.student?.enrollmentNumber}</span>

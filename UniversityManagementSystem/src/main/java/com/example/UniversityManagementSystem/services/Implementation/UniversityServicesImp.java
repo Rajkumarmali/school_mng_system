@@ -71,7 +71,7 @@ public class UniversityServicesImp implements UniversityService {
         Page<StudentResponse> responses =  students.map(stu -> {
             StudentResponse res = new StudentResponse();
             res.setId(stu.getId());
-            res.setName(stu.getFirstName()+" "+stu.getLastName());
+//            res.setName(stu.getFirstName()+" "+stu.getLastName());
             res.setEmail(stu.getEmail());
             res.setPhoneNumber(stu.getPhoneNumber());
             res.setGender(stu.getGender());
@@ -93,7 +93,7 @@ public class UniversityServicesImp implements UniversityService {
         Page<StudentResponse> responses =  students.map(stu -> {
             StudentResponse res = new StudentResponse();
             res.setId(stu.getId());
-            res.setName(stu.getFirstName()+" "+stu.getLastName());
+//            res.setName(stu.getFirstName()+" "+stu.getLastName());
             res.setEmail(stu.getEmail());
             res.setPhoneNumber(stu.getPhoneNumber());
             res.setGender(stu.getGender());
@@ -137,7 +137,7 @@ public class UniversityServicesImp implements UniversityService {
         parentResponse.setMotherOccupation(parent.getMotherOccupation());
 
         response.setId(student.getId());
-        response.setName(student.getFirstName()+" "+student.getLastName());
+//        response.setName(student.getFirstName()+" "+student.getLastName());
         response.setEnrollmentNumber(student.getEnrollmentNumber());
         response.setRollNumber(student.getRollNumber());
         response.setEmail(student.getEmail());
