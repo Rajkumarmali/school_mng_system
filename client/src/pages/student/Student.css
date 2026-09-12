@@ -41,6 +41,11 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
+.table-wrapper{
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
 .students-table {
     margin-bottom: 0;
 }
