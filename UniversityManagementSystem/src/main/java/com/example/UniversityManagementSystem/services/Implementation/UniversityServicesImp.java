@@ -75,8 +75,8 @@ public class UniversityServicesImp implements UniversityService {
             res.setEmail(stu.getEmail());
             res.setPhoneNumber(stu.getPhoneNumber());
             res.setGender(stu.getGender());
-            if(stu.getDepartment()!=null)
-                res.setCourse(stu.getDepartment().getCourse().getCourseCode());
+//            if(stu.getDepartment()!=null)
+//                res.setCourse(stu.getDepartment().getCourse().getCourseCode());
             res.setEnrollmentNumber(stu.getEnrollmentNumber());
             res.setRollNumber(stu.getRollNumber());
             return res;
@@ -97,8 +97,8 @@ public class UniversityServicesImp implements UniversityService {
             res.setEmail(stu.getEmail());
             res.setPhoneNumber(stu.getPhoneNumber());
             res.setGender(stu.getGender());
-            if(stu.getDepartment()!=null)
-                res.setCourse(stu.getDepartment().getCourse().getCourseCode());
+//            if(stu.getDepartment()!=null)
+//                res.setCourse(stu.getDepartment().getCourse().getCourseCode());
             res.setEnrollmentNumber(stu.getEnrollmentNumber());
             res.setRollNumber(stu.getRollNumber());
             return res;
@@ -147,10 +147,10 @@ public class UniversityServicesImp implements UniversityService {
         response.setCast(student.getCast());
         response.setAadhaarNumber(student.getAadhaarNumber());
         response.setImage(student.getImage());
-        if(student.getDepartment()!=null) {
-            response.setDepartment(student.getDepartment().getName() + " (" + student.getDepartment().getCode() + " )");
-            response.setCourse(student.getDepartment().getCourse().getName()+" ("+student.getDepartment().getCourse().getCourseCode()+" )");
-        }
+//        if(student.getDepartment()!=null) {
+//            response.setDepartment(student.getDepartment().getName() + " (" + student.getDepartment().getCode() + " )");
+//            response.setCourse(student.getDepartment().getCourse().getName()+" ("+student.getDepartment().getCourse().getCourseCode()+" )");
+//        }
         response.setAddressResponse(addressResponse);
         response.setParentResponse(parentResponse);
 

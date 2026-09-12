@@ -153,9 +153,9 @@ public class CourseServiceImp implements CourseService {
                 new IllegalArgumentException("Course not found"));
 
         Integer totalDepartment = course.getDepartment().size();
-        Integer totalStudent = course.getDepartment().stream()
-                .mapToInt(department->department.getStudentList().size())
-                .sum();
+//        Integer totalStudent = course.getDepartment().stream()
+//                .mapToInt(department->department.getStudentList().size())
+//                .sum();
 
         CourseResponse response = new CourseResponse();
         response.setId(course.getId());
@@ -167,7 +167,7 @@ public class CourseServiceImp implements CourseService {
         response.setDescription(course.getDescription());
         response.setTotalSemester(course.getTotalSemester());
         response.setTotalDepartment(totalDepartment);
-        response.setTotalStudent(totalStudent);
+//        response.setTotalStudent(totalStudent);
         return response;
     }
 
@@ -222,7 +222,8 @@ public class CourseServiceImp implements CourseService {
     public Page<CourseStudentResponse> getStudentByCourseId(Long courseId, int pageNumber, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        Page<Student> students = studentRepository.findByDepartmentCourseId(courseId,pageable);
+        Page<Student> students = null;
+//                studentRepository.findByDepartmentCourseId(courseId,pageable);
 
         Page<CourseStudentResponse> responses = students.map(stu->{
            CourseStudentResponse res = new CourseStudentResponse();
@@ -246,7 +247,8 @@ public class CourseServiceImp implements CourseService {
     public Page<CourseStudentResponse> getStudentByCourseIdAndCollegeId(Long courseId, Long collegeId, int pageNumber, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        Page<Student> students = studentRepository.findByDepartmentCourseIdAndCollegeId(courseId,collegeId,pageable);
+        Page<Student> students =null;
+//                studentRepository.findByDepartmentCourseIdAndCollegeId(courseId,collegeId,pageable);
 
         Page<CourseStudentResponse> responses = students.map(stu->{
             CourseStudentResponse res = new CourseStudentResponse();

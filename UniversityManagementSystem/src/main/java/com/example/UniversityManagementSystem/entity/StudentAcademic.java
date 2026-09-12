@@ -27,6 +27,9 @@ public class StudentAcademic {
     @ManyToOne
     private Course course;
 
+    @ManyToOne
+    private Department department;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

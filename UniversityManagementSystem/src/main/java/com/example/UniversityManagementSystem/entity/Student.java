@@ -53,9 +53,6 @@ public class Student {
     @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Parent parent;
 
-    @ManyToOne()
-    private Department department;
-
     @ManyToMany(mappedBy = "students")
     private List<Section> sections =new ArrayList<>();
 
