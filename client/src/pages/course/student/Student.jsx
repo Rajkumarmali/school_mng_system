@@ -140,12 +140,12 @@ const Student = () => {
                                         <td>{stu.rollNumber}</td>
                                         {
                                             isSuperAdmin ?
-                                                <td>{stu.collegeName ? stu.collegeName : "-"}</td>
+                                                <td>{stu.college ? stu.college : "-"}</td>
                                                 :
                                                 <td>{stu.registrationNumber}</td>
                                         }
 
-                                        <td>{stu.name}</td>
+                                        <td>{stu.firstName} {stu.lastName}</td>
                                         <td>{stu.email}</td>
                                         <td>{stu.phoneNumber}</td>
                                         <td>{stu.gender}</td>

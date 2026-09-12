@@ -14,6 +14,9 @@ import com.example.UniversityManagementSystem.repository.DepartmentRepository;
 import com.example.UniversityManagementSystem.repository.StudentRepository;
 import com.example.UniversityManagementSystem.services.CourseService;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -28,16 +31,17 @@ import java.time.LocalDateTime;
 @Service
 public class CourseServiceImp implements CourseService {
 
-    private final CollegeRepository collegeRepository;
+
     private final CourseRepository courseRepository;
     private final DepartmentRepository departmentRepository;
+
+    private final Logger logger = LoggerFactory.getLogger(CollegeServicesImp.class);
+    private final ModelMapper modelMapper = new ModelMapper();
     private final StudentRepository studentRepository;
 
-    public CourseServiceImp(CollegeRepository collegeRepository,
-                            CourseRepository courseRepository,
+    public CourseServiceImp(CourseRepository courseRepository,
                             DepartmentRepository departmentRepository,
                             StudentRepository studentRepository) {
-        this.collegeRepository = collegeRepository;
         this.courseRepository = courseRepository;
         this.departmentRepository = departmentRepository;
         this.studentRepository = studentRepository;
@@ -220,49 +224,44 @@ public class CourseServiceImp implements CourseService {
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     @Cacheable(cacheNames = "courseStudent",key = "{#courseId,#pageNumber,#pageSize}")
     public Page<CourseStudentResponse> getStudentByCourseId(Long courseId, int pageNumber, int pageSize) {
+        logger.info("Fetching students by courseId | courseId = {}",courseId);
+        try{
+            Pageable pageable = PageRequest.of(pageNumber,pageSize);
+            Page<Student> students = studentRepository.findByStudentAcademicsCourseId(courseId,pageable);
 
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        Page<Student> students = null;
-//                studentRepository.findByDepartmentCourseId(courseId,pageable);
-
-        Page<CourseStudentResponse> responses = students.map(stu->{
-           CourseStudentResponse res = new CourseStudentResponse();
-           res.setId(stu.getId());
-           res.setRollNumber(stu.getRollNumber());
-           res.setName(stu.getFirstName()+" "+stu.getLastName());
-           res.setEmail(stu.getEmail());
-           res.setPhoneNumber(stu.getPhoneNumber());
-           res.setGender(stu.getGender());
-           if(stu.getCollege()!=null)
-            res.setCollegeName(stu.getCollege().getShortName());
-           return res;
-        });
-
-        return responses;
+            Page<CourseStudentResponse> responses = students.map(stu->{
+                CourseStudentResponse res = modelMapper.map(stu,CourseStudentResponse.class);
+                if(stu.getCollege()!=null){
+                    res.setCollege(stu.getCollege().getShortName());
+                }
+                return res;
+            });
+            logger.info("Successfully students by courseId | courseId = {} | returnedElements = {}",courseId,responses.getNumberOfElements());
+            return responses;
+        } catch (Exception e) {
+            logger.error("Failed to fetched students by courseId | courseId = {}",courseId,e);
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     @Cacheable(cacheNames = "collegeCourseStudent",key = "{#courseId,#collegeId,#pageNumber,#pageSize}")
     public Page<CourseStudentResponse> getStudentByCourseIdAndCollegeId(Long courseId, Long collegeId, int pageNumber, int pageSize) {
+        logger.info("Fetching students by collegeId and courseId | collegeId = {} | courseId = {}",collegeId,courseId);
+        try{
+            Pageable pageable = PageRequest.of(pageNumber,pageSize);
+            Page<Student> students = studentRepository.findByStudentAcademicsCourseIdAndCollegeId(courseId,collegeId,pageable);
 
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        Page<Student> students =null;
-//                studentRepository.findByDepartmentCourseIdAndCollegeId(courseId,collegeId,pageable);
-
-        Page<CourseStudentResponse> responses = students.map(stu->{
-            CourseStudentResponse res = new CourseStudentResponse();
-            res.setId(stu.getId());
-            res.setRollNumber(stu.getRollNumber());
-            res.setRegistrationNumber(stu.getRegistrationNumber());
-            res.setName(stu.getFirstName()+" "+stu.getLastName());
-            res.setEmail(stu.getEmail());
-            res.setPhoneNumber(stu.getPhoneNumber());
-            res.setGender(stu.getGender());
-            return res;
-        });
-
-        return responses;
+            Page<CourseStudentResponse> responses = students.map(stu->{
+                return modelMapper.map(stu,CourseStudentResponse.class);
+            });
+            logger.info("Successfully fetched students by collegeId and courseId | collegeId = {} | courseId = {} | returnedElements = {}",collegeId,courseId,responses.getNumberOfElements());
+            return responses;
+        } catch (Exception e) {
+            logger.error("Failed to fetched students by collegeId and courseId | collegeId = {} | courseId =  {}",collegeId,courseId);
+            throw new RuntimeException(e);
+        }
     }
 
 }
