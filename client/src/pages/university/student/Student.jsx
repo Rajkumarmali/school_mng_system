@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import { getUniversityAdmission, getUniversityStudent } from '../../../state/university/Action';
 import StudentDetails from './StudentDetails';
+import './Student.css'
 
 const Student = () => {
 
@@ -101,69 +102,82 @@ const Student = () => {
                     </div>
                     :
                     <div>
-                        <table className="table students-table">
-                            <thead>
-                                <tr>
-                                    <th>S.No</th>
+                        <div className='table-wrapper'>
+                            <table className="table students-table">
+                                <thead>
+                                    <tr>
+                                        <th>S.No</th>
+                                        {
+                                            tab === "student" &&
+                                            <>
+                                                <th>Enrollment No.</th>
+                                                <th>Roll No.</th>
+                                            </>
+                                        }
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone Number</th>
+                                        <th>Gender</th>
+                                        <th>Course</th>
+                                        <th>Year</th>
+                                        <th>Semester</th>
+                                        <th className='text-center'>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                     {
-                                        tab === "student" &&
-                                        <>
-                                            <th>Enrollment No.</th>
-                                            <th>Roll No.</th>
-                                        </>
-                                    }
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Phone Number</th>
-                                    <th>Gender</th>
-                                    <th>Course</th>
-                                    <th className='text-center'>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    (
-                                        (tab === "student" && university?.universityStudents?.content?.length === 0) ||
-                                        (tab === "admission" && university?.universityAdmission?.content?.length === 0)
-                                    ) ?
-                                        <tr>
-                                            <td colSpan="10" className="text-center">
-                                                No Student Found
-                                            </td>
-                                        </tr>
-                                        :
-                                        (tab === "student" ?
-                                            university?.universityStudents?.content
-                                            :
-                                            university?.universityAdmission?.content
-                                        )?.map((student, index) =>
+                                        (
+                                            (tab === "student" && university?.universityStudents?.content?.length === 0) ||
+                                            (tab === "admission" && university?.universityAdmission?.content?.length === 0)
+                                        ) ?
                                             <tr>
-                                                <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                                {
-                                                    tab === "student" &&
-                                                    <>
-                                                        <td>{student?.enrollmentNumber}</td>
-                                                        <td>{student?.rollNumber}</td>
-                                                    </>
-                                                }
-                                                <td>{student?.name}</td>
-                                                <td>{student?.email}</td>
-                                                <td>{student?.phoneNumber}</td>
-                                                <td>{student?.gender}</td>
-                                                <td>{student?.course}</td>
-                                                <td className='text-center'>
-                                                    <button
-                                                        className="btn btn-sm custom-reset-btn me-2"
-                                                        onClick={() => setSearchParams({ tab, page: pageNumber, size: pageSize, studentId: student.id })}
-                                                    >
-                                                        <i class="bi bi-eye"></i>
-                                                    </button>
+                                                <td colSpan="10" className="text-center">
+                                                    No Student Found
                                                 </td>
                                             </tr>
-                                        )
-                                }
-                            </tbody>
-                        </table>
+                                            :
+                                            (tab === "student" ?
+                                                university?.universityStudents?.content
+                                                :
+                                                university?.universityAdmission?.content
+                                            )?.map((student, index) =>
+                                                <tr>
+                                                    <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                    {
+                                                        tab === "student" &&
+                                                        <>
+                                                            <td>{student?.enrollmentNumber}</td>
+                                                            <td>{student?.rollNumber}</td>
+                                                        </>
+                                                    }
+                                                    <td>{student?.firstName} {student?.lastName}</td>
+                                                    <td>{student?.email}</td>
+                                                    <td>{student?.phoneNumber}</td>
+                                                    <td>{student?.gender}</td>
+                                                    <td>{student?.studentAcademicResponse?.courseCode}</td>
+                                                    <td>{student?.studentAcademicResponse?.year} Year</td>
+                                                    <td>
+                                                        {
+                                                            student?.studentAcademicResponse?.semester ? student?.studentAcademicResponse?.semester + " Sem"
+                                                                :
+                                                                "-"
+                                                        }
+                                                    </td>
+                                                    <td className='text-center'>
+                                                        <button
+                                                            className="btn btn-sm custom-reset-btn me-2"
+                                                            onClick={() => setSearchParams({ tab, page: pageNumber, size: pageSize, studentId: student.id })}
+                                                        >
+                                                            <i class="bi bi-eye"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            )
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
                         <div className="pagination-container">
                             <div className="pagination-info">
                                 Total :
