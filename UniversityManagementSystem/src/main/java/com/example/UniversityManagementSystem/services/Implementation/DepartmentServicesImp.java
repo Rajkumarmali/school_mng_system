@@ -6,6 +6,9 @@ import com.example.UniversityManagementSystem.entity.Section;
 import com.example.UniversityManagementSystem.repository.*;
 import com.example.UniversityManagementSystem.services.DepartmentServices;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -27,6 +30,9 @@ public class DepartmentServicesImp implements DepartmentServices {
     private final StudentRepository studentRepository;
     private final SectionRepository sectionRepository;
     private final CourseRepository courseRepository;
+
+    private final Logger logger = LoggerFactory.getLogger(DepartmentServicesImp.class);
+    private final ModelMapper modelMapper = new ModelMapper();
 
     public DepartmentServicesImp(DepartmentRepository departmentRepository,
                                  CollegeRepository collegeRepository,
@@ -141,25 +147,32 @@ public class DepartmentServicesImp implements DepartmentServices {
     @PreAuthorize("hasRole('ADMIN')")
     @Cacheable(cacheNames = "department",key = "#departmentId")
     public DepartmentResponse getDepartmentById(Long departmentId) {
-        Department department = departmentRepository.findById(departmentId).orElseThrow(()->{
-            throw new IllegalArgumentException("Department not found");
-        });
-        DepartmentResponse response = new DepartmentResponse();
-        response.setId(department.getId());
-        response.setName(department.getName());
-        response.setCode(department.getCode());
-        response.setDescription(department.getDescription());
-        response.setTotalTeacher(department.getTeacherList().size());
-//        response.setTotalStudent(department.getStudentList().size());
-//        response.setTotalClass(department.getClassList().size());
-        if(department.getHodTeacher()!=null){
-            response.setHodName(department.getHodTeacher().getFirstName()+" "+department.getHodTeacher().getLastName());
-            response.setHodEmail(department.getHodTeacher().getEmail());
-            response.setHodPhoneNumber(department.getHodTeacher().getPhoneNumber());
-            response.setEmployeeId(department.getHodTeacher().getEmployeeId());
+        logger.info("Fetching department by id | departmentId = {}",departmentId);
+        try{
+            Department department = departmentRepository.findById(departmentId).orElseThrow(()->{
+                throw new IllegalArgumentException("Department not found");
+            });
+            DepartmentResponse response = new DepartmentResponse();
+            response.setId(department.getId());
+            response.setName(department.getName());
+            response.setCode(department.getCode());
+            response.setDescription(department.getDescription());
+            response.setTotalTeacher(department.getTeacherList().size());
+            response.setTotalStudent(department.getStudentAcademics().stream()
+                    .filter(sa->Boolean.TRUE.equals(sa.getIsCurrent())).toList().size());
+            response.setTotalClass(department.getSectionList().size());
+            if(department.getHodTeacher()!=null){
+                response.setHodName(department.getHodTeacher().getFirstName()+" "+department.getHodTeacher().getLastName());
+                response.setHodEmail(department.getHodTeacher().getEmail());
+                response.setHodPhoneNumber(department.getHodTeacher().getPhoneNumber());
+                response.setEmployeeId(department.getHodTeacher().getEmployeeId());
+            }
+            logger.info("Successfully fetched department by id | departmentId = {}",departmentId);
+            return response;
+        } catch (Exception e) {
+            logger.error("Failed to fetched department by id | departmentId = {}",departmentId,e);
+            throw new RuntimeException(e);
         }
-
-        return response;
     }
 
     @Override
@@ -205,25 +218,20 @@ public class DepartmentServicesImp implements DepartmentServices {
     @PreAuthorize("hasAnyRole('HOD','ADMIN')")
     @Cacheable(cacheNames = "departmentsStudents",key = "{#departmentId,#pageNumber,#pageSize}")
     public Page<DepartmentStudentsResponse> getDepartmentsStudents(Long departmentId, int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        Department department = departmentRepository.findById(departmentId).orElseThrow(()->
-                new IllegalArgumentException("Department not found"));
+        logger.info("Fetching students by departmentId | departmentId = {}",departmentId);
+        try{
+            Pageable pageable = PageRequest.of(pageNumber,pageSize);
 
-        Page<Student> students = null;
-//                studentRepository.findByDepartment(department,pageable);
-        Page<DepartmentStudentsResponse> responses = students.map(student -> {
-            DepartmentStudentsResponse res = new DepartmentStudentsResponse();
-            res.setId(student.getId());
-            res.setRollNumber(student.getRollNumber());
-            res.setFirstName(student.getFirstName());
-            res.setLastName(student.getLastName());
-            res.setEmail(student.getEmail());
-            res.setPhoneNumber(student.getPhoneNumber());
-            res.setRegistrationNumber(student.getRegistrationNumber());
-            res.setGender(student.getGender());
-            return res;
-        });
-        return responses;
+            Page<Student> students = studentRepository.findByStudentAcademicsDepartmentId(departmentId,pageable);
+            Page<DepartmentStudentsResponse> responses = students.map(student -> {
+               return modelMapper.map(student,DepartmentStudentsResponse.class);
+            });
+            logger.info("Successfully fetched students by departmentId | departmentId = {} | returnedElements = {}",departmentId,responses.getNumberOfElements());
+            return responses;
+        } catch (Exception e) {
+            logger.info("Failed to fetched students by departmentId | departmentId = {}",departmentId,e);
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
