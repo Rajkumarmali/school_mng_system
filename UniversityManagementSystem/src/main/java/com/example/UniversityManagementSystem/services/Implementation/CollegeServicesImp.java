@@ -4,6 +4,7 @@ import com.example.UniversityManagementSystem.dto.address.AddressResponse;
 import com.example.UniversityManagementSystem.dto.college.CollegeRequest;
 import com.example.UniversityManagementSystem.dto.college.CollegeResponse;
 import com.example.UniversityManagementSystem.dto.college.CollegeStudentResponse;
+import com.example.UniversityManagementSystem.dto.college.StudentAcademicResponse;
 import com.example.UniversityManagementSystem.dto.parent.ParentResponse;
 import com.example.UniversityManagementSystem.entity.*;
 import com.example.UniversityManagementSystem.entity.type.RolesName;
@@ -12,6 +13,9 @@ import com.example.UniversityManagementSystem.services.AddressService;
 import com.example.UniversityManagementSystem.services.AuthService;
 import com.example.UniversityManagementSystem.services.CollegeServices;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -36,6 +40,9 @@ public class CollegeServicesImp implements CollegeServices {
     private final UserRepository userRepository;
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
+
+    private final Logger logger = LoggerFactory.getLogger(CollegeServicesImp.class);
+    private final ModelMapper modelMapper = new ModelMapper();
 
     public CollegeServicesImp(CollegeRepository collegeRepository, AuthService authService, RolesRepository rolesRepository, UniversityRepository universityRepository, AddressService addressService,
                               UserRepository userRepository,
@@ -240,48 +247,63 @@ public class CollegeServicesImp implements CollegeServices {
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     @Cacheable(cacheNames = "collegeStudents",key = "{#collegeId,#pageNumber,#pageSize}")
     public Page<CollegeStudentResponse> getCollegeStudent(Long collegeId, int pageNumber, int pageSize) {
+        logger.info("Fetching college students | collegeId = {}",collegeId);
+        try{
+            Pageable pageable = PageRequest.of(pageNumber,pageSize);
+            Page<Student> students = studentRepository.findByCollegeIdAndRollNumberNotNull(collegeId,pageable);
 
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        Page<Student> students = studentRepository.findByCollegeIdAndRollNumberNotNull(collegeId,pageable);
+            Page<CollegeStudentResponse> response = students.map(stu->{
+                StudentAcademic studentAcademic = stu.getStudentAcademics().stream()
+                        .filter(sa->Boolean.TRUE.equals(sa.getIsCurrent()))
+                        .findFirst()
+                        .orElse(null);
+                StudentAcademicResponse studentAcademicResponse = new StudentAcademicResponse();
 
-        Page<CollegeStudentResponse> response = students.map(stu->{
-            CollegeStudentResponse res = new CollegeStudentResponse();
-            res.setId(stu.getId());
-            res.setName(stu.getFirstName()+" "+stu.getLastName());
-            res.setEmail(stu.getEmail());
-            res.setPhoneNumber(stu.getPhoneNumber());
-            res.setGender(stu.getGender());
-//            if(stu.getDepartment()!=null)
-//             res.setCourse(stu.getDepartment().getCourse().getCourseCode());
-            res.setEnrollmentNumber(stu.getEnrollmentNumber());
-            res.setRollNumber(stu.getRollNumber());
-            return res;
-        });
+                CollegeStudentResponse res = modelMapper.map(stu,CollegeStudentResponse.class);
+                if(studentAcademic!=null){
+                    studentAcademicResponse = modelMapper.map(studentAcademic,StudentAcademicResponse.class);
+                }
+                res.setStudentAcademicResponse(studentAcademicResponse);
+                return res;
+            });
 
-
-        return response;
+            logger.info("Successfully fetched college student | collegeId = {} | returnedElements = {}",collegeId,response.getNumberOfElements());
+            return response;
+        } catch (Exception e) {
+            logger.error("Failed to fetched college Students | collegeId = {}",collegeId,e);
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     @Cacheable(cacheNames = "collegeAdmission",key = "{#collegeId,#pageNumber,#pageSize}")
     public Page<CollegeStudentResponse> getCollegeAdmission(Long collegeId, int pageNumber, int pageSize) {
+      logger.info("Fetching college admission students | collegeId = {}",collegeId);
+      try{
+          Pageable pageable = PageRequest.of(pageNumber,pageSize);
+          Page<Student> students = studentRepository.findByCollegeIdAndRollNumberNull(collegeId,pageable);
 
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        Page<Student> students = studentRepository.findByCollegeIdAndRollNumberNull(collegeId,pageable);
+          Page<CollegeStudentResponse> response = students.map(stu->{
+              StudentAcademic studentAcademic = stu.getStudentAcademics().stream()
+                      .filter(sa->Boolean.TRUE.equals(sa.getIsCurrent()))
+                      .findFirst()
+                      .orElse(null);
+              StudentAcademicResponse studentAcademicResponse = new StudentAcademicResponse();
 
-        Page<CollegeStudentResponse> response = students.map(stu->{
-            CollegeStudentResponse res = new CollegeStudentResponse();
-            res.setId(stu.getId());
-            res.setName(stu.getFirstName()+" "+stu.getLastName());
-            res.setEmail(stu.getEmail());
-            res.setPhoneNumber(stu.getPhoneNumber());
-            res.setGender(stu.getGender());
-//            if(stu.getDepartment()!=null)
-//                res.setCourse(stu.getDepartment().getCourse().getCourseCode());
-            return res;
-        });
-        return response;
+              CollegeStudentResponse res = modelMapper.map(stu,CollegeStudentResponse.class);
+              if(studentAcademic!=null){
+                  studentAcademicResponse = modelMapper.map(studentAcademic,StudentAcademicResponse.class);
+              }
+              res.setStudentAcademicResponse(studentAcademicResponse);
+              return res;
+          });
+          logger.info("Successfully fetched college admission student | collegeId = {} | returnedElements = {}",collegeId,response.getNumberOfElements());
+          return response;
+      } catch (Exception e) {
+          logger.error("Failed to fetched college admission students | collegeId = {}",collegeId,e);
+          throw new RuntimeException(e);
+      }
     }
 
 
@@ -289,52 +311,35 @@ public class CollegeServicesImp implements CollegeServices {
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     @Cacheable(cacheNames = "collegeStudent",key = "#studentId")
     public CollegeStudentResponse getStudentById(Long studentId) {
+        logger.info("Fetching student by id ");
+        try{
+            Student student = studentRepository.findById(studentId).orElseThrow(()->
+                    new IllegalArgumentException("Student not found"));
 
-        Student student = studentRepository.findById(studentId).orElseThrow(()->
-                new IllegalArgumentException("Student not found"));
+            StudentAcademic studentAcademic = student.getStudentAcademics().stream()
+                    .filter(sa->Boolean.TRUE.equals(sa.getIsCurrent()))
+                    .findFirst()
+                    .orElse(null);
+            StudentAcademicResponse studentAcademicResponse = new StudentAcademicResponse();
 
-        Address address = student.getAddress();
-        Parent parent = student.getParent();
+            CollegeStudentResponse response = modelMapper.map(student,CollegeStudentResponse.class);
+            AddressResponse addressResponse = modelMapper.map(student.getAddress(),AddressResponse.class);
+            ParentResponse parentResponse = modelMapper.map(student.getParent(),ParentResponse.class);
+            if(studentAcademic!=null){
+                studentAcademicResponse = modelMapper.map(studentAcademic,StudentAcademicResponse.class);
+            }
 
-        CollegeStudentResponse response = new CollegeStudentResponse();
-        AddressResponse addressResponse = new AddressResponse();
-        ParentResponse parentResponse = new ParentResponse();
+            response.setAddressResponse(addressResponse);
+            response.setParentResponse(parentResponse);
+            response.setStudentAcademicResponse(studentAcademicResponse);
 
-        addressResponse.setId(address.getId());
-        addressResponse.setAddress(address.getAddress());
-        addressResponse.setCity(address.getCity());
-        addressResponse.setDistrict(address.getDistrict());
-        addressResponse.setState(address.getState());
-        addressResponse.setCountry(address.getCountry());
-        addressResponse.setPincode(address.getPincode());
+            logger.info("Successfully fetched student by id | studentId = {}",studentId);
+            return response;
+        } catch (Exception e) {
+            logger.error("Failed to fetched studen by id | studentId = {}",studentId,e);
+            throw new RuntimeException(e);
+        }
 
-        parentResponse.setId(parent.getId());
-        parentResponse.setFatherName(parent.getFatherName());
-        parentResponse.setFatherNumber(parent.getFatherNumber());
-        parentResponse.setFatherOccupation(parent.getFatherOccupation());
-        parentResponse.setMotherName(parent.getMotherName());
-        parentResponse.setMotherNumber(parent.getMotherNumber());
-        parentResponse.setMotherOccupation(parent.getMotherOccupation());
-
-        response.setId(student.getId());
-        response.setName(student.getFirstName()+" "+student.getLastName());
-        response.setEnrollmentNumber(student.getEnrollmentNumber());
-        response.setRollNumber(student.getRollNumber());
-        response.setEmail(student.getEmail());
-        response.setPhoneNumber(student.getPhoneNumber());
-        response.setDob(student.getDob());
-        response.setGender(student.getGender());
-        response.setCast(student.getCast());
-        response.setAadhaarNumber(student.getAadhaarNumber());
-        response.setImage(student.getImage());
-//        if(student.getDepartment()!=null) {
-//            response.setDepartment(student.getDepartment().getName() + " (" + student.getDepartment().getCode() + " )");
-//            response.setCourse(student.getDepartment().getCourse().getName()+" ("+student.getDepartment().getCourse().getCourseCode()+" )");
-//        }
-        response.setAddressResponse(addressResponse);
-        response.setParentResponse(parentResponse);
-
-        return response;
     }
 
     @Override
