@@ -78,3 +78,11 @@
     color: white;
     font-size: 18px;
 }
+
+@media (max-width:480px){
+    .login-card{
+        border: none;
+        background: transparent;
+        box-shadow: none;
+    }
+}
