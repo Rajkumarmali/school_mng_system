@@ -10,6 +10,9 @@
     font-size: 24px;
 }
 
+.home-icon{
+    display: none;
+}
 .search-box {
     display: flex;
     align-items: center;
@@ -32,6 +35,13 @@
     height: 42px;
     border-radius: 50%;
     font-size: 18px;
+    position: relative;
+    cursor: pointer;
+    font-size: 22px;
+     color: #fff;
+      display: flex;
+       justify-content: center;
+       align-items: center;
 }
 
 .profile-btn {
@@ -159,18 +169,7 @@
     background: rgba(255,255,255,0.1);
     color: white;
 }
-.icon-btn {
-    position: relative;
-    width: 42px;
-    height: 42px;
-    border: none;
-    cursor: pointer;
-    font-size: 22px;
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+
 
 .notification-badge {
     position: absolute;
@@ -194,4 +193,22 @@
     justify-content: center;
 
     line-height: 1;
+}
+
+@media (max-width:480px){
+    .dashboard-navbar {
+        
+    }
+    .toggle-sidebar-btn{
+        display: none !important;
+    }
+    .home-icon{
+     display: inline;
+    }
+    .home-text{
+        display:none;
+    }
+    .icon-btn{
+        display: none;
+    }
 }

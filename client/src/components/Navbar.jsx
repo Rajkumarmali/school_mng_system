@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loogOut, resetPassword } from "../state/auth/Action";
 import { userProfile } from "../state/user/Action";
 import { getNotificationCount } from "../state/notification/Action";
+const BASE_IMAGE_URL = process.env.REACT_APP_IMAGE_URL
 
 const Navbar = ({ toggleSidebar }) => {
 
@@ -61,8 +62,6 @@ const Navbar = ({ toggleSidebar }) => {
         dispatch(getNotificationCount())
     }, [dispatch]);
 
-
-
     return (
         <div>
             <nav className="navbar navbar-expand-lg dashboard-navbar">
@@ -74,7 +73,8 @@ const Navbar = ({ toggleSidebar }) => {
                         <i className="bi bi-list"></i>
                     </button>
                     <h5 className="mb-0 fw-bold ms-3">
-                        Home
+                        <span className='home-text'>Home</span>
+                        <i className="bi bi-house-fill home-icon"></i>
                     </h5>
                     <div className="ms-auto d-flex align-items-center gap-3">
                         <button className="icon-btn"
@@ -94,7 +94,7 @@ const Navbar = ({ toggleSidebar }) => {
                                 {
                                     user?.user?.userImage ?
                                         <img
-                                            src={`http://localhost:8080/${user?.user?.userImage}`}
+                                            src={`${BASE_IMAGE_URL}/${user?.user?.userImage}`}
                                             alt="profile"
                                             className="profile-img"
                                         />
