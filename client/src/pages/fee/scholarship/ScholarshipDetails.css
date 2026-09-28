@@ -59,3 +59,21 @@
     align-items: center;
     gap: 12px;
 }
+
+@media(max-width:480px){
+    .back-scholarship-detail-btn{
+        color:#000000;
+        border:1px solid rgba(0,0,0,0.2);
+    }
+    .scholarship-card{
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .scholarship-detail-contact div{
+        align-items: flex-start;
+    }
+    .table-card{
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+}

@@ -170,47 +170,51 @@ const College = () => {
                             </button>
                         </div>
                         <div className="college-card">
-                            <table className="table college-table">
-                                <thead>
-                                    <tr>
-                                        <th>S No.</th>
-                                        <th>College Id</th>
-                                        <th>College Name</th>
-                                        <th>Email</th>
-                                        <th>Phone Number</th>
-                                        <th className="text-center">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {college?.colleges?.content?.length > 0 ? (
-                                        college?.colleges?.content?.map((college, index) => (
-                                            <tr key={college.id}>
-                                                <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                                <td>{college.collegeCode}</td>
-                                                <td>{college.name}</td>
-                                                <td>{college.email}</td>
-                                                <td>{college.phoneNumber}</td>
-                                                <td className="text-center">
-                                                    <button
-                                                        onClick={() => handleViewCollegeProfile(college.id)}
-                                                        className="btn btn-sm custom-action-btn me-2">
-                                                        <i class="bi bi-eye"></i>
-                                                    </button>
-                                                    <button onClick={() => handleDelete(college.id)} className="btn btn-sm custom-action-btn me-2">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
+                            <div className='table-wraper'>
+                                <table className="table college-table">
+                                    <thead>
+                                        <tr>
+                                            <th>S No.</th>
+                                            <th>College Id</th>
+                                            <th>College</th>
+                                            <th>Email</th>
+                                            <th>Phone Number</th>
+                                            <th className="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {college?.colleges?.content?.length > 0 ? (
+                                            college?.colleges?.content?.map((college, index) => (
+                                                <tr key={college.id}>
+                                                    <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                    <td>{college.collegeCode}</td>
+                                                    <td className='collegeName'>{college.name}</td>
+                                                    <td className="collegeShortName">{college.shortName}</td>
+                                                    <td>{college.email}</td>
+                                                    <td>{college.phoneNumber}</td>
+                                                    <td className="text-center">
+                                                        <button
+                                                            onClick={() => handleViewCollegeProfile(college.id)}
+                                                            className="btn btn-sm custom-action-btn me-2">
+                                                            <i class="bi bi-eye"></i>
+                                                        </button>
+                                                        <button onClick={() => handleDelete(college.id)} className="btn btn-sm custom-action-btn me-2">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td colSpan="9" className="text-center">
+                                                    No College Found
                                                 </td>
                                             </tr>
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td colSpan="9" className="text-center">
-                                                No College Found
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+
                             <div className="pagination-container">
                                 <div className="pagination-info">
                                     Total : <strong>{college?.colleges?.totalElements || 0}</strong>

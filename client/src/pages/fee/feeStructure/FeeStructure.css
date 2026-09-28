@@ -172,3 +172,13 @@
    background: transparent;
     color: white;
 }
+
+@media(max-width:480px){
+    .fee-structure-container{
+        padding:20px;
+    }
+    .add-fee-structure-btn{
+        color: #000000;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+}

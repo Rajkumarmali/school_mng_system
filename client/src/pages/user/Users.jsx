@@ -109,7 +109,8 @@ const Users = () => {
                 </div>
             </div>
             <div className="users-card">
-                <table className="table users-table">
+<div className="table-wraper">
+ <table className="table users-table">
                     <thead>
                         <tr>
                             <th>S No.</th>
@@ -147,6 +148,8 @@ const Users = () => {
                             )}
                     </tbody>
                 </table>
+</div>
+               
                 <div className="pagination-container">
                     <div className="pagination-info">
                         Total : <strong>{user?.users?.totalElements || 0}</strong>

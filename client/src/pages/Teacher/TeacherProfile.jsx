@@ -4,6 +4,7 @@ import './TeacherProfile.css'
 import { useDispatch, useSelector } from 'react-redux';
 import { getTeacherById, updateImage, updateTeacher } from '../../state/teacher/Action';
 
+const BASE_IMAGE_URL = process.env.REACT_APP_IMAGE_URL
 const TeacherProfile = () => {
 
     const location = useLocation();
@@ -231,11 +232,11 @@ const TeacherProfile = () => {
         <div className='teacher-profile'>
             <div className="teacher-card">
                 <div className="teacher-profile-header">
-                    <div>
+                    <div style={{ justifyItems: "center" }}>
                         <div className="teacher-profile-avatar">
                             {teacher?.teacher?.image ? (
                                 <img
-                                    src={`http://localhost:8080/${teacher.teacher.image}`}
+                                    src={`${BASE_IMAGE_URL}/${teacher.teacher.image}`}
                                     alt=''
                                     className="teacher-image"
                                 />
@@ -253,8 +254,6 @@ const TeacherProfile = () => {
                                 Edit Image
                             </button>
                         </div>
-                    </div>
-                    <div>
                     </div>
                     <div className="teacher-profile-info">
                         <div className="teacher-profile-contact">
@@ -286,7 +285,7 @@ const TeacherProfile = () => {
                     </div>
                 </div>
                 <div className="teacher-profile-body">
-                    <div className="simple-section">
+                    <div className="simple-section teacher-profile-simple-section">
                         <div className="info-line">
                             <h5>Personal Information : </h5>
                             <div className="profile-actions">
@@ -315,7 +314,7 @@ const TeacherProfile = () => {
                         </div>
                     </div>
 
-                    <div className="simple-section">
+                    <div className="simple-section teacher-profile-simple-section">
                         <div className="info-line">
                             <h5>Address Information : </h5>
                             <div className="profile-actions">
@@ -334,7 +333,7 @@ const TeacherProfile = () => {
                             <span><strong>Pincode :</strong> {teacher?.teacher?.addressResponse?.pincode}</span>
                         </div>
                     </div>
-                    <div className="simple-section">
+                    <div className="simple-section teacher-profile-simple-section">
                         <div className="info-line">
                             <h5>Bank Details : </h5>
                             <div className="profile-actions">

@@ -55,3 +55,13 @@
   color: #3c58c9 !important;
 }
 
+@media(max-width:480px){
+    .back-section-exam-detail-btn{
+        color: #000000;
+        border: 1px solid rgba(0, 0, 0, 0.2); 
+    }
+    .section-exam-detail-card{
+        display: grid;
+        box-shadow: none;
+    }
+}

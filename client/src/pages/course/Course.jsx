@@ -155,61 +155,63 @@ const Course = () => {
 
                         </div>
                         <div className="course-card">
-                            <table className="table course-table">
-                                <thead>
-                                    <tr>
-                                        <th>S.No</th>
-                                        <th>Code</th>
-                                        <th>Name</th>
-                                        <th>Duration Type</th>
-                                        <th>Duration</th>
+                            <div className='table-wraper'>
+                                <table className="table course-table">
+                                    <thead>
+                                        <tr>
+                                            <th>S.No</th>
+                                            <th>Code</th>
+                                            <th>Name</th>
+                                            <th>Duration Type</th>
+                                            <th>Duration</th>
+                                            {
+                                                isSuperAdmin &&
+                                                <th>Total College</th>
+                                            }
+
+                                            <th className='text-center'>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
                                         {
-                                            isSuperAdmin &&
-                                            <th>Total College</th>
-                                        }
-
-                                        <th className='text-center'>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        ((isSuperAdmin && course?.courses?.content?.length === 0) || (course?.collegeCourses?.content?.length === 0)) ?
-                                            <tr>
-                                                <td colSpan="8" className="text-center">
-                                                    No Course Found
-                                                </td>
-                                            </tr>
-                                            :
-                                            (
-                                                isSuperAdmin ?
-                                                    course?.courses?.content
-                                                    :
-                                                    course?.collegeCourses?.content
-                                            )?.map((course, index) =>
+                                            ((isSuperAdmin && course?.courses?.content?.length === 0) || (course?.collegeCourses?.content?.length === 0)) ?
                                                 <tr>
-                                                    <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                                    <td>{course.courseCode}</td>
-                                                    <td>{course.shortName}</td>
-                                                    <td>{course.courseDurationType}</td>
-                                                    <td>{course.duration} Year</td>
-                                                    {
-                                                        isSuperAdmin &&
-                                                        <td>{course.totalCollege}</td>
-                                                    }
-
-                                                    <td className='text-center'>
-                                                        <button
-                                                            onClick={() => handleViewCourseDetails(course.id)}
-                                                            className="btn btn-sm custom-reset-btn me-2"
-                                                        >
-                                                            <i class="bi bi-eye"></i>
-                                                        </button>
+                                                    <td colSpan="8" className="text-center">
+                                                        No Course Found
                                                     </td>
                                                 </tr>
-                                            )
-                                    }
-                                </tbody>
-                            </table>
+                                                :
+                                                (
+                                                    isSuperAdmin ?
+                                                        course?.courses?.content
+                                                        :
+                                                        course?.collegeCourses?.content
+                                                )?.map((course, index) =>
+                                                    <tr>
+                                                        <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                        <td>{course.courseCode}</td>
+                                                        <td>{course.shortName}</td>
+                                                        <td>{course.courseDurationType}</td>
+                                                        <td>{course.duration} Year</td>
+                                                        {
+                                                            isSuperAdmin &&
+                                                            <td>{course.totalCollege}</td>
+                                                        }
+
+                                                        <td className='text-center'>
+                                                            <button
+                                                                onClick={() => handleViewCourseDetails(course.id)}
+                                                                className="btn btn-sm custom-reset-btn me-2"
+                                                            >
+                                                                <i class="bi bi-eye"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
                             <div className="pagination-container">
                                 <div className="pagination-info">
                                     Total :

@@ -89,7 +89,8 @@ const DepartmentsStudents = ({ departmentId }) => {
                     <h2>Students</h2>
                 </div>
             </div>
-            <table className="table department-student-table">
+            <div className='table-wraper'>
+<table className="table department-student-table">
                 <thead>
                     <tr>
                         <th>S No.</th>
@@ -124,6 +125,8 @@ const DepartmentsStudents = ({ departmentId }) => {
                     }
                 </tbody>
             </table>
+            </div>
+            
             <div className="pagination-container">
                 <div className="pagination-info">
                     Total : <strong>{department?.departmentsStudents?.totalElements || 0}</strong>

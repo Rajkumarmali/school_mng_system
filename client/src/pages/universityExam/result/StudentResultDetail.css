@@ -308,85 +308,55 @@
     font-size: 14px;
 }
 
-@media (max-width: 1000px) {
-
-    .result-info-grid {
-        grid-template-columns: repeat(2, 1fr);
+@media(max-width:480px){
+    .result-header-left{
+       display:none;
     }
-
-    .result-summary-grid {
-        grid-template-columns: repeat(2, 1fr);
+    .action-btn{
+        color: #000000;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        white-space: nowrap;
     }
-}
-
-@media (max-width: 700px) {
-
-    .student-result-detail-page {
-        padding: 14px;
-    }
-
-    .student-result-detail-header {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .result-header-actions {
-        width: 100%;
-    }
-
-    .result-secondary-btn,
-    .result-primary-btn {
-        flex: 1;
-        justify-content: center;
-    }
-
-    .result-student-card {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .student-result-status {
-        align-items: flex-start;
-    }
-
-    .student-result-name p {
-        margin-bottom: 5px;
-    }
-
-    .result-info-grid {
+    .result-student-details-grid{
         grid-template-columns: 1fr;
     }
-
-    .result-info-wide {
-        grid-column: span 1;
+    .result-student-info-grid{
+        grid-template-columns: 1fr
     }
-
-    .result-summary-grid {
+    .result-section-card{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .result-info-grid{
         grid-template-columns: 1fr;
+        gap:10px;
     }
-
-    .final-result-card {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 18px;
+    .result-info-wide{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
     }
-
-    .final-result-details {
-        width: 100%;
-        justify-content: space-between;
-        gap: 10px;
+    .result-info-item{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
     }
-
-    .publish-result-card {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 15px;
+    .result-summary-grid{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        grid-template-columns: repeat(2, 1fr);
     }
-
-    .publish-result-btn {
-        width: 100%;
-        justify-content: center;
+    .result-summary-card{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .student-result-table{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .student-result-table th
+    ,.student-result-table td {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .final-result-card{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        display: grid
+    }
+    .final-result-details{
+        margin-top: 22px;
     }
 }

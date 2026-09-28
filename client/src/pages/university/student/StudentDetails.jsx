@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react'
+import { Browser } from '@capacitor/browser';
+import { Capacitor } from '@capacitor/core';
 import './StudentDetails.css'
 import { useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUniversityStudentById } from '../../../state/university/Action';
 import { getDocumentById, getDocuments, updateStudentDocumentStatus } from '../../../state/student/Action';
 import { generateStudentEnrollmentAndRollnumber } from '../../../state/college/Action';
+
+const BASE_IMAGE_URL = process.env.REACT_APP_IMAGE_URL
 
 const StudentDetails = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -66,6 +70,17 @@ const StudentDetails = () => {
         await dispatch(getUniversityStudentById(studentId))
     }
 
+    const openPdf = async () => {
+        const url = `${BASE_IMAGE_URL}/${viewDocument?.filePath}`;
+        if (Capacitor.isNativePlatform()) {
+            await Browser.open({
+                url: url
+            });
+        } else {
+            window.open(url, "_blank");
+        }
+    }
+
     useEffect(() => {
         if (isViewModel && student?.document) {
             setViewDocument(student?.document)
@@ -107,9 +122,27 @@ const StudentDetails = () => {
                     Back
                 </button>
             </div>
+            <div className='university-student-action-btns'>
+                <button
+                    className="university-student-detail-btn"
+                    onClick={handleViewDocuments}
+                >
+                    Document
+                </button>
+
+                {
+                    !university?.universityStudent?.enrollmentNumber &&
+                    <button
+                        className="university-student-detail-btn"
+                        onClick={handleGenerateEnrollmentAndRoll}
+                    >
+                        Generate EnrollmentNo
+                    </button>
+                }
+            </div>
             {
                 action === 'document' ?
-                    <div>
+                    <div style={{ whiteSpace: 'nowrap', overflowX: "auto" }}>
                         <table className="table student-document-table">
                             <thead>
                                 <tr>
@@ -208,11 +241,11 @@ const StudentDetails = () => {
                     :
                     <div>
                         <div className="university-student-profile-header">
-                            <div>
+                            <div style={{ justifyItems: 'center' }}>
                                 <div className="university-student-profile-avatar">
                                     {
                                         university?.universityStudent?.image ?
-                                            <img src={`http://localhost:8080/${university?.universityStudent?.image}`} alt=""
+                                            <img src={`${BASE_IMAGE_URL}/${university?.universityStudent?.image}`} alt=""
                                                 className='student-image' />
                                             : <i className="bi bi-person-fill"></i>
                                     }
@@ -270,7 +303,7 @@ const StudentDetails = () => {
                             </div>
                         </div>
                         <div className="university-student-profile-body">
-                            <div className="simple-section">
+                            <div className="simple-section university-student-simple-section">
                                 <div className="info-line">
                                     <h5>Personal Information : </h5>
                                 </div>
@@ -290,7 +323,7 @@ const StudentDetails = () => {
                                     <span><strong>Mother Occupation :</strong> {university?.universityStudent?.parentResponse?.motherOccupation}</span>
                                 </div>
                             </div>
-                            <div className="simple-section">
+                            <div className="simple-section university-student-simple-section">
                                 <div className="info-line">
                                     <h5>Address Information : </h5>
                                 </div>
@@ -330,18 +363,20 @@ const StudentDetails = () => {
                             {
                                 isImage ? (
                                     <img
-                                        src={`http://localhost:8080/${viewDocument?.filePath}`}
+                                        src={`${BASE_IMAGE_URL}/${viewDocument?.filePath}`}
                                         className="img-fluid"
                                         alt="Document"
                                     />
                                 ) : (
-                                    <a
-                                        href={`http://localhost:8080/${viewDocument?.filePath}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
+                                    <button
+                                        style={{
+                                            background: "#ffffff",
+                                            border: '1px solid rgba(0,0,0,0.2)'
+                                        }}
+                                        onClick={openPdf}
                                     >
                                         Open PDF
-                                    </a>
+                                    </button>
                                 )
                             }
                         </div>

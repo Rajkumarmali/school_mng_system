@@ -100,3 +100,24 @@
 .fee-student-fee-grid strong {
     margin-right: 4px;
 }
+
+@media(max-width:480px) {
+     .fee-student-profile-header{
+        display: grid !important;
+    }
+    .fee-student-profile-info{
+        display: grid;
+        gap:0px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .fee-student-profile-contact{
+        margin: 0px;
+    }
+    .fee-student-fee-info{
+        padding: 0px;
+    }
+    .fee-student-fee-grid{
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+    }
+}

@@ -154,6 +154,13 @@ const UniversityExamDetails = () => {
                                                             "Release Admit card"
                                                     }
                                                 </button>
+                                                <button className="university-mobile-exam-edit-btn"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#updateExamModal"
+                                                    onClick={handleUpdateExamModel}
+                                                >
+                                                    Edit
+                                                </button>
                                             </div>
                                         </div>
                                         <div className="exam-detail-card">

@@ -220,7 +220,7 @@ const FeeStructureDetails = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="stats-container">
+                        <div className="stats-container" style={{ margin: "20px 0 0 0" }}>
                             <div className="stat-card">
                                 <i className="bi bi-wallet2"></i>
                                 <h3>{fee?.feeStructure?.totalCollectionAmount}</h3>

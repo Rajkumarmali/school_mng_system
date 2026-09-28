@@ -152,48 +152,50 @@ const Subject = () => {
                             </div>
                         }
                         <div>
-                            <table className="table section-subject-table">
-                                <thead>
-                                    <tr>
-                                        <th>S.No</th>
-                                        <th>Subject Code</th>
-                                        <th>Subject</th>
-                                        <th>Teacher</th>
-                                        <th>Teacher Phone No.</th>
-                                        <th>Students</th>
-                                        <th className="text-center">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        section?.sectionSubjects?.content?.length > 0 ?
-                                            section?.sectionSubjects?.content?.map((subject, index) =>
+                            <div className="table-wraper">
+                                <table className="table section-subject-table">
+                                    <thead>
+                                        <tr>
+                                            <th>S.No</th>
+                                            <th>Subject Code</th>
+                                            <th>Subject</th>
+                                            <th>Teacher</th>
+                                            <th>Teacher Phone No.</th>
+                                            <th>Students</th>
+                                            <th className="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            section?.sectionSubjects?.content?.length > 0 ?
+                                                section?.sectionSubjects?.content?.map((subject, index) =>
+                                                    <tr>
+                                                        <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                        <td>{subject?.subjectResponse?.code ? subject?.subjectResponse?.code : "-"}</td>
+                                                        <td>{subject?.subjectResponse?.shortName ? subject?.subjectResponse?.shortName : "-"}</td>
+                                                        <td>{subject?.teacherResponse?.firstName} {subject?.teacherResponse?.lastName}</td>
+                                                        <td>{subject?.teacherResponse?.phoneNumber}</td>
+                                                        <td>{subject?.subjectResponse?.totalStudent}</td>
+                                                        <td className='text-center'>
+                                                            <button
+                                                                className="btn btn-sm custom-reset-btn me-2"
+                                                                onClick={() => setSearchParams({ sectionId, tab, page: pageNumber, size: pageSize, sectionSubjectId: subject.id })}
+                                                            >
+                                                                <i class="bi bi-eye"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                                :
                                                 <tr>
-                                                    <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                                    <td>{subject?.subjectResponse?.code ? subject?.subjectResponse?.code : "-"}</td>
-                                                    <td>{subject?.subjectResponse?.shortName ? subject?.subjectResponse?.shortName : "-"}</td>
-                                                    <td>{subject?.teacherResponse?.firstName} {subject?.teacherResponse?.lastName}</td>
-                                                    <td>{subject?.teacherResponse?.phoneNumber}</td>
-                                                    <td>{subject?.subjectResponse?.totalStudent}</td>
-                                                    <td className='text-center'>
-                                                        <button
-                                                            className="btn btn-sm custom-reset-btn me-2"
-                                                            onClick={() => setSearchParams({ sectionId, tab, page: pageNumber, size: pageSize, sectionSubjectId: subject.id })}
-                                                        >
-                                                            <i class="bi bi-eye"></i>
-                                                        </button>
+                                                    <td colSpan="8" className="text-center">
+                                                        No Subject Found
                                                     </td>
                                                 </tr>
-                                            )
-                                            :
-                                            <tr>
-                                                <td colSpan="8" className="text-center">
-                                                    No Subject Found
-                                                </td>
-                                            </tr>
-                                    }
-                                </tbody>
-                            </table>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
                             <div className="pagination-container">
                                 <div className="pagination-info">
                                     Total : <strong>{section?.sectionSubjects?.totalElements || 0}</strong>

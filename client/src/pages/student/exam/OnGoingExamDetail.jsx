@@ -2,13 +2,16 @@ import React from 'react'
 import './OnGoingExamDetail.css'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { getStudentExamById } from '../../../state/exam/Action'
+import { Capacitor } from '@capacitor/core'
 
 const OnGoingExamDetail = () => {
 
     const dispatch = useDispatch()
     const exam = useSelector((state) => state.exam)
+
+    const navigate = useNavigate();
 
     const [searchParams, setSearchParams] = useSearchParams();
     const tab = searchParams.get("tab")
@@ -26,8 +29,11 @@ const OnGoingExamDetail = () => {
         if (exam?.userStudentExam?.examResponse?.mode === "OFFLINE") {
             return alert("This exam is conducted offline. Please attend the exam in the classroom.")
         }
-        const url = `exam/ongoing-exam-question/${studentExamId}`
-        window.open(url, "_blank", "noopener,noreferrer");
+        const url = `/student/exam/ongoing-exam-question/${studentExamId}`
+        if (Capacitor.isNativePlatform())
+            navigate(url);
+        else
+            window.open(url, "_blank", "noopener,noreferrer");
     }
 
     useEffect(() => {

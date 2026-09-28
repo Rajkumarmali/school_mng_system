@@ -143,59 +143,61 @@ const FeeStudents = () => {
                                 Back
                             </button>
                         </div>
-                        <table className="table fee-student-table">
-                            <thead>
-                                <tr>
-                                    <th>S.No</th>
-                                    <th>RegistrationNo.</th>
-                                    <th>Name</th>
-                                    <th>PhoneNumber</th>
-                                    <th>Email</th>
-                                    <th>Amount</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    (
-                                        (studentStatus === "all" && fee?.feeStudents?.content?.length === 0) ||
-                                        (studentStatus === "paid" && fee?.paidFeeStudents?.content?.length === 0) ||
-                                        (studentStatus === "unpaid" && fee?.unpaidFeeStudents?.content?.length === 0)
-                                    ) ?
+                        <div className='table-wraper'>
+                            <table className="table fee-student-table">
+                                <thead>
+                                    <tr>
+                                        <th>S.No</th>
+                                        <th>RegistrationNo.</th>
+                                        <th>Name</th>
+                                        <th>PhoneNumber</th>
+                                        <th>Email</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
                                         (
-                                            <tr>
-                                                <td colSpan="10" className="text-center">
-                                                    No Student Found
-                                                </td>
-                                            </tr>
-                                        )
-                                        :
-                                        (
-                                            (studentStatus === "all" ? fee?.feeStudents?.content
-                                                : studentStatus === "paid" ? fee?.paidFeeStudents?.content
-                                                    : fee?.unpaidFeeStudents?.content)?.map((s, index) =>
-                                                        <tr key={s.id}>
-                                                            <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                                            <td>{s.studentResponse.registrationNumber}</td>
-                                                            <td>{s.studentResponse.name}</td>
-                                                            <td>{s.studentResponse.phoneNumber}</td>
-                                                            <td>{s.studentResponse.email}</td>
-                                                            <td>{s.amount}</td>
-                                                            <td>{s.status}</td>
-                                                            <td className='text-center'>
-                                                                <button
-                                                                    onClick={() => handleView(s.id)}
-                                                                    className="btn btn-sm custom-action-btn me-2">
-                                                                    <i class="bi bi-eye"></i>
-                                                                </button>
-                                                            </td>
-                                                        </tr>
-                                                    )
-                                        )
-                                }
-                            </tbody>
-                        </table>
+                                            (studentStatus === "all" && fee?.feeStudents?.content?.length === 0) ||
+                                            (studentStatus === "paid" && fee?.paidFeeStudents?.content?.length === 0) ||
+                                            (studentStatus === "unpaid" && fee?.unpaidFeeStudents?.content?.length === 0)
+                                        ) ?
+                                            (
+                                                <tr>
+                                                    <td colSpan="10" className="text-center">
+                                                        No Student Found
+                                                    </td>
+                                                </tr>
+                                            )
+                                            :
+                                            (
+                                                (studentStatus === "all" ? fee?.feeStudents?.content
+                                                    : studentStatus === "paid" ? fee?.paidFeeStudents?.content
+                                                        : fee?.unpaidFeeStudents?.content)?.map((s, index) =>
+                                                            <tr key={s.id}>
+                                                                <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                                <td>{s.studentResponse.registrationNumber}</td>
+                                                                <td>{s.studentResponse.name}</td>
+                                                                <td>{s.studentResponse.phoneNumber}</td>
+                                                                <td>{s.studentResponse.email}</td>
+                                                                <td>{s.amount}</td>
+                                                                <td>{s.status}</td>
+                                                                <td className='text-center'>
+                                                                    <button
+                                                                        onClick={() => handleView(s.id)}
+                                                                        className="btn btn-sm custom-action-btn me-2">
+                                                                        <i class="bi bi-eye"></i>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                            )
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                         <div className="pagination-container">
                             <div className="pagination-info">
                                 Total :

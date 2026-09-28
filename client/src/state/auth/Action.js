@@ -19,8 +19,13 @@ export const login = (loginData) => async (dispatch) => {
         const data = await res.json();
         localStorage.setItem("token", data.token)
         dispatch({ type: LOGIN_SUCCESS, payload: data.token })
+        return { success: true }
     } catch (err) {
         dispatch({ type: LOGIN_FAILER, payload: err.message })
+        return {
+            success: false,
+            error: err.message
+        };
     }
 }
 

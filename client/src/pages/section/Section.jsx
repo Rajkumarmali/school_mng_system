@@ -160,7 +160,8 @@ const Section = () => {
                             }
                         </div>
                         <div className="sections-card">
-                            <table className="table sections-table">
+                        <div className='table-wraper'>
+                        <table className="table sections-table">
                                 <thead>
                                     <tr>
                                         <th>S No.</th>
@@ -225,6 +226,7 @@ const Section = () => {
                                     }
                                 </tbody>
                             </table>
+                        </div>
                             <div className="pagination-container">
                                 <div className="pagination-info">
                                     Total :

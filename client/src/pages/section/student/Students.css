@@ -143,3 +143,10 @@
     font-size: 24px;
     padding: 0 5px;
 }
+
+@media(max-width:480px){
+    .add-class-student-btn{
+        color: #000000;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+}

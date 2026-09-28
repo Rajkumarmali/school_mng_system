@@ -96,59 +96,61 @@ const Students = () => {
 
 
     return (
-        <div>
+        <div style={{ padding: "10px" }}>
             {studentId ?
                 <div>
                     <StudentDetails />
                 </div>
                 :
                 <div>
-                    <table className="table students-table">
-                        <thead>
-                            <tr>
-                                <th>S.No</th>
-                                <th>RegistrationNumber</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>PhoneNumber</th>
-                                <th>Total Fee</th>
-                                <th>Paid Fee</th>
-                                <th>Due Fee</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                fee?.students?.content?.length > 0 ?
-                                    fee?.students?.content?.map((stu, index) =>
+                    <div className='table-wraper'>
+                        <table className="table students-table">
+                            <thead>
+                                <tr>
+                                    <th>S.No</th>
+                                    <th>RegistrationNumber</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>PhoneNumber</th>
+                                    <th>Total Fee</th>
+                                    <th>Paid Fee</th>
+                                    <th>Due Fee</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    fee?.students?.content?.length > 0 ?
+                                        fee?.students?.content?.map((stu, index) =>
+                                            <tr>
+                                                <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                <td>{stu.registrationNumber}</td>
+                                                <td>{stu.name}</td>
+                                                <td>{stu.email}</td>
+                                                <td>{stu.phoneNumber}</td>
+                                                <td>{stu.totalFee}</td>
+                                                <td>{stu.totalPaidFee}</td>
+                                                <td>{stu.totalPendingFee}</td>
+                                                <td className='text-center'>
+                                                    <button
+                                                        className="btn btn-sm custom-reset-btn me-2"
+                                                        onClick={() => handleViewStudent(stu)}
+                                                    >
+                                                        <i class="bi bi-eye"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        )
+                                        :
                                         <tr>
-                                            <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                            <td>{stu.registrationNumber}</td>
-                                            <td>{stu.name}</td>
-                                            <td>{stu.email}</td>
-                                            <td>{stu.phoneNumber}</td>
-                                            <td>{stu.totalFee}</td>
-                                            <td>{stu.totalPaidFee}</td>
-                                            <td>{stu.totalPendingFee}</td>
-                                            <td className='text-center'>
-                                                <button
-                                                    className="btn btn-sm custom-reset-btn me-2"
-                                                    onClick={() => handleViewStudent(stu)}
-                                                >
-                                                    <i class="bi bi-eye"></i>
-                                                </button>
+                                            <td colSpan="10" className="text-center">
+                                                No Student Found
                                             </td>
                                         </tr>
-                                    )
-                                    :
-                                    <tr>
-                                        <td colSpan="10" className="text-center">
-                                            No Student Found
-                                        </td>
-                                    </tr>
-                            }
-                        </tbody>
-                    </table>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                     <div className="pagination-container">
                         <div className="pagination-info">
                             Total : <strong>{fee?.students?.totalElements || 0}</strong>

@@ -30,6 +30,10 @@
     padding: 8px;
 }
 
+.mobile-avg-marks-card{
+    display:none;
+}
+
 .student-exam-table {
     margin-top: 30px;
 }
@@ -49,4 +53,72 @@
     background: transparent !important;
     vertical-align: middle;
     padding: 14px;
+}
+
+@media(max-width:480px){
+    .student-exam-container{
+        margin-left: 0;
+        padding: 70px 15px 20px;
+        background: #ffffff;
+    }
+    .student-exam-nav-card{
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .student-exam-card{
+        box-shadow: none;
+    }
+    .student-exam-table{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+
+    .desktop-avg-marks{
+      display:none;
+    }
+
+    .mobile-avg-marks-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .avg-marks-circle {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+
+        background: conic-gradient(
+            #198754 var(--avg-marks),
+            #e9ecef var(--avg-marks)
+        );
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-bottom: 12px;
+    }
+
+    .avg-marks-circle-inner {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: white;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .avg-marks-circle-inner strong {
+        font-size: 18px;
+        color: #198754;
+    }
+
+    .avg-marks-card span {
+        font-size: 15px;
+        font-weight: 600;
+        color: #475569;
+    }
 }

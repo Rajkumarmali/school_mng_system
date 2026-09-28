@@ -24,6 +24,10 @@
     color: #3c58c9;
 }
 
+.university-student-action-btns{
+    display:none;
+}
+
 .university-student-profile-header {
     display: flex;
     align-items: center;
@@ -87,3 +91,35 @@
     min-width: 250px;
 }
 
+@media (max-width:480px){
+    .university-student-detail-header{
+        display:none;
+    }
+    .university-student-action-btns{
+       display: flex;
+        justify-content: space-between
+    }
+    .university-student-action-btns button{
+        border-radius: 8px;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        padding: 8px 16px;
+        color: #000000
+    }
+    .university-student-profile-header{
+        display: grid;
+        margin-top: 25px;
+    }
+    .university-student-profile-info{
+        display: grid;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .university-student-profile-contact{
+        margin-top: 0px;
+    }
+    .university-student-simple-section{
+        border: none;
+        padding: 0px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 0px
+    }
+}

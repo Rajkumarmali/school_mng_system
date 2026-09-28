@@ -144,50 +144,52 @@ const UniversityExam = () => {
                             </button>
                         </div>
                         <div className="universtiy-exam-card">
-                            <table className="table universtiy-exam-table">
-                                <thead>
-                                    <tr>
-                                        <th>S.No</th>
-                                        <th>Name</th>
-                                        <th>Course</th>
-                                        <th>Year</th>
-                                        <th>Semester</th>
-                                        <th>FromStartDate</th>
-                                        <th>FormEndDate</th>
-                                        <th className='text-center'>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        universityExam?.universityExams?.content?.length > 0 ?
-                                            universityExam?.universityExams?.content?.map((exam, index) =>
-                                                <tr key={exam.id}>
-                                                    <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                                    <td>{exam?.name}</td>
-                                                    <td>{exam?.courseCode}</td>
-                                                    <td>{exam?.year} year</td>
-                                                    <td>{exam?.semester} sem</td>
-                                                    <td>{exam?.formStartAt ? new Date(exam.formStartAt).toLocaleDateString("en-GB") : "-"}</td>
-                                                    <td>{exam?.formEndAt ? new Date(exam.formEndAt).toLocaleDateString("en-GB") : "-"}</td>
-                                                    <td>
-                                                        <button
-                                                            className="btn btn-sm custom-reset-btn me-2"
-                                                            onClick={() => setSearchParams({ universityExamId: exam.id })}
-                                                        >
-                                                            <i class="bi bi-eye"></i>
-                                                        </button>
+                            <div className='table-wraper'>
+                                <table className="table universtiy-exam-table">
+                                    <thead>
+                                        <tr>
+                                            <th>S.No</th>
+                                            <th>Name</th>
+                                            <th>Course</th>
+                                            <th>Year</th>
+                                            <th>Semester</th>
+                                            <th>FromStartDate</th>
+                                            <th>FormEndDate</th>
+                                            <th className='text-center'>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            universityExam?.universityExams?.content?.length > 0 ?
+                                                universityExam?.universityExams?.content?.map((exam, index) =>
+                                                    <tr key={exam.id}>
+                                                        <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                        <td>{exam?.name}</td>
+                                                        <td>{exam?.courseCode}</td>
+                                                        <td>{exam?.year} year</td>
+                                                        <td>{exam?.semester} sem</td>
+                                                        <td>{exam?.formStartAt ? new Date(exam.formStartAt).toLocaleDateString("en-GB") : "-"}</td>
+                                                        <td>{exam?.formEndAt ? new Date(exam.formEndAt).toLocaleDateString("en-GB") : "-"}</td>
+                                                        <td>
+                                                            <button
+                                                                className="btn btn-sm custom-reset-btn me-2"
+                                                                onClick={() => setSearchParams({ universityExamId: exam.id })}
+                                                            >
+                                                                <i class="bi bi-eye"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                                :
+                                                <tr>
+                                                    <td colSpan="8" className="text-center">
+                                                        No Exam Found
                                                     </td>
                                                 </tr>
-                                            )
-                                            :
-                                            <tr>
-                                                <td colSpan="8" className="text-center">
-                                                    No Exam Found
-                                                </td>
-                                            </tr>
-                                    }
-                                </tbody>
-                            </table>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
 
                             <div className="pagination-container">
                                 <div className="pagination-info">

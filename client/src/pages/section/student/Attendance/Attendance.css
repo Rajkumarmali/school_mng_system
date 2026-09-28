@@ -1,3 +1,7 @@
+.mobile-attendance-card{
+    display:none
+}
+
 .attendances-table {
     margin-bottom: 0;
 }
@@ -17,5 +21,50 @@
     background: transparent !important;
     vertical-align: middle;
     padding: 14px;
+}
+
+@media(max-width:480px){
+    .desktop-attendance-card{
+        display:none;
+    }
+
+    .mobile-attendance-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .attendance-circle {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+
+        background: conic-gradient(
+            #198754 var(--attendance),
+            #e9ecef var(--attendance)
+        );
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .attendance-circle-inner {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: white;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .attendance-card span {
+        font-size: 15px;
+        font-weight: 600;
+        color: #475569;
+    }
 }
 

@@ -25,17 +25,26 @@ import StudentExamResult from '../pages/Teacher/classes/exam/result/StudentExamR
 import UniversityExam from '../pages/universityExam/UniversityExam';
 import StudentUniversityExam from '../pages/student/universityExam/StudentUniversityExam';
 
+import './Layout.css'
+import MobileHome from './MobileHome';
+import OnGoingExamQuestion from '../pages/student/exam/OnGoingExamQuestion';
+
+
+
 const Layout = () => {
     return (
         <div className="app-container">
-            <Sidebar />
+            <div className='desktop-sidebar'>
+                <Sidebar />
+            </div>
             <div className="main-content">
                 <div
                     style={{ position: "fixed", left: 0, right: 0, }}>
                     <Navbar />
                 </div>
-                <div>
+                <div style={{ overflowY: "auto" }}>
                     <Routes>
+                        <Route path='mobile' element={<MobileHome />} />
                         <Route path="dashboard" element={<Dashboard />} />
                         <Route path='university' element={<University />} />
                         <Route path="university/exam" element={<UniversityExam />} />
@@ -47,6 +56,7 @@ const Layout = () => {
                         <Route path='/student' element={<Student />} />
                         <Route path='student/fee' element={<StudentsFee />} />
                         <Route path='student/exam' element={<Exam />} />
+                        <Route path='/student/exam/ongoing-exam-question/:studentExamId' element={<OnGoingExamQuestion />} />
                         <Route path='student/university-exam' element={<StudentUniversityExam />} />
                         <Route path='student/attendance' element={<Attendance />} />
                         <Route path='teacher' element={<Teacher />} />

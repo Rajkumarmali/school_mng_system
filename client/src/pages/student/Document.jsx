@@ -1,8 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { Browser } from '@capacitor/browser';
+import { Capacitor } from '@capacitor/core';
 import './Document.css';
 import { useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteDocument, getDocumentById, getDocuments, updateStudentDocument, uploadStudentDocument } from '../../state/student/Action';
+
+const BASE_IMAGE_URL = process.env.REACT_APP_IMAGE_URL
 
 const Document = () => {
 
@@ -67,6 +71,18 @@ const Document = () => {
         setIsViewModel(true)
     }
 
+
+    const openPdf = async () => {
+        const url = `${BASE_IMAGE_URL}/${viewDocument?.filePath}`;
+        if (Capacitor.isNativePlatform()) {
+            await Browser.open({
+                url: url
+            });
+        } else {
+            window.open(url, "_blank");
+        }
+    }
+
     useEffect(() => {
         if (student?.document && isEditModel) {
             setDocumentData({
@@ -106,78 +122,80 @@ const Document = () => {
                         Upload
                     </button>
                 </div>
-                <table className="table student-document-table">
-                    <thead>
-                        <tr>
-                            <th>S.No</th>
-                            <th>Type</th>
-                            <th>Name</th>
-                            <th>Status</th>
-                            <th className='text-center'>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            student?.documents?.length > 0 ?
-                                student?.documents?.map((document, index) =>
-                                    <tr>
-                                        <td>{index + 1}.</td>
-                                        <td>{document.documentType}</td>
-                                        <td>{document.documentName}</td>
-                                        <td>
-                                            {document.status === "VERIFIED" && (
-                                                <span className="badge bg-success">
-                                                    <i className="bi bi-check-circle-fill me-1"></i>
-                                                    Verified
-                                                </span>
-                                            )}
-                                            {document.status === "PENDING" && (
-                                                <span className="badge bg-warning text-dark">
-                                                    <i className="bi bi-hourglass-split me-1"></i>
-                                                    Pending
-                                                </span>
-                                            )}
-                                            {document.status === "REJECTED" && (
-                                                <span className="badge bg-danger">
-                                                    <i className="bi bi-x-circle-fill me-1"></i>
-                                                    Rejected
-                                                </span>
-                                            )}
-                                        </td>
-                                        <td className='text-center'>
-                                            <button
-                                                className="btn btn-sm custom-reset-btn me-2"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#viewDocumentModal"
-                                                onClick={() => handleViewDocument(document.id)}
-                                            >
-                                                <i className="bi bi-eye"></i>
-                                            </button>
-                                            <button className="btn btn-sm custom-reset-btn me-2"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#uploadDocumentModal"
-                                                onClick={() => handleEditModel(document.id)}
-                                            >
-                                                <i className="bi bi-pencil-square"></i>
-                                            </button>
-                                            <button
-                                                className="btn btn-sm custom-reset-btn me-2"
-                                                onClick={() => handleDelete(document.id)}
-                                            >
-                                                <i class="bi bi-trash"></i>
-                                            </button>
+                <div className='table-wraper'>
+                    <table className="table student-document-table">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Type</th>
+                                <th>Name</th>
+                                <th>Status</th>
+                                <th className='text-center'>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                student?.documents?.length > 0 ?
+                                    student?.documents?.map((document, index) =>
+                                        <tr>
+                                            <td>{index + 1}.</td>
+                                            <td>{document.documentType}</td>
+                                            <td>{document.documentName}</td>
+                                            <td>
+                                                {document.status === "VERIFIED" && (
+                                                    <span className="badge bg-success">
+                                                        <i className="bi bi-check-circle-fill me-1"></i>
+                                                        Verified
+                                                    </span>
+                                                )}
+                                                {document.status === "PENDING" && (
+                                                    <span className="badge bg-warning text-dark">
+                                                        <i className="bi bi-hourglass-split me-1"></i>
+                                                        Pending
+                                                    </span>
+                                                )}
+                                                {document.status === "REJECTED" && (
+                                                    <span className="badge bg-danger">
+                                                        <i className="bi bi-x-circle-fill me-1"></i>
+                                                        Rejected
+                                                    </span>
+                                                )}
+                                            </td>
+                                            <td className='text-center'>
+                                                <button
+                                                    className="btn btn-sm custom-reset-btn me-2"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#viewDocumentModal"
+                                                    onClick={() => handleViewDocument(document.id)}
+                                                >
+                                                    <i className="bi bi-eye"></i>
+                                                </button>
+                                                <button className="btn btn-sm custom-reset-btn me-2"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#uploadDocumentModal"
+                                                    onClick={() => handleEditModel(document.id)}
+                                                >
+                                                    <i className="bi bi-pencil-square"></i>
+                                                </button>
+                                                <button
+                                                    className="btn btn-sm custom-reset-btn me-2"
+                                                    onClick={() => handleDelete(document.id)}
+                                                >
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
 
+                                            </td>
+                                        </tr>
+                                    ) :
+                                    <tr>
+                                        <td colSpan="5" className="text-center">
+                                            No Documents Found
                                         </td>
                                     </tr>
-                                ) :
-                                <tr>
-                                    <td colSpan="5" className="text-center">
-                                        No Documents Found
-                                    </td>
-                                </tr>
-                        }
-                    </tbody>
-                </table>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
 
@@ -287,18 +305,20 @@ const Document = () => {
                             {
                                 isImage ? (
                                     <img
-                                        src={`http://localhost:8080/${viewDocument?.filePath}`}
+                                        src={`${BASE_IMAGE_URL}/${viewDocument?.filePath}`}
                                         className="img-fluid"
                                         alt="Document"
                                     />
                                 ) : (
-                                    <a
-                                        href={`http://localhost:8080/${viewDocument?.filePath}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
+                                    <button
+                                        style={{
+                                            background: "#ffffff",
+                                            border: '1px solid rgba(0,0,0,0.2)'
+                                        }}
+                                        onClick={openPdf}
                                     >
                                         Open PDF
-                                    </a>
+                                    </button>
                                 )
                             }
                         </div>

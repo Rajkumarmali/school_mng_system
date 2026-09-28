@@ -104,54 +104,57 @@ const Department = () => {
     return (
         <div>
             <div>
-                <table className="table course-department-table">
-                    <thead>
-                        <tr>
-                            <th>S.No</th>
-                            <th>Code</th>
-                            <th>Name</th>
+                <div className='table-wraper'>
+                    <table className="table course-department-table">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Code</th>
+                                <th>Name</th>
+                                {
+                                    isSuperAdmin &&
+                                    <th>College</th>
+                                }
+                                <th>HodName</th>
+                                <th>HodEmail</th>
+                                <th>HodPhoneNumber</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             {
-                                isSuperAdmin &&
-                                <th>College</th>
-                            }
-                            <th>HodName</th>
-                            <th>HodEmail</th>
-                            <th>HodPhoneNumber</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            ((isSuperAdmin && course?.courseDepartments?.content?.length === 0) || (course?.courseDepartmentsForCollege?.content?.length === 0)) ?
-                                <tr>
-                                    <td colSpan="8" className="text-center">
-                                        No Department Found
-                                    </td>
-                                </tr>
-                                :
-                                (
-                                    isSuperAdmin ?
-                                        (course?.courseDepartments?.content)
-                                        :
-                                        (course?.courseDepartmentsForCollege?.content)
-                                )?.map((department, index) =>
+                                ((isSuperAdmin && course?.courseDepartments?.content?.length === 0) || (course?.courseDepartmentsForCollege?.content?.length === 0)) ?
                                     <tr>
-                                        <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                        <td>{department.code}</td>
-                                        <td>{department.name}</td>
-                                        {
-                                            isSuperAdmin &&
-                                            <td>{department.collegeName ? department.collegeName : "-"}</td>
-                                        }
-
-                                        <td>{department.hodName}</td>
-                                        <td>{department.hodEmail}</td>
-                                        <td>{department.hodPhoneNumber}</td>
+                                        <td colSpan="8" className="text-center">
+                                            No Department Found
+                                        </td>
                                     </tr>
-                                )
+                                    :
+                                    (
+                                        isSuperAdmin ?
+                                            (course?.courseDepartments?.content)
+                                            :
+                                            (course?.courseDepartmentsForCollege?.content)
+                                    )?.map((department, index) =>
+                                        <tr>
+                                            <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                            <td>{department.code}</td>
+                                            <td>{department.name}</td>
+                                            {
+                                                isSuperAdmin &&
+                                                <td>{department.collegeName ? department.collegeName : "-"}</td>
+                                            }
 
-                        }
-                    </tbody>
-                </table>
+                                            <td>{department.hodName}</td>
+                                            <td>{department.hodEmail}</td>
+                                            <td>{department.hodPhoneNumber}</td>
+                                        </tr>
+                                    )
+
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
                 <div className="pagination-container">
                     <div className="pagination-info">
                         Total : {

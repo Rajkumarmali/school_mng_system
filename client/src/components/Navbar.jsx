@@ -16,7 +16,7 @@ const Navbar = ({ toggleSidebar }) => {
         confirmPassword: ''
     })
 
-    const navigete = useNavigate();
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const user = useSelector((state) => state.user)
@@ -24,7 +24,7 @@ const Navbar = ({ toggleSidebar }) => {
 
     const handleLogout = () => {
         dispatch(loogOut())
-        navigete('/')
+        navigate('/')
     }
 
     const handleChange = (e) => {
@@ -54,7 +54,7 @@ const Navbar = ({ toggleSidebar }) => {
     }
 
     const handleViewNotification = () => {
-        navigete('/notification')
+        navigate('/notification')
     }
 
     useEffect(() => {
@@ -74,7 +74,9 @@ const Navbar = ({ toggleSidebar }) => {
                     </button>
                     <h5 className="mb-0 fw-bold ms-3">
                         <span className='home-text'>Home</span>
-                        <i className="bi bi-house-fill home-icon"></i>
+                        <button className="home-icon" onClick={() => navigate('/mobile')}>
+                            <i className="bi bi-house-fill "></i>
+                        </button>
                     </h5>
                     <div className="ms-auto d-flex align-items-center gap-3">
                         <button className="icon-btn"

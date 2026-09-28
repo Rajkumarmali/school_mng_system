@@ -126,7 +126,7 @@ const DepartmentDetails = () => {
                             </div>
                         </div>
                         <div className="department-profile-body">
-                            <div className="simple-section">
+                            <div className="simple-section department-simple-section">
                                 <h5>Department Hod :</h5>
                                 <div className="department-info-line">
                                     <span><strong>EmployeeId :</strong>{department?.department?.employeeId}</span>

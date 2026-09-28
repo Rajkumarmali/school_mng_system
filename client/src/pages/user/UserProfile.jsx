@@ -3,6 +3,9 @@ import './UserProfile.css'
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllRoles, getUserById, updateUserImage, updateUserProfile, updateUserRole, userProfile } from '../../state/user/Action';
 import { useLocation } from 'react-router-dom';
+
+const BASE_IMAGE_URL = process.env.REACT_APP_IMAGE_URL
+
 const UserProfile = () => {
 
     const location = useLocation();
@@ -109,7 +112,7 @@ const UserProfile = () => {
                         <div className="user-profile-avatar">
                             {
                                 user?.user?.userImage ?
-                                    <img src={`http://localhost:8080/${user?.user?.userImage}`} alt=""
+                                    <img src={`${BASE_IMAGE_URL}/${user?.user?.userImage}`} alt=""
                                         className='user-image' />
                                     : <i className="bi bi-person-fill"></i>
                             }
@@ -126,6 +129,28 @@ const UserProfile = () => {
                                     Edit Image
                                 </button>
                             </div>
+                        }
+                    </div>
+                    <div className='mobile-edit-btn'>
+                        {
+                            !userId &&
+                            <button
+                                className=""
+                                data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                onClick={handleEditImage}
+                            >
+                                <i className="bi bi-camera-fill me-2"></i>
+                                Edit Image
+                            </button>
+                        }
+                        {!userId &&
+                            <button className=""
+                                data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                onClick={handleEditProfile}
+                            >
+                                <i className="bi bi-pencil-fill me-2"></i>
+                                Edit Profile
+                            </button>
                         }
                     </div>
                     <div className="profile-info">

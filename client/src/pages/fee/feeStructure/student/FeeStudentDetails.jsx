@@ -68,7 +68,7 @@ const FeeStudentDetails = () => {
                 </button>
             </div>
             <div className="fee-student-profile-header">
-                <div>
+                <div style={{justifyItems:"center"}}>
                     <div className="fee-student-profile-avatar">
                         {
                             fee?.feeStudent?.studentResponse?.image ?

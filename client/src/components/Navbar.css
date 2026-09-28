@@ -203,7 +203,9 @@
         display: none !important;
     }
     .home-icon{
-     display: inline;
+       border: none;
+       display: inline;
+       background: transparent;
     }
     .home-text{
         display:none;

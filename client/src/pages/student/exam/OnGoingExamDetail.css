@@ -209,3 +209,41 @@
     background: transparent;
     color: #3c58c9;
 }
+
+@media(max-width:480px){
+    .ongoing-exam-page{
+        padding: 0px;
+    }
+    .ongoing-exam-header{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius:10px;
+        padding: 10px;
+    }
+    .ongoing-exam-header-actions{
+        display: grid;
+    }
+    .ongoing-exam-back-btn{
+        color: #000000;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        margin-left: 10px
+    }
+    .ongoing-exam-card{
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2)
+    }
+    .ongoing-exam-info-grid{
+        display: grid;
+        grid-template-columns: 1fr;
+        margin: 0px
+    }
+    .ongoing-info-item{
+        padding: 0px;
+    }
+    .ongoing-exam-notice{
+        padding: 0px;
+    }
+    .start-exam-btn{
+        color: #000000;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+}

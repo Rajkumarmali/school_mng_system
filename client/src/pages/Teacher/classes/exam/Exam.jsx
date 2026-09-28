@@ -167,49 +167,51 @@ const Exam = () => {
                                 Add Exam
                             </button>
                         </div>
-                        <table className="table section-exam-table">
-                            <thead>
-                                <tr>
-                                    <th>S No.</th>
-                                    <th>Name</th>
-                                    <th>SubjectCode</th>
-                                    <th>Subject</th>
-                                    <th>Date</th>
-                                    <th>Status</th>
-                                    <th>MaxMarks</th>
-                                    <th className='text-center'>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    exam?.sectionSubjectExams?.content?.length > 0 ?
-                                        exam?.sectionSubjectExams?.content?.map((exam, index) =>
+                        <div className='table-wraper'>
+                            <table className="table section-exam-table">
+                                <thead>
+                                    <tr>
+                                        <th>S No.</th>
+                                        <th>Name</th>
+                                        <th>SubjectCode</th>
+                                        <th>Subject</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>MaxMarks</th>
+                                        <th className='text-center'>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        exam?.sectionSubjectExams?.content?.length > 0 ?
+                                            exam?.sectionSubjectExams?.content?.map((exam, index) =>
+                                                <tr>
+                                                    <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                    <td>{exam?.name}</td>
+                                                    <td>{exam?.subjectResponse?.code}</td>
+                                                    <td>{exam?.subjectResponse?.shortName}</td>
+                                                    <td>{exam?.date ? new Date(exam?.date).toLocaleDateString("en-GB") : "-"}</td>
+                                                    <td>{exam?.status}</td>
+                                                    <td>{exam?.maxMarks}</td>
+                                                    <td className='text-center'>
+                                                        <button
+                                                            onClick={() => setSearchParams({ classId: sectionSubjectId, tab, page: pageNumber, size: pageSize, examId: exam.id })}
+                                                            className="btn btn-sm custom-action-btn me-2">
+                                                            <i class="bi bi-eye"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            )
+                                            :
                                             <tr>
-                                                <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                                <td>{exam?.name}</td>
-                                                <td>{exam?.subjectResponse?.code}</td>
-                                                <td>{exam?.subjectResponse?.shortName}</td>
-                                                <td>{exam?.date ? new Date(exam?.date).toLocaleDateString("en-GB") : "-"}</td>
-                                                <td>{exam?.status}</td>
-                                                <td>{exam?.maxMarks}</td>
-                                                <td className='text-center'>
-                                                    <button
-                                                        onClick={() => setSearchParams({ classId: sectionSubjectId, tab, page: pageNumber, size: pageSize, examId: exam.id })}
-                                                        className="btn btn-sm custom-action-btn me-2">
-                                                        <i class="bi bi-eye"></i>
-                                                    </button>
+                                                <td colSpan="9" className="text-center">
+                                                    No Exam Found
                                                 </td>
                                             </tr>
-                                        )
-                                        :
-                                        <tr>
-                                            <td colSpan="9" className="text-center">
-                                                No Exam Found
-                                            </td>
-                                        </tr>
-                                }
-                            </tbody>
-                        </table>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                         <div className="pagination-container">
                             <div className="pagination-info">
                                 Total : <strong>{exam?.sectionSubjectExams?.totalElements || 0}</strong>

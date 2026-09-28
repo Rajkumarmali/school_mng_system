@@ -85,7 +85,7 @@ const FeeType = () => {
     }, [fee?.feeType]);
 
     return (
-        <div>
+        <div className='fee-type-container'>
             <div className="fee-type-header">
                 <div>
                     <h2>Fee Type</h2>
@@ -103,57 +103,59 @@ const FeeType = () => {
                     </button>
                 }
             </div>
-            <table className="table fee-type-table">
-                <thead>
-                    <tr>
-                        <th>S.No</th>
-                        <th>Name</th>
-                        <th>description</th>
+            <div className='table-wraper'>
+                <table className="table fee-type-table">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Name</th>
+                            <th>description</th>
+                            {
+                                isAccountant &&
+                                <th className='text-center'>Action</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
                         {
-                            isAccountant &&
-                            <th className='text-center'>Action</th>
-                        }
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        fee?.feeTypes?.length > 0 ?
-                            fee?.feeTypes?.map((fee, index) =>
-                                <tr key={fee.id}>
-                                    <td>{index + 1}.</td>
-                                    <td>{fee.name}</td>
-                                    <td>{fee.description}</td>
-                                    {
-                                        isAccountant &&
-                                        <td className='text-center'>
-                                            <button
-                                                className="btn btn-sm custom-reset-btn me-2"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#exampleModal"
-                                                onClick={() => handleViewEditFeeTypeModal(fee.id)}
-                                            >
-                                                <i className="bi bi-pencil-square"></i>
-                                            </button>
-                                            <button
-                                                className="btn btn-sm custom-reset-btn me-2"
-                                                onClick={() => handleDelete(fee.id)}
-                                            >
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </td>
-                                    }
+                            fee?.feeTypes?.length > 0 ?
+                                fee?.feeTypes?.map((fee, index) =>
+                                    <tr key={fee.id}>
+                                        <td>{index + 1}.</td>
+                                        <td>{fee.name}</td>
+                                        <td>{fee.description}</td>
+                                        {
+                                            isAccountant &&
+                                            <td className='text-center'>
+                                                <button
+                                                    className="btn btn-sm custom-reset-btn me-2"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#exampleModal"
+                                                    onClick={() => handleViewEditFeeTypeModal(fee.id)}
+                                                >
+                                                    <i className="bi bi-pencil-square"></i>
+                                                </button>
+                                                <button
+                                                    className="btn btn-sm custom-reset-btn me-2"
+                                                    onClick={() => handleDelete(fee.id)}
+                                                >
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </td>
+                                        }
 
+                                    </tr>
+                                )
+                                :
+                                <tr>
+                                    <td colSpan="8" className="text-center">
+                                        No Fee Type Found
+                                    </td>
                                 </tr>
-                            )
-                            :
-                            <tr>
-                                <td colSpan="8" className="text-center">
-                                    No Fee Type Found
-                                </td>
-                            </tr>
-                    }
-                </tbody>
-            </table>
+                        }
+                    </tbody>
+                </table>
+            </div>
 
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-xl">

@@ -249,7 +249,8 @@ const Result = () => {
 
                             </div>
                             <div className="result-table-wrapper">
-                                <table className="result-table">
+                            <div className='table-wraper'>
+                            <table className="result-table">
                                     <thead>
                                         <tr>
                                             <th>S.No</th>
@@ -323,6 +324,7 @@ const Result = () => {
                                         }
                                     </tbody>
                                 </table>
+                            </div> 
                                 <div className="pagination-container">
                                     <div className="pagination-info">
                                         Total : <strong>{universityExam?.universityExamResultOverview?.studentUniversityExamResponse?.totalElements || 0}</strong>

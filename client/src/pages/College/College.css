@@ -69,6 +69,10 @@
     padding: 14px;
 }
 
+.collegeShortName{
+    display: none;
+}
+
 .pagination-container {
     display: flex;
     justify-content: space-between;
@@ -197,4 +201,42 @@
 .college-modal-btn:hover {
     background: transparent;
     color: white;
+}
+
+@media(max-width:480px){
+    .college-container{
+        margin-left: 0;
+        padding: 70px 15px 20px;
+        background: #ffffff;
+    }
+    .college-header{
+        justify-content: left;
+    }
+    .college-header h2{
+        display:none;
+    }
+    .college-header p{
+       display:none;
+    }
+    .add-college-btn{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        color: #000000
+    }
+    .college-card{
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    }
+    .collegeName{
+      display:none;
+    }
+    .collegeShortName{
+        display: table-cell;
+    }
+    .form-section-title{
+        color: #ffffff !important;
+    }
+    .form-grid{
+        display: grid !important;
+        grid-template-columns: repeat(1, 1fr) !important
+    }
 }

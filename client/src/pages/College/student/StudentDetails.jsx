@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react'
+import { Browser } from '@capacitor/browser';
+import { Capacitor } from '@capacitor/core';
 import './StudentDetails.css'
 import { useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { generateStudentEnrollmentAndRollnumber, getCollegeStudentById } from '../../../state/college/Action';
 import { getDocumentById, getDocuments, updateStudentDocumentStatus } from '../../../state/student/Action';
 import { createNotification } from '../../../state/notification/Action';
+
+const BASE_IMAGE_URL = process.env.REACT_APP_IMAGE_URL
 
 const StudentDetails = () => {
 
@@ -101,6 +105,17 @@ const StudentDetails = () => {
         await dispatch(getDocuments(studentId));
     }
 
+    const openPdf = async () => {
+        const url = `${BASE_IMAGE_URL}/${viewDocument?.filePath}`;
+        if (Capacitor.isNativePlatform()) {
+            await Browser.open({
+                url: url
+            });
+        } else {
+            window.open(url, "_blank");
+        }
+    }
+
     useEffect(() => {
         if (isViewModel && student?.document) {
             setViewDocument(student?.document)
@@ -154,9 +169,38 @@ const StudentDetails = () => {
                     Back
                 </button>
             </div>
+            <div className='college-student-detail-action-btns'>
+                <button
+                    className="college-student-detail-btn"
+                    onClick={handleViewDocuments}
+                >
+                    Document
+                </button>
+                <button
+                    className="college-student-detail-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#notificationModal"
+                    onClick={() => setNotificationData({
+                        title: "",
+                        message: "",
+                        userEmail: college?.college?.email,
+                    })}
+                >
+                    Send Notification
+                </button>
+                {
+                    !college?.collegeStudent?.enrollmentNumber &&
+                    <button
+                        className="college-student-detail-btn"
+                        onClick={handleGenerateEnrollmentAndRoll}
+                    >
+                        Generate EnrollmentNo
+                    </button>
+                }
+            </div>
             {
                 action === 'document' ?
-                    <div>
+                    <div className='table-wraper'>
                         <table className="table student-document-table">
                             <thead>
                                 <tr>
@@ -255,11 +299,11 @@ const StudentDetails = () => {
                     :
                     <div>
                         <div className="college-student-profile-header">
-                            <div>
+                            <div style={{ justifyItems: "center" }}>
                                 <div className="college-student-profile-avatar">
                                     {
                                         college?.collegeStudent?.image ?
-                                            <img src={`http://localhost:8080/${college?.collegeStudent?.image}`} alt=""
+                                            <img src={`${BASE_IMAGE_URL}/${college?.collegeStudent?.image}`} alt=""
                                                 className='student-image' />
                                             : <i className="bi bi-person-fill"></i>
                                     }
@@ -315,7 +359,7 @@ const StudentDetails = () => {
                             </div>
                         </div>
                         <div className="college-student-profile-body">
-                            <div className="simple-section">
+                            <div className="simple-section college-student-simple-section">
                                 <div className="info-line">
                                     <h5>Personal Information : </h5>
                                 </div>
@@ -335,7 +379,7 @@ const StudentDetails = () => {
                                     <span><strong>Mother Occupation :</strong> {college?.collegeStudent?.parentResponse?.motherOccupation}</span>
                                 </div>
                             </div>
-                            <div className="simple-section">
+                            <div className="simple-section college-student-simple-section">
                                 <div className="info-line">
                                     <h5>Address Information : </h5>
                                 </div>
@@ -417,18 +461,20 @@ const StudentDetails = () => {
                             {
                                 isImage ? (
                                     <img
-                                        src={`http://localhost:8080/${viewDocument?.filePath}`}
+                                        src={`${BASE_IMAGE_URL}/${viewDocument?.filePath}`}
                                         className="img-fluid"
                                         alt="Document"
                                     />
                                 ) : (
-                                    <a
-                                        href={`http://localhost:8080/${viewDocument?.filePath}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
+                                    <button
+                                        style={{
+                                            background: "#ffffff",
+                                            border: '1px solid rgba(0,0,0,0.2)'
+                                        }}
+                                        onClick={openPdf}
                                     >
                                         Open PDF
-                                    </a>
+                                    </button>
                                 )
                             }
                         </div>

@@ -173,7 +173,8 @@ const Subject = () => {
                                 </div>
                             }
                         </div>
-                        <table className="table subject-table">
+                        <div className='table-wraper'>
+<table className="table subject-table">
                             <thead>
                                 <tr>
                                     <th>S.No</th>
@@ -217,6 +218,8 @@ const Subject = () => {
                                 }
                             </tbody>
                         </table>
+                        </div>
+                        
                         <div className="pagination-container">
                             <div className="pagination-info">
                                 Total : <strong>{subject?.subjects?.totalElements || 0}</strong>

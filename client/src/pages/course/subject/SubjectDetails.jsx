@@ -103,7 +103,7 @@ const SubjectDetails = () => {
                         }
 
                     </div>
-                    <div className="info-grid">
+                    <div className="info-grid subject-detail-info-grid">
                         <div>
                             <strong>Name : </strong>{subject?.subject?.name} ({subject?.subject?.shortName})
                         </div>
@@ -126,7 +126,7 @@ const SubjectDetails = () => {
                             <strong>credit : </strong>{subject?.subject?.credit}
                         </div>
                     </div>
-                    <div>
+                    <div style={{ marginTop: "10px" }}>
                         <strong>Description : </strong>{subject?.subject?.description}
                     </div>
                 </div>

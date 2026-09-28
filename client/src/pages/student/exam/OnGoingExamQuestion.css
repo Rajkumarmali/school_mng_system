@@ -178,6 +178,10 @@
   padding-bottom: 12px;
   margin-bottom: 20px;
 }
+.sidebar-toggle-btn{
+    font-size: 20px;
+ }
+
 
 .question-header h3 {
   margin: 0;
@@ -196,6 +200,8 @@
   font-size: 1.05rem;
   line-height: 1.6;
   margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between
 }
 
 .answer-label {
@@ -340,6 +346,10 @@
   padding: 20px;
 }
 
+.exam-sidebar-panel-notshow{
+  display: none;
+}
+
 .exam-sidebar-panel h4 {
   margin-top: 0;
   font-size: 1rem;
@@ -394,6 +404,7 @@
 .status-unanswered {
   background-color: #ffffff;
   color: #606266;
+  border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .status-review {
@@ -427,3 +438,77 @@
   color:#000000
 }
 
+@media(max-width:480px){
+  .exam-start-container{
+    background: #ffffff;
+  }
+  .start-header i{
+    display: none;
+  }
+  .exam-details-grid{
+    border: 1px solid rgba(0, 0, 0, 0.2);
+  }
+  .instructions-box{
+    border: 1px solid rgba(0, 0, 0, 0.2);
+  }
+  .btn-start-exam{
+      color: #000000;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+  }
+  .exam-fullscreen-container{
+    background: #ffffff;
+  }
+  .exam-start-card{
+      box-shadow: none;
+      border: 0;
+      padding: 0px;
+  }
+  
+  .exam-top-header{
+      background: none;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      display: grid;
+      height: 100px;
+      justify-content: stretch
+  }
+  .exam-timer-wrapper{
+    padding: 0px;
+    justify-content: space-between;
+  }
+  .timer-text{
+    color: #000000;
+  }
+
+  .option-card{
+    border: 1px solid rgba(0, 0, 0, 0.2);
+  }
+  .question-footer-actions{
+      margin-top: 0px;
+      display: grid;
+      gap: 10px
+  }
+  .btn-action{
+      color: #000000;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+  }
+  .answer-label{
+    margin: 0px;
+  }
+  .exam-sidebar-panel{
+    background: none;
+    color: #000000;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+  }
+  .btn-submit-exam{
+    color: #000000;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+  }
+  .virtual-keyboard button{
+    color: #000000;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+  }
+  .submit-answer-btn{
+     color:#000000;
+     border: 1px solid rgba(0, 0, 0, 0.2);
+  }
+}

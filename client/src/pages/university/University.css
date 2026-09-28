@@ -93,3 +93,31 @@
     gap: 18px;
     margin-top: 20px;
 }
+
+@media(max-width:480px){
+    .university-container{
+        margin-left: 0;
+        padding: 70px 15px 20px;
+        background: #ffffff;
+    }
+    .navbar-nav{
+       display: grid !important;
+       grid-template-columns: repeat(3, 1fr);
+    }
+    .university-nav-card{
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .university-card{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .university-header{
+       border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .university-logo{
+        display: none;
+    }
+    .university-info{
+        padding: 0px;
+    }
+}

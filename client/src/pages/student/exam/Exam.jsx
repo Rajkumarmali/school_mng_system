@@ -142,72 +142,90 @@ const Exam = () => {
                                                 <h3>{exam?.userStudentExamOverview?.upcomingExam}</h3>
                                                 <span>Upcoming Exams</span>
                                             </div>
-                                            <div className="stat-card">
+                                            <div className="stat-card desktop-avg-marks">
                                                 <h5>{(exam?.userStudentExamOverview?.avgMarks)?.toFixed(2)}%</h5>
                                                 <span>Avg. Marks</span>
                                                 <div className="progress" role="progressbar" aria-label="Success example" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
                                                     <div className="progress-bar bg-success" style={{ width: `${exam?.userStudentExamOverview?.avgMarks}%` }}></div>
                                                 </div>
                                             </div>
+                                            <div className="stat-card mobile-avg-marks-card">
+                                                <div
+                                                    className="avg-marks-circle"
+                                                    style={{
+                                                        "--avg-marks": `${exam?.userStudentExamOverview?.avgMarks}%`
+                                                    }}
+                                                >
+                                                    <div className="attendance-circle-inner">
+                                                        <span>
+                                                            {exam?.userStudentExamOverview?.avgMarks.toFixed(2)
+                                                            }%
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <span>Avg. Marks</span>
+                                            </div>
                                         </div>
-                                        <table className="table student-exam-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>S No.</th>
-                                                    <th>Name</th>
-                                                    <th>SubjectCode</th>
-                                                    <th>Subject</th>
-                                                    <th>Date</th>
-                                                    <th>Status</th>
-                                                    <th>MaxMarks</th>
-                                                    <th>ObtainMarks</th>
-                                                    <th className='text-center'>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    exam?.userStudentExams?.content?.length > 0 ?
-                                                        exam?.userStudentExams?.content?.map((exam, index) =>
-                                                            <tr>
-                                                                <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                                                <td>{exam.examResponse.name}</td>
-                                                                <td>{exam.examResponse.subjectResponse.code}</td>
-                                                                <td>{exam.examResponse.subjectResponse.shortName}</td>
-                                                                <td>
-                                                                    {exam?.examResponse?.date
-                                                                        ? new Date(exam.examResponse.date)
-                                                                            .toLocaleDateString("en-GB")
-                                                                        : "-"}
-                                                                </td>
-                                                                <td>{exam.examResponse.status}</td>
-                                                                <td>{exam.examResponse.maxMarks}</td>
-                                                                <td>
-                                                                    {
-                                                                        exam.status === "ABSENT" ?
-                                                                            "ABSENT"
-                                                                            :
-                                                                            (exam?.obtainMarks)?.toFixed(2)
-                                                                    }
+                                        <div className='table-wraper'>
+                                            <table className="table student-exam-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>S No.</th>
+                                                        <th>Name</th>
+                                                        <th>SubjectCode</th>
+                                                        <th>Subject</th>
+                                                        <th>Date</th>
+                                                        <th>Status</th>
+                                                        <th>MaxMarks</th>
+                                                        <th>ObtainMarks</th>
+                                                        <th className='text-center'>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        exam?.userStudentExams?.content?.length > 0 ?
+                                                            exam?.userStudentExams?.content?.map((exam, index) =>
+                                                                <tr>
+                                                                    <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                                    <td>{exam.examResponse.name}</td>
+                                                                    <td>{exam.examResponse.subjectResponse.code}</td>
+                                                                    <td>{exam.examResponse.subjectResponse.shortName}</td>
+                                                                    <td>
+                                                                        {exam?.examResponse?.date
+                                                                            ? new Date(exam.examResponse.date)
+                                                                                .toLocaleDateString("en-GB")
+                                                                            : "-"}
+                                                                    </td>
+                                                                    <td>{exam.examResponse.status}</td>
+                                                                    <td>{exam.examResponse.maxMarks}</td>
+                                                                    <td>
+                                                                        {
+                                                                            exam.status === "ABSENT" ?
+                                                                                "ABSENT"
+                                                                                :
+                                                                                (exam?.obtainMarks)?.toFixed(2)
+                                                                        }
 
-                                                                </td>
-                                                                <td className='text-center'>
-                                                                    <button
-                                                                        onClick={() => setSearchParams({ page: pageNumber, size: pageSize, studentExamId: exam.id })}
-                                                                        className="btn btn-sm custom-action-btn me-2">
-                                                                        <i class="bi bi-eye"></i>
-                                                                    </button>
+                                                                    </td>
+                                                                    <td className='text-center'>
+                                                                        <button
+                                                                            onClick={() => setSearchParams({ page: pageNumber, size: pageSize, studentExamId: exam.id })}
+                                                                            className="btn btn-sm custom-action-btn me-2">
+                                                                            <i class="bi bi-eye"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                            :
+                                                            <tr>
+                                                                <td colSpan="9" className="text-center">
+                                                                    No Exam Found
                                                                 </td>
                                                             </tr>
-                                                        )
-                                                        :
-                                                        <tr>
-                                                            <td colSpan="9" className="text-center">
-                                                                No Exam Found
-                                                            </td>
-                                                        </tr>
-                                                }
-                                            </tbody>
-                                        </table>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
                                         <div className="pagination-container">
                                             <div className="pagination-info">
                                                 Total : <strong>{exam?.userStudentExams?.totalElements || 0}</strong>

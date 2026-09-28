@@ -92,68 +92,70 @@ const OnGoingExam = () => {
                     </div>
                     :
                     <div>
-                        <table className="table student-exam-table">
-                            <thead>
-                                <tr>
-                                    <th>S No.</th>
-                                    <th>Name</th>
-                                    <th>SubjectCode</th>
-                                    <th>Subject</th>
-                                    <th>Date</th>
-                                    <th>Start</th>
-                                    <th>End</th>
-                                    <th className='text-center'>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    exam?.onGoingStudentExams?.content?.length > 0 ?
-                                        exam?.onGoingStudentExams?.content?.map((exam, index) =>
-                                            <tr>
-                                                <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                                <td>{exam.examResponse.name}</td>
-                                                <td>{exam.examResponse.subjectResponse.code}</td>
-                                                <td>{exam.examResponse.subjectResponse.shortName}</td>
-                                                <td>
-                                                    {exam?.examResponse?.date
-                                                        ? new Date(exam.examResponse.date)
-                                                            .toLocaleDateString("en-GB")
+                        <div className='table-wraper'>
+                            <table className="table student-exam-table">
+                                <thead>
+                                    <tr>
+                                        <th>S No.</th>
+                                        <th>Name</th>
+                                        <th>SubjectCode</th>
+                                        <th>Subject</th>
+                                        <th>Date</th>
+                                        <th>Start</th>
+                                        <th>End</th>
+                                        <th className='text-center'>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        exam?.onGoingStudentExams?.content?.length > 0 ?
+                                            exam?.onGoingStudentExams?.content?.map((exam, index) =>
+                                                <tr>
+                                                    <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                    <td>{exam.examResponse.name}</td>
+                                                    <td>{exam.examResponse.subjectResponse.code}</td>
+                                                    <td>{exam.examResponse.subjectResponse.shortName}</td>
+                                                    <td>
+                                                        {exam?.examResponse?.date
+                                                            ? new Date(exam.examResponse.date)
+                                                                .toLocaleDateString("en-GB")
+                                                            : "-"}
+                                                    </td>
+                                                    <td>{exam?.examResponse?.startTime
+                                                        ? new Date(exam?.examResponse?.startTime).toLocaleTimeString("en-IN", {
+                                                            hour: "2-digit",
+                                                            minute: "2-digit",
+                                                            hour12: true
+                                                        }).toUpperCase()
                                                         : "-"}
-                                                </td>
-                                                <td>{exam?.examResponse?.startTime
-                                                    ? new Date(exam?.examResponse?.startTime).toLocaleTimeString("en-IN", {
-                                                        hour: "2-digit",
-                                                        minute: "2-digit",
-                                                        hour12: true
-                                                    }).toUpperCase()
-                                                    : "-"}
-                                                </td>
-                                                <td>{exam?.examResponse?.endTime
-                                                    ? new Date(exam?.examResponse?.endTime).toLocaleTimeString("en-IN", {
-                                                        hour: "2-digit",
-                                                        minute: "2-digit",
-                                                        hour12: true
-                                                    }).toUpperCase()
-                                                    : "-"}
-                                                </td>
-                                                <td className='text-center'>
-                                                    <button
-                                                        onClick={() => setSearchParams({ tab, page: pageNumber, size: pageSize, studentExamId: exam?.id })}
-                                                        className="btn btn-sm custom-action-btn me-2">
-                                                        <i class="bi bi-eye"></i>
-                                                    </button>
+                                                    </td>
+                                                    <td>{exam?.examResponse?.endTime
+                                                        ? new Date(exam?.examResponse?.endTime).toLocaleTimeString("en-IN", {
+                                                            hour: "2-digit",
+                                                            minute: "2-digit",
+                                                            hour12: true
+                                                        }).toUpperCase()
+                                                        : "-"}
+                                                    </td>
+                                                    <td className='text-center'>
+                                                        <button
+                                                            onClick={() => setSearchParams({ tab, page: pageNumber, size: pageSize, studentExamId: exam?.id })}
+                                                            className="btn btn-sm custom-action-btn me-2">
+                                                            <i class="bi bi-eye"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            )
+                                            :
+                                            <tr>
+                                                <td colSpan="9" className="text-center">
+                                                    No Exam Found
                                                 </td>
                                             </tr>
-                                        )
-                                        :
-                                        <tr>
-                                            <td colSpan="9" className="text-center">
-                                                No Exam Found
-                                            </td>
-                                        </tr>
-                                }
-                            </tbody>
-                        </table>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                         <div className="pagination-container">
                             <div className="pagination-info">
                                 Total : <strong>{exam?.onGoingStudentExams?.totalElements || 0}</strong>

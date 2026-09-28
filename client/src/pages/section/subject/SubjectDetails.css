@@ -42,3 +42,17 @@
     align-items: center;
     gap: 12px;
 }
+
+@Media(max-width:480px){
+    .section-subject-detail-btn{
+        color: #000000;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .section-subject-detail-card{
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .section-subject-detail-contact div{
+        align-items: flex-start;
+    }
+}

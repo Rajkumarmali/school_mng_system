@@ -194,6 +194,7 @@
 
 .student-table-wrapper {
     overflow-x: auto;
+    white-space:nowrap;
 }
 
 .student-table {
@@ -233,46 +234,19 @@
     color: #856404;
 } 
 
-@media (max-width: 1000px) {
-
-    .subject-info-grid {
+@media(max-width:480px){
+    .subject-icon{
+        display: none;
+    }
+    .back-btn{
+        color: #000000;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .subject-info-grid{
+        display: grid;
         grid-template-columns: repeat(2, 1fr);
     }
-
-    .subject-stats {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 650px) {
-
-    .subject-detail-container {
-        padding: 15px;
-    }
-
-    .subject-detail-header {
-        align-items: flex-start;
-        gap: 15px;
-    }
-
-    .subject-header-left {
-        align-items: flex-start;
-    }
-
-    .subject-detail-header h2 {
-        font-size: 18px;
-    }
-
-    .subject-subtitle {
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-
-    .subject-info-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .back-btn {
-        display: none;
+    .subject-info-item{
+        border: 1px solid rgba(0, 0, 0, 0.2);
     }
 }

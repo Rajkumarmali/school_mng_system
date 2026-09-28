@@ -326,8 +326,8 @@ const QuestionPaper = () => {
                 </div>
                 <div className="metrics-card">
                     <div className="metric-row">
-                        <span>Total Questions:</span>
-                        <strong>{exam?.examQuestions?.totalElements}</strong>
+                        <span>Total Questions:  <strong>{exam?.examQuestions?.totalElements}</strong></span>
+
                     </div>
                     {/* <div className="metric-row">
                         <span>Total Marks:</span>
@@ -379,7 +379,6 @@ const QuestionPaper = () => {
                                             />
                                         </div>
                                     </div>
-
                                     <div className="form-group">
                                         <label>Question Prompt</label>
                                         <textarea

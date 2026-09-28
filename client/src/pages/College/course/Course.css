@@ -1,0 +1,13 @@
+@media(max-width:480px){
+    .course-header{
+        justify-content: left !important;
+    }
+    .course-header h2{
+      display: none;
+    }
+    .course-header button{
+        color: #000000;
+        border: 1px solid rgba(0, 0, 0, 0.2) !important;
+        padding: 5px;
+    }
+}

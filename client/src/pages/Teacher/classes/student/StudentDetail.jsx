@@ -99,12 +99,27 @@ const StudentDetail = () => {
             </div>
 
             <div className="stats-container">
-                <div className="stat-card">
+                <div className="stat-card desktop-attendance-card">
                     <h5>{attendancePercent}%</h5>
                     <span>Attendance</span>
                     <div className="progress" role="progressbar" aria-label="Success example" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
                         <div className="progress-bar bg-success" style={{ width: `${attendancePercent}%` }}></div>
                     </div>
+                </div>
+                <div className="stat-card mobile-attendance-card">
+                    <div
+                        className="attendance-circle"
+                        style={{
+                            "--attendance": `${attendancePercent}%`
+                        }}
+                    >
+                        <div className="attendance-circle-inner">
+                            <span>
+                                {attendancePercent}%
+                            </span>
+                        </div>
+                    </div>
+                    <span>Attendance</span>
                 </div>
                 <div className="stat-card">
                     <i className="bi bi-check-circle-fill"></i>

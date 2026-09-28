@@ -196,3 +196,28 @@
 .subject-row:last-child {
     border-bottom: none;
 }
+
+@media(max-width:480px){
+    .university-exam-student-detail-back-btn{
+        color: #000000;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .student-detail-card{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .student-details-grid{
+       display: grid !important;
+        grid-template-columns: 1fr !important;
+    }
+    .subject-table{
+        overflow-x: auto !important;
+        border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    }
+    .subject-table-header{
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2) !important;   
+    }
+    .subject-row{
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2) !important;   
+    }
+
+}

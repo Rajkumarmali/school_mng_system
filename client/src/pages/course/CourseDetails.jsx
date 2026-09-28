@@ -95,7 +95,7 @@ const CourseDetails = () => {
                     </li>
                 </ul>
             </nav>
-            <div className="fee-card">
+            <div className="course-card">
                 {
                     activeTab === "student" ?
                         <div>
@@ -115,9 +115,18 @@ const CourseDetails = () => {
                                 <div>
                                     <div className="course-details-info">
                                         <div className="course-details-contact">
-                                            <div>
-                                                <i className="bi bi-upc-scan me-2"></i>
-                                                <span> <strong>Code :  </strong>{course?.course?.courseCode}</span>
+                                            <div style={{ justifyContent: "space-between" }}>
+                                                <div>
+                                                    <i className="bi bi-upc-scan me-2"></i>
+                                                    <span> <strong>Code :  </strong>{course?.course?.courseCode}</span>
+                                                </div>
+                                                <button className="edit-icon-btn"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#editCourseModal"
+                                                    onClick={handleSetdata}
+                                                >
+                                                    <i className="bi bi-pencil-square"></i>
+                                                </button>
                                             </div>
                                             <div>
                                                 <i className="bi bi-journal-bookmark-fill me-2"></i>
@@ -138,14 +147,6 @@ const CourseDetails = () => {
                                             <div>
                                                 <i className="bi bi-card-text me-2"></i>
                                                 <span> <strong>Description:  </strong>{course?.course?.description} </span>
-
-                                                <button className="edit-icon-btn"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#editCourseModal"
-                                                    onClick={handleSetdata}
-                                                >
-                                                    <i className="bi bi-pencil-square"></i>
-                                                </button>
                                             </div>
                                         </div>
                                     </div>

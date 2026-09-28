@@ -86,7 +86,7 @@ const Section = () => {
     }, [dispatch, pageNumber, pageSize]);
 
     return (
-        <div>
+        <div className='fee-section-container'>
             {
                 sectionId ?
                     <div>
@@ -94,54 +94,56 @@ const Section = () => {
                     </div>
                     :
                     <div>
-                        <table className="table fee-sections-table">
-                            <thead>
-                                <tr>
-                                    <th>S No.</th>
-                                    <th>Code</th>
-                                    <th>Year</th>
-                                    <th>Semester</th>
-                                    <th>Academic Year</th>
-                                    <th>Total Student</th>
-                                    <th>Status</th>
-                                    <th>Collected Fee</th>
-                                    <th>Pending Fee</th>
-                                    <th className="text-center">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    fee?.feeSections?.content?.length > 0 ?
-                                        fee?.feeSections?.content?.map((section, index) =>
+                        <div className='table-wraper'>
+                            <table className="table fee-sections-table">
+                                <thead>
+                                    <tr>
+                                        <th>S No.</th>
+                                        <th>Code</th>
+                                        <th>Year</th>
+                                        <th>Semester</th>
+                                        <th>Academic Year</th>
+                                        <th>Total Student</th>
+                                        <th>Status</th>
+                                        <th>Collected Fee</th>
+                                        <th>Pending Fee</th>
+                                        <th className="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        fee?.feeSections?.content?.length > 0 ?
+                                            fee?.feeSections?.content?.map((section, index) =>
+                                                <tr>
+                                                    <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                    <td>{section.code}</td>
+                                                    <td>{section.year}</td>
+                                                    <td>{section.semester}</td>
+                                                    <td>{section.AcademicYear}</td>
+                                                    <td>{section.totalStudent}</td>
+                                                    <td>{section.status}</td>
+                                                    <td>{section.collectedFee}</td>
+                                                    <td>{section.totalPendingFee}</td>
+                                                    <td className='text-center'>
+                                                        <button
+                                                            className="btn btn-sm custom-reset-btn me-2"
+                                                            onClick={() => setSearchParams({ tab, page: pageNumber, size: pageSize, sectionId: section.id })}
+                                                        >
+                                                            <i class="bi bi-eye"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            )
+                                            :
                                             <tr>
-                                                <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                                <td>{section.code}</td>
-                                                <td>{section.year}</td>
-                                                <td>{section.semester}</td>
-                                                <td>{section.AcademicYear}</td>
-                                                <td>{section.totalStudent}</td>
-                                                <td>{section.status}</td>
-                                                <td>{section.collectedFee}</td>
-                                                <td>{section.totalPendingFee}</td>
-                                                <td className='text-center'>
-                                                    <button
-                                                        className="btn btn-sm custom-reset-btn me-2"
-                                                        onClick={() => setSearchParams({ tab, page: pageNumber, size: pageSize, sectionId: section.id })}
-                                                    >
-                                                        <i class="bi bi-eye"></i>
-                                                    </button>
+                                                <td colSpan="10" className="text-center">
+                                                    No Section Found
                                                 </td>
                                             </tr>
-                                        )
-                                        :
-                                        <tr>
-                                            <td colSpan="10" className="text-center">
-                                                No Section Found
-                                            </td>
-                                        </tr>
-                                }
-                            </tbody>
-                        </table>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                         <div className="pagination-container">
                             <div className="pagination-info">
                                 Total : <strong>{fee?.feeSections?.totalElements || 0}</strong>

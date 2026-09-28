@@ -105,7 +105,7 @@
     transform: scale(1.1);
 }
 .stat-view-btn i {
-    font-size: 20px;
+    font-size: 20px !important;
     margin: 0;
 }
 
@@ -172,3 +172,17 @@
     color: white;
 }
 
+@media(max-width:480px){
+    .back-fee-structure-detail-btn{
+        color: #000000;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .fee-structure-details-info{
+        display: grid;
+        gap: 0px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .fee-structure-details-contact{
+        margin-top: 0px;
+    }
+}

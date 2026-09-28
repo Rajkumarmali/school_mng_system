@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getStudentById, updateStudent, updateStudentImage } from '../../state/student/Action'
 import Document from './Document'
 
+const BASE_IMAGE_URL = process.env.REACT_APP_IMAGE_URL
+
 
 const StudentProfile = () => {
 
@@ -221,11 +223,11 @@ const StudentProfile = () => {
                         :
                         <div>
                             <div className="student-profile-header">
-                                <div>
+                                <div style= {{justifyItems: "center"}}>
                                     <div className="student-profile-avatar">
                                         {
                                             student?.student?.image ?
-                                                <img src={`http://localhost:8080/${student?.student?.image}`} alt=""
+                                                <img src={`${BASE_IMAGE_URL}/${student?.student?.image}`} alt=""
                                                     className='student-image' />
                                                 : <i className="bi bi-person-fill"></i>
                                         }
@@ -301,7 +303,7 @@ const StudentProfile = () => {
                                 </div>
                             </div>
                             <div className="student-profile-body">
-                                <div className="simple-section">
+                                <div className="simple-section student-profile-simple-section">
                                     <div className="info-line">
                                         <h5>Personal Information : </h5>
                                         <div className="profile-actions">
@@ -340,7 +342,7 @@ const StudentProfile = () => {
                                         <span><strong>Mother Occupation :</strong> {student?.student?.parentResponse?.motherOccupation}</span>
                                     </div>
                                 </div>
-                                <div className="simple-section">
+                                <div className="simple-section student-profile-simple-section">
                                     <div className="info-line">
                                         <h5>Address Information : </h5>
                                         <div className="profile-actions">

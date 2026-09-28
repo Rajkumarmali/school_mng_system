@@ -24,6 +24,10 @@
     color: #3c58c9;
 }
 
+.college-student-detail-action-btns{
+    display:none;
+}
+
 .college-student-profile-header {
     display: flex;
     align-items: center;
@@ -87,3 +91,38 @@
     min-width: 250px;
 }
 
+@media (max-width:480px){
+    .college-student-detail-header{
+        display: none
+    }
+    .college-student-detail-action-btns{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 10px;
+        justify-content: left;
+    }
+    .college-student-detail-action-btns button{
+        border-radius: 8px;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        padding: 8px 16px;
+        color: #000000;
+        margin-top: 5px
+    }
+    .college-student-profile-header{
+        display: grid;
+        margin-top: 25px;
+    }
+    .college-student-profile-info{
+        display: grid;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .college-student-profile-contact{
+        margin-top: 0px;
+    }
+    .college-student-simple-section{
+        border: none;
+        padding: 0px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 0px
+    }
+}

@@ -315,3 +315,46 @@
     color: #dc3545;
 }
 
+@media(max-width:480px){
+    .exam-studentexamresult-container{
+        margin-left: 0;
+        padding: 70px 15px 20px;
+        background: #ffffff;
+    }
+    .exam-studentexamresult-card{
+        box-shadow: none;
+    }
+    .student-result-info-card{
+        display: grid;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .student-result-avatar{
+        display:none;
+    }
+    .student-result-summary{
+        margin-left: 0px;
+    }
+    .result-legend{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        padding: 10px;
+    }
+    .result-question-card{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .result-question-header{
+        display: grid;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .result-question-status{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+    .result-option{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .student-correct-option,
+    .student-wrong-option{
+        display: grid
+    }  
+   
+}

@@ -129,56 +129,58 @@ const Department = () => {
                 </button>
             </div>
             <div className="departments-card">
-                <table className="table departments-table">
-                    <thead>
-                        <tr>
-                            <th>S.No</th>
-                            <th>Code</th>
-                            <th>Name</th>
-                            <th>Course</th>
-                            <th>Hod Name</th>
-                            <th>Hod Email</th>
-                            <th>Hod Phone</th>
-                            <th className='text-center'>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            department?.departments?.content?.length > 0 ?
-                                department?.departments?.content?.map((department, index) =>
-                                    <tr key={department.id}>
-                                        <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                        <td>{department.code}</td>
-                                        <td>{department.name}</td>
-                                        <td>{department.courseCode}</td>
-                                        <td>{department.hodName}</td>
-                                        <td>{department.hodEmail}</td>
-                                        <td>{department.hodPhoneNumber}</td>
-                                        <td className='text-center'>
-                                            <button
-                                                className="btn btn-sm custom-reset-btn me-2"
-                                                onClick={() => handleViewDetails(department.id)}
-                                            >
-                                                <i class="bi bi-eye"></i>
-                                            </button>
-                                            <button
-                                                className="btn btn-sm custom-reset-btn me-2"
-                                                onClick={() => handleDelete(department.id)}
-                                            >
-                                                <i class="bi bi-trash"></i>
-                                            </button>
+                <div className='table-wraper'>
+                    <table className="table departments-table">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Code</th>
+                                <th>Name</th>
+                                <th>Course</th>
+                                <th>Hod Name</th>
+                                <th>Hod Email</th>
+                                <th>Hod Phone</th>
+                                <th className='text-center'>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                department?.departments?.content?.length > 0 ?
+                                    department?.departments?.content?.map((department, index) =>
+                                        <tr key={department.id}>
+                                            <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                            <td>{department.code}</td>
+                                            <td>{department.name}</td>
+                                            <td>{department.courseCode}</td>
+                                            <td>{department.hodName}</td>
+                                            <td>{department.hodEmail}</td>
+                                            <td>{department.hodPhoneNumber}</td>
+                                            <td className='text-center'>
+                                                <button
+                                                    className="btn btn-sm custom-reset-btn me-2"
+                                                    onClick={() => handleViewDetails(department.id)}
+                                                >
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
+                                                <button
+                                                    className="btn btn-sm custom-reset-btn me-2"
+                                                    onClick={() => handleDelete(department.id)}
+                                                >
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    )
+                                    :
+                                    <tr>
+                                        <td colSpan="8" className="text-center">
+                                            No Department Found
                                         </td>
                                     </tr>
-                                )
-                                :
-                                <tr>
-                                    <td colSpan="8" className="text-center">
-                                        No Department Found
-                                    </td>
-                                </tr>
-                        }
-                    </tbody>
-                </table>
+                            }
+                        </tbody>
+                    </table>
+                </div>
                 <div className="pagination-container">
                     <div className="pagination-info">
                         Total : <strong>{department?.departments?.totalElements || 0}</strong>

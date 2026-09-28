@@ -103,54 +103,56 @@ const PendingFee = () => {
                     </div>
                     :
                     <div>
-                        <table className="table student-fee-table">
-                            <thead>
-                                <tr>
-                                    <th>S.No</th>
-                                    <th>Fee Type</th>
-                                    <th>Academic Year</th>
-                                    <th>Amount</th>
-                                    <th>Status</th>
-                                    <th>Due Date</th>
-                                    <th className='text-center'>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    student?.studentUnPaidFees?.content?.length > 0 ?
-                                        student?.studentUnPaidFees?.content?.map((fee, index) =>
+                        <div className='table-wraper'>
+                            <table className="table student-fee-table">
+                                <thead>
+                                    <tr>
+                                        <th>S.No</th>
+                                        <th>Fee Type</th>
+                                        <th>Academic Year</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Due Date</th>
+                                        <th className='text-center'>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        student?.studentUnPaidFees?.content?.length > 0 ?
+                                            student?.studentUnPaidFees?.content?.map((fee, index) =>
+                                                <tr>
+                                                    <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                    <td>{fee.feeTypename}</td>
+                                                    <td>{fee.academicYear}</td>
+                                                    <td>{fee.amount}</td>
+                                                    <td>{fee.status}</td>
+                                                    <td>
+                                                        {fee.DueDate
+                                                            ? new Date(fee.DueDate)
+                                                                .toLocaleDateString("en-GB")
+                                                                .replace(/\//g, "-")
+                                                            : "-"}
+                                                    </td>
+                                                    <td className='text-center'>
+                                                        <button
+                                                            className="btn btn-sm custom-reset-btn me-2"
+                                                            onClick={() => handleViewDetails(fee.id)}
+                                                        >
+                                                            <i class="bi bi-eye"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            )
+                                            :
                                             <tr>
-                                                <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                                <td>{fee.feeTypename}</td>
-                                                <td>{fee.academicYear}</td>
-                                                <td>{fee.amount}</td>
-                                                <td>{fee.status}</td>
-                                                <td>
-                                                    {fee.DueDate
-                                                        ? new Date(fee.DueDate)
-                                                            .toLocaleDateString("en-GB")
-                                                            .replace(/\//g, "-")
-                                                        : "-"}
-                                                </td>
-                                                <td className='text-center'>
-                                                    <button
-                                                        className="btn btn-sm custom-reset-btn me-2"
-                                                        onClick={() => handleViewDetails(fee.id)}
-                                                    >
-                                                        <i class="bi bi-eye"></i>
-                                                    </button>
+                                                <td colSpan="10" className="text-center">
+                                                    No Fee Found
                                                 </td>
                                             </tr>
-                                        )
-                                        :
-                                        <tr>
-                                            <td colSpan="10" className="text-center">
-                                                No Fee Found
-                                            </td>
-                                        </tr>
-                                }
-                            </tbody>
-                        </table>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                         <div className="pagination-container">
                             <div className="pagination-info">
                                 Total :

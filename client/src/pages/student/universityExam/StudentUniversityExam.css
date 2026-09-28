@@ -357,3 +357,42 @@
    cursor: not-allowed !important;
 }
 
+@media(max-width:480px){
+    .student-universityexam-container{
+        margin-left: 0;
+        padding: 70px 15px 20px;
+        background: #ffffff;
+    }
+    .students-universityexam-card{
+        box-shadow: none;
+        padding: 0px;
+    }
+    .student-university-icon{
+        display:none;
+    }
+    .university-exam-info-banner,
+    .student-university-exam-card{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .student-exam-card-icon{
+        display:none;
+    }
+    .student-exam-details{
+        grid-template-columns: repeat(2, 1fr);
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+        padding: 10px;
+    }
+    .registration-window{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .register-exam-btn,
+    .registered-btn,
+    .disabled-register-btn{
+        color: #000000;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    
+   
+}
+

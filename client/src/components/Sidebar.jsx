@@ -20,7 +20,7 @@ const Sidebar = () => {
         <div className="sidebar">
             <ul className="sidebar-menu">
                 <li>
-                    <Link to="/dashboard" className="menu-item">
+                    <Link to="/#" className="menu-item">
                         <i className="bi bi-grid-fill me-2"></i>
                         Dashboard
                     </Link>

@@ -136,3 +136,29 @@
    background: transparent;
     color: white;
 }
+
+@media (max-width:480px){
+    .student-nav-card{
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .student-card{
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        padding: 0px;
+    }
+    .student-profile-header{
+        display: grid !important;
+    }
+    .student-profile-info{
+        display: grid !important;
+    }
+    .student-profile-contact{
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .student-profile-simple-section{
+        border: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 0px;
+    }
+}

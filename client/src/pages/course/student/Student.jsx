@@ -103,6 +103,7 @@ const Student = () => {
     return (
         <div>
             <div>
+            <div className='table-wraper'>
                 <table className="table course-student-table">
                     <thead>
                         <tr>
@@ -155,6 +156,7 @@ const Student = () => {
                         }
                     </tbody>
                 </table>
+            </div>
                 <div className="pagination-container">
                     <div className="pagination-info">
                         Total :

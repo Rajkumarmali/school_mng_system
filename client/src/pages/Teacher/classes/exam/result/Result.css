@@ -245,3 +245,41 @@
 .performer-marks span {
     margin-top: 2px;
 }
+
+@media(max-width:480px){
+    .exam-result-header{
+        display: grid;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        padding: 10px;
+        box-shadow: none;
+    }
+    .result-page-icon{
+        display:none;
+    }
+    .result-stats-container{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .result-stat-card{
+        border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    }
+   .top-performer-card{
+       border: 1px solid rgba(0, 0, 0, 0.2);
+   }
+   .top-performer-list{
+        display: grid;
+        grid-template-columns: 1fr;
+   }
+   .top-performer-item{
+      border: 1px solid rgba(0, 0, 0, 0.2);
+   }
+   .performer-avatar{
+      display: none;
+   }
+   .exam-student-container{
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+   }
+}

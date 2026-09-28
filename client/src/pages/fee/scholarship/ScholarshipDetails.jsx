@@ -261,53 +261,55 @@ const ScholarshipDetails = () => {
                     </div>
                 </div>
                 <div className="table-card">
-                    <table className="table students-table">
-                        <thead>
-                            <tr>
-                                <th>S.No</th>
-                                <th>Registration No.</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone No.</th>
-                                {
-                                    isAccountant &&
-                                    <td className='text-center'>Action</td>
-                                }
+                    <div className='table-wraper'>
+                        <table className="table students-table">
+                            <thead>
+                                <tr>
+                                    <th>S.No</th>
+                                    <th>Registration No.</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone No.</th>
+                                    {
+                                        isAccountant &&
+                                        <td className='text-center'>Action</td>
+                                    }
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                scholarship?.scholarship?.studentResponses?.content?.length > 0 ?
-                                    scholarship?.scholarship?.studentResponses?.content?.map((student, index) =>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    scholarship?.scholarship?.studentResponses?.content?.length > 0 ?
+                                        scholarship?.scholarship?.studentResponses?.content?.map((student, index) =>
+                                            <tr>
+                                                <td>{(pagination.pageNumber - 1) * pagination.pageSize + index + 1}.</td>
+                                                <td>{student.registrationNumber}</td>
+                                                <td>{student.name}</td>
+                                                <td>{student.email}</td>
+                                                <td>{student.phoneNumber}</td>
+                                                {
+                                                    isAccountant &&
+                                                    <td className='text-center'>
+                                                        <button
+                                                            className="btn btn-sm custom-reset-btn me-2"
+                                                            onClick={() => handleRemoveStudentFromScholarship(student.id)}
+                                                        >
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                }
+                                            </tr>
+                                        )
+                                        :
                                         <tr>
-                                            <td>{(pagination.pageNumber - 1) * pagination.pageSize + index + 1}.</td>
-                                            <td>{student.registrationNumber}</td>
-                                            <td>{student.name}</td>
-                                            <td>{student.email}</td>
-                                            <td>{student.phoneNumber}</td>
-                                            {
-                                                isAccountant &&
-                                                <td className='text-center'>
-                                                    <button
-                                                        className="btn btn-sm custom-reset-btn me-2"
-                                                        onClick={() => handleRemoveStudentFromScholarship(student.id)}
-                                                    >
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </td>
-                                            }
+                                            <td colSpan="10" className="text-center">
+                                                No Student Found
+                                            </td>
                                         </tr>
-                                    )
-                                    :
-                                    <tr>
-                                        <td colSpan="10" className="text-center">
-                                            No Student Found
-                                        </td>
-                                    </tr>
-                            }
-                        </tbody>
-                    </table>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                     <div className="pagination-container">
                         <div className="pagination-info">
                             Total : <strong>{scholarship?.scholarship?.studentResponses?.totalElements || 0}</strong>
@@ -440,83 +442,85 @@ const ScholarshipDetails = () => {
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <table className="table class-student-modal-table">
-                                <thead>
-                                    <tr>
-                                        <th>SNo.</th>
-                                        <th>Registration Number</th>
-                                        <th>Frist Name</th>
-                                        <th>Last Name</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        scholarshipStudentData.map((student, index) =>
-                                            <tr key={index}>
-                                                <td>{index + 1}</td>
-                                                <td>
-                                                    <input
-                                                        type="text"
-                                                        className="modal-input"
-                                                        name="registrationNumber"
-                                                        value={student.registrationNumber}
-                                                        onChange={(e) => handleAddScholarshipStudentChange(index, e)}
-                                                    />
-                                                </td>
-                                                <td>
-                                                    <input
-                                                        type="text"
-                                                        className="modal-input"
-                                                        name="firstName"
-                                                        value={student.firstName}
-                                                        onChange={(e) => handleAddScholarshipStudentChange(index, e)}
-                                                    />
-                                                </td>
-                                                <td>
-                                                    <input
-                                                        type="text"
-                                                        className="modal-input"
-                                                        name="lastName"
-                                                        value={student.lastName}
-                                                        onChange={(e) => handleAddScholarshipStudentChange(index, e)}
-                                                    />
-                                                </td>
-                                                <td>
-                                                    <input
-                                                        type="email"
-                                                        className="modal-input"
-                                                        name="email"
-                                                        value={student.email}
-                                                        onChange={(e) => handleAddScholarshipStudentChange(index, e)}
-                                                    />
-                                                </td>
-                                                <td>
-                                                    <input
-                                                        type="text"
-                                                        className="modal-input"
-                                                        name="phoneNumber"
-                                                        value={student.phoneNumber}
-                                                        onChange={(e) => handleAddScholarshipStudentChange(index, e)}
-                                                    />
-                                                </td>
-                                                <td className='text-center'>
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-sm custom-action-btn me-2"
-                                                        disabled={scholarshipStudentData.length === 1}
-                                                        onClick={() => handleRemoveScholarshipStudent(index)}
-                                                    >
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        )
-                                    }
-                                </tbody>
-                            </table>
+                            <div className='table-wraper'>
+                                <table className="table class-student-modal-table">
+                                    <thead>
+                                        <tr>
+                                            <th>SNo.</th>
+                                            <th>Registration Number</th>
+                                            <th>Frist Name</th>
+                                            <th>Last Name</th>
+                                            <th>Email</th>
+                                            <th>Phone</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            scholarshipStudentData.map((student, index) =>
+                                                <tr key={index}>
+                                                    <td>{index + 1}</td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="modal-input"
+                                                            name="registrationNumber"
+                                                            value={student.registrationNumber}
+                                                            onChange={(e) => handleAddScholarshipStudentChange(index, e)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="modal-input"
+                                                            name="firstName"
+                                                            value={student.firstName}
+                                                            onChange={(e) => handleAddScholarshipStudentChange(index, e)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="modal-input"
+                                                            name="lastName"
+                                                            value={student.lastName}
+                                                            onChange={(e) => handleAddScholarshipStudentChange(index, e)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="email"
+                                                            className="modal-input"
+                                                            name="email"
+                                                            value={student.email}
+                                                            onChange={(e) => handleAddScholarshipStudentChange(index, e)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="modal-input"
+                                                            name="phoneNumber"
+                                                            value={student.phoneNumber}
+                                                            onChange={(e) => handleAddScholarshipStudentChange(index, e)}
+                                                        />
+                                                    </td>
+                                                    <td className='text-center'>
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-sm custom-action-btn me-2"
+                                                            disabled={scholarshipStudentData.length === 1}
+                                                            onClick={() => handleRemoveScholarshipStudent(index)}
+                                                        >
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         <div class="modal-footer d-flex justify-content-between">
                             <button

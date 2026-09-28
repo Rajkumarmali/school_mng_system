@@ -108,7 +108,7 @@ const ExamDetail = () => {
                     </button>
                 </div>
                 <button
-                    className="back-section-exam-detail-btn"
+                    className="back-section-exam-detail-btn back-btn"
                     onClick={handleBack}
                 >
                     <i className="bi bi-arrow-left"></i>

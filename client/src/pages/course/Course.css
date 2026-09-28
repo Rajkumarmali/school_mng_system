@@ -144,3 +144,15 @@
    background: transparent;
     color: white;
 }
+
+@media(max-width:480px){
+    .course-container{
+        margin-left: 0;
+        padding: 70px 15px 20px;
+        background: #ffffff;
+    }
+    .course-card{
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    }
+}

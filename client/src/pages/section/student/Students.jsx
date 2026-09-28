@@ -178,59 +178,61 @@ const Students = () => {
                                 </button>
                             }
                         </div>
-                        <table className="table class-student-table">
-                            <thead>
-                                <tr>
-                                    <th>S No.</th>
-                                    <th>Roll No.</th>
-                                    <th>Registration No.</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Phone</th>
-                                    <th>Attendance(%)</th>
-                                    <td className='text-center'>Action</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    section?.sectionStudents?.content?.length > 0 ?
-                                        section?.sectionStudents?.content?.map((student, index) =>
-                                            <tr>
-                                                <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                                <td>{student.rollNumber}</td>
-                                                <td>{student.registrationNumber}</td>
-                                                <td>{student.firstName}{" "}{student.lastName}</td>
-                                                <td>{student.email}</td>
-                                                <td>{student.phoneNumber}</td>
-                                                <td>{student?.attendancePercent.toFixed(2)}%</td>
-                                                <td className='text-center'>
-                                                    <button
-                                                        onClick={() => setSearchParams({ sectionId, tab, page: pageNumber, size: pageSize, studentId: student.id })}
-                                                        className="btn btn-sm custom-action-btn me-2">
-                                                        <i class="bi bi-eye"></i>
-                                                    </button>
-                                                    {
-                                                        isHod &&
+                        <div className='table-wraper'>
+                            <table className="table class-student-table">
+                                <thead>
+                                    <tr>
+                                        <th>S No.</th>
+                                        <th>Roll No.</th>
+                                        <th>Registration No.</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Attendance(%)</th>
+                                        <td className='text-center'>Action</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        section?.sectionStudents?.content?.length > 0 ?
+                                            section?.sectionStudents?.content?.map((student, index) =>
+                                                <tr>
+                                                    <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                    <td>{student.rollNumber}</td>
+                                                    <td>{student.registrationNumber}</td>
+                                                    <td>{student.firstName}{" "}{student.lastName}</td>
+                                                    <td>{student.email}</td>
+                                                    <td>{student.phoneNumber}</td>
+                                                    <td>{student?.attendancePercent.toFixed(2)}%</td>
+                                                    <td className='text-center'>
                                                         <button
-                                                            onClick={() => handleDeleteStudentFromSection(student.id)}
-                                                            className="btn btn-sm custom-action-btn me-2"
-                                                        >
-                                                            <i class="bi bi-trash"></i>
+                                                            onClick={() => setSearchParams({ sectionId, tab, page: pageNumber, size: pageSize, studentId: student.id })}
+                                                            className="btn btn-sm custom-action-btn me-2">
+                                                            <i class="bi bi-eye"></i>
                                                         </button>
-                                                    }
-                                                </td>
+                                                        {
+                                                            isHod &&
+                                                            <button
+                                                                onClick={() => handleDeleteStudentFromSection(student.id)}
+                                                                className="btn btn-sm custom-action-btn me-2"
+                                                            >
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        }
+                                                    </td>
 
+                                                </tr>
+                                            )
+                                            :
+                                            <tr>
+                                                <td colSpan="9" className="text-center">
+                                                    No Student Found
+                                                </td>
                                             </tr>
-                                        )
-                                        :
-                                        <tr>
-                                            <td colSpan="9" className="text-center">
-                                                No Student Found
-                                            </td>
-                                        </tr>
-                                }
-                            </tbody>
-                        </table>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                         <div className="pagination-container">
                             <div className="pagination-info">
                                 Total : <strong>{section?.sectionStudents?.totalElements || 0}</strong>
@@ -295,83 +297,85 @@ const Students = () => {
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <table className="table class-student-modal-table">
-                                <thead>
-                                    <tr>
-                                        <th>SNo.</th>
-                                        <th>Registration Number</th>
-                                        <th>Frist Name</th>
-                                        <th>Last Name</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        sectionStudentData.map((student, index) =>
-                                            <tr key={index}>
-                                                <td>{index + 1}</td>
-                                                <td>
-                                                    <input
-                                                        type="text"
-                                                        className="modal-input"
-                                                        name="registrationNumber"
-                                                        value={student.registrationNumber}
-                                                        onChange={(e) => handleAddSectionStudentChange(index, e)}
-                                                    />
-                                                </td>
-                                                <td>
-                                                    <input
-                                                        type="text"
-                                                        className="modal-input"
-                                                        name="firstName"
-                                                        value={student.firstName}
-                                                        onChange={(e) => handleAddSectionStudentChange(index, e)}
-                                                    />
-                                                </td>
-                                                <td>
-                                                    <input
-                                                        type="text"
-                                                        className="modal-input"
-                                                        name="lastName"
-                                                        value={student.lastName}
-                                                        onChange={(e) => handleAddSectionStudentChange(index, e)}
-                                                    />
-                                                </td>
-                                                <td>
-                                                    <input
-                                                        type="email"
-                                                        className="modal-input"
-                                                        name="email"
-                                                        value={student.email}
-                                                        onChange={(e) => handleAddSectionStudentChange(index, e)}
-                                                    />
-                                                </td>
-                                                <td>
-                                                    <input
-                                                        type="text"
-                                                        className="modal-input"
-                                                        name="phoneNumber"
-                                                        value={student.phoneNumber}
-                                                        onChange={(e) => handleAddSectionStudentChange(index, e)}
-                                                    />
-                                                </td>
-                                                <td className='text-center'>
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-sm custom-action-btn me-2"
-                                                        disabled={sectionStudentData.length === 1}
-                                                        onClick={() => handleRemoveSectionStudent(index)}
-                                                    >
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        )
-                                    }
-                                </tbody>
-                            </table>
+                            <div className='table-wraper'>
+                                <table className="table class-student-modal-table">
+                                    <thead>
+                                        <tr>
+                                            <th>SNo.</th>
+                                            <th>Registration Number</th>
+                                            <th>Frist Name</th>
+                                            <th>Last Name</th>
+                                            <th>Email</th>
+                                            <th>Phone</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            sectionStudentData.map((student, index) =>
+                                                <tr key={index}>
+                                                    <td>{index + 1}</td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="modal-input"
+                                                            name="registrationNumber"
+                                                            value={student.registrationNumber}
+                                                            onChange={(e) => handleAddSectionStudentChange(index, e)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="modal-input"
+                                                            name="firstName"
+                                                            value={student.firstName}
+                                                            onChange={(e) => handleAddSectionStudentChange(index, e)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="modal-input"
+                                                            name="lastName"
+                                                            value={student.lastName}
+                                                            onChange={(e) => handleAddSectionStudentChange(index, e)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="email"
+                                                            className="modal-input"
+                                                            name="email"
+                                                            value={student.email}
+                                                            onChange={(e) => handleAddSectionStudentChange(index, e)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            className="modal-input"
+                                                            name="phoneNumber"
+                                                            value={student.phoneNumber}
+                                                            onChange={(e) => handleAddSectionStudentChange(index, e)}
+                                                        />
+                                                    </td>
+                                                    <td className='text-center'>
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-sm custom-action-btn me-2"
+                                                            disabled={sectionStudentData.length === 1}
+                                                            onClick={() => handleRemoveSectionStudent(index)}
+                                                        >
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         <div class="modal-footer d-flex justify-content-between">
                             <button
