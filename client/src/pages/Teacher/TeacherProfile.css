@@ -12,7 +12,7 @@
 .teacher-card {
     background: rgba(255, 255, 255, 0.08);
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 .teacher-profile-header {
@@ -147,4 +147,33 @@
 .modal-close-btn:hover {
     background: rgba(255,255,255,0.1);
     color: white;
+}
+
+@media(max-width:480px){
+    .teacher-profile{
+        margin-left: 0;
+        padding: 70px 15px 20px;
+        background: #ffffff;
+    }
+    .teacher-card{
+        box-shadow: none;
+        padding: 20px !important;
+        border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    }
+    .teacher-profile-header{
+        display: grid;
+        padding: 21px 0px;
+    }
+    .teacher-profile-contact{
+        margin: 0px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .teacher-profile-body{
+        padding: 0px;
+    }
+    .teacher-profile-simple-section{
+        border: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 0px;
+    }
 }

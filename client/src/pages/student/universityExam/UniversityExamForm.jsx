@@ -4,6 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getStudentUniversityExamById, getStudentUniversityExamsByUserId, getUniversityExamSubjects, saveStudentUniversityExamForm } from '../../../state/universityExam/Action';
 
+const REACT_APP_IMAGE_URL = process.env.REACT_APP_IMAGE_URL;
 
 const UniversityExamForm = () => {
 
@@ -137,7 +138,7 @@ const UniversityExamForm = () => {
                         {universityExam?.studentUniversityExam?.studentResponse?.photo ? (
                             <img
                                 src={
-                                    `http://localhost:8080/${universityExam.studentUniversityExam
+                                    `${REACT_APP_IMAGE_URL}/${universityExam.studentUniversityExam
                                         .studentResponse.photo}`
                                 }
                                 alt="Student"
@@ -294,7 +295,7 @@ const UniversityExamForm = () => {
                         </p>
                     </div>
                 </div>
-                <div className="subject-table">
+                <div className="subject-table table-wraper">
                     <div className="subject-table-header">
                         <span>Select</span>
                         <span>Subject Code</span>

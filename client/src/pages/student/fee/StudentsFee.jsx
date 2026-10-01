@@ -75,12 +75,27 @@ const StudentsFee = () => {
                                         <h3>{student?.studentFeeOverview?.totalPendingFee}</h3>
                                         <span>Total Pending Fee</span>
                                     </div>
-                                    <div className="stat-card">
+                                    <div className="stat-card desktop-payment-process">
                                         <h5>{processPercent}%</h5>
                                         <span>Payment Progress</span>
                                         <div className="progress" role="progressbar" aria-label="Success example" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
                                             <div className="progress-bar bg-success" style={{ width: `${processPercent}%` }}></div>
                                         </div>
+                                    </div>
+                                    <div className='stat-card mobile-payment-process'>
+                                        <div
+                                            className="attendance-circle"
+                                            style={{
+                                                "--attendance": `${processPercent}%`
+                                            }}
+                                        >
+                                            <div className="attendance-circle-inner">
+                                                <span>
+                                                    {processPercent}%
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <span>Payment Progress</span>
                                     </div>
                                 </div>
                             </div>

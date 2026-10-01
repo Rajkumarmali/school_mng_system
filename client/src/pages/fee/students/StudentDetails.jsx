@@ -295,43 +295,61 @@ const StudentDetails = () => {
                     </div>
                 </div>
             </div>
+            <div className="student-fee-sch-btn">
+                <div className="d-flex gap-3">
+                    <button
+                        className="back-student-detail-btn"
+                        onClick={() => setView("fees")}
+                    >
+                        Fees
+                    </button>
+                    <button
+                        className="back-student-detail-btn"
+                        onClick={() => setView("scholarships")}
+                    >
 
+                        Scholarship
+                    </button>
+                </div>
+            </div>
             <div>
                 {
                     view === "scholarships" ?
                         <div>
                             <div className="table-card">
-                                <table className="table students-table">
-                                    <thead>
-                                        <tr>
-                                            <th>S.No</th>
-                                            <th>Code</th>
-                                            <th>Name</th>
-                                            <th>Status</th>
-                                            <th>Scholarship(%)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            scholarship?.student?.scholarshipResponses?.content?.length > 0 ?
-                                                scholarship?.student?.scholarshipResponses?.content?.map((scholarship, index) =>
+                                <div className='table-wraper'>
+                                    <table className="table students-table">
+                                        <thead>
+                                            <tr>
+                                                <th>S.No</th>
+                                                <th>Code</th>
+                                                <th>Name</th>
+                                                <th>Status</th>
+                                                <th>Scholarship(%)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                scholarship?.student?.scholarshipResponses?.content?.length > 0 ?
+                                                    scholarship?.student?.scholarshipResponses?.content?.map((scholarship, index) =>
+                                                        <tr>
+                                                            <td>{(scholarshipPagintion.pageNumber - 1) * scholarshipPagintion.pageSize + index + 1}.</td>
+                                                            <td>{scholarship?.code}</td>
+                                                            <td>{scholarship?.name}</td>
+                                                            <td>{scholarship?.status}</td>
+                                                            <td>{scholarship?.scholarshipPercent}%</td>
+                                                        </tr>
+                                                    )
+                                                    :
                                                     <tr>
-                                                        <td>{(scholarshipPagintion.pageNumber - 1) * scholarshipPagintion.pageSize + index + 1}.</td>
-                                                        <td>{scholarship?.code}</td>
-                                                        <td>{scholarship?.name}</td>
-                                                        <td>{scholarship?.status}</td>
-                                                        <td>{scholarship?.scholarshipPercent}%</td>
+                                                        <td colSpan="10" className="text-center">
+                                                            No Scholarship found
+                                                        </td>
                                                     </tr>
-                                                )
-                                                :
-                                                <tr>
-                                                    <td colSpan="10" className="text-center">
-                                                        No Scholarship found
-                                                    </td>
-                                                </tr>
-                                        }
-                                    </tbody>
-                                </table>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
                                 <div className="pagination-container">
                                     <div className="pagination-info">
                                         Total : <strong>{scholarship?.student?.scholarshipResponses?.totalElements || 0}</strong>
@@ -389,62 +407,64 @@ const StudentDetails = () => {
                             {
                                 !viewFeeDetail ?
                                     <div className="table-card">
-                                        <table className="table students-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>S.No</th>
-                                                    <th>Fee Type</th>
-                                                    <th>Academiv Year</th>
-                                                    <th>Amount</th>
-                                                    <th>Status</th>
-                                                    <th>Due Data</th>
-                                                    <th>Payment Date</th>
-                                                    <th>Mode</th>
-                                                    <th>ReceiptNo</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    fee?.studentsFees?.content?.length > 0 ?
-                                                        fee?.studentsFees?.content?.map((fee, index) =>
+                                        <div className='table-wraper'>
+                                            <table className="table students-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>S.No</th>
+                                                        <th>Fee Type</th>
+                                                        <th>Academiv Year</th>
+                                                        <th>Amount</th>
+                                                        <th>Status</th>
+                                                        <th>Due Data</th>
+                                                        <th>Payment Date</th>
+                                                        <th>Mode</th>
+                                                        <th>ReceiptNo</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        fee?.studentsFees?.content?.length > 0 ?
+                                                            fee?.studentsFees?.content?.map((fee, index) =>
+                                                                <tr>
+                                                                    <td>{(pagination.pageNumber - 1) * pagination.pageSize + index + 1}.</td>
+                                                                    <td>{fee.feeTypename}</td>
+                                                                    <td>{fee.academicYear}</td>
+                                                                    <td>{fee.amount}</td>
+                                                                    <td>{fee.status}</td>
+                                                                    <td>
+                                                                        {fee.DueDate
+                                                                            ? new Date(fee.DueDate).toLocaleDateString("en-GB").replace(/\//g, "-")
+                                                                            : "-"}
+                                                                    </td>
+                                                                    <td>
+                                                                        {fee.feePaymentResponse?.paymentDataAndTime
+                                                                            ? new Date(fee.feePaymentResponse?.paymentDataAndTime).toLocaleDateString("en-GB").replace(/\//g, "-")
+                                                                            : "-"}
+                                                                    </td>
+                                                                    <td>{fee?.feePaymentResponse?.paymentMode}</td>
+                                                                    <td>{fee?.feePaymentResponse?.receiptNumber}</td>
+                                                                    <td className='text-center'>
+                                                                        <button
+                                                                            className="btn btn-sm custom-reset-btn me-2"
+                                                                            onClick={() => handleViewFeeDetail(fee.id)}
+                                                                        >
+                                                                            <i class="bi bi-eye"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                            :
                                                             <tr>
-                                                                <td>{(pagination.pageNumber - 1) * pagination.pageSize + index + 1}.</td>
-                                                                <td>{fee.feeTypename}</td>
-                                                                <td>{fee.academicYear}</td>
-                                                                <td>{fee.amount}</td>
-                                                                <td>{fee.status}</td>
-                                                                <td>
-                                                                    {fee.DueDate
-                                                                        ? new Date(fee.DueDate).toLocaleDateString("en-GB").replace(/\//g, "-")
-                                                                        : "-"}
-                                                                </td>
-                                                                <td>
-                                                                    {fee.feePaymentResponse?.paymentDataAndTime
-                                                                        ? new Date(fee.feePaymentResponse?.paymentDataAndTime).toLocaleDateString("en-GB").replace(/\//g, "-")
-                                                                        : "-"}
-                                                                </td>
-                                                                <td>{fee?.feePaymentResponse?.paymentMode}</td>
-                                                                <td>{fee?.feePaymentResponse?.receiptNumber}</td>
-                                                                <td className='text-center'>
-                                                                    <button
-                                                                        className="btn btn-sm custom-reset-btn me-2"
-                                                                        onClick={() => handleViewFeeDetail(fee.id)}
-                                                                    >
-                                                                        <i class="bi bi-eye"></i>
-                                                                    </button>
+                                                                <td colSpan="10" className="text-center">
+                                                                    No Fee Found
                                                                 </td>
                                                             </tr>
-                                                        )
-                                                        :
-                                                        <tr>
-                                                            <td colSpan="10" className="text-center">
-                                                                No Fee Found
-                                                            </td>
-                                                        </tr>
-                                                }
-                                            </tbody>
-                                        </table>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
                                         <div className="pagination-container">
                                             <div className="pagination-info">
                                                 Total : <strong>{fee?.studentsFees?.totalElements || 0}</strong>
@@ -569,8 +589,8 @@ const StudentDetails = () => {
                                                 <i
                                                     className={
                                                         fee?.feeStudent?.status === "PAID"
-                                                            ? "bi bi-patch-check-fill text-success"
-                                                            : "bi bi-hourglass-split text-warning"
+                                                            ? "bi bi-patch-check-fill"
+                                                            : "bi bi-hourglass-split"
                                                     }
                                                 ></i>
                                                 <span>

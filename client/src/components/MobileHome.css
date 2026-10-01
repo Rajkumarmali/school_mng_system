@@ -1,0 +1,37 @@
+.mobileHome-container{
+    margin-top: 50px;
+    padding: 20px 10px;
+    min-height: 100vh;
+    min-width: 100vw;
+    overflow-y: auto
+}
+
+.mobileHome-menu{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:14px;
+}
+
+.mobileHome-menu-item{
+    min-height: 130px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    background: #ffffff;
+    border: 1px solid rgba(60, 88, 201, 0.12);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    color: #1e293b;
+    transition: all 0.25s ease;
+}
+
+.mobileHome-menu-item i {
+    font-size: 38px;
+    margin-bottom: 10px;
+    color: #3c58c9;
+}
+

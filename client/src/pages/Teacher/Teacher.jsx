@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { createTeacher, deleteTeacher, getAllTeacher } from '../../state/teacher/Action';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
+
+
 const Teacher = () => {
 
     const dispatch = useDispatch();
@@ -238,60 +240,63 @@ const Teacher = () => {
                             </div>
                         </div>
                         <div className="teachers-card">
-                            <table className="table users-table">
-                                <thead>
-                                    <tr>
-                                        <th>S.No</th>
-                                        <th>EmployeeId</th>
-                                        <th>Department Code</th>
-                                        <th>FirstName</th>
-                                        <th>LastName</th>
-                                        <th>Email</th>
-                                        <th>PhoneNo</th>
-                                        <th>Gender</th>
-                                        <th className='text-center'>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {teacher?.teachers?.content?.length > 0 ?
-                                        (
-                                            teacher?.teachers?.content?.map((teacher, index) =>
-                                                <tr key={teacher.id}>
-                                                    <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                                    <td>{teacher.employeeId}</td>
-                                                    <td>{teacher.departmentCode}</td>
-                                                    <td>{teacher.firstName}</td>
-                                                    <td>{teacher.lastName}</td>
-                                                    <td>{teacher.email}</td>
-                                                    <td>{teacher.phoneNumber}</td>
-                                                    <td>{teacher.gender}</td>
-                                                    <td className='text-center'>
-                                                        <button
-                                                            className="btn btn-sm custom-reset-btn me-2"
-                                                            onClick={() => handleViewProfile(teacher.id)}
-                                                        >
-                                                            <i class="bi bi-eye"></i>
-                                                        </button>
-                                                        <button onClick={() => handleDelete(teacher.id)}
-                                                            className="btn btn-sm custom-reset-btn me-2"
-                                                        >
-                                                            <i class="bi bi-trash"></i>
-                                                        </button>
+                            <div className='table-wraper'>
+                                <table className="table users-table">
+                                    <thead>
+                                        <tr>
+                                            <th>S.No</th>
+                                            <th>EmployeeId</th>
+                                            <th>Department Code</th>
+                                            <th>FirstName</th>
+                                            <th>LastName</th>
+                                            <th>Email</th>
+                                            <th>PhoneNo</th>
+                                            <th>Gender</th>
+                                            <th className='text-center'>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {teacher?.teachers?.content?.length > 0 ?
+                                            (
+                                                teacher?.teachers?.content?.map((teacher, index) =>
+                                                    <tr key={teacher.id}>
+                                                        <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                        <td>{teacher.employeeId}</td>
+                                                        <td>{teacher.departmentCode}</td>
+                                                        <td>{teacher.firstName}</td>
+                                                        <td>{teacher.lastName}</td>
+                                                        <td>{teacher.email}</td>
+                                                        <td>{teacher.phoneNumber}</td>
+                                                        <td>{teacher.gender}</td>
+                                                        <td className='text-center'>
+                                                            <button
+                                                                className="btn btn-sm custom-reset-btn me-2"
+                                                                onClick={() => handleViewProfile(teacher.id)}
+                                                            >
+                                                                <i class="bi bi-eye"></i>
+                                                            </button>
+                                                            <button onClick={() => handleDelete(teacher.id)}
+                                                                className="btn btn-sm custom-reset-btn me-2"
+                                                            >
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            )
+                                            :
+                                            (
+                                                <tr>
+                                                    <td colSpan="10" className="text-center">
+                                                        No Teacher Found
                                                     </td>
                                                 </tr>
                                             )
-                                        )
-                                        :
-                                        (
-                                            <tr>
-                                                <td colSpan="10" className="text-center">
-                                                    No Teacher Found
-                                                </td>
-                                            </tr>
-                                        )
-                                    }
-                                </tbody>
-                            </table>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
                             <div className="pagination-container">
                                 <div className="pagination-info">
                                     Total : <strong>{teacher?.teachers?.totalElements || 0}</strong>
@@ -345,7 +350,7 @@ const Teacher = () => {
                         </div>
                     </div>
                     :
-                    <div className="teachers-card">
+                    <div className="teachers-card teacher-modal">
                         <div className="modal-header">
                             <h5 className="modal-title">Add New Teacher</h5>
                             <button onClick={handleCancel} type="button" className="btn-close"></button>

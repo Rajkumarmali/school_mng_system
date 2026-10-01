@@ -107,56 +107,73 @@ const Attendance = () => {
                                         <h3>{student?.studentSubjects?.totalAbsent}</h3>
                                         <span>Total Absent</span>
                                     </div>
-                                    <div className="stat-card">
+                                    <div className="stat-card desktop-attendance-card">
                                         <h5>{((student?.studentSubjects?.totalPresent) / (student?.studentSubjects?.totalPresent + student?.studentSubjects?.totalAbsent) * 100).toFixed(2)}%</h5>
                                         <span>Attendance</span>
                                         <div className="progress" role="progressbar" aria-label="Success example" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
                                             <div className="progress-bar bg-success" style={{ width: `${((student?.studentSubjects?.totalPresent) / (student?.studentSubjects?.totalPresent + student?.studentSubjects?.totalAbsent) * 100)}%` }}></div>
                                         </div>
                                     </div>
+                                    <div className='stat-card mobile-attendance-card'>
+                                        <div
+                                            className="attendance-circle"
+                                            style={{
+                                                "--attendance": `${((student?.studentSubjects?.totalPresent) / (student?.studentSubjects?.totalPresent + student?.studentSubjects?.totalAbsent) * 100)}%`
+                                            }}
+                                        >
+                                            <div className="attendance-circle-inner">
+                                                <span>
+                                                    {((student?.studentSubjects?.totalPresent) / (student?.studentSubjects?.totalPresent + student?.studentSubjects?.totalAbsent) * 100).toFixed(2)}%
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <span>Attendance</span>
+                                    </div>
                                 </div>
-                                <table className="table student-attendances-table">
-                                    <thead>
-                                        <tr>
-                                            <th>S.No</th>
-                                            <th>Subject Code</th>
-                                            <th>Name</th>
-                                            <th>Subject Type</th>
-                                            <th>Attendance(P/A)</th>
-                                            <th>Attendance(%)</th>
-                                            <th className='text-center'>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            student?.studentSubjects?.subjectResponses?.content?.length > 0 ?
-                                                student?.studentSubjects?.subjectResponses?.content?.map((subject, index) =>
+                                <div className='table-wraper'>
+                                    <table className="table student-attendances-table">
+                                        <thead>
+                                            <tr>
+                                                <th>S.No</th>
+                                                <th>Subject Code</th>
+                                                <th>Name</th>
+                                                <th>Subject Type</th>
+                                                <th>Attendance(P/A)</th>
+                                                <th>Attendance(%)</th>
+                                                <th className='text-center'>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                student?.studentSubjects?.subjectResponses?.content?.length > 0 ?
+                                                    student?.studentSubjects?.subjectResponses?.content?.map((subject, index) =>
+                                                        <tr>
+                                                            <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                            <td>{subject?.code}</td>
+                                                            <td>{subject?.shortName}</td>
+                                                            <td>{subject?.subjectType}</td>
+                                                            <td>{subject?.totalPresent}P {subject?.totalAbsent}A</td>
+                                                            <td>{(((subject?.totalPresent) / (subject?.totalPresent + subject?.totalAbsent)) * 100).toFixed(2)}%</td>
+                                                            <td className='text-center'>
+                                                                <button
+                                                                    className="btn btn-sm custom-reset-btn me-2"
+                                                                    onClick={() => setSearchParams({ page: pageNumber, size: pageSize, studentSubjectId: subject.studentSubjectId })}
+                                                                >
+                                                                    <i class="bi bi-eye"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                    :
                                                     <tr>
-                                                        <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                                        <td>{subject?.code}</td>
-                                                        <td>{subject?.shortName}</td>
-                                                        <td>{subject?.subjectType}</td>
-                                                        <td>{subject?.totalPresent}P {subject?.totalAbsent}A</td>
-                                                        <td>{(((subject?.totalPresent) / (subject?.totalPresent + subject?.totalAbsent)) * 100).toFixed(2)}%</td>
-                                                        <td className='text-center'>
-                                                            <button
-                                                                className="btn btn-sm custom-reset-btn me-2"
-                                                                onClick={() => setSearchParams({ page: pageNumber, size: pageSize, studentSubjectId: subject.studentSubjectId })}
-                                                            >
-                                                                <i class="bi bi-eye"></i>
-                                                            </button>
+                                                        <td colSpan="8" className="text-center">
+                                                            Not Found
                                                         </td>
                                                     </tr>
-                                                )
-                                                :
-                                                <tr>
-                                                    <td colSpan="8" className="text-center">
-                                                        Not Found
-                                                    </td>
-                                                </tr>
-                                        }
-                                    </tbody>
-                                </table>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
                                 <div className="pagination-container">
                                     <div className="pagination-info">
                                         Total : <strong>{student?.studentSubjects?.subjectResponses?.totalElements || 0}</strong>

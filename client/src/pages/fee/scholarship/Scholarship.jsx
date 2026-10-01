@@ -130,7 +130,7 @@ const Scholarship = () => {
 
 
     return (
-        <div>
+        <div className='scholarship-container'>
             {
                 scholarshipId ?
                     <ScholarshipDetails />
@@ -155,6 +155,7 @@ const Scholarship = () => {
                                 }
                             </div>
                         </div>
+                        <div className='table-wraper'>
                         <table className="table scholarship-table">
                             <thead>
                                 <tr>
@@ -197,6 +198,7 @@ const Scholarship = () => {
                                 }
                             </tbody>
                         </table>
+                        </div>
                         <div className="pagination-container">
                             <div className="pagination-info">
                                 Total : <strong>{scholarship?.scholarships?.totalElements || 0}</strong>

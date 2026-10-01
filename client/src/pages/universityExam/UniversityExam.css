@@ -63,3 +63,25 @@
     vertical-align: middle;
     padding: 14px;
 }
+
+@media(max-width:480px){
+    .university-exam-container{
+        margin-left: 0;
+        padding: 70px 15px 20px;
+        background: #ffffff;
+    }
+    .universtiy-exam-header{
+        justify-content: normal;
+    }
+    .universtiy-exam-header h2{
+        display:none;
+    }
+    .add-universtiy-exam-btn{
+        color: #000000;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .universtiy-exam-card{
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+}

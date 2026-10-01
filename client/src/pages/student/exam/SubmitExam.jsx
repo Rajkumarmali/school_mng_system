@@ -1,17 +1,28 @@
 import React, { useEffect } from 'react'
 import './SubmitExam.css'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { getSubmitStudentExamDetails } from '../../../state/exam/Action'
+import { Capacitor } from '@capacitor/core'
 
 const SubmitExam = () => {
 
     const { studentExamId } = useParams()
 
+    const navigate = useNavigate();
+
     const dispatch = useDispatch()
     const exam = useSelector((state) => state.exam)
 
     const submitDetail = exam?.submitStudentExamDetail
+
+    const handleExitExam = () => {
+        if (Capacitor.isNativePlatform()) {
+            navigate('/student/exam')
+        } else {
+            window.close()
+        }
+    }
 
     useEffect(() => {
         dispatch(getSubmitStudentExamDetails(studentExamId))
@@ -26,7 +37,6 @@ const SubmitExam = () => {
 
     return (
         <div className="submit-exam-container">
-
             <div className="submit-exam-card">
                 <div className="submit-exam-icon">
                     <i className="bi bi-check-lg"></i>
@@ -74,7 +84,8 @@ const SubmitExam = () => {
                     </span>
                 </div>
                 <button className='exit-btn w-100'
-                    onClick={() => window.close()}
+
+                    onClick={() => handleExitExam()}
                 >
                     <i className="bi bi-box-arrow-right me-2"></i>
                     Exit Exam

@@ -1,9 +1,11 @@
 import { LOG_OUT, LOGIN_FAILER, LOGIN_REQUEST, LOGIN_SUCCESS, RESET_PASSWORD_FAILER, RESET_PASSWORD_REQUEST, RESET_PASSWORD_SUCCESS } from "./ActionType"
 
+const BASE_API = process.env.REACT_APP_BASE_URL + "/auth";
+
 export const login = (loginData) => async (dispatch) => {
     dispatch({ type: LOGIN_REQUEST })
     try {
-        const res = await fetch('http://localhost:8080/api/auth/login', {
+        const res = await fetch(`${BASE_API}/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -17,8 +19,13 @@ export const login = (loginData) => async (dispatch) => {
         const data = await res.json();
         localStorage.setItem("token", data.token)
         dispatch({ type: LOGIN_SUCCESS, payload: data.token })
+        return { success: true }
     } catch (err) {
         dispatch({ type: LOGIN_FAILER, payload: err.message })
+        return {
+            success: false,
+            error: err.message
+        };
     }
 }
 

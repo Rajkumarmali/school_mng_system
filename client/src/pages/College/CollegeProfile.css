@@ -29,7 +29,7 @@
     border: 1px solid rgba(255,255,255,0.25);
 }
 
-.college-header {
+.college-profile-header {
     display: flex;
     align-items: center;
     gap: 25px;
@@ -105,4 +105,33 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 18px;
     margin-top: 20px;
+}
+
+@media (max-width:480px) {
+    .college-profile{
+        margin-left: 0;
+        padding: 70px 15px 20px;
+        background: #ffffff
+    }
+    .college-nav-card{
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .college-navbar-items{
+        display: grid;
+        grid-template-columns: repeat(4, 1fr) !important;
+    }
+    .college-logo{
+        display:none;
+    }
+    .college-profile-header{
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .stats-container{
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important
+    }
+    .stat-card{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
 }

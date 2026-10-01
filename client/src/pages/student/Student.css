@@ -197,3 +197,25 @@
    background: transparent;
     color: white;
 }
+
+@media(max-width:480px){
+    .students-container{
+        margin-left: 0;
+        padding: 70px 15px 20px;
+        background: #ffffff;
+    }
+    .students-header{
+       justify-content: left;
+    }
+    .students-header h2{
+        display: none;
+    }
+    .add-students-btn{
+        color: #000000;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .students-card{
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    }
+}

@@ -87,24 +87,25 @@ const SectionDetails = () => {
                     </div>
                 </div>
             </div>
-            <div className="stats-container">
+            <div className="stats-container"
+            style={{margin:"10px 0 0 0"}}>
                 <div className="stat-card">
-                    <i className="bi bi-people-fill stat-icon"></i>
+                    <i className="bi bi-people-fill"></i>
                     <h3>{fee?.feeSection?.totalStudent}</h3>
                     <span>Total Student</span>
                 </div>
                 <div className="stat-card">
-                    <i className="bi bi-wallet2 stat-icon"></i>
+                    <i className="bi bi-wallet2"></i>
                     <h3>{fee?.feeSection?.totalFee}</h3>
                     <span>Total Fee</span>
                 </div>
                 <div className="stat-card">
-                    <i className="bi bi-cash-stack stat-icon"></i>
+                    <i className="bi bi-cash-stack"></i>
                     <h3>{fee?.feeSection?.collectedFee}</h3>
                     <span>Total Collection Amount</span>
                 </div>
                 <div className="stat-card">
-                    <i className="bi bi-hourglass-split stat-icon"></i>
+                    <i className="bi bi-hourglass-split"></i>
                     <h3>{fee?.feeSection?.totalPendingFee}</h3>
                     <span>Total Pending Fee</span>
                 </div>

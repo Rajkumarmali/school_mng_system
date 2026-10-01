@@ -127,48 +127,78 @@ const Attendance = () => {
                         <h3>{section?.studentSubjects?.totalAbsent}</h3>
                         <span>Total Absent</span>
                     </div>
-                    <div className="stat-card">
+                    <div className="stat-card desktop-attendance-card">
                         <h5>{((section?.studentSubjects?.totalPresent) / (section?.studentSubjects?.totalPresent + section?.studentSubjects?.totalAbsent) * 100).toFixed(2)}%</h5>
                         <span>Attendance</span>
                         <div className="progress" role="progressbar" aria-label="Success example" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
                             <div className="progress-bar bg-success" style={{ width: `${((section?.studentSubjects?.totalPresent) / (section?.studentSubjects?.totalPresent + section?.studentSubjects?.totalAbsent) * 100)}%` }}></div>
                         </div>
                     </div>
+                    <div className="stat-card mobile-attendance-card">
+                        <div
+                            className="attendance-circle"
+                            style={{
+                                "--attendance": `${((section?.studentSubjects?.totalPresent || 0) /
+                                    ((section?.studentSubjects?.totalPresent || 0) +
+                                        (section?.studentSubjects?.totalAbsent || 0))) *
+                                    100
+                                    }%`
+                            }}
+                        >
+                            <div className="attendance-circle-inner">
+                                <span>
+                                    {
+                                        (
+                                            ((section?.studentSubjects?.totalPresent || 0) /
+                                                ((section?.studentSubjects?.totalPresent || 0) +
+                                                    (section?.studentSubjects?.totalAbsent || 0))) *
+                                            100
+                                        ).toFixed(2)
+                                    }%
+                                </span>
+                            </div>
+                        </div>
+
+                        <span>Attendance</span>
+                    </div>
+
+                </div>
+                <div className='table-wraper'>
+                    <table className="table attendances-table">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Subject Code</th>
+                                <th>Name</th>
+                                <th>Subject Type</th>
+                                <th>Attendance(P/A)</th>
+                                <th>Attendance(%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                section?.studentSubjects?.subjectResponse?.content?.length > 0 ?
+                                    section?.studentSubjects?.subjectResponse?.content?.map((attendance, index) =>
+                                        <tr>
+                                            <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                            <td>{attendance?.code}</td>
+                                            <td>{attendance?.shortName}</td>
+                                            <td>{attendance?.subjectType}</td>
+                                            <td>{attendance?.totalPresent}P {" "} {attendance?.totalAbsent}A</td>
+                                            <td>{(((attendance?.totalPresent) / (attendance?.totalPresent + attendance?.totalAbsent)) * 100).toFixed(2)}%</td>
+                                        </tr>
+                                    )
+                                    :
+                                    <tr>
+                                        <td colSpan="10" className="text-center">
+                                            Not Found
+                                        </td>
+                                    </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
 
-                <table className="table attendances-table">
-                    <thead>
-                        <tr>
-                            <th>S.No</th>
-                            <th>Subject Code</th>
-                            <th>Name</th>
-                            <th>Subject Type</th>
-                            <th>Attendance(P/A)</th>
-                            <th>Attendance(%)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            section?.studentSubjects?.subjectResponse?.content?.length > 0 ?
-                                section?.studentSubjects?.subjectResponse?.content?.map((attendance, index) =>
-                                    <tr>
-                                        <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                        <td>{attendance?.code}</td>
-                                        <td>{attendance?.shortName}</td>
-                                        <td>{attendance?.subjectType}</td>
-                                        <td>{attendance?.totalPresent}P {" "} {attendance?.totalAbsent}A</td>
-                                        <td>{(((attendance?.totalPresent) / (attendance?.totalPresent + attendance?.totalAbsent)) * 100).toFixed(2)}%</td>
-                                    </tr>
-                                )
-                                :
-                                <tr>
-                                    <td colSpan="10" className="text-center">
-                                        Not Found
-                                    </td>
-                                </tr>
-                        }
-                    </tbody>
-                </table>
                 <div className="pagination-container">
                     <div className="pagination-info">
                         Total : <strong>{section?.studentSubjects?.subjectResponse?.totalElements || 0}</strong>

@@ -44,3 +44,17 @@
     align-items: center;
     gap: 12px;
 }
+
+@media(max-width:480px){
+    .back-section-student-detail-btn{
+        color: #000000;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .section-student-detail-card{
+        display: grid;
+        box-shadow: none;
+    }
+    .section-student-detail-info{
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    }
+}

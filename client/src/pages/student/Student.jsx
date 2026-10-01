@@ -269,7 +269,7 @@ const Student = () => {
                                                 )
                                                 : (
                                                     <tr>
-                                                        <td colSpan="8" className="text-center">
+                                                        <td colSpan="12" className="text-center">
                                                             No Student Found
                                                         </td>
                                                     </tr>

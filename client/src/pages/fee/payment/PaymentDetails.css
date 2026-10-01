@@ -99,7 +99,6 @@
 .payment-fee-grid i {
     width: 22px;
     font-size: 18px;
-    color: #3c58c9;
 }
 
 .payment-fee-grid span {
@@ -108,4 +107,26 @@
 
 .payment-fee-grid strong {
     margin-right: 4px;
+}
+
+@media(max-width:480px){
+    .back-payment-detail-btn{
+        color:#000000;
+        border:1px solid rgba(0,0,0,0.2);
+    }
+    .payment-profile-card{
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .payment-profile-info{
+        display: grid;
+        gap: 0px;
+    }
+    .payment-fee-info{
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .payment-fee-grid{
+        grid-template-columns: repeat(1, 1fr);
+    }
 }

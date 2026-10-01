@@ -206,3 +206,28 @@
     color: white;
 }
 
+@media (max-width:480px){
+    .teachers-container{
+        margin-left: 0;
+        padding: 70px 15px 20px;
+        background: #ffffff;
+    }
+    .teachers-header{
+        justify-content: flex-start;
+    }
+    .teachers-header h2{
+        display:none;
+    }
+    .add-teachers-btn{
+        color: #000000;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .teachers-card{
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .teacher-modal{
+        background: #4a4a4a;
+    }
+}
+

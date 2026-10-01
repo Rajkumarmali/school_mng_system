@@ -18,6 +18,10 @@
     color: #3c58c9;
 }
 
+.student-fee-sch-btn{
+  display: none;
+}
+
 .profile-card{
     margin-top: 6px;
     background: rgba(255, 255, 255, 0.08);
@@ -179,7 +183,6 @@
 .student-fee-grid i {
     width: 22px;
     font-size: 18px;
-    color: #3c58c9;
 }
 
 .student-fee-grid span {
@@ -190,3 +193,32 @@
     margin-right: 4px;
 }
 
+@media(max-width:480px){
+     .back-student-detail-btn{
+        color: #000000;
+        border: 1px solid rgba(0, 0, 0, 0.2);     
+    }
+    .student-detail-header div{
+        display:none !important;
+    }
+    .student-fee-sch-btn{
+        display: flex;
+        margin-top: 10px;
+    }
+    .profile-card{
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .student-profile-info{
+        gap:0px;
+    }
+    .student-fee-info{
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .student-fee-grid{
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+}

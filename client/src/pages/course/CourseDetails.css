@@ -24,12 +24,24 @@
     display:flex;
     flex: 1;
 }
-.course-details-contact {
-   
-}
+
 .course-details-contact div {
     margin-bottom: 12px;
     display: flex;
     align-items: center;
     gap: 12px;
+}
+
+@media (max-width:480px){
+    .course-nav-card{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        box-shadow: none
+    }
+    .navbar-nav{
+        grid-template-columns: repeat(4, 1fr) !important;
+        white-space: nowrap;
+    }
+    .course-details-contact div{
+        align-items: flex-start;
+    }
 }

@@ -151,7 +151,7 @@ const SubjectDetails = () => {
                                     </div>
                                     <div>
                                         <i className="bi bi-person-fill me-2 "></i>
-                                        <span>Name : {section?.sectionSubject?.teacherResponse?.name} </span>
+                                        <span>Name : {section?.sectionSubject?.teacherResponse?.firstName} {section?.sectionSubject?.teacherResponse?.lastName}</span>
                                     </div>
                                     <div>
                                         <i className="bi bi-envelope-fill me-2"></i>

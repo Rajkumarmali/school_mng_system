@@ -1,0 +1,10 @@
+.mobile-ui{
+  display:none
+}
+
+@media(max-width:480px){
+
+    .desktop-sidebar{
+       display:none
+    }
+}

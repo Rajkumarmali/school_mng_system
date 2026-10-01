@@ -116,52 +116,54 @@ const Student = () => {
                                 <span>Total Pending</span>
                             </div>
                         </div>
-                        <table className="table universtiy-exam-student-table">
-                            <thead>
-                                <tr>
-                                    <th>S.No</th>
-                                    <th>EnorllmentNo.</th>
-                                    <th>RollNo.</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>PhoneNo.</th>
-                                    <th>Form status</th>
-                                    <th>Submitted Date</th>
-                                    <th className='text-center'>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    universityExam?.studentUniversityExamsByUniversityExamId?.content?.length > 0 ?
-                                        universityExam?.studentUniversityExamsByUniversityExamId?.content?.map((student, index) =>
+                        <div className='table-wraper'>
+                            <table className="table universtiy-exam-student-table">
+                                <thead>
+                                    <tr>
+                                        <th>S.No</th>
+                                        <th>EnorllmentNo.</th>
+                                        <th>RollNo.</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>PhoneNo.</th>
+                                        <th>Form status</th>
+                                        <th>Submitted Date</th>
+                                        <th className='text-center'>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        universityExam?.studentUniversityExamsByUniversityExamId?.content?.length > 0 ?
+                                            universityExam?.studentUniversityExamsByUniversityExamId?.content?.map((student, index) =>
+                                                <tr>
+                                                    <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                    <td>{student?.studentResponse?.enrollmentNumber}</td>
+                                                    <td>{student?.studentResponse?.rollNumber}</td>
+                                                    <td>{student?.studentResponse?.firstName} {student?.studentResponse?.lastName}</td>
+                                                    <td>{student?.studentResponse?.email}</td>
+                                                    <td>{student?.studentResponse?.phoneNumber}</td>
+                                                    <td>{student?.filledFrom ? "FILLED" : "PENDING"}</td>
+                                                    <td>{student?.submittedAt ? new Date(student?.submittedAt)?.toLocaleDateString("en-GB") : "-"}</td>
+                                                    <td>
+                                                        <button
+                                                            className="btn btn-sm custom-reset-btn me-2"
+                                                            onClick={() => setSearchParams({ universityExamId, tab, page: pageNumber, size: pageSize, studentExamId: student.id })}
+                                                        >
+                                                            <i class="bi bi-eye"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            )
+                                            :
                                             <tr>
-                                                <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                                <td>{student?.studentResponse?.enrollmentNumber}</td>
-                                                <td>{student?.studentResponse?.rollNumber}</td>
-                                                <td>{student?.studentResponse?.firstName} {student?.studentResponse?.lastName}</td>
-                                                <td>{student?.studentResponse?.email}</td>
-                                                <td>{student?.studentResponse?.phoneNumber}</td>
-                                                <td>{student?.filledFrom ? "FILLED" : "PENDING"}</td>
-                                                <td>{student?.submittedAt ? new Date(student?.submittedAt)?.toLocaleDateString("en-GB") : "-"}</td>
-                                                <td>
-                                                    <button
-                                                        className="btn btn-sm custom-reset-btn me-2"
-                                                        onClick={() => setSearchParams({ universityExamId, tab, page: pageNumber, size: pageSize, studentExamId: student.id })}
-                                                    >
-                                                        <i class="bi bi-eye"></i>
-                                                    </button>
+                                                <td colSpan="10" className="text-center">
+                                                    No Exam Found
                                                 </td>
                                             </tr>
-                                        )
-                                        :
-                                        <tr>
-                                            <td colSpan="10" className="text-center">
-                                                No Exam Found
-                                            </td>
-                                        </tr>
-                                }
-                            </tbody>
-                        </table>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                         <div className="pagination-container">
                             <div className="pagination-info">
                                 Total : <strong>{universityExam?.studentUniversityExamsByUniversityExamId?.totalElements || 0}</strong>

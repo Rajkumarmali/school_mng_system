@@ -158,7 +158,7 @@ const FeeStructure = () => {
     }, [fee?.feeTypes, feeStructureData.feeTypeId]);
 
     return (
-        <div>
+        <div className='fee-structure-container'>
             {
                 !id ?
                     <div>
@@ -179,66 +179,68 @@ const FeeStructure = () => {
                                 </button>
                             }
                         </div>
-                        <table className="table fee-structure-table">
-                            <thead>
-                                <tr>
-                                    <th>S.No</th>
-                                    <th>FeeTypeName</th>
-                                    <th>Department</th>
-                                    <th>Section</th>
-                                    <th>AcademicYear</th>
-                                    <th>Amount</th>
-                                    <th>DueDate</th>
-                                    <th>Status</th>
-                                    <th>Scholarship</th>
-                                    <th className='text-center'>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    fee?.feeStructures?.content?.length > 0 ?
-                                        fee?.feeStructures?.content?.map((fee, index) =>
-                                            <tr>
-                                                <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                                <td>{fee.feeTypeName}</td>
-                                                <td>{fee.departmentCode}</td>
-                                                <td>{fee.sectionCode}</td>
-                                                <td>{fee.academicYear}</td>
-                                                <td>{fee.amount}</td>
-                                                <td> {
-                                                    fee.dueDate &&
-                                                    new Date(fee.dueDate).toLocaleDateString("en-GB").replace(/\//g, "-")
-                                                }</td>
-                                                <td>{fee.status}</td>
-                                                <td>{fee.applyScholarship ? "Yes" : "No"}</td>
-                                                <td className='text-center'>
-                                                    <button
-                                                        className="btn btn-sm custom-reset-btn me-2"
-                                                        onClick={() => handleViewFeeStructureDetails(fee.id)}
-                                                    >
-                                                        <i className="bi bi-eye"></i>
-                                                    </button>
-                                                    {
-                                                        isAccountant &&
+                        <div className='table-wraper'>
+                            <table className="table fee-structure-table">
+                                <thead>
+                                    <tr>
+                                        <th>S.No</th>
+                                        <th>FeeTypeName</th>
+                                        <th>Department</th>
+                                        <th>Section</th>
+                                        <th>AcademicYear</th>
+                                        <th>Amount</th>
+                                        <th>DueDate</th>
+                                        <th>Status</th>
+                                        <th>Scholarship</th>
+                                        <th className='text-center'>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        fee?.feeStructures?.content?.length > 0 ?
+                                            fee?.feeStructures?.content?.map((fee, index) =>
+                                                <tr>
+                                                    <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                    <td>{fee.feeTypeName}</td>
+                                                    <td>{fee.departmentCode ? fee.departmentCode : "-"}</td>
+                                                    <td>{fee.sectionCode}</td>
+                                                    <td>{fee.academicYear}</td>
+                                                    <td>{fee.amount}</td>
+                                                    <td> {
+                                                        fee.dueDate &&
+                                                        new Date(fee.dueDate).toLocaleDateString("en-GB").replace(/\//g, "-")
+                                                    }</td>
+                                                    <td>{fee.status}</td>
+                                                    <td>{fee.applyScholarship ? "Yes" : "No"}</td>
+                                                    <td className='text-center'>
                                                         <button
                                                             className="btn btn-sm custom-reset-btn me-2"
-                                                            onClick={() => handleDeleteFeeStructure(fee.id)}
+                                                            onClick={() => handleViewFeeStructureDetails(fee.id)}
                                                         >
-                                                            <i class="bi bi-trash"></i>
+                                                            <i className="bi bi-eye"></i>
                                                         </button>
-                                                    }
+                                                        {
+                                                            isAccountant &&
+                                                            <button
+                                                                className="btn btn-sm custom-reset-btn me-2"
+                                                                onClick={() => handleDeleteFeeStructure(fee.id)}
+                                                            >
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            )
+                                            :
+                                            <tr>
+                                                <td colSpan="10" className="text-center">
+                                                    No Fee Structure Found
                                                 </td>
                                             </tr>
-                                        )
-                                        :
-                                        <tr>
-                                            <td colSpan="10" className="text-center">
-                                                No Fee Structure Found
-                                            </td>
-                                        </tr>
-                                }
-                            </tbody>
-                        </table>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                         <div className="pagination-container">
                             <div className="pagination-info">
                                 Total : <strong>{fee?.feeStructures?.totalElements || 0}</strong>

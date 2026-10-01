@@ -105,3 +105,28 @@
     font-size: 24px;
     padding: 0 5px;
 }
+
+@media(max-width:480px){
+    .teacher-classes-container{
+        margin-left: 0;
+        padding: 70px 15px 20px;
+        background: #ffffff;
+    }
+    .teacher-classes-card{
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .teacher-class-nav-card{
+        box-shadow: none !important;
+        border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    }
+    .teacher-class-detail-card{
+        border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    }
+    .teacher-class-detail-header{
+        display: grid !important;
+    }
+    .teacher-class-detail-info{
+        border-bottom:1px solid rgba(0,0,0,.2)
+    }
+}

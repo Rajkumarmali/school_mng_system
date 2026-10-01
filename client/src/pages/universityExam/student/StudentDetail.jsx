@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import { getStudentUniversityExamById, updateStudentUniversityExamCenter } from '../../../state/universityExam/Action';
 
+const REACT_APP_IMAGE_URL = process.env.REACT_APP_IMAGE_URL;
+
 const StudentDetail = () => {
 
     const dispatch = useDispatch();
@@ -142,7 +144,7 @@ const StudentDetail = () => {
                         {universityExam?.studentUniversityExam?.studentResponse?.photo ? (
                             <img
                                 src={
-                                    `http://localhost:8080/${universityExam.studentUniversityExam
+                                    `${REACT_APP_IMAGE_URL}/${universityExam.studentUniversityExam
                                         .studentResponse.photo}`
                                 }
                                 alt="Student"

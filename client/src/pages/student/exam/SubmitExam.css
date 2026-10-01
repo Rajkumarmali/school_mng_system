@@ -123,3 +123,31 @@
     background: transparent;
     color: #3c58c9;
 }
+
+@media(max-width:480px){
+    .submit-exam-container{
+        background: none;
+        padding: 0px;
+    }
+    .submit-exam-card{
+        box-shadow: none;
+    }
+    .submit-exam-icon{
+        display:none;
+    }
+    .submit-exam-header{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        padding: 10px;
+        border-radius: 8px;
+    }
+    .submit-exam-body{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .submit-exam-message{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .exit-btn{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+    }
+}

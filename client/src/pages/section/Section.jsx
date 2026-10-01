@@ -33,6 +33,7 @@ const Section = () => {
         setSectionData({
             name: "",
             academicYear: "",
+            year: "",
             semester: "",
             employeeEmailOrEmployeeId: ""
         })
@@ -160,71 +161,73 @@ const Section = () => {
                             }
                         </div>
                         <div className="sections-card">
-                            <table className="table sections-table">
-                                <thead>
-                                    <tr>
-                                        <th>S No.</th>
-                                        <th>Code</th>
-                                        <th>Name</th>
-                                        <th>Year</th>
-                                        <th>Semester</th>
-                                        <th>academic Year</th>
-                                        <th>departmentCode</th>
-                                        <th>Status</th>
-                                        <th>Class Teacher</th>
-                                        <th className="text-center">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        (
-                                            (isAdmin && section?.sections?.content?.length === 0) ||
-                                            (!isAdmin && section?.departmentsSections?.content?.length === 0)
-                                        ) ?
+                            <div className='table-wraper'>
+                                <table className="table sections-table">
+                                    <thead>
+                                        <tr>
+                                            <th>S No.</th>
+                                            <th>Code</th>
+                                            <th>Name</th>
+                                            <th>Year</th>
+                                            <th>Semester</th>
+                                            <th>academic Year</th>
+                                            <th>departmentCode</th>
+                                            <th>Status</th>
+                                            <th>Class Teacher</th>
+                                            <th className="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
                                             (
-                                                <tr>
-                                                    <td colSpan="10" className="text-center">
-                                                        No Section Found
-                                                    </td>
-                                                </tr>
-                                            )
-                                            :
-                                            (
-                                                isAdmin ? section?.sections?.content
-                                                    : section?.departmentsSections?.content
-                                            )?.map((section, index) =>
-                                                <tr key={section.id}>
-                                                    <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                                    <td>{section.code}</td>
-                                                    <td>{section.name}</td>
-                                                    <td>{section.year} Year</td>{
-                                                        section.semester ?
-                                                            <td>{section.semester} Sem</td>
-                                                            :
-                                                            <td>-</td>
-                                                    }
+                                                (isAdmin && section?.sections?.content?.length === 0) ||
+                                                (!isAdmin && section?.departmentsSections?.content?.length === 0)
+                                            ) ?
+                                                (
+                                                    <tr>
+                                                        <td colSpan="10" className="text-center">
+                                                            No Section Found
+                                                        </td>
+                                                    </tr>
+                                                )
+                                                :
+                                                (
+                                                    isAdmin ? section?.sections?.content
+                                                        : section?.departmentsSections?.content
+                                                )?.map((section, index) =>
+                                                    <tr key={section.id}>
+                                                        <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                        <td>{section.code}</td>
+                                                        <td>{section.name}</td>
+                                                        <td>{section.year} Year</td>{
+                                                            section.semester ?
+                                                                <td>{section.semester} Sem</td>
+                                                                :
+                                                                <td>-</td>
+                                                        }
 
-                                                    <td>{section.academicYear}</td>
-                                                    <td>{section.departmentCode}</td>
-                                                    <td>{section.sectionStatus}</td>
-                                                    <td>{section.classTeacherResponse?.firstName} {section.classTeacherResponse?.lastName}</td>
-                                                    <td className="text-center">
-                                                        <button
-                                                            onClick={() => handleViewSectionDetails(section.id)}
-                                                            className="btn btn-sm custom-action-btn me-2">
-                                                            <i class="bi bi-eye"></i>
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handleDelete(section.id)}
-                                                            className="btn btn-sm custom-action-btn me-2">
-                                                            <i class="bi bi-trash"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            )
-                                    }
-                                </tbody>
-                            </table>
+                                                        <td>{section.academicYear}</td>
+                                                        <td>{section.departmentCode}</td>
+                                                        <td>{section.sectionStatus}</td>
+                                                        <td>{section.classTeacherResponse?.firstName} {section.classTeacherResponse?.lastName}</td>
+                                                        <td className="text-center">
+                                                            <button
+                                                                onClick={() => handleViewSectionDetails(section.id)}
+                                                                className="btn btn-sm custom-action-btn me-2">
+                                                                <i class="bi bi-eye"></i>
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleDelete(section.id)}
+                                                                className="btn btn-sm custom-action-btn me-2">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
                             <div className="pagination-container">
                                 <div className="pagination-info">
                                     Total :

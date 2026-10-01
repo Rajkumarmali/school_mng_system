@@ -190,9 +190,11 @@ public class CourseServiceImp implements CourseService {
            res.setName(dep.getName());
            if(dep.getCollege()!=null)
             res.setCollegeName(dep.getCollege().getShortName());
-           res.setHodName(dep.getHodTeacher().getFirstName()+" "+dep.getHodTeacher().getLastName());
-           res.setHodEmail(dep.getHodTeacher().getEmail());
-           res.setHodPhoneNumber(dep.getHodTeacher().getPhoneNumber());
+           if(dep.getHodTeacher()!=null){
+               res.setHodName(dep.getHodTeacher().getFirstName()+" "+dep.getHodTeacher().getLastName());
+               res.setHodEmail(dep.getHodTeacher().getEmail());
+               res.setHodPhoneNumber(dep.getHodTeacher().getPhoneNumber());
+           }
            return  res;
         });
 

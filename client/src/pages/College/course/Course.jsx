@@ -114,7 +114,8 @@ const Course = () => {
                     Add New Course
                 </button>
             </div>
-            <table className="table course-table">
+            <div className='table-wraper'>
+<table className="table course-table">
                 <thead>
                     <tr>
                         <th>S.No</th>
@@ -132,7 +133,7 @@ const Course = () => {
                                     <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
                                     <td>{course.courseCode}</td>
                                     <td>{course.shortName}</td>
-                                    <td>{course.duration}</td>
+                                    <td>{course.duration} Year</td>
                                     <td className='text-center'>
                                         <button
                                             className="btn btn-sm custom-reset-btn me-2"
@@ -151,6 +152,7 @@ const Course = () => {
                     }
                 </tbody>
             </table>
+            </div>
             <div className="pagination-container">
                 <div className="pagination-info">
                     Total :<strong>{college?.collegeCourses?.totalElements || 0}</strong>

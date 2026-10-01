@@ -102,7 +102,7 @@ const CollegeProfile = () => {
     return (
         <div className="college-profile">
             <nav className="college-nav-card navbar-expand-lg ">
-                <ul className="navbar-nav me-auto mb-2 mb-lg-0 gap-3">
+                <ul className="navbar-nav college-navbar-items me-auto mb-2 mb-lg-0 gap-3">
                     <li className="nav-item">
                         <button
                             className="nav-link"
@@ -151,7 +151,7 @@ const CollegeProfile = () => {
                             </div>
                             :
                             <div>
-                                <div className="college-header">
+                                <div className="college-profile-header">
                                     <div className="college-logo">
                                         <i className="bi bi-building"></i>
                                     </div>

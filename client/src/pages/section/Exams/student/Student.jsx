@@ -109,41 +109,43 @@ const Student = () => {
 
     return (
         <div>
-            <table className="table section-exam-student-table">
-                <thead>
-                    <tr>
-                        <th>S No.</th>
-                        <th>RollNo.</th>
-                        <th>Registration No.</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Status</th>
-                        <th>ObtainMarks</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        exam?.studentExams?.content?.length > 0 ?
-                            exam?.studentExams?.content?.map((stu, index) =>
+            <div className='table-wraper'>
+                <table className="table section-exam-student-table">
+                    <thead>
+                        <tr>
+                            <th>S No.</th>
+                            <th>RollNo.</th>
+                            <th>Registration No.</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>ObtainMarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            exam?.studentExams?.content?.length > 0 ?
+                                exam?.studentExams?.content?.map((stu, index) =>
+                                    <tr>
+                                        <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                        <td>{stu?.studentResponse?.rollNumber}</td>
+                                        <td>{stu?.studentResponse?.registrationNumber}</td>
+                                        <td>{stu?.studentResponse?.firstName} {stu?.studentResponse?.lastName}</td>
+                                        <td>{stu?.studentResponse?.email}</td>
+                                        <td>{stu?.status}</td>
+                                        <td>{(stu?.obtainMarks)?.toFixed(2)}</td>
+                                    </tr>
+                                )
+                                :
                                 <tr>
-                                    <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                    <td>{stu?.studentResponse?.rollNumber}</td>
-                                    <td>{stu?.studentResponse?.registrationNumber}</td>
-                                    <td>{stu?.studentResponse?.firstName} {stu?.studentResponse?.lastName}</td>
-                                    <td>{stu?.studentResponse?.email}</td>
-                                    <td>{stu?.status}</td>
-                                    <td>{(stu?.obtainMarks)?.toFixed(2)}</td>
+                                    <td colSpan="9" className="text-center">
+                                        Not Found
+                                    </td>
                                 </tr>
-                            )
-                            :
-                            <tr>
-                                <td colSpan="9" className="text-center">
-                                    Not Found
-                                </td>
-                            </tr>
-                    }
-                </tbody>
-            </table>
+                        }
+                    </tbody>
+                </table>
+            </div>
             <div className="pagination-container">
                 <div className="pagination-info">
                     Total : <strong>{exam?.studentExams?.totalElements || 0}</strong>

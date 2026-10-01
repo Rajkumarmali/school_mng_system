@@ -116,7 +116,7 @@ public class UserServicesImp implements UserServices {
             studentResponse.setGender(student.getGender());
             studentResponse.setRegistrationNumber(student.getRegistrationNumber());
             studentResponse.setCast(student.getCast());
-            studentResponse.setAadharNumber(student.getAadhaarNumber());
+            studentResponse.setAadhaarNumber(student.getAadhaarNumber());
             studentResponse.setAddressResponse(addressResponse);
             studentResponse.setParentResponse(parentResponse);
             response.setStudentResponse(studentResponse);

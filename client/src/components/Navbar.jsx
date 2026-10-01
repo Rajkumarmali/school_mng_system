@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loogOut, resetPassword } from "../state/auth/Action";
 import { userProfile } from "../state/user/Action";
 import { getNotificationCount } from "../state/notification/Action";
+const BASE_IMAGE_URL = process.env.REACT_APP_IMAGE_URL
 
 const Navbar = ({ toggleSidebar }) => {
 
@@ -15,7 +16,7 @@ const Navbar = ({ toggleSidebar }) => {
         confirmPassword: ''
     })
 
-    const navigete = useNavigate();
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const user = useSelector((state) => state.user)
@@ -23,7 +24,7 @@ const Navbar = ({ toggleSidebar }) => {
 
     const handleLogout = () => {
         dispatch(loogOut())
-        navigete('/')
+        navigate('/')
     }
 
     const handleChange = (e) => {
@@ -53,15 +54,13 @@ const Navbar = ({ toggleSidebar }) => {
     }
 
     const handleViewNotification = () => {
-        navigete('/notification')
+        navigate('/notification')
     }
 
     useEffect(() => {
         dispatch(userProfile())
         dispatch(getNotificationCount())
     }, [dispatch]);
-
-
 
     return (
         <div>
@@ -74,7 +73,10 @@ const Navbar = ({ toggleSidebar }) => {
                         <i className="bi bi-list"></i>
                     </button>
                     <h5 className="mb-0 fw-bold ms-3">
-                        Home
+                        <span className='home-text'>Home</span>
+                        <button className="home-icon" onClick={() => navigate('/mobile')}>
+                            <i className="bi bi-house-fill "></i>
+                        </button>
                     </h5>
                     <div className="ms-auto d-flex align-items-center gap-3">
                         <button className="icon-btn"
@@ -94,7 +96,7 @@ const Navbar = ({ toggleSidebar }) => {
                                 {
                                     user?.user?.userImage ?
                                         <img
-                                            src={`http://localhost:8080/${user?.user?.userImage}`}
+                                            src={`${BASE_IMAGE_URL}/${user?.user?.userImage}`}
                                             alt="profile"
                                             className="profile-img"
                                         />

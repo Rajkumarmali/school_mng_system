@@ -180,3 +180,14 @@
    background: transparent;
     color: white;
 }
+
+@media(max-width:480px){
+    .users-container{
+        margin-left: 0;
+        padding: 70px 15px 20px;
+        background: #ffffff;
+    }
+    .users-card{
+        border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    }
+}

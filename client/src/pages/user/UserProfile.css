@@ -122,6 +122,9 @@
     color: #3c58c9;
 }
 
+.mobile-edit-btn{
+    display:none;
+}
 .profile-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -181,3 +184,80 @@
    background: transparent;
     color: white;
 }
+
+@media (max-width:480px){
+    .profile{
+       margin: 50px 0px;
+       padding: 0;
+       background: #ffffff;
+    }
+
+    .users-card{
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    .profile-header{
+        display: grid;
+        padding: 0px;
+        justify-items: center;
+    }
+
+    .user-profile-avatar{
+        border-radius: 50%;
+        overflow: hidden;
+       
+    }
+
+    .user-edit-image-btn{
+      display: none;
+    }
+    .edit-btn{
+        display:none;
+    }
+    .mobile-edit-btn{
+        display: flex;
+        gap: 15px;
+    }
+
+    .mobile-edit-btn button{
+       border-radius: 20px;
+       background: #ffffff;
+       border: 1px solid rgba(0, 0, 0, 0.2) !important;
+       padding: 8px 16px;
+    }
+
+    .profile-contact div{
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-radius: 20px;
+        background: #ffffff;
+        border: none;
+        padding: 8px 16px;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .user-profile-body{
+        padding: 0
+    }
+
+    .simple-section{
+        border-radius: 20px;
+        background: #ffffff;
+        border: none;
+        padding: 8px 16px;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        margin-bottom: 30px;
+    }
+
+    .custom-modal{
+        background: #4a4a4a !important;
+        color: #000000 !important
+    }
+
+}
+

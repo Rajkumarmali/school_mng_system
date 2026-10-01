@@ -16,6 +16,7 @@ const OnGoingExamQuestion = () => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [timeLeft, setTimeLeft] = useState(60);
     const [studentAnswer, setStudentAnswer] = useState("")
+    const [showExamSidebarPanel, setShowExamSidebarPanel] = useState(false)
 
     const navigate = useNavigate()
 
@@ -211,9 +212,12 @@ const OnGoingExamQuestion = () => {
                                 <span className="exam-code">{exam?.userStudentExam?.examResponse?.subjectResponse?.code} | {exam?.userStudentExam?.examResponse?.subjectResponse?.subjectType}</span>
                             </div>
                             <div className="exam-timer-wrapper">
-                                <i className="bi bi-clock-history me-2"></i>
-                                <span>Time Remaining: </span>
-                                <strong className="timer-text">{formatTime(timeLeft)}</strong>
+                                <div>
+                                    <i className="bi bi-clock-history me-2"></i>
+                                    <span>Time Remaining: </span>
+                                    <strong className="timer-text">{formatTime(timeLeft)}</strong>
+                                </div>
+
                             </div>
                         </header>
 
@@ -234,6 +238,13 @@ const OnGoingExamQuestion = () => {
 
                                 <div className="question-text">
                                     <p>{currentQuestion?.question}</p>
+                                    <div
+                                        style={{ display: showExamSidebarPanel ? "none" : "block" }}
+                                        className='sidebar-toggle-btn'
+                                        onClick={() => setShowExamSidebarPanel(true)}
+                                    >
+                                        <i className='bi bi-list'></i>
+                                    </div>
                                 </div>
                                 {
                                     currentQuestion?.type === "NUMERICAL" &&
@@ -257,7 +268,9 @@ const OnGoingExamQuestion = () => {
                                             >
                                                 Clear
                                             </button>
-                                            <button>
+                                            <button
+                                                onClick={() => handleKeyPress(0)}
+                                            >
                                                 0
                                             </button>
                                             <button
@@ -336,8 +349,15 @@ const OnGoingExamQuestion = () => {
                                 </div>
                             </main>
 
-                            <aside className="exam-sidebar-panel">
-                                <h4>Question Palette</h4>
+                            <aside className={`exam-sidebar-panel ${showExamSidebarPanel ? "exam-sidebar-panel-show" : "exam-sidebar-panel-notshow"}`}>
+                                <div style={{
+                                    display: "flex",
+                                    justifyContent: "space-between"
+                                }}>
+                                    <h4>Question Palette</h4>
+                                    <i className="bi bi-x-lg" onClick={() => setShowExamSidebarPanel(false)}></i>
+                                </div>
+
                                 <div className="status-legend">
                                     <div className="legend-item"><span className="legend-box status-answered"></span> Answered</div>
                                     <div className="legend-item"><span className="legend-box status-unanswered"></span> Not Answered</div>

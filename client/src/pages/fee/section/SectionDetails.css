@@ -48,3 +48,25 @@
     align-items: center;
     gap: 12px;
 }
+
+@media(max-width:480px){
+    .back-fee-section-detail-btn{
+        color: #000000;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .fee-section-detail-card{
+        box-shadow: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 0px;
+    }
+    .fee-section-detail-header{
+
+    }
+    .fee-section-detail-info{
+       display: grid;
+       gap:0px;
+    }
+    .fee-section-detail-contact{
+        margin-top: 0px;
+    }
+}

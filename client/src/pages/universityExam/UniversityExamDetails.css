@@ -49,6 +49,9 @@
     cursor: pointer;
     transition: 0.3s
 }
+.university-mobile-exam-edit-btn{
+    display:none;
+}
 .university-exam-edit-btn:hover{
    transform:scale(1.1);
 }
@@ -64,3 +67,36 @@
     min-width: 250px;
 }
 
+@media(max-width:480px){
+    .university-exam-detail-nav-card{
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+   .university-exam-detail-nav-card  ul{
+        grid-template-columns: repeat(4, 1fr) !important;
+    }
+    .exam-detail-card{
+        box-shadow: none;
+        padding: 6px;
+        border:1px solid rgba(0, 0, 0, 0.2);
+    }
+    .university-exam-action-card{
+        box-shadow: none;
+        padding: 6px;
+    }
+    .university-exam-action-btn{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .university-exam-edit-btn{
+        display:none;
+    }
+    .university-mobile-exam-edit-btn{
+        display: block;
+        background: none;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+    }
+    .exam-detail-card div{
+        flex-wrap: nowrap;
+    }
+}

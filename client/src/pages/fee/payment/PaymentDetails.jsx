@@ -112,39 +112,39 @@ const PaymentDetails = () => {
 
                 <div className="payment-fee-grid">
                     <div>
-                        <i className="bi bi-cash-stack"></i>
+                        <i className="bi bi-cash-stack me-2"></i>
                         <span>
                             <strong>Fee Type :</strong> {fee?.payment?.feeTypename}
                         </span>
                     </div>
                     <div>
-                        <i className="bi bi-credit-card-fill"></i>
+                        <i className="bi bi-credit-card-fill me-2"></i>
                         <span>
                             <strong>Payment Mode :</strong>{" "}
                             {fee?.payment?.feePaymentResponse?.paymentMode || "-"}
                         </span>
                     </div>
                     <div>
-                        <i className="bi bi-currency-rupee"></i>
+                        <i className="bi bi-currency-rupee me-2"></i>
                         <span>
                             <strong>Amount :</strong> ₹ {fee?.payment?.feePaymentResponse?.amount}
                         </span>
                     </div>
                     <div>
-                        <i className="bi bi-receipt-cutoff"></i>
+                        <i className="bi bi-receipt-cutoff me-2"></i>
                         <span>
                             <strong>Receipt No :</strong>{" "}
                             {fee?.payment?.feePaymentResponse?.receiptNumber || "-"}
                         </span>
                     </div>
                     <div>
-                        <i className="bi bi-calendar-event-fill"></i>
+                        <i className="bi bi-calendar-event-fill me-2"></i>
                         <span>
                             <strong>Academic Year :</strong> {fee?.payment?.academicYear}
                         </span>
                     </div>
                     <div>
-                        <i className="bi bi-upc-scan"></i>
+                        <i className="bi bi-upc-scan me-2"></i>
                         <span>
                             <strong>Transaction Id :</strong>{" "}
                             {fee?.payment?.feePaymentResponse?.transactionId || "-"}
@@ -153,14 +153,14 @@ const PaymentDetails = () => {
                     <div>
                         <i
                             className=
-                            "bi bi-patch-check-fill text-success"
+                            "bi bi-patch-check-fill me-1"
                         ></i>
                         <span>
                             <strong>Status :</strong> PAID
                         </span>
                     </div>
                     <div>
-                        <i className="bi bi-clock-history"></i>
+                        <i className="bi bi-clock-history me-2"></i>
                         <span>
                             <strong>Payment Date :</strong>{" "}
                             {fee?.payment?.feePaymentResponse?.paymentDataAndTime

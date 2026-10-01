@@ -169,74 +169,76 @@ const Student = () => {
                                 </div>
                             </div>
                         </div>
-                        <table className="table students-table">
-                            <thead>
-                                <tr>
-                                    <th>S.No</th>
-                                    <th>Roll No.</th>
-                                    <th>Registration No</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>PhoneNumber</th>
-                                    <th>Attendance</th>
-                                    <th className='text-center'>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    teacher?.sectionSubjectStudents?.content?.length > 0 ?
-                                        teacher?.sectionSubjectStudents?.content?.map((student, index) =>
-                                            <tr key={student.id}>
-                                                <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                                <td>{student?.studentResponse?.rollNumber}</td>
-                                                <td>{student?.studentResponse?.registrationNumber}</td>
-                                                <td>{student?.studentResponse?.firstName} {student?.studentResponse?.lastName}</td>
-                                                <td>{student?.studentResponse?.email}</td>
-                                                <td>{student?.studentResponse?.phoneNumber}</td>
-                                                <td>
-                                                    <button
-                                                        className={`btn btn-sm custom-reset-btn me-2 ${student.attendance === "PRESENT"
-                                                            ? "attendance-present"
-                                                            : ""
-                                                            }`}
-                                                        disabled={student?.attendance === "PRESENT"}
-                                                        onClick={() => handleMarkStudentAttendance(student.id, "PRESENT")}
-                                                    >
-                                                        <i className="bi bi-check-lg me-1"></i>
-                                                        P
-                                                    </button>
+                        <div className='table-wraper'>
+                            <table className="table students-table">
+                                <thead>
+                                    <tr>
+                                        <th>S.No</th>
+                                        <th>Roll No.</th>
+                                        <th>Registration No</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>PhoneNumber</th>
+                                        <th>Attendance</th>
+                                        <th className='text-center'>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        teacher?.sectionSubjectStudents?.content?.length > 0 ?
+                                            teacher?.sectionSubjectStudents?.content?.map((student, index) =>
+                                                <tr key={student.id}>
+                                                    <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                    <td>{student?.studentResponse?.rollNumber}</td>
+                                                    <td>{student?.studentResponse?.registrationNumber}</td>
+                                                    <td>{student?.studentResponse?.firstName} {student?.studentResponse?.lastName}</td>
+                                                    <td>{student?.studentResponse?.email}</td>
+                                                    <td>{student?.studentResponse?.phoneNumber}</td>
+                                                    <td>
+                                                        <button
+                                                            className={`btn btn-sm custom-reset-btn me-2 ${student.attendance === "PRESENT"
+                                                                ? "attendance-present"
+                                                                : ""
+                                                                }`}
+                                                            disabled={student?.attendance === "PRESENT"}
+                                                            onClick={() => handleMarkStudentAttendance(student.id, "PRESENT")}
+                                                        >
+                                                            <i className="bi bi-check-lg me-1"></i>
+                                                            P
+                                                        </button>
 
-                                                    <button
-                                                        className={`btn btn-sm custom-reset-btn me-2 ${student.attendance === "ABSENT"
-                                                            ? "attendance-absent"
-                                                            : ""
-                                                            }`}
-                                                        disabled={student?.attendance === "ABSENT"}
-                                                        onClick={() => handleMarkStudentAttendance(student.id, "ABSENT")}
-                                                    >
-                                                        <i className="bi bi-x-lg me-1"></i>
-                                                        A
-                                                    </button>
-                                                </td>
-                                                <td className='text-center'>
-                                                    <button
-                                                        className="btn btn-sm custom-reset-btn me-2"
-                                                        onClick={() => setSearchParams({ classId, tab, page: pageNumber, size: pageSize, studentSubjectId: student?.id })}
-                                                    >
-                                                        <i class="bi bi-eye"></i>
-                                                    </button>
+                                                        <button
+                                                            className={`btn btn-sm custom-reset-btn me-2 ${student.attendance === "ABSENT"
+                                                                ? "attendance-absent"
+                                                                : ""
+                                                                }`}
+                                                            disabled={student?.attendance === "ABSENT"}
+                                                            onClick={() => handleMarkStudentAttendance(student.id, "ABSENT")}
+                                                        >
+                                                            <i className="bi bi-x-lg me-1"></i>
+                                                            A
+                                                        </button>
+                                                    </td>
+                                                    <td className='text-center'>
+                                                        <button
+                                                            className="btn btn-sm custom-reset-btn me-2"
+                                                            onClick={() => setSearchParams({ classId, tab, page: pageNumber, size: pageSize, studentSubjectId: student?.id })}
+                                                        >
+                                                            <i class="bi bi-eye"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            )
+                                            :
+                                            <tr>
+                                                <td colSpan="10" className="text-center">
+                                                    No Student Found
                                                 </td>
                                             </tr>
-                                        )
-                                        :
-                                        <tr>
-                                            <td colSpan="10" className="text-center">
-                                                No Student Found
-                                            </td>
-                                        </tr>
-                                }
-                            </tbody>
-                        </table>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                         <div className="pagination-container">
                             <div className="pagination-info">
                                 Total : <strong>{teacher?.sectionSubjectStudents?.totalElements || 0}</strong>

@@ -37,3 +37,66 @@
     vertical-align: middle;
     padding: 14px;
 }
+
+@media(max-width:480px){
+    .student-attendance-container{
+        margin-left: 0;
+        padding: 70px 15px 20px;
+        background: #ffffff;
+    }
+    .student-attendances-card{
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    div.stats-container{
+        margin:0px 0 30px 0;
+    }
+    .desktop-attendance-card{
+        display:none;
+    }
+    .mobile-attendance-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .attendance-circle {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+
+        background: conic-gradient(
+            #198754 var(--attendance),
+            #e9ecef var(--attendance)
+        );
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-bottom: 12px;
+    }
+
+    .attendance-circle-inner {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: white;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .attendance-circle-inner strong {
+        font-size: 18px;
+        color: #198754;
+    }
+
+    .attendance-card span {
+        font-size: 15px;
+        font-weight: 600;
+        color: #475569;
+    }
+}

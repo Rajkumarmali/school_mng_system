@@ -18,3 +18,9 @@
     vertical-align: middle;
     padding: 14px;
 }
+
+@media(max-width:480px){
+    .fee-section-container{
+        padding:20px;
+    }
+}

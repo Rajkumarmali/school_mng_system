@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import "./Login.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { login } from "../state/auth/Action";
 import { useDispatch } from "react-redux";
 
 const Login = () => {
 
     const dispatch = useDispatch();
+    const navigate = useNavigate()
 
     const [loginData, setLoginData] = useState({
         usernameOrEmail: '',
@@ -21,9 +22,15 @@ const Login = () => {
         })
     }
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        dispatch(login(loginData))
+        const res = await dispatch(login(loginData))
+        if (res?.success) {
+            if (window.innerWidth <= 480)
+                navigate("/mobile")
+            else
+                navigate("/dashboard")
+        }
     }
 
     return (

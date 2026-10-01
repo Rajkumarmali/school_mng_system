@@ -347,41 +347,45 @@
     cursor: not-allowed;
 }
 
-@media (max-width: 750px) {
-
-    .university-exam-form-container {
-        padding: 15px;
+@media (max-width: 480px) {
+    .university-exam-form-container{
+        box-shadow: none;
+        padding: 0px;
     }
-
-    .exam-info-grid,
-    .student-info-grid {
-        grid-template-columns: 1fr;
+    .university-form-icon{
+        display:none;
     }
-
-    .university-form-header {
-        align-items: flex-start;
+    .university-form-back-btn{
+        color: #000000;
+        border: 1px solid rgba(0, 0, 0, 0.2);
     }
-
-    .subject-table {
-        overflow-x: auto;
+    .university-form-card{
+        border: 1px solid rgba(0, 0, 0, 0.2);
     }
-
+    .exam-info-grid{
+        grid-template-columns:1fr;
+    }
+    .student-info-grid{
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .student-info-field input{
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
     .subject-table-header,
-    .subject-row {
-        min-width: 550px;
+    .subject-row{
+        grid-template-columns: 70px 110px 250px 96px 80px;
     }
-
-    .university-form-footer {
-        flex-direction: column;
-        align-items: flex-start;
+    .subject-row.subject-selected,
+    .subject-row:hover {
+        color: #000000;
     }
-
-    .form-footer-actions {
-        width: 100%;
+    .university-form-notice,
+    .university-form-declaration{
+         border: 1px solid rgba(0, 0, 0, 0.2);
     }
-
-    .form-footer-actions button {
-        flex: 1;
+    .form-footer-actions button{
+        color: #000000;
+        border: 1px solid rgba(0, 0, 0, 0.2);
     }
 }
 

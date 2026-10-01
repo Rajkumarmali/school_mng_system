@@ -27,7 +27,7 @@ const Subject = () => {
                         <SubjectDetail />
                     </div>
                     :
-                    <div>
+                    <div className='table-wraper'>
                         <table className="table universtiy-exam-subject-table">
                             <thead>
                                 <tr>

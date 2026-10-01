@@ -376,7 +376,8 @@ const Result = () => {
 
 
                 <div className="exam-student-container" style={{ fontSize: "15px" }}>
-                    <table className="table section-exam-student-table">
+                <div className='table-wraper'>
+<table className="table section-exam-student-table">
                         <thead>
                             <tr>
                                 <th>S No.</th>
@@ -503,6 +504,7 @@ const Result = () => {
                             }
                         </tbody>
                     </table>
+                </div>
                     <div className="pagination-container">
                         <div className="pagination-info">
                             Total : <strong>{exam?.studentExams?.totalElements || 0}</strong>

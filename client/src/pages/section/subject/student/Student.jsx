@@ -179,7 +179,8 @@ const Student = () => {
 
                     </div>
                 </div>
-                <table className="table section-subject-student-table">
+                <div className="table-wraper">
+ <table className="table section-subject-student-table">
                     <thead>
                         <tr>
                             <th>S No.</th>
@@ -214,6 +215,8 @@ const Student = () => {
                         }
                     </tbody>
                 </table>
+                </div>
+               
                 <div className="pagination-container">
                     <div className="pagination-info">
                         Total : <strong>{section?.sectionSubjectStudents?.totalElements || 0}</strong>

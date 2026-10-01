@@ -39,3 +39,8 @@
     align-items: center;
     gap: 12px;
 }
+@media(max-width:480px){
+    .teacher-class-detail-card{
+        padding: 10px
+    }
+}

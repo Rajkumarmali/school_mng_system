@@ -174,3 +174,13 @@
    background: transparent;
     color: white;
 }
+
+@media(max-width:480px){
+    .fee-type-container{
+        padding:25px;
+    }
+    .add-fee-type-btn{
+        color: #000000;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+}

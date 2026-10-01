@@ -125,7 +125,7 @@ const ClassDetails = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="stats-container">
+                                <div className="stats-container" style={{ marginTop: "10px" }}>
                                     <div className="stat-card">
                                         <i className="bi bi-mortarboard-fill"></i>
                                         <h3>{teacher?.teacherClass?.totalStudent}</h3>

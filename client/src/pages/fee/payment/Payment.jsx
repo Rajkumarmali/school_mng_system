@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import { getPayments } from '../../../state/fee/Action';
-import './Payments.css'
+import './Payment.css'
 import PaymentDetails from './PaymentDetails';
 
 const Payments = () => {
@@ -95,7 +95,7 @@ const Payments = () => {
     }, [dispatch, pageNumber, pageSize]);
 
     return (
-        <div>
+        <div style={{ margin: "10px" }}>
             {
                 paymentId ?
                     <div>
@@ -103,58 +103,60 @@ const Payments = () => {
                     </div>
                     :
                     <div>
-                        <table className="table students-table">
-                            <thead>
-                                <tr>
-                                    <th>S.No</th>
-                                    <th>Registration No.</th>
-                                    <th>Student Name</th>
-                                    <th>Fee Type</th>
-                                    <th>Academic Year</th>
-                                    <th>Amount</th>
-                                    <th>Mode</th>
-                                    <th>Receipt No.</th>
-                                    <th>Payment Date</th>
-                                    <th className="text-center">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    fee?.payments?.content?.length > 0 ?
-                                        fee?.payments?.content?.map((payment, index) =>
+                        <div className='table-wraper'>
+                            <table className="table students-table">
+                                <thead>
+                                    <tr>
+                                        <th>S.No</th>
+                                        <th>Registration No.</th>
+                                        <th>Student Name</th>
+                                        <th>Fee Type</th>
+                                        <th>Academic Year</th>
+                                        <th>Amount</th>
+                                        <th>Mode</th>
+                                        <th>Receipt No.</th>
+                                        <th>Payment Date</th>
+                                        <th className="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        fee?.payments?.content?.length > 0 ?
+                                            fee?.payments?.content?.map((payment, index) =>
+                                                <tr>
+                                                    <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
+                                                    <td>{payment.studentResponse.registrationNumber}</td>
+                                                    <td>{payment.studentResponse.name}</td>
+                                                    <td>{payment.feeTypename}</td>
+                                                    <td>{payment.academicYear}</td>
+                                                    <td>{payment.feePaymentResponse.amount}</td>
+                                                    <td>{payment.feePaymentResponse.paymentMode}</td>
+                                                    <td>{payment.feePaymentResponse.receiptNumber}</td>
+                                                    <td>
+                                                        {new Date(payment.feePaymentResponse.paymentDataAndTime)
+                                                            .toLocaleDateString("en-GB")
+                                                            .replace(/\//g, "-")}
+                                                    </td>
+                                                    <td className='text-center'>
+                                                        <button
+                                                            className="btn btn-sm custom-reset-btn me-2"
+                                                            onClick={() => handleViewDetail(payment.feePaymentResponse.id)}
+                                                        >
+                                                            <i class="bi bi-eye"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            )
+                                            :
                                             <tr>
-                                                <td>{(pageNumber - 1) * pageSize + index + 1}.</td>
-                                                <td>{payment.studentResponse.registrationNumber}</td>
-                                                <td>{payment.studentResponse.name}</td>
-                                                <td>{payment.feeTypename}</td>
-                                                <td>{payment.academicYear}</td>
-                                                <td>{payment.feePaymentResponse.amount}</td>
-                                                <td>{payment.feePaymentResponse.paymentMode}</td>
-                                                <td>{payment.feePaymentResponse.receiptNumber}</td>
-                                                <td>
-                                                    {new Date(payment.feePaymentResponse.paymentDataAndTime)
-                                                        .toLocaleDateString("en-GB")
-                                                        .replace(/\//g, "-")}
-                                                </td>
-                                                <td className='text-center'>
-                                                    <button
-                                                        className="btn btn-sm custom-reset-btn me-2"
-                                                        onClick={() => handleViewDetail(payment.feePaymentResponse.id)}
-                                                    >
-                                                        <i class="bi bi-eye"></i>
-                                                    </button>
+                                                <td colSpan="10" className="text-center">
+                                                    No Paymnet Found
                                                 </td>
                                             </tr>
-                                        )
-                                        :
-                                        <tr>
-                                            <td colSpan="10" className="text-center">
-                                                No Paymnet Found
-                                            </td>
-                                        </tr>
-                                }
-                            </tbody>
-                        </table>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                         <div className="pagination-container">
                             <div className="pagination-info">
                                 Total : <strong>{fee?.payments?.totalElements || 0}</strong>

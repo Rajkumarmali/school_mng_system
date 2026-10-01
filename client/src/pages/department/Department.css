@@ -190,3 +190,25 @@
    background: transparent;
     color: white;
 }
+
+@media(max-width:480px){
+    .departments-container{
+        margin-left: 0;
+        padding: 70px 15px 20px;
+        background: #ffffff;
+    }
+    .departments-header{
+        justify-content: left;
+    }
+    .departments-header h2{
+        display:none;
+    }
+    .add-departments-btn{
+        color: #000000;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .departments-card{
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+}
