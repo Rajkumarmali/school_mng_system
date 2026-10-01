@@ -223,7 +223,7 @@ const StudentProfile = () => {
                         :
                         <div>
                             <div className="student-profile-header">
-                                <div style= {{justifyItems: "center"}}>
+                                <div style={{ justifyItems: "center" }}>
                                     <div className="student-profile-avatar">
                                         {
                                             student?.student?.image ?
@@ -334,7 +334,7 @@ const StudentProfile = () => {
                                         <span><strong>Email :</strong> {student?.student?.email}</span>
                                         <span><strong>Gender :</strong> {student?.student?.gender}</span>
                                         <span><strong>Cast :</strong> {student?.student?.cast}</span>
-                                        <span><strong>Aadhar :</strong> {student?.student?.aadharNumber}</span>
+                                        <span><strong>Aadhar :</strong> {student?.student?.aadhaarNumber}</span>
                                         <span><strong>DOB :</strong> {student?.student?.dob}</span>
                                         <span><strong>Father Number :</strong> {student?.student?.parentResponse?.fatherNumber}</span>
                                         <span><strong>Mother Number :</strong> {student?.student?.parentResponse?.motherNumber}</span>

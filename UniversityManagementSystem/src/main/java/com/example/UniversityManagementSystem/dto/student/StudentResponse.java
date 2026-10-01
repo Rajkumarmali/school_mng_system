@@ -26,7 +26,7 @@ public class StudentResponse implements Serializable {
     private LocalDate dob;
     private Gender gender;
     private Cast cast;
-    private String aadharNumber;
+    private String aadhaarNumber;
     private String image;
     private String username;
     private AddressResponse addressResponse;

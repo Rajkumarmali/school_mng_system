@@ -97,17 +97,17 @@ const SectionDetails = () => {
                     <li class="nav-item">
                         <button
                             class="nav-link"
-                            onClick={() => { setSearchParams({ sectionId, tab: "subject" }) }}
+                            onClick={() => { setSearchParams({ sectionId, tab: "student" }) }}
                         >
-                            Subject
+                            Student
                         </button>
                     </li>
                     <li class="nav-item">
                         <button
                             class="nav-link"
-                            onClick={() => { setSearchParams({ sectionId, tab: "student" }) }}
+                            onClick={() => { setSearchParams({ sectionId, tab: "subject" }) }}
                         >
-                            Student
+                            Subject
                         </button>
                     </li>
                     <li class="nav-item">
